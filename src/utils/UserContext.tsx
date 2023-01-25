@@ -1,5 +1,9 @@
 import React from "react";
 
-export const UserContext = React.createContext({
-  userId: 1,
+interface UserContextType {
+  userId: number | null;
+}
+
+export const UserContext = React.createContext<UserContextType>({
+  userId: null,
 });
