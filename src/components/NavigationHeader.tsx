@@ -1,4 +1,5 @@
-import { StyleSheet, View, StatusBar } from "react-native";
+import { useRef } from "react";
+import { StyleSheet, View, StatusBar, ScrollView } from "react-native";
 import { useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
@@ -16,12 +17,23 @@ export const NavigationHeader = ({
   route?: any;
 }) => {
   const { colors } = useTheme();
+  const scrollViewRef: React.MutableRefObject<ScrollView | null> = useRef(null);
+
   if (route.name !== "SignUp") {
     StatusBar.setBackgroundColor(colors.background, true);
   }
+
   return (
     <View style={styles.wrapperView}>
-      {children}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        ref={scrollViewRef}
+        onContentSizeChange={() =>
+          scrollViewRef.current?.scrollToEnd({ animated: true })
+        }
+      >
+        {children}
+      </ScrollView>
       <View style={styles.header}>
         {backEnabled && (
           <Icon
@@ -43,6 +55,7 @@ export const NavigationHeader = ({
 const styles = StyleSheet.create({
   wrapperView: {
     position: "relative",
+    flex: 1,
   },
   header: {
     position: "absolute",

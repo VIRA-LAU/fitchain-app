@@ -1,5 +1,11 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import { SignUp, SignUpWithNumber, Home } from "screens";
+import {
+  SignUp,
+  SignUpWithNumber,
+  Home,
+  VerifySignUpWithNumber,
+  SignUpWithNumberDetails,
+} from "screens";
 import { UserContext } from "utils";
 
 export type SignUpStackParamList = {
@@ -28,8 +34,14 @@ export default function AppNavigator() {
       >
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="SignUpWithNumber" component={SignUpWithNumber} />
-        <Stack.Screen name="VerifySignUpWithNumber" component={Home} />
-        <Stack.Screen name="SignUpWithNumberDetails" component={Home} />
+        <Stack.Screen
+          name="VerifySignUpWithNumber"
+          component={VerifySignUpWithNumber}
+        />
+        <Stack.Screen
+          name="SignUpWithNumberDetails"
+          component={SignUpWithNumberDetails}
+        />
       </Stack.Navigator>
     );
 }

@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   StatusBar,
+  Image,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
@@ -20,13 +21,21 @@ export const SignUp = ({ navigation }: Props) => {
 
   return (
     <View style={styles.wrapperView}>
-      <Text style={styles.logo}>FITCHAIN</Text>
+      <Image source={require("assets/images/Logo.png")} style={styles.logo} />
       <View style={styles.buttonsView}>
         <View style={styles.buttonView}>
+          <Image
+            source={require("assets/images/Google-Icon.png")}
+            style={{ marginRight: 10 }}
+          />
           <Text style={styles.buttonText}>Sign up with Google</Text>
         </View>
 
         <View style={styles.buttonView}>
+          <Image
+            source={require("assets/images/Apple-Icon.png")}
+            style={{ marginRight: 10 }}
+          />
           <Text style={styles.buttonText}>Sign up with Apple</Text>
         </View>
 
@@ -45,29 +54,27 @@ export const SignUp = ({ navigation }: Props) => {
 const makeStyles = (fontScale: number) =>
   StyleSheet.create({
     wrapperView: {
-      height: "100%",
+      flex: 1,
       alignContent: "center",
       justifyContent: "center",
       backgroundColor: "black",
     },
     logo: {
-      color: "white",
-      fontSize: 60 / fontScale,
-      textAlign: "center",
+      alignSelf: "center",
     },
     buttonsView: {
       marginTop: "20%",
       alignItems: "center",
     },
     buttonView: {
-      height: 45,
+      height: 40,
       width: "73%",
       marginVertical: 7,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: "#ebebeb",
-      borderRadius: 7,
+      borderRadius: 5,
     },
     buttonText: {
       fontSize: 15 / fontScale,

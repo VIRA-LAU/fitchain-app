@@ -4,13 +4,14 @@
     "slug": "fitchain-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./src/assets/images/Logo-Icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./src/assets/images/Logo.png",
+      "resizeMode": "native",
+      "backgroundColor": "black"
     },
+    "backgroundColor": "#2e2d36",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -22,7 +23,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./src/assets/images/Logo-Icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },

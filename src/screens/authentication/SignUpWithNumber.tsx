@@ -1,5 +1,5 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { SignUpStackParamList } from "src/AppNavigator";
 import { NavigationHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -14,7 +14,10 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
   return (
     <NavigationHeader backEnabled={true} navigation={navigation} route={route}>
       <View style={styles.wrapperView}>
-        <View key="logo" style={styles.logo} />
+        <Image
+          source={require("assets/images/Logo-Icon.png")}
+          style={styles.logo}
+        />
         <Text variant="titleLarge" style={styles.titleText}>
           Welcome to Fitchain
         </Text>
@@ -40,7 +43,10 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
               backgroundColor: colors.secondary,
               borderRadius: 5,
             }}
-            textInputProps={{ placeholderTextColor: "grey" }}
+            textInputProps={{
+              placeholderTextColor: "grey",
+              selectionColor: colors.primary,
+            }}
             disableArrowIcon={true}
             containerStyle={{
               marginTop: "5%",
@@ -53,6 +59,7 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
             textColor={colors.background}
             buttonColor={colors.primary}
             style={styles.continueButton}
+            onPress={() => navigation.push("VerifySignUpWithNumber")}
           >
             Continue
           </Button>
@@ -65,18 +72,16 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      height: "100%",
+      flex: 1,
       backgroundColor: colors.background,
       alignItems: "center",
+      paddingBottom: 20,
     },
     logo: {
-      height: 75,
-      width: 75,
-      backgroundColor: colors.primary,
       marginTop: "25%",
     },
     titleText: {
-      marginTop: "10%",
+      marginTop: "5%",
       color: "white",
     },
     inputView: {
@@ -92,5 +97,10 @@ const makeStyles = (colors: MD3Colors) =>
       color: "grey",
       textAlign: "center",
     },
-    continueButton: { borderRadius: 6, marginTop: "10%" },
+    continueButton: {
+      borderRadius: 6,
+      marginTop: "10%",
+      height: 50,
+      justifyContent: "center",
+    },
   });

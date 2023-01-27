@@ -4,15 +4,15 @@ import {
   MD3LightTheme as DefaultTheme,
   Provider as PaperProvider,
 } from "react-native-paper";
-import { NavigationContainer } from "@react-navigation/native";
+import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "react-native";
 import AppRouter from "src/AppNavigator";
 import { useFonts } from "expo-font/build/FontHooks";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    "Inter-SemiBold": require("./src/assets/fonts/Inter-SemiBold.ttf"),
-    "Inter-Medium": require("./src/assets/fonts/Inter-Medium.ttf"),
+    "Inter-SemiBold": require("assets/fonts/Inter-SemiBold.ttf"),
+    "Inter-Medium": require("assets/fonts/Inter-Medium.ttf"),
   });
 
   if (!fontsLoaded) {
@@ -40,7 +40,7 @@ export default function App() {
 
   return (
     <PaperProvider theme={theme}>
-      <NavigationContainer>
+      <NavigationContainer theme={DarkTheme}>
         <StatusBar
           barStyle={"light-content"}
           backgroundColor={theme.colors.background}
