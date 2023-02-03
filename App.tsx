@@ -6,7 +6,7 @@ import {
 } from "react-native-paper";
 import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "react-native";
-import AppRouter from "src/AppNavigator";
+import { AppNavigator } from "navigation";
 import { useFonts } from "expo-font/build/FontHooks";
 
 export default function App() {
@@ -45,7 +45,7 @@ export default function App() {
           barStyle={"light-content"}
           backgroundColor={theme.colors.background}
         />
-        <AppRouter />
+        <AppNavigator />
       </NavigationContainer>
     </PaperProvider>
   );

@@ -9,7 +9,7 @@ import {
 import { StyleSheet } from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
 import type { StackScreenProps } from "@react-navigation/stack";
-import { SignUpStackParamList } from "src/AppNavigator";
+import { SignUpStackParamList } from "navigation";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUp">;
 
@@ -74,7 +74,7 @@ const makeStyles = (fontScale: number) =>
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: "#ebebeb",
-      borderRadius: 5,
+      borderRadius: 7,
     },
     buttonText: {
       fontSize: 15 / fontScale,

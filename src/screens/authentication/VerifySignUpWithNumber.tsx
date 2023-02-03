@@ -1,7 +1,7 @@
 import type { StackScreenProps } from "@react-navigation/stack";
 import { StyleSheet, View, TextInput, Image } from "react-native";
-import { SignUpStackParamList } from "src/AppNavigator";
-import { NavigationHeader } from "components";
+import { SignUpStackParamList } from "navigation";
+import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import React, { useRef, useState } from "react";
@@ -59,7 +59,12 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
   ];
 
   return (
-    <NavigationHeader backEnabled={true} navigation={navigation} route={route}>
+    <AppHeader
+      navigation={navigation}
+      route={route}
+      statusBarColor="background"
+      backEnabled
+    >
       <View style={styles.wrapperView}>
         <Image
           source={require("assets/images/Logo-Icon.png")}
@@ -97,7 +102,7 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
           </Button>
         </View>
       </View>
-    </NavigationHeader>
+    </AppHeader>
   );
 };
 

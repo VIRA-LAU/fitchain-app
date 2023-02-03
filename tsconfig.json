@@ -7,7 +7,8 @@
       "utils": ["./src/utils"],
       "screens": ["./src/screens"],
       "components": ["./src/components"],
-      "assets": ["./src/assets"]
+      "assets": ["./src/assets"],
+      "navigation": ["./src/navigation"]
     }
   }
 }
