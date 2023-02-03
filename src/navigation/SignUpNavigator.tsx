@@ -1,4 +1,5 @@
 import { createStackNavigator } from "@react-navigation/stack";
+import { Dispatch, SetStateAction } from "react";
 import {
   SignUp,
   SignUpWithNumber,
@@ -15,7 +16,11 @@ export type SignUpStackParamList = {
 
 const Stack = createStackNavigator<SignUpStackParamList>();
 
-export const SignUpNavigator = () => (
+export const SignUpNavigator = ({
+  setSignedIn,
+}: {
+  setSignedIn: Dispatch<SetStateAction<boolean>>;
+}) => (
   <Stack.Navigator
     initialRouteName="SignUp"
     screenOptions={{ headerShown: false }}
@@ -26,9 +31,10 @@ export const SignUpNavigator = () => (
       name="VerifySignUpWithNumber"
       component={VerifySignUpWithNumber}
     />
-    <Stack.Screen
-      name="SignUpWithNumberDetails"
-      component={SignUpWithNumberDetails}
-    />
+    <Stack.Screen name="SignUpWithNumberDetails">
+      {(props) => (
+        <SignUpWithNumberDetails {...props} setSignedIn={setSignedIn} />
+      )}
+    </Stack.Screen>
   </Stack.Navigator>
 );

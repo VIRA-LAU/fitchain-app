@@ -45,6 +45,8 @@ export const tabScreenOptions = ({
       borderColor: "white",
       position: "relative",
       backgroundColor: colors.secondary,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
     },
     tabBarItemStyle: { paddingBottom: 15 },
     tabBarActiveBackgroundColor: colors.secondary,

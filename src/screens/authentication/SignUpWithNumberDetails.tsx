@@ -5,11 +5,19 @@ import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useRef } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumberDetails">;
 
-export const SignUpWithNumberDetails = ({ navigation, route }: Props) => {
+export const SignUpWithNumberDetails = ({
+  navigation,
+  route,
+  setSignedIn,
+}: {
+  navigation: Props["navigation"];
+  route: Props["route"];
+  setSignedIn: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -20,6 +28,7 @@ export const SignUpWithNumberDetails = ({ navigation, route }: Props) => {
       route={route}
       statusBarColor="background"
       backEnabled
+      autoScroll
     >
       <View style={styles.wrapperView}>
         <Image
@@ -71,6 +80,7 @@ export const SignUpWithNumberDetails = ({ navigation, route }: Props) => {
             textColor={colors.background}
             buttonColor={colors.primary}
             style={styles.getStartedButton}
+            onPress={() => setSignedIn(true)}
           >
             Get Started
           </Button>
@@ -101,7 +111,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     h2: {
       marginBottom: "3%",
-      color: "grey",
+      color: colors.tertiary,
       textAlign: "center",
     },
     textInputView: {

@@ -17,6 +17,7 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
       route={route}
       statusBarColor="background"
       backEnabled
+      autoScroll
     >
       <View style={styles.wrapperView}>
         <Image
@@ -49,7 +50,7 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
               borderRadius: 5,
             }}
             textInputProps={{
-              placeholderTextColor: "grey",
+              placeholderTextColor: colors.tertiary,
               selectionColor: colors.primary,
             }}
             disableArrowIcon={true}
@@ -99,8 +100,9 @@ const makeStyles = (colors: MD3Colors) =>
     },
     h2: {
       marginTop: "5%",
-      color: "grey",
+      color: colors.tertiary,
       textAlign: "center",
+      fontSize: 12,
     },
     continueButton: {
       borderRadius: 6,

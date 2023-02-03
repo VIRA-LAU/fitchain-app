@@ -13,34 +13,38 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 export const AppHeader = ({
   children,
-  statusBarColor = "secondary",
-  backEnabled = false,
   absolutePosition = true,
-  title,
+  statusBarColor = "secondary",
+  autoScroll = false,
   navigation,
   route,
-  logo = false,
+  title,
+  showLogo = false,
+  right,
+  backEnabled = false,
 }: {
   children: any;
-  backEnabled?: boolean;
   absolutePosition?: boolean;
-  title?: string;
+  statusBarColor?: "primary" | "secondary" | "background";
+  autoScroll?: boolean;
   navigation?: any;
   route?: any;
-  logo?: boolean;
-  statusBarColor?: "primary" | "secondary" | "background";
+  title?: string;
+  showLogo?: boolean;
+  right?: any;
+  backEnabled?: boolean;
 }) => {
   const { colors } = useTheme();
   const scrollViewRef: React.MutableRefObject<ScrollView | null> = useRef(null);
 
   StatusBar.setBackgroundColor(colors[statusBarColor], true);
 
-  const styles = createStyles(colors);
+  const styles = makeStyles(colors);
 
   return (
     <View style={styles.wrapperView}>
       <View style={absolutePosition ? styles.headerAbsolute : styles.header}>
-        {logo && (
+        {showLogo && (
           <View style={styles.logoView}>
             <Image
               source={require("assets/images/Logo.png")}
@@ -49,7 +53,7 @@ export const AppHeader = ({
             />
           </View>
         )}
-        {backEnabled && (
+        {backEnabled ? (
           <Icon
             name="arrow-back"
             color="white"
@@ -60,16 +64,19 @@ export const AppHeader = ({
               navigation.goBack();
             }}
           />
+        ) : (
+          <View />
         )}
         {title && <Text style={styles.title}>{title}</Text>}
-        <View />
+        {right ? right : <View />}
       </View>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         ref={scrollViewRef}
-        onContentSizeChange={() =>
-          scrollViewRef.current?.scrollToEnd({ animated: true })
-        }
+        onContentSizeChange={() => {
+          if (autoScroll)
+            scrollViewRef.current?.scrollToEnd({ animated: true });
+        }}
       >
         {children}
       </ScrollView>
@@ -77,11 +84,12 @@ export const AppHeader = ({
   );
 };
 
-const createStyles = (colors: MD3Colors) =>
+const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
       position: "relative",
       flex: 1,
+      backgroundColor: colors.background,
     },
     header: {
       position: "relative",
@@ -91,6 +99,8 @@ const createStyles = (colors: MD3Colors) =>
       justifyContent: "space-between",
       alignItems: "center",
       backgroundColor: colors.secondary,
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
     },
     headerAbsolute: {
       position: "absolute",

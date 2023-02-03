@@ -2,6 +2,7 @@ import {
   createBottomTabNavigator,
   useBottomTabBarHeight,
 } from "@react-navigation/bottom-tabs";
+import { useState } from "react";
 import { useTheme } from "react-native-paper";
 import { Home } from "screens";
 import { UserContext } from "utils";
@@ -11,7 +12,7 @@ import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 export const AppNavigator = () => {
-  const signedIn = true;
+  const [signedIn, setSignedIn] = useState<boolean>(false);
   const { colors } = useTheme();
 
   if (signedIn)
@@ -38,5 +39,5 @@ export const AppNavigator = () => {
         </Tab.Navigator>
       </UserContext.Provider>
     );
-  else return <SignUpNavigator />;
+  else return <SignUpNavigator setSignedIn={setSignedIn} />;
 };

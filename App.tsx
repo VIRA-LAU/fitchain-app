@@ -20,10 +20,16 @@ export default function App() {
   }
 
   const fontConfig = {
+    headlineSmall: {
+      fontFamily: "Inter-SemiBold",
+    },
     titleLarge: {
       fontFamily: "Inter-SemiBold",
     },
     titleSmall: {
+      fontFamily: "Inter-SemiBold",
+    },
+    labelLarge: {
       fontFamily: "Inter-SemiBold",
     },
   };
@@ -33,6 +39,7 @@ export default function App() {
     colors: {
       primary: "#f29c1f",
       secondary: "#3b3a42",
+      tertiary: "#aaaaaa",
       background: "#2e2d36",
     },
     fonts: configureFonts({ config: fontConfig }),

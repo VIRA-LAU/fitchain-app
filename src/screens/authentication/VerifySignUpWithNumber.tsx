@@ -30,7 +30,7 @@ const CodeInput = ({
       textContentType={"oneTimeCode"}
       style={styles.codeInput}
       placeholder="0"
-      placeholderTextColor={"grey"}
+      placeholderTextColor={colors.tertiary}
       onChangeText={(digit) => {
         setCode((code) =>
           code.map((codeDigit, codeIndex) =>
@@ -64,6 +64,7 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
       route={route}
       statusBarColor="background"
       backEnabled
+      autoScroll
     >
       <View style={styles.wrapperView}>
         <Image
@@ -126,8 +127,9 @@ const makeStyles = (colors: MD3Colors) =>
       width: "80%",
     },
     h2: {
-      color: "grey",
+      color: colors.tertiary,
       textAlign: "center",
+      fontSize: 12,
     },
     codeView: {
       width: "95%",

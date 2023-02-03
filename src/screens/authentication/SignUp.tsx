@@ -10,6 +10,7 @@ import { StyleSheet } from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { SignUpStackParamList } from "navigation";
+import { Button } from "react-native-paper";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUp">;
 
@@ -39,13 +40,16 @@ export const SignUp = ({ navigation }: Props) => {
           <Text style={styles.buttonText}>Sign up with Apple</Text>
         </View>
 
-        <TouchableOpacity
+        <Button
+          textColor="black"
           style={styles.buttonView}
+          icon={({ size, color }) => (
+            <OctIcon name="device-mobile" size={size} color={color} />
+          )}
           onPress={() => navigation.push("SignUpWithNumber")}
         >
-          <OctIcon name="device-mobile" size={20} style={{ marginRight: 15 }} />
           <Text style={styles.buttonText}>Sign up with Mobile Number</Text>
-        </TouchableOpacity>
+        </Button>
       </View>
     </View>
   );
