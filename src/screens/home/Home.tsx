@@ -48,13 +48,13 @@ export const Home = ({ navigation, route }: Props) => {
           Upcoming Games
         </Text>
         <View>
-          <UpcomingGameCard />
-          <UpcomingGameCard />
+          <UpcomingGameCard gameType="basketball" />
+          <UpcomingGameCard gameType="football" />
         </View>
         <SectionTitle title="Invitations" styles={styles} />
         <ScrollView style={{ flexDirection: "row" }} horizontal>
-          <InvitationCard />
-          <InvitationCard />
+          <InvitationCard gameType="basketball" />
+          <InvitationCard gameType="football" />
         </ScrollView>
         <SectionTitle title="Venues" styles={styles} />
         <ScrollView style={{ flexDirection: "row" }} horizontal>
@@ -63,13 +63,13 @@ export const Home = ({ navigation, route }: Props) => {
         </ScrollView>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
-          <BookingCard />
-          <BookingCard />
+          <BookingCard gameType="basketball" />
+          <BookingCard gameType="football" />
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
-          <ActivityCard />
-          <ActivityCard />
+          <ActivityCard gameType="basketball" />
+          <ActivityCard gameType="football" />
         </View>
       </View>
     </AppHeader>

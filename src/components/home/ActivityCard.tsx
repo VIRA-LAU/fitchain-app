@@ -1,15 +1,27 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import IonIcon from "react-native-vector-icons/Ionicons";
 
-export const ActivityCard = () => {
+export const ActivityCard = ({
+  gameType,
+}: {
+  gameType: "basketball" | "football" | "tennis";
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   return (
     <View style={styles.wrapper}>
-      <IonIcon name={"basketball-outline"} size={35} color={"white"} />
+      <Image
+        source={
+          gameType === "basketball"
+            ? require("assets/images/home/basketball.png")
+            : gameType === "football"
+            ? require("assets/images/home/football.png")
+            : require("assets/images/home/tennis.png")
+        }
+        style={styles.gameIcon}
+      />
       <View style={styles.textView}>
         <Text style={styles.greyText}>
           <Text style={styles.text}>Won</Text> a basketball game.
@@ -35,10 +47,14 @@ const makeStyles = (colors: MD3Colors) =>
       backgroundColor: colors.secondary,
       padding: 15,
       marginBottom: 20,
-      paddingBottom: 25,
+      paddingBottom: 20,
+    },
+    gameIcon: {
+      width: 35,
+      aspectRatio: 1,
     },
     textView: {
-      marginLeft: 10,
+      marginLeft: 15,
     },
     greyText: {
       color: colors.tertiary,

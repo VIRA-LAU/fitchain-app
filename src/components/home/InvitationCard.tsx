@@ -1,16 +1,39 @@
-import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+  Image,
+} from "react-native";
 import { useTheme, Button } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 
-export const InvitationCard = () => {
+export const InvitationCard = ({
+  gameType,
+}: {
+  gameType: "basketball" | "football" | "tennis";
+}) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
   const styles = makeStyles(colors, height, width);
   return (
     <View style={styles.wrapper}>
+      <Image
+        source={
+          gameType === "basketball"
+            ? require("assets/images/home/basketball.png")
+            : gameType === "football"
+            ? require("assets/images/home/football.png")
+            : require("assets/images/home/tennis.png")
+        }
+        style={styles.header}
+      />
       <View style={styles.content}>
-        <View style={styles.picture} />
+        <Image
+          source={require("assets/images/home/profile-picture.png")}
+          style={styles.profilePicture}
+        />
         <View style={{ maxWidth: 0.48 * width }}>
           <Text style={styles.greyText}>
             <Text style={styles.text}>Alain H.</Text> invited you to play{" "}
@@ -48,10 +71,7 @@ export const InvitationCard = () => {
 const makeStyles = (colors: MD3Colors, height: number, width: number) =>
   StyleSheet.create({
     wrapper: {
-      height: 0.28 * height,
-      maxHeight: 200,
       width: 0.7 * width,
-      backgroundColor: colors.primary,
       borderRadius: 10,
       justifyContent: "flex-end",
       marginRight: 10,
@@ -62,13 +82,17 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
     },
-    picture: {
+    header: {
+      alignSelf: "center",
+      height: 50,
+      width: "100%",
+    },
+    profilePicture: {
       position: "absolute",
       height: "55%",
       top: "-27.5%",
       right: "6%",
       aspectRatio: 1,
-      backgroundColor: colors.background,
       borderRadius: 50,
     },
     text: {

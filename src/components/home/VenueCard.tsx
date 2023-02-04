@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  useWindowDimensions,
+  Image,
+} from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -10,11 +16,18 @@ export const VenueCard = () => {
 
   return (
     <View style={styles.wrapper}>
+      <Image
+        source={require("assets/images/home/basketball-hub.png")}
+        style={styles.header}
+      />
       <View style={styles.content}>
         <View style={styles.promotedView}>
           <Text style={styles.promoted}>Promoted</Text>
         </View>
-        <IonIcon name={"basketball-outline"} size={35} color={"white"} />
+        <Image
+          source={require("assets/images/home/basketball-hub-icon.png")}
+          style={{ width: 35, aspectRatio: 1 }}
+        />
         <View style={styles.textView}>
           <Text style={styles.title}>Basketball Hub</Text>
           <View style={styles.ratingView}>
@@ -31,11 +44,14 @@ export const VenueCard = () => {
 const makeStyles = (colors: MD3Colors, height: number) =>
   StyleSheet.create({
     wrapper: {
-      height: 0.28 * height,
       backgroundColor: colors.primary,
       justifyContent: "flex-end",
       marginRight: 10,
       borderRadius: 10,
+    },
+    header: {
+      height: 128,
+      width: "100%",
     },
     content: {
       flexDirection: "row",

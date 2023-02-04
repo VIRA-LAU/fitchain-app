@@ -26,7 +26,7 @@ export const SignUp = ({ navigation }: Props) => {
       <View style={styles.buttonsView}>
         <View style={styles.buttonView}>
           <Image
-            source={require("assets/images/Google-Icon.png")}
+            source={require("assets/images/signup/Google-Icon.png")}
             style={{ marginRight: 10 }}
           />
           <Text style={styles.buttonText}>Sign up with Google</Text>
@@ -34,7 +34,7 @@ export const SignUp = ({ navigation }: Props) => {
 
         <View style={styles.buttonView}>
           <Image
-            source={require("assets/images/Apple-Icon.png")}
+            source={require("assets/images/signup/Apple-Icon.png")}
             style={{ marginRight: 10 }}
           />
           <Text style={styles.buttonText}>Sign up with Apple</Text>

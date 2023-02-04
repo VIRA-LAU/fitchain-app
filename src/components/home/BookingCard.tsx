@@ -1,14 +1,28 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
 
-export const BookingCard = () => {
+export const BookingCard = ({
+  gameType,
+}: {
+  gameType: "basketball" | "football" | "tennis";
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   return (
     <View style={styles.wrapper}>
+      <Image
+        source={
+          gameType === "basketball"
+            ? require("assets/images/home/basketball.png")
+            : gameType === "football"
+            ? require("assets/images/home/football.png")
+            : require("assets/images/home/tennis.png")
+        }
+        style={styles.leftImage}
+      />
       <View style={styles.content}>
         <Text style={[styles.greyText, { fontSize: 14 }]}>
           <Text style={styles.text}>Basketball Game</Text> By{" "}
@@ -40,7 +54,6 @@ export const BookingCard = () => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapper: {
-      backgroundColor: colors.primary,
       flexDirection: "row",
       justifyContent: "flex-end",
       borderRadius: 10,
@@ -49,10 +62,14 @@ const makeStyles = (colors: MD3Colors) =>
     content: {
       padding: 15,
       flex: 1,
-      marginLeft: "15%",
       backgroundColor: colors.secondary,
       borderTopRightRadius: 10,
       borderBottomRightRadius: 10,
+      justifyContent: "center",
+    },
+    leftImage: {
+      width: "16%",
+      height: 108,
     },
     greyText: {
       color: colors.tertiary,

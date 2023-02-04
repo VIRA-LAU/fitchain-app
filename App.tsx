@@ -39,7 +39,7 @@ export default function App() {
     colors: {
       primary: "#f29c1f",
       secondary: "#3b3a42",
-      tertiary: "#aaaaaa",
+      tertiary: "#9e9e9e",
       background: "#2e2d36",
     },
     fonts: configureFonts({ config: fontConfig }),

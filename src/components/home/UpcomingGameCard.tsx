@@ -1,9 +1,12 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import IonIcon from "react-native-vector-icons/Ionicons";
 
-export const UpcomingGameCard = () => {
+export const UpcomingGameCard = ({
+  gameType,
+}: {
+  gameType: "basketball" | "football" | "tennis";
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   return (
@@ -15,7 +18,16 @@ export const UpcomingGameCard = () => {
           <Text style={styles.text}>Hoops - Furn el Chebbak.</Text>
         </Text>
       </View>
-      <IonIcon name={"basketball-outline"} size={35} color={"white"} />
+      <Image
+        source={
+          gameType === "basketball"
+            ? require("assets/images/home/basketball.png")
+            : gameType === "football"
+            ? require("assets/images/home/football.png")
+            : require("assets/images/home/tennis.png")
+        }
+        style={styles.gameIcon}
+      />
     </View>
   );
 };
@@ -40,4 +52,5 @@ const makeStyles = (colors: MD3Colors) =>
       fontSize: 12,
       fontFamily: "Inter-Medium",
     },
+    gameIcon: { marginRight: 10, width: 35, aspectRatio: 1 },
   });
