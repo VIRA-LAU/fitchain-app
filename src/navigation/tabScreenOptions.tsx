@@ -41,7 +41,7 @@ export const tabScreenOptions = ({
     tabBarActiveTintColor: colors.primary,
     tabBarInactiveTintColor: "white",
     tabBarStyle: {
-      height: 65,
+      height: 80,
       borderColor: "white",
       position: "relative",
       backgroundColor: colors.secondary,

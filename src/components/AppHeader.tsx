@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -10,6 +10,7 @@ import {
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import SportTypeDropdown from "./home/SportTypeDropdown";
 
 export const AppHeader = ({
   children,
@@ -36,8 +37,7 @@ export const AppHeader = ({
 }) => {
   const { colors } = useTheme();
   const scrollViewRef: React.MutableRefObject<ScrollView | null> = useRef(null);
-
-  StatusBar.setBackgroundColor(colors[statusBarColor], true);
+  // StatusBar.setBackgroundColor(colors[statusBarColor], true);
 
   const styles = makeStyles(colors);
 
@@ -45,12 +45,17 @@ export const AppHeader = ({
     <View style={styles.wrapperView}>
       <View style={absolutePosition ? styles.headerAbsolute : styles.header}>
         {showLogo && (
-          <View style={styles.logoView}>
-            <Image
-              source={require("assets/images/Logo.png")}
-              style={{ width: "40%" }}
-              resizeMode={"contain"}
-            />
+          <View>
+            <View style={styles.dropdownView}>
+              <SportTypeDropdown></SportTypeDropdown>
+            </View>
+            <View style={styles.logoView}>
+              <Image
+                source={require("assets/images/Logo.png")}
+                style={{ width: "40%" }}
+                resizeMode={"contain"}
+              />
+            </View>
           </View>
         )}
         {backEnabled ? (
@@ -60,8 +65,8 @@ export const AppHeader = ({
             size={25}
             onPress={() => {
               if (route.name === "SignUpWithNumber")
-                StatusBar.setBackgroundColor("black", true);
-              navigation.goBack();
+                // StatusBar.setBackgroundColor("black", true);
+                navigation.goBack();
             }}
           />
         ) : (
@@ -113,6 +118,7 @@ const makeStyles = (colors: MD3Colors) =>
       justifyContent: "space-between",
       alignItems: "center",
       zIndex: 1,
+      marginTop: 10,
     },
     title: {
       position: "absolute",
@@ -121,11 +127,22 @@ const makeStyles = (colors: MD3Colors) =>
       right: 0,
       textAlign: "center",
       fontSize: 18,
+      marginTop: 10,
     },
     logoView: {
       position: "absolute",
       left: 0,
       right: 0,
       alignItems: "center",
+      paddingTop: 25,
+    },
+    dropdownView: {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      height: 20,
+      width: "10%",
+      paddingTop: -10,
+      paddingLeft: 25,
     },
   });

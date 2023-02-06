@@ -10,7 +10,7 @@ import { StyleSheet } from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { SignUpStackParamList } from "navigation";
-import { Button } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUp">;
 
@@ -18,12 +18,30 @@ export const SignUp = ({ navigation }: Props) => {
   const { fontScale } = useWindowDimensions();
   const styles = makeStyles(fontScale);
 
-  StatusBar.setBackgroundColor("black", true);
+  // StatusBar.setBackgroundColor("black", true);
 
   return (
     <View style={styles.wrapperView}>
       <Image source={require("assets/images/Logo.png")} style={styles.logo} />
+
       <View style={styles.buttonsView}>
+        <View style={styles.signInView}>
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.textInput}
+            value={"email"}
+            // onChangeText={()}
+          />
+        </View>
+        <View style={[styles.signInView, { marginBottom: 20 }]}>
+          <Text style={styles.label}>Password</Text>
+          <TextInput
+            style={styles.textInput}
+            secureTextEntry={true}
+            value={"password"}
+            // onChangeText={setPassword}
+          />
+        </View>
         <View style={styles.buttonView}>
           <Image
             source={require("assets/images/signup/Google-Icon.png")}
@@ -67,7 +85,7 @@ const makeStyles = (fontScale: number) =>
       alignSelf: "center",
     },
     buttonsView: {
-      marginTop: "20%",
+      marginTop: "10%",
       alignItems: "center",
     },
     buttonView: {
@@ -81,6 +99,44 @@ const makeStyles = (fontScale: number) =>
       borderRadius: 7,
     },
     buttonText: {
+      fontSize: 15 / fontScale,
+      textAlign: "center",
+      fontFamily: "Inter-Medium",
+    },
+    signInView: {
+      width: "73%",
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginBottom: 10,
+    },
+    label: {
+      fontSize: 15 / fontScale,
+      textAlign: "left",
+      fontFamily: "Inter-Medium",
+      marginBottom: 5,
+      color: "white",
+    },
+    textInput: {
+      height: 40,
+      width: "100%",
+      borderColor: "#ebebeb",
+      borderWidth: 1,
+      borderRadius: 7,
+      paddingHorizontal: 10,
+      fontSize: 15 / fontScale,
+      fontFamily: "Inter-Regular",
+      color: "white",
+    },
+    signInButton: {
+      height: 40,
+      width: "100%",
+      marginTop: 10,
+      backgroundColor: "#ebebeb",
+      borderRadius: 7,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    signInButtonText: {
       fontSize: 15 / fontScale,
       textAlign: "center",
       fontFamily: "Inter-Medium",
