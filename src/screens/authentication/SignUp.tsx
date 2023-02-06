@@ -1,22 +1,35 @@
 import {
-  Text,
   useWindowDimensions,
   View,
   TouchableOpacity,
   StatusBar,
   Image,
+  TextInput,
 } from "react-native";
 import { StyleSheet } from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { SignUpStackParamList } from "navigation";
-import { Button, TextInput } from "react-native-paper";
+import { Button, useTheme, Text } from "react-native-paper";
+import { MD3Colors } from "react-native-paper/lib/typescript/types";
+import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import { Dispatch, SetStateAction, useRef } from "react";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUp">;
 
-export const SignUp = ({ navigation }: Props) => {
+export const SignUp = ({
+  navigation,
+  route,
+  setSignedIn,
+}: {
+  navigation: Props["navigation"];
+  route: Props["route"];
+  setSignedIn: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { fontScale } = useWindowDimensions();
-  const styles = makeStyles(fontScale);
+  const { colors } = useTheme();
+  const styles = makeStyles(fontScale, colors);
+  const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
 
   // StatusBar.setBackgroundColor("black", true);
 
@@ -25,23 +38,56 @@ export const SignUp = ({ navigation }: Props) => {
       <Image source={require("assets/images/Logo.png")} style={styles.logo} />
 
       <View style={styles.buttonsView}>
-        <View style={styles.signInView}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.textInput}
-            value={"email"}
-            // onChangeText={()}
-          />
+        <View>
+          <View style={styles.inputView}>
+            <Text variant="labelLarge" style={styles.h2}>
+              Please provide your email and password to sign in
+            </Text>
+            <View style={styles.textInputView}>
+              <MaterialCommunityIcon
+                name={"account-outline"}
+                size={20}
+                color={"#c9c9c9"}
+                style={{ marginHorizontal: 15 }}
+              />
+              <TextInput
+                style={styles.textInput}
+                placeholder={"Full Name"}
+                placeholderTextColor={"#a8a8a8"}
+                selectionColor={colors.primary}
+                onSubmitEditing={() => emailRef.current?.focus()}
+              />
+            </View>
+
+            <View style={styles.textInputView}>
+              <MaterialCommunityIcon
+                name={"email-outline"}
+                size={20}
+                color={"#c9c9c9"}
+                style={{ marginHorizontal: 15 }}
+              />
+              <TextInput
+                style={styles.textInput}
+                placeholder={"Email"}
+                placeholderTextColor={"#a8a8a8"}
+                selectionColor={colors.primary}
+                textContentType="emailAddress"
+                autoCapitalize="none"
+                ref={emailRef}
+              />
+            </View>
+
+            <Button
+              textColor={colors.background}
+              buttonColor={colors.primary}
+              style={styles.getStartedButton}
+              onPress={() => setSignedIn(true)}
+            >
+              Sign In
+            </Button>
+          </View>
         </View>
-        <View style={[styles.signInView, { marginBottom: 20 }]}>
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={styles.textInput}
-            secureTextEntry={true}
-            value={"password"}
-            // onChangeText={setPassword}
-          />
-        </View>
+
         <View style={styles.buttonView}>
           <Image
             source={require("assets/images/signup/Google-Icon.png")}
@@ -73,7 +119,7 @@ export const SignUp = ({ navigation }: Props) => {
   );
 };
 
-const makeStyles = (fontScale: number) =>
+const makeStyles = (fontScale: number, colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
       flex: 1,
@@ -103,42 +149,41 @@ const makeStyles = (fontScale: number) =>
       textAlign: "center",
       fontFamily: "Inter-Medium",
     },
-    signInView: {
-      width: "73%",
-      flexDirection: "column",
-      alignItems: "flex-start",
-      marginBottom: 10,
-    },
-    label: {
-      fontSize: 15 / fontScale,
-      textAlign: "left",
-      fontFamily: "Inter-Medium",
-      marginBottom: 5,
-      color: "white",
-    },
     textInput: {
       height: 40,
       width: "100%",
-      borderColor: "#ebebeb",
-      borderWidth: 1,
       borderRadius: 7,
       paddingHorizontal: 10,
       fontSize: 15 / fontScale,
       fontFamily: "Inter-Regular",
       color: "white",
     },
-    signInButton: {
-      height: 40,
-      width: "100%",
-      marginTop: 10,
-      backgroundColor: "#ebebeb",
-      borderRadius: 7,
-      alignItems: "center",
-      justifyContent: "center",
+    titleText: {
+      marginTop: "5%",
+      color: "white",
     },
-    signInButtonText: {
-      fontSize: 15 / fontScale,
+    inputView: {
+      marginTop: "10%",
+      width: "80%",
+    },
+    h2: {
+      marginBottom: "3%",
+      color: colors.tertiary,
       textAlign: "center",
-      fontFamily: "Inter-Medium",
+    },
+    textInputView: {
+      marginTop: "4%",
+      backgroundColor: colors.secondary,
+      borderRadius: 5,
+      height: 45,
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    getStartedButton: {
+      borderRadius: 6,
+      marginTop: "5%",
+      height: 50,
+      justifyContent: "center",
+      marginBottom: 20,
     },
   });
