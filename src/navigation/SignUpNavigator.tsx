@@ -25,7 +25,9 @@ export const SignUpNavigator = ({
     initialRouteName="SignUp"
     screenOptions={{ headerShown: false }}
   >
-    <Stack.Screen name="SignUp" component={SignUp} />
+    <Stack.Screen name="SignUp">
+      {(props) => <SignUp {...props} setSignedIn={setSignedIn} />}
+    </Stack.Screen>
     <Stack.Screen name="SignUpWithNumber" component={SignUpWithNumber} />
     <Stack.Screen
       name="VerifySignUpWithNumber"

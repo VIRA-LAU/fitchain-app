@@ -52,6 +52,8 @@ const makeStyles = (colors: MD3Colors, height: number) =>
     header: {
       height: 128,
       width: "100%",
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
     },
     content: {
       flexDirection: "row",
