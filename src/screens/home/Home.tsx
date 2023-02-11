@@ -39,11 +39,7 @@ export const Home = ({ navigation, route }: Props) => {
       navigation={navigation}
       route={route}
       right={<IonIcon name="notifications-outline" color="white" size={24} />}
-      left={
-        <View style={styles.dropdownView}>
-          <SportTypeDropdown></SportTypeDropdown>
-        </View>
-      }
+      left={<SportTypeDropdown />}
       showLogo
     >
       <View style={styles.wrapperView}>
@@ -96,11 +92,5 @@ const makeStyles = (colors: MD3Colors) =>
       alignItems: "center",
       marginTop: 30,
       marginBottom: 20,
-    },
-    dropdownView: {
-      height: 20,
-      width: 20,
-      // paddingTop: -10,
-      // paddingLeft: 25,
     },
   });

@@ -1,6 +1,13 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
+import { HomeStackParamList, BottomTabParamList } from "src/navigation";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
 
 export const UpcomingGameCard = ({
   gameType,
@@ -9,8 +16,19 @@ export const UpcomingGameCard = ({
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<HomeStackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
   return (
-    <View style={styles.wrapper}>
+    <Pressable
+      style={styles.wrapper}
+      onPress={() => navigation.push("GameDetails")}
+    >
       <View>
         <Text style={styles.text}>This Monday,</Text>
         <Text style={styles.greyText}>
@@ -28,7 +46,7 @@ export const UpcomingGameCard = ({
         }
         style={styles.gameIcon}
       />
-    </View>
+    </Pressable>
   );
 };
 

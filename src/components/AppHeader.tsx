@@ -11,6 +11,12 @@ import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
+const sportBackground = {
+  basketball: <Image source={require("assets/images/home/basketball.png")} />,
+  football: <Image source={require("assets/images/home/football.png")} />,
+  tennis: <Image source={require("assets/images/home/tennis.png")} />,
+};
+
 export const AppHeader = ({
   children,
   absolutePosition = true,
@@ -21,48 +27,64 @@ export const AppHeader = ({
   title,
   showLogo = false,
   right,
+  middle,
   left,
   backEnabled = false,
+  darkMode = false,
+  backgroundImage,
 }: {
   children: any;
   absolutePosition?: boolean;
-  statusBarColor?: "primary" | "secondary" | "background";
+  statusBarColor?: "primary" | "secondary" | "background" | "transparent";
   autoScroll?: boolean;
   navigation?: any;
   route?: any;
   title?: string;
   showLogo?: boolean;
   right?: any;
+  middle?: any;
   left?: any;
   backEnabled?: boolean;
+  darkMode?: boolean;
+  backgroundImage?: "basketball" | "football" | "tennis";
 }) => {
   const { colors } = useTheme();
   const scrollViewRef: React.MutableRefObject<ScrollView | null> = useRef(null);
 
-  StatusBar.setBackgroundColor(colors[statusBarColor], true);
+  if (statusBarColor === "transparent") {
+    StatusBar.setTranslucent(true);
+    StatusBar.setBarStyle("dark-content");
+    StatusBar.setBackgroundColor("transparent", false);
+  } else StatusBar.setBackgroundColor(colors[statusBarColor], true);
 
-  const styles = makeStyles(colors);
+  const styles = makeStyles(
+    colors,
+    darkMode,
+    statusBarColor === "transparent",
+    StatusBar.currentHeight as number
+  );
 
   return (
     <View style={styles.wrapperView}>
       <View style={absolutePosition ? styles.headerAbsolute : styles.header}>
-        {showLogo && (
-          <View style={styles.logoView}>
-            <Image
-              source={require("assets/images/Logo.png")}
-              style={{ width: "40%" }}
-              resizeMode={"contain"}
-            />
+        {backgroundImage && (
+          <View style={styles.background}>
+            {sportBackground[backgroundImage]}
           </View>
         )}
         {backEnabled ? (
           <Icon
             name="arrow-back"
-            color="white"
+            color={darkMode ? "black" : "white"}
             size={25}
             onPress={() => {
               if (route.name === "SignUpWithNumber")
                 StatusBar.setBackgroundColor("black", true);
+
+              if (route.name === "GameDetails") {
+                StatusBar.setTranslucent(false);
+                StatusBar.setBarStyle("light-content");
+              }
               navigation.goBack();
             }}
           />
@@ -71,7 +93,17 @@ export const AppHeader = ({
         ) : (
           <View />
         )}
-        {title && <Text style={styles.title}>{title}</Text>}
+        <View style={styles.middleView}>
+          {title && <Text style={styles.title}>{title}</Text>}
+          {showLogo && (
+            <Image
+              source={require("assets/images/Logo.png")}
+              style={{ width: "40%" }}
+              resizeMode={"contain"}
+            />
+          )}
+          {middle}
+        </View>
         {right ? right : <View />}
       </View>
       <ScrollView
@@ -88,7 +120,12 @@ export const AppHeader = ({
   );
 };
 
-const makeStyles = (colors: MD3Colors) =>
+const makeStyles = (
+  colors: MD3Colors,
+  darkMode: boolean,
+  transparentSB: boolean,
+  SBHeight: number
+) =>
   StyleSheet.create({
     wrapperView: {
       position: "relative",
@@ -97,7 +134,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     header: {
       position: "relative",
-      minHeight: 65,
+      minHeight: transparentSB ? 65 + SBHeight : 65,
       paddingHorizontal: 20,
       flexDirection: "row",
       justifyContent: "space-between",
@@ -105,6 +142,7 @@ const makeStyles = (colors: MD3Colors) =>
       backgroundColor: colors.secondary,
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
+      paddingTop: transparentSB ? SBHeight : 0,
     },
     headerAbsolute: {
       position: "absolute",
@@ -119,18 +157,24 @@ const makeStyles = (colors: MD3Colors) =>
       zIndex: 1,
       paddingTop: 10,
     },
-    title: {
+    middleView: {
       position: "absolute",
-      color: "white",
       left: 0,
       right: 0,
+      alignItems: "center",
+    },
+    title: {
+      color: darkMode ? "black" : "white",
       textAlign: "center",
       fontSize: 18,
+      fontFamily: "Inter-SemiBold",
+      marginTop: transparentSB ? SBHeight : 0,
     },
-    logoView: {
+    background: {
       position: "absolute",
-      left: 0,
-      right: 0,
+      height: transparentSB ? 65 + SBHeight : 65,
+      overflow: "hidden",
+      justifyContent: "center",
       alignItems: "center",
     },
   });
