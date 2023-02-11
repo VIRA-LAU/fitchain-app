@@ -21,6 +21,7 @@ export const AppHeader = ({
   title,
   showLogo = false,
   right,
+  left,
   backEnabled = false,
 }: {
   children: any;
@@ -32,6 +33,7 @@ export const AppHeader = ({
   title?: string;
   showLogo?: boolean;
   right?: any;
+  left?: any;
   backEnabled?: boolean;
 }) => {
   const { colors } = useTheme();
@@ -64,6 +66,8 @@ export const AppHeader = ({
               navigation.goBack();
             }}
           />
+        ) : left ? (
+          left
         ) : (
           <View />
         )}
@@ -94,7 +98,7 @@ const makeStyles = (colors: MD3Colors) =>
     header: {
       position: "relative",
       minHeight: 65,
-      padding: 20,
+      paddingHorizontal: 20,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
@@ -113,6 +117,7 @@ const makeStyles = (colors: MD3Colors) =>
       justifyContent: "space-between",
       alignItems: "center",
       zIndex: 1,
+      paddingTop: 10,
     },
     title: {
       position: "absolute",

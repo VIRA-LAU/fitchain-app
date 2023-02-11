@@ -70,6 +70,8 @@ const makeStyles = (colors: MD3Colors) =>
     leftImage: {
       width: "16%",
       height: 108,
+      borderTopLeftRadius: 10,
+      borderBottomLeftRadius: 10,
     },
     greyText: {
       color: colors.tertiary,
