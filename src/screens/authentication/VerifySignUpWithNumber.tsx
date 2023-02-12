@@ -50,7 +50,14 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [code, setCode] = useState<(number | null)[]>([null, null, null, null]);
-
+  const verifyCode = () => {
+    if (code.join("").toString().match(route.params.code)) {
+      console.log("Code matches");
+      navigation.push("SignUpWithNumberDetails", {
+        phoneNumber: route.params.phoneNumber,
+      });
+    }
+  };
   const refs: React.MutableRefObject<TextInput | null>[] = [
     useRef(null),
     useRef(null),
@@ -97,7 +104,7 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
             textColor={colors.background}
             buttonColor={colors.primary}
             style={styles.continueButton}
-            onPress={() => navigation.push("SignUpWithNumberDetails")}
+            onPress={() => verifyCode()}
           >
             Continue
           </Button>

@@ -1,12 +1,13 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View, Image, TextInput } from "react-native";
+import { StyleSheet, View, Image, TextInput, Modal } from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Dispatch, SetStateAction, useRef } from "react";
-
+import { useState } from "react";
+import { useCreateUserMutation } from "src/api/mutations";
 type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumberDetails">;
 
 export const SignUpWithNumberDetails = ({
@@ -18,10 +19,61 @@ export const SignUpWithNumberDetails = ({
   route: Props["route"];
   setSignedIn: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const { mutate: useMutation } = useCreateUserMutation();
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+  const [password, setPassword] = useState("");
+  const [passwordValid, setPasswordValid] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [validEntry, setValidEntry] = useState(true);
+  const validateEmail = (email: string) => {
+    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return reg.test(email);
+  };
 
+  const signUp = () => {
+    if (
+      passwordValid &&
+      validateEmail(email) &&
+      firstName.length > 0 &&
+      lastName.length > 0
+    ) {
+      console.log(firstName, lastName, email, password);
+      let data = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
+      };
+      useMutation(data);
+      setSignedIn(true);
+    } else {
+      setValidEntry(false);
+    }
+  };
+  const checkPasswordValidity = (currentPassword: string) => {
+    setPassword(currentPassword);
+    const upperCaseLetters = /[A-Z]/g;
+    const lowerCaseLetters = /[a-z]/g;
+    const numbers = /[0-9]/g;
+
+    if (
+      currentPassword.match(upperCaseLetters) &&
+      currentPassword.match(lowerCaseLetters) &&
+      currentPassword.match(numbers) &&
+      currentPassword.length >= 8
+    ) {
+      setPasswordValid(true);
+    } else {
+      setPasswordValid(false);
+    }
+  };
   const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
+  const lastNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
+  const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
+
   return (
     <AppHeader
       navigation={navigation}
@@ -40,7 +92,7 @@ export const SignUpWithNumberDetails = ({
         </Text>
         <View style={styles.inputView}>
           <Text variant="labelLarge" style={styles.h2}>
-            Please provide your full name and email
+            Please provide the following information
           </Text>
           <View style={styles.textInputView}>
             <MaterialCommunityIcon
@@ -51,10 +103,28 @@ export const SignUpWithNumberDetails = ({
             />
             <TextInput
               style={styles.textInput}
-              placeholder={"Full Name"}
+              placeholder={"First Name"}
+              placeholderTextColor={"#a8a8a8"}
+              selectionColor={colors.primary}
+              onSubmitEditing={() => lastNameRef.current?.focus()}
+              onChangeText={(text) => setFirstName(text)}
+            />
+          </View>
+          <View style={styles.textInputView}>
+            <MaterialCommunityIcon
+              name={"account-outline"}
+              size={20}
+              color={"#c9c9c9"}
+              style={{ marginHorizontal: 15 }}
+            />
+            <TextInput
+              style={styles.textInput}
+              placeholder={"LastName"}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               onSubmitEditing={() => emailRef.current?.focus()}
+              ref={lastNameRef}
+              onChangeText={(text) => setLastName(text)}
             />
           </View>
 
@@ -72,15 +142,49 @@ export const SignUpWithNumberDetails = ({
               selectionColor={colors.primary}
               textContentType="emailAddress"
               autoCapitalize="none"
+              onSubmitEditing={() => passwordRef.current?.focus()}
               ref={emailRef}
+              onChangeText={(text) => setEmail(text)}
             />
           </View>
-
+          <View style={styles.textInputView}>
+            <MaterialCommunityIcon
+              name={"lock"}
+              size={20}
+              color={"#c9c9c9"}
+              style={{ marginHorizontal: 15 }}
+            />
+            <TextInput
+              style={styles.textInput}
+              placeholder={"Password"}
+              placeholderTextColor={"#a8a8a8"}
+              selectionColor={colors.primary}
+              secureTextEntry={true}
+              value={password}
+              ref={passwordRef}
+              onChangeText={(password) => checkPasswordValidity(password)}
+            />
+          </View>
+          {passwordValid || password.length == 0 ? (
+            <View></View>
+          ) : (
+            <Text variant="labelMedium" style={{ color: "red" }}>
+              Make sure your password includes at least an upper case, a lower
+              case, a digit, and 8 characters
+            </Text>
+          )}
+          {validEntry ? (
+            <View></View>
+          ) : (
+            <Text variant="labelMedium" style={{ color: "red" }}>
+              Make Sure your first name, last name, and email are valid!
+            </Text>
+          )}
           <Button
             textColor={colors.background}
             buttonColor={colors.primary}
             style={styles.getStartedButton}
-            onPress={() => setSignedIn(true)}
+            onPress={() => signUp()}
           >
             Get Started
           </Button>
@@ -134,5 +238,6 @@ const makeStyles = (colors: MD3Colors) =>
       marginTop: "10%",
       height: 50,
       justifyContent: "center",
+      borderWidth: 1,
     },
   });
