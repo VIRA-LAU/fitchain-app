@@ -86,6 +86,8 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
       alignSelf: "center",
       height: 50,
       width: "100%",
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
     },
     profilePicture: {
       position: "absolute",
