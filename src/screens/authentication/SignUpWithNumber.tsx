@@ -7,7 +7,6 @@ import { Button, useTheme, Text } from "react-native-paper";
 import PhoneInput from "react-native-phone-number-input";
 import { useState } from "react";
 import { useCreateUserMutation } from "../../api/mutations";
-import SendSMS from "react-native-sms";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumber">;
 export const SignUpWithNumber = ({ navigation, route }: Props) => {
