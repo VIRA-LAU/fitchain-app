@@ -50,8 +50,9 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [code, setCode] = useState<(number | null)[]>([null, null, null, null]);
+  const [correctCode, setCorrectCode] = useState(route.params.code)
   const verifyCode = () => {
-    if (code.join("").toString().match(route.params.code)) {
+    if (code.join("").toString().match(correctCode)) {
       console.log("Code matches");
       navigation.push("SignUpWithNumberDetails", {
         phoneNumber: route.params.phoneNumber,
@@ -64,7 +65,14 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
     useRef(null),
     useRef(null),
   ];
-
+  const generateCode = () => {
+    return Math.floor(1000 + Math.random() * 9000).toString();
+  };
+  const resendCode = () => {
+    let newCode = generateCode();
+    setCorrectCode(newCode);
+    console.log('New Code is: ' + newCode);
+  }
   return (
     <AppHeader
       navigation={navigation}
@@ -99,7 +107,7 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
               );
             })}
           </View>
-          <Button style={styles.resendButton}>Resend Code</Button>
+          <Button onPress={() => resendCode()} style={styles.resendButton}>Resend Code</Button>
           <Button
             textColor={colors.background}
             buttonColor={colors.primary}
