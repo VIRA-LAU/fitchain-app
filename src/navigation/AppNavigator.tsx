@@ -17,27 +17,25 @@ export const AppNavigator = () => {
 
   if (signedIn)
     return (
-      <UserContext.Provider value={{ userId: 1 }}>
-        <Tab.Navigator screenOptions={tabScreenOptions}>
-          <Tab.Screen name="Home" component={Home} />
-          <Tab.Screen name="Games" component={Home} />
-          <Tab.Screen
-            name="Play"
-            component={Home}
-            options={{
-              tabBarIconStyle: {
-                top: -20,
-                backgroundColor: colors.primary,
-                aspectRatio: 1,
-                borderRadius: 40,
-                margin: -10,
-              },
-            }}
-          />
-          <Tab.Screen name="Venues" component={Home} />
-          <Tab.Screen name="Profile" component={Home} />
-        </Tab.Navigator>
-      </UserContext.Provider>
+      <Tab.Navigator screenOptions={tabScreenOptions}>
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Games" component={Home} />
+        <Tab.Screen
+          name="Play"
+          component={Home}
+          options={{
+            tabBarIconStyle: {
+              top: -20,
+              backgroundColor: colors.primary,
+              aspectRatio: 1,
+              borderRadius: 40,
+              margin: -10,
+            },
+          }}
+        />
+        <Tab.Screen name="Venues" component={Home} />
+        <Tab.Screen name="Profile" component={Home} />
+      </Tab.Navigator>
     );
   else return <SignUpNavigator setSignedIn={setSignedIn} />;
 };

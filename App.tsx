@@ -9,6 +9,7 @@ import { StatusBar } from "react-native";
 import { AppNavigator } from "navigation";
 import { useFonts } from "expo-font/build/FontHooks";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { UserContext } from "src/utils";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -47,16 +48,18 @@ export default function App() {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <PaperProvider theme={theme}>
-        <NavigationContainer theme={DarkTheme}>
-          <StatusBar
-            barStyle={"light-content"}
-            backgroundColor={theme.colors.background}
-          />
-          <AppNavigator />
-        </NavigationContainer>
-      </PaperProvider>
-    </QueryClientProvider>
+    <UserContext.Provider value={{ userId: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <PaperProvider theme={theme}>
+          <NavigationContainer theme={DarkTheme}>
+            <StatusBar
+              barStyle={"light-content"}
+              backgroundColor={theme.colors.background}
+            />
+            <AppNavigator />
+          </NavigationContainer>
+        </PaperProvider>
+      </QueryClientProvider>
+    </UserContext.Provider>
   );
 }

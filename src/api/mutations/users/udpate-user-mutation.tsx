@@ -1,21 +1,20 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import client from "../../client";
 import { useContext } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { UserContext } from "src/utils";
+import { UserContext } from "../../../utils/UserContext";
 
-const LoginUser = async (data: any) => {
-  console.log("login");
-  return await client
-    .post("/authentication/login", data)
-    .then((res) => res.data);
+const updateUser = async (data: any) => {
+  return await client.patch(`/users/${data.id}`, data).then((res) => res.data);
 };
 
-export const useLoginUserMutation = () => {
+export const useUpdateUserMutation = () => {
+  const queryClient = useQueryClient();
   const { userId, setAuthentication } = useContext(UserContext);
   return useMutation({
-    mutationFn: LoginUser,
+    mutationFn: updateUser,
     onSuccess: async (data) => {
+      queryClient.refetchQueries(["userDetails", userId]);
       setAuthentication((oldAuth: any) => ({
         ...oldAuth,
         firstName: data.firstName,
