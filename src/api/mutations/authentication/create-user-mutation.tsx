@@ -3,9 +3,10 @@ import { useContext } from "react";
 import { useMutation } from "react-query";
 
 const createUser = async (data: object) => {
-  return await client.post("/authentication/register", data).then((res) => {
+  console.log("eh");
+  return await client.post("/auth/signup", data).then((res) => {
     res.data;
-    console.log("eh");
+    console.log(res.data);
   });
 };
 

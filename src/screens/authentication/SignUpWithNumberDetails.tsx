@@ -44,6 +44,7 @@ export const SignUpWithNumberDetails = ({
       let data = {
         firstName: firstName,
         lastName: lastName,
+        phoneNumber: "03027609",
         email: email,
         password: password,
       };
@@ -119,7 +120,7 @@ export const SignUpWithNumberDetails = ({
             />
             <TextInput
               style={styles.textInput}
-              placeholder={"LastName"}
+              placeholder={"Last Name"}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               onSubmitEditing={() => emailRef.current?.focus()}
