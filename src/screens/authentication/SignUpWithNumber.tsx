@@ -15,12 +15,6 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  // The phone number you want to send the message to
-  let phone: any = "+96170661460";
-
-  // The message you want to send
-  let message: any = "Hello, this is a test message!";
-
   // The options for sending the message (e.g. send the message as a regular SMS or an MMS)
 
   const generateCode = () => {
