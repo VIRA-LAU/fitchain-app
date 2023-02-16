@@ -6,13 +6,11 @@ import { UserContext } from "src/utils";
 
 const LoginUser = async (data: any) => {
   console.log("login");
-  return await client
-    .post("/auth/signin", data)
-    .then((res) => res.data);
+  return await client.post("/auth/signin", data).then((res) => res.data);
 };
 
 export const useLoginUserMutation = () => {
-  const { userId, setAuthentication } = useContext(UserContext);
+  const { userId, setAuthentication } = useContext(UserContext) as any;
   return useMutation({
     mutationFn: LoginUser,
     onSuccess: async (data) => {
@@ -22,7 +20,7 @@ export const useLoginUserMutation = () => {
         lastName: data.lastName,
       }));
       const storedAuthentication = JSON.parse(
-        await AsyncStorage.getItem("authentication")
+        (await AsyncStorage.getItem("authentication")) as string
       );
       await AsyncStorage.setItem(
         "authentication",

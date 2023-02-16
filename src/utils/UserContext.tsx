@@ -1,13 +1,13 @@
 import React from "react";
 
 interface UserContextType {
-  token: string | null;
+  token?: string | null;
   userId: number | null;
-  firstName: string | null;
-  lastName: string | null;
-  setAuthentication: Function;
-  signIn: Function;
-  signOut: Function;
+  firstName?: string | null;
+  lastName?: string | null;
+  setAuthentication?: Function;
+  signIn?: Function;
+  signOut?: Function;
 }
 
 export const UserContext = React.createContext<UserContextType>({

@@ -5,7 +5,6 @@ import {
 import { useState } from "react";
 import { useTheme } from "react-native-paper";
 import { Home } from "screens";
-import { UserContext } from "utils";
 import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 
