@@ -7,7 +7,7 @@ import { UserContext } from "src/utils";
 const LoginUser = async (data: any) => {
   console.log("login");
   return await client
-    .post("/authentication/login", data)
+    .post("/auth/signin", data)
     .then((res) => res.data);
 };
 
