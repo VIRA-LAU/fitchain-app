@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "react-query";
 const LoginUser = async (data: any) => {
   console.log("login");
   return await client
-    .post("/authentication/login", data)
+    .post("/auth/signin", data)
     .then((res) => res.data);
 };
 
