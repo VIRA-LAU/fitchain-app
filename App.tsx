@@ -8,13 +8,14 @@ import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "react-native";
 import { AppNavigator } from "navigation";
 import { useFonts } from "expo-font/build/FontHooks";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Inter-SemiBold": require("assets/fonts/Inter-SemiBold.ttf"),
     "Inter-Medium": require("assets/fonts/Inter-Medium.ttf"),
   });
-
+  const queryClient = new QueryClient();
   if (!fontsLoaded) {
     return null;
   }
@@ -46,14 +47,16 @@ export default function App() {
   };
 
   return (
-    <PaperProvider theme={theme}>
-      <NavigationContainer theme={DarkTheme}>
-        <StatusBar
-          barStyle={"light-content"}
-          backgroundColor={theme.colors.background}
-        />
-        <AppNavigator />
-      </NavigationContainer>
-    </PaperProvider>
+    <QueryClientProvider client={queryClient}>
+      <PaperProvider theme={theme}>
+        <NavigationContainer theme={DarkTheme}>
+          <StatusBar
+            barStyle={"light-content"}
+            backgroundColor={theme.colors.background}
+          />
+          <AppNavigator />
+        </NavigationContainer>
+      </PaperProvider>
+    </QueryClientProvider>
   );
 }
