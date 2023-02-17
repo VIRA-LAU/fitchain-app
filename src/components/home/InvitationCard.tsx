@@ -52,6 +52,7 @@ export const InvitationCard = ({
         <Image
           source={require("assets/images/home/profile-picture.png")}
           style={styles.profilePicture}
+          resizeMode="contain"
         />
         <View style={{ maxWidth: 0.48 * width }}>
           <Text style={styles.greyText}>
@@ -61,7 +62,7 @@ export const InvitationCard = ({
             <Text style={styles.text}>Hoops - Furn el Chebbak</Text>.
           </Text>
         </View>
-        <View style={styles.buttonView}>
+        <View style={styles.buttonsView}>
           <Button
             icon={"account-check-outline"}
             style={{ borderRadius: 5, flex: 1 }}
@@ -108,10 +109,10 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
     },
     profilePicture: {
       position: "absolute",
-      height: "55%",
-      top: "-27.5%",
-      right: "6%",
-      aspectRatio: 1,
+      height: 60,
+      width: 60,
+      top: -30,
+      right: "7%",
       borderRadius: 50,
     },
     text: {
@@ -124,7 +125,7 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
       fontSize: 12,
       fontFamily: "Inter-Medium",
     },
-    buttonView: {
+    buttonsView: {
       flexDirection: "row",
       marginTop: 15,
       paddingRight: 10,

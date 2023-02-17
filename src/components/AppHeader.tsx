@@ -22,7 +22,6 @@ const sportBackground = {
 export const AppHeader = ({
   children,
   absolutePosition = true,
-  statusBarColor = "secondary",
   autoScroll = false,
   navigation,
   route,
@@ -38,7 +37,6 @@ export const AppHeader = ({
 }: {
   children: any;
   absolutePosition?: boolean;
-  statusBarColor?: "primary" | "secondary" | "background" | "transparent";
   autoScroll?: boolean;
   navigation?: any;
   route?: any;
@@ -55,16 +53,12 @@ export const AppHeader = ({
   const { colors } = useTheme();
   const scrollViewRef: React.MutableRefObject<ScrollView | null> = useRef(null);
 
-  if (statusBarColor === "transparent") {
-    StatusBar.setTranslucent(true);
-    StatusBar.setBarStyle("dark-content");
-    StatusBar.setBackgroundColor("transparent", false);
-  } else StatusBar.setBackgroundColor(colors[statusBarColor], true);
+  StatusBar.setTranslucent(true);
+  StatusBar.setBackgroundColor("transparent", false);
 
   const styles = makeStyles(
     colors,
     darkMode,
-    statusBarColor === "transparent",
     StatusBar.currentHeight as number
   );
 
@@ -83,13 +77,6 @@ export const AppHeader = ({
               color={darkMode ? "black" : "white"}
               size={25}
               onPress={() => {
-                if (route.name === "SignUpWithNumber")
-                  StatusBar.setBackgroundColor("black", true);
-
-                if (route.name === "GameDetails") {
-                  StatusBar.setTranslucent(false);
-                  StatusBar.setBarStyle("light-content");
-                }
                 navigation.goBack();
               }}
             />
@@ -137,12 +124,7 @@ export const AppHeader = ({
   );
 };
 
-const makeStyles = (
-  colors: MD3Colors,
-  darkMode: boolean,
-  transparentSB: boolean,
-  SBHeight: number
-) =>
+const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
   StyleSheet.create({
     wrapperView: {
       position: "relative",
@@ -160,15 +142,13 @@ const makeStyles = (
       top: 0,
       left: 0,
       paddingBottom: 20,
-      height: 65,
       width: "100%",
       zIndex: 1,
-      paddingTop: 10,
     },
     headerContent: {
       flexGrow: 1,
-      paddingTop: transparentSB ? SBHeight : 0,
-      minHeight: transparentSB ? 65 + SBHeight : 65,
+      paddingTop: SBHeight,
+      minHeight: 65 + SBHeight,
       paddingHorizontal: 20,
       flexDirection: "row",
       justifyContent: "space-between",
@@ -195,18 +175,20 @@ const makeStyles = (
       position: "absolute",
       left: 0,
       right: 0,
+      height: 65,
+      top: SBHeight,
       alignItems: "center",
+      justifyContent: "center",
     },
     title: {
       color: darkMode ? "black" : "white",
       textAlign: "center",
       fontSize: 18,
       fontFamily: "Inter-SemiBold",
-      marginTop: transparentSB ? SBHeight : 0,
     },
     background: {
       position: "absolute",
-      height: transparentSB ? 65 + SBHeight : 65,
+      height: 65 + SBHeight,
       overflow: "hidden",
       justifyContent: "center",
       alignItems: "center",

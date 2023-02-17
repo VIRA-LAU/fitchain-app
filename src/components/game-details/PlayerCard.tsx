@@ -17,7 +17,7 @@ export const PlayerCard = ({ isActive = false }: { isActive?: boolean }) => {
       ]}
     >
       <Image
-        source={require("assets/images/home/basketball-hub.png")}
+        source={require("assets/images/home/profile-background.png")}
         style={styles.header}
       />
       <View style={{ alignItems: "center", paddingTop: 40 }}>

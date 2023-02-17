@@ -93,7 +93,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
       backgroundImage={"basketball"}
       navigation={navigation}
       route={route}
-      statusBarColor={"transparent"}
       darkMode
     >
       <View style={styles.wrapperView}>
@@ -122,7 +121,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             </Text>
           </View>
 
-          <View style={styles.buttonView}>
+          <View style={styles.buttonsView}>
             <Button
               icon={() => (
                 <IonIcon
@@ -176,7 +175,7 @@ const makeStyles = (colors: MD3Colors) =>
       backgroundColor: colors.secondary,
     },
     greyFont: { marginVertical: 10, color: colors.tertiary },
-    buttonView: {
+    buttonsView: {
       flexDirection: "row",
       marginTop: 15,
       justifyContent: "space-between",

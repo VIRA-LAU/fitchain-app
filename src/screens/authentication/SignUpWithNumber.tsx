@@ -12,13 +12,7 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   return (
-    <AppHeader
-      navigation={navigation}
-      route={route}
-      statusBarColor="background"
-      backEnabled
-      autoScroll
-    >
+    <AppHeader navigation={navigation} route={route} backEnabled autoScroll>
       <View style={styles.wrapperView}>
         <Image
           source={require("assets/images/Logo-Icon.png")}

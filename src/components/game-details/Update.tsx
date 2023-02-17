@@ -43,7 +43,7 @@ export const Update = ({ type }: { type: textOptions }) => {
           )}
         </View>
         {type === "join-request" && (
-          <View style={styles.buttonView}>
+          <View style={styles.buttonsView}>
             <Button
               icon={"account-check-outline"}
               style={{ borderRadius: 5, flex: 1 }}
@@ -94,7 +94,7 @@ const makeStyles = (colors: MD3Colors) =>
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
     },
-    buttonView: {
+    buttonsView: {
       flexDirection: "row",
       marginTop: 15,
       justifyContent: "space-between",

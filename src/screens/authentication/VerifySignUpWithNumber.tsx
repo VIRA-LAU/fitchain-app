@@ -59,13 +59,7 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
   ];
 
   return (
-    <AppHeader
-      navigation={navigation}
-      route={route}
-      statusBarColor="background"
-      backEnabled
-      autoScroll
-    >
+    <AppHeader navigation={navigation} route={route} backEnabled autoScroll>
       <View style={styles.wrapperView}>
         <Image
           source={require("assets/images/Logo-Icon.png")}
@@ -145,7 +139,6 @@ const makeStyles = (colors: MD3Colors) =>
       textAlign: "center",
       fontSize: 24,
       color: "white",
-      selectionColor: "red",
     },
     resendButton: { borderRadius: 6, marginTop: "5%" },
     continueButton: {

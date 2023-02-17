@@ -3,7 +3,7 @@ import { NavigatorScreenParams } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { useState } from "react";
 import { useTheme } from "react-native-paper";
-import { GameDetails, Games, Home, Venues } from "screens";
+import { GameDetails, Games, Home, Profile, Venues } from "screens";
 import { UserContext } from "utils";
 import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
@@ -30,7 +30,7 @@ const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen name="Venues" component={Venues} />
-      <Tab.Screen name="Profile" component={Home} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 };

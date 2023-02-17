@@ -64,7 +64,6 @@ const makeStyles = (
     image: {
       height: isHorizontal ? "100%" : 128,
       width: isHorizontal ? "50%" : "100%",
-      backgroundColor: "red",
       borderTopLeftRadius: 10,
       borderTopRightRadius: isHorizontal ? 0 : 10,
       borderBottomLeftRadius: isHorizontal ? 10 : 0,

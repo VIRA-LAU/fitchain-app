@@ -1,10 +1,4 @@
-import {
-  useWindowDimensions,
-  View,
-  StatusBar,
-  Image,
-  TextInput,
-} from "react-native";
+import { useWindowDimensions, View, Image, TextInput } from "react-native";
 import { StyleSheet } from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
 import type { StackScreenProps } from "@react-navigation/stack";
@@ -30,8 +24,6 @@ export const SignUp = ({
   const { colors } = useTheme();
   const styles = makeStyles(fontScale, colors);
   const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
-
-  StatusBar.setBackgroundColor("black", true);
 
   return (
     <AppHeader autoScroll>
