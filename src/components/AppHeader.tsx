@@ -6,10 +6,12 @@ import {
   ScrollView,
   Text,
   Image,
+  TextInput,
 } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import IonIcon from "react-native-vector-icons/Ionicons";
 
 const sportBackground = {
   basketball: <Image source={require("assets/images/home/basketball.png")} />,
@@ -29,6 +31,7 @@ export const AppHeader = ({
   right,
   middle,
   left,
+  searchBar,
   backEnabled = false,
   darkMode = false,
   backgroundImage,
@@ -44,6 +47,7 @@ export const AppHeader = ({
   right?: any;
   middle?: any;
   left?: any;
+  searchBar?: boolean;
   backEnabled?: boolean;
   darkMode?: boolean;
   backgroundImage?: "basketball" | "football" | "tennis";
@@ -67,44 +71,57 @@ export const AppHeader = ({
   return (
     <View style={styles.wrapperView}>
       <View style={absolutePosition ? styles.headerAbsolute : styles.header}>
-        {backgroundImage && (
-          <View style={styles.background}>
-            {sportBackground[backgroundImage]}
+        <View style={styles.headerContent}>
+          {backgroundImage && (
+            <View style={styles.background}>
+              {sportBackground[backgroundImage]}
+            </View>
+          )}
+          {backEnabled ? (
+            <MaterialIcon
+              name="arrow-back"
+              color={darkMode ? "black" : "white"}
+              size={25}
+              onPress={() => {
+                if (route.name === "SignUpWithNumber")
+                  StatusBar.setBackgroundColor("black", true);
+
+                if (route.name === "GameDetails") {
+                  StatusBar.setTranslucent(false);
+                  StatusBar.setBarStyle("light-content");
+                }
+                navigation.goBack();
+              }}
+            />
+          ) : left ? (
+            left
+          ) : (
+            <View />
+          )}
+          <View style={styles.middleView}>
+            {title && <Text style={styles.title}>{title}</Text>}
+            {showLogo && (
+              <Image
+                source={require("assets/images/Logo.png")}
+                style={{ width: "40%" }}
+                resizeMode={"contain"}
+              />
+            )}
+            {middle}
+          </View>
+          {right ? right : <View />}
+        </View>
+        {searchBar && (
+          <View style={styles.searchBarView}>
+            <TextInput
+              style={styles.searchBar}
+              placeholder="Search..."
+              placeholderTextColor={colors.tertiary}
+              cursorColor={colors.primary}
+            />
+            <IonIcon name="search-outline" color="white" size={20} />
           </View>
         )}
-        {backEnabled ? (
-          <Icon
-            name="arrow-back"
-            color={darkMode ? "black" : "white"}
-            size={25}
-            onPress={() => {
-              if (route.name === "SignUpWithNumber")
-                StatusBar.setBackgroundColor("black", true);
-
-              if (route.name === "GameDetails") {
-                StatusBar.setTranslucent(false);
-                StatusBar.setBarStyle("light-content");
-              }
-              navigation.goBack();
-            }}
-          />
-        ) : left ? (
-          left
-        ) : (
-          <View />
-        )}
-        <View style={styles.middleView}>
-          {title && <Text style={styles.title}>{title}</Text>}
-          {showLogo && (
-            <Image
-              source={require("assets/images/Logo.png")}
-              style={{ width: "40%" }}
-              resizeMode={"contain"}
-            />
-          )}
-          {middle}
-        </View>
-        {right ? right : <View />}
       </View>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
@@ -134,28 +151,45 @@ const makeStyles = (
     },
     header: {
       position: "relative",
-      minHeight: transparentSB ? 65 + SBHeight : 65,
-      paddingHorizontal: 20,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
       backgroundColor: colors.secondary,
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
-      paddingTop: transparentSB ? SBHeight : 0,
     },
     headerAbsolute: {
       position: "absolute",
       top: 0,
       left: 0,
-      padding: 20,
+      paddingBottom: 20,
       height: 65,
       width: "100%",
+      zIndex: 1,
+      paddingTop: 10,
+    },
+    headerContent: {
+      flexGrow: 1,
+      paddingTop: transparentSB ? SBHeight : 0,
+      minHeight: transparentSB ? 65 + SBHeight : 65,
+      paddingHorizontal: 20,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      zIndex: 1,
-      paddingTop: 10,
+    },
+    searchBarView: {
+      borderWidth: 1,
+      height: 40,
+      margin: 20,
+      marginTop: 0,
+      borderColor: colors.tertiary,
+      borderRadius: 20,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingHorizontal: 20,
+    },
+    searchBar: {
+      color: "white",
+      fontFamily: "Inter-Medium",
+      height: 40,
     },
     middleView: {
       position: "absolute",

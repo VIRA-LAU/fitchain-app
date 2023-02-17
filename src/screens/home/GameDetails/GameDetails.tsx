@@ -1,11 +1,6 @@
 import { useState } from "react";
-import { AppHeader, PlayerCard } from "src/components";
-import {
-  View,
-  StyleSheet,
-  useWindowDimensions,
-  ScrollView,
-} from "react-native";
+import { AppHeader } from "src/components";
+import { View, StyleSheet, useWindowDimensions } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -18,24 +13,10 @@ import {
   TabBarProps,
   TabView,
 } from "react-native-tab-view";
+import { Home } from "./Home";
 
 type Props = StackScreenProps<HomeStackParamList, "GameDetails">;
 
-const Home = ({ styles }: { styles: any }) => {
-  return (
-    <View>
-      <ScrollView
-        style={styles.playerCardView}
-        contentContainerStyle={{ alignItems: "center" }}
-        horizontal
-      >
-        <PlayerCard />
-        <PlayerCard isActive />
-        <PlayerCard />
-      </ScrollView>
-    </View>
-  );
-};
 export const GameDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -57,9 +38,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
   }) => {
     switch (route.key) {
       case "Home":
-        return <Home styles={styles} />;
+        return <Home />;
       case "Away":
-        return <Home styles={styles} />;
+        return <Home />;
       default:
         return null;
     }
@@ -72,6 +53,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
         backgroundColor: colors.secondary,
         borderRadius: 10,
         marginHorizontal: 20,
+        marginBottom: 10,
       }}
       renderTabBarItem={({ route }) => {
         let isActive = route.key === props.navigationState.routes[index].key;
@@ -210,9 +192,5 @@ const makeStyles = (colors: MD3Colors) =>
       borderRadius: 10,
       justifyContent: "center",
       alignItems: "center",
-    },
-    playerCardView: {
-      height: 300,
-      flexDirection: "row",
     },
   });

@@ -1,3 +1,5 @@
 export * from "./Home";
 export * from "./Games";
-export * from "./GameDetails";
+export * from "./Venues";
+
+export * from "./GameDetails/GameDetails";

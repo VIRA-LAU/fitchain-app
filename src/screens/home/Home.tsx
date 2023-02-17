@@ -60,8 +60,8 @@ export const Home = ({ navigation, route }: Props) => {
         </ScrollView>
         <SectionTitle title="Venues" styles={styles} />
         <ScrollView style={{ flexDirection: "row" }} horizontal>
-          <VenueCard />
-          <VenueCard />
+          <VenueCard type="vertical" />
+          <VenueCard type="vertical" />
         </ScrollView>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
