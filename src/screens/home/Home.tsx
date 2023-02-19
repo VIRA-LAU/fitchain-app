@@ -16,6 +16,11 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { UserContext } from "src/utils";
 import { useContext } from "react";
+import { useVenuesQuery } from "src/api/queries";
+import { useGamesQuery } from "src/api/queries/games/games-query";
+import { useBookingsQuery } from "src/api/queries/games/bookings-query";
+import { useInvitationsQuery } from "src/api/queries/games/invitations-query";
+import { useActivitiesQuery } from "src/api/queries/games/activities-query";
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
 const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
@@ -34,36 +39,41 @@ export const Home = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const { userId, firstName, lastName } = useContext(UserContext);
-  const games = [
-    { date: new Date("2022-12-10"), location: "hoops", type: "tennis" },
-  ];
-  const invitations = [
-    {
-      date: new Date("2022-12-12T10:10:15"),
-      location: "hoops",
-      type: "basketball",
-      inviter: "Alain H.",
-    },
-  ];
-  const venues = [
-    {
-      location: "hoops - Forn el chebbak",
-      name: "Basketball Hub",
-      rating: "2.6",
-    },
-  ];
-  const bookings = [
-    {
-      type: "basketball",
-      inviter: "Alain H.",
-      location: "Hoops - Furn el chebbak",
-      date: new Date("2022-12-12T10:10:15"),
-      gameDuration: 45,
-    },
-  ];
-  const activities = [
-    { date: new Date("2022-12-12T10:10:15"), type: "basketball" },
-  ];
+  const { data: venues } = useVenuesQuery();
+  const { data: games } = useGamesQuery(1);
+  const { data: bookings } = useBookingsQuery(1);
+  const { data: invitations } = useInvitationsQuery(1);
+  const { data: activities } = useActivitiesQuery(1);
+  // const games = [
+  //   { date: new Date("2022-12-10"), location: "hoops", type: "tennis" },
+  // ];
+  // const invitations = [
+  //   {
+  //     date: new Date("2022-12-12T10:10:15"),
+  //     location: "hoops",
+  //     type: "basketball",
+  //     inviter: "Alain H.",
+  //   },
+  // ];
+  // const venues = [
+  //   {
+  //     location: "hoops - Forn el chebbak",
+  //     name: "Basketball Hub",
+  //     rating: "2.6",
+  //   },
+  // ];
+  // const bookings = [
+  //   {
+  //     type: "basketball",
+  //     inviter: "Alain H.",
+  //     location: "Hoops - Furn el chebbak",
+  //     date: new Date("2022-12-12T10:10:15"),
+  //     gameDuration: 45,
+  //   },
+  // ];
+  // const activities = [
+  //   { date: new Date("2022-12-12T10:10:15"), type: "basketball" },
+  // ];
   return (
     <AppHeader
       absolutePosition={false}
@@ -85,7 +95,7 @@ export const Home = ({ navigation, route }: Props) => {
           Upcoming Games
         </Text>
         <View>
-          {games.map((game) => (
+          {games.map((game: any) => (
             <UpcomingGameCard
               gameType={game.type}
               date={game.date}
@@ -96,17 +106,18 @@ export const Home = ({ navigation, route }: Props) => {
 
         <SectionTitle title="Invitations" styles={styles} />
         <ScrollView style={{ flexDirection: "row" }} horizontal>
-          {invitations.map((invitation) => (
+          {invitations.map((invitation: any) => (
             <InvitationCard
               gameType={invitation.type}
               date={invitation.date}
               location={invitation.location}
+              inviter={invitation.inviter}
             />
           ))}
         </ScrollView>
         <SectionTitle title="Venues" styles={styles} />
         <ScrollView style={{ flexDirection: "row" }} horizontal>
-          {venues.map((venue) => (
+          {venues.map((venue: any) => (
             <VenueCard
               rating={venue.rating}
               name={venue.name}
@@ -116,7 +127,7 @@ export const Home = ({ navigation, route }: Props) => {
         </ScrollView>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
-          {bookings.map((booking) => (
+          {bookings.map((booking: any) => (
             <BookingCard
               inviter={booking.inviter}
               location={booking.location}
@@ -128,7 +139,7 @@ export const Home = ({ navigation, route }: Props) => {
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
-          {activities.map((activity) => (
+          {activities.map((activity: any) => (
             <ActivityCard date={activity.date} gameType={activity.type} />
           ))}
         </View>

@@ -1,9 +1,9 @@
 import { useQuery } from "react-query";
 import client from "../../client";
 
-const getGames = () => async () => {
+const getGames = (userId: number) => async () => {
   return await client
-    .get(`/games`)
+    .get(`/games?userId=${userId}`)
     .then((res) => res.data)
     .catch((e) => {
       console.error("games-query", e);
@@ -11,4 +11,5 @@ const getGames = () => async () => {
     });
 };
 
-export const useGamesQuery = () => useQuery(["games"], getGames());
+export const useGamesQuery = (userId: number) =>
+  useQuery(["games", userId], getGames(userId));
