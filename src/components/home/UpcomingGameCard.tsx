@@ -4,18 +4,32 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 
 export const UpcomingGameCard = ({
   gameType,
+  date,
+  location,
 }: {
-  gameType: "basketball" | "football" | "tennis";
+  gameType: any;
+  date: Date;
+  location: string;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+  const weekday = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
   return (
     <View style={styles.wrapper}>
       <View>
-        <Text style={styles.text}>This Monday,</Text>
+        <Text style={styles.text}>This {weekday[date.getDay()]},</Text>
         <Text style={styles.greyText}>
           {"at "}
-          <Text style={styles.text}>Hoops - Furn el Chebbak.</Text>
+          <Text style={styles.text}>{location}</Text>
         </Text>
       </View>
       <Image

@@ -14,12 +14,12 @@ import { BottomTabParamList } from "src/navigation/tabScreenOptions";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
-
+import { UserContext } from "src/utils";
+import { useContext } from "react";
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
 const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
   const { colors } = useTheme();
-
   return (
     <View style={styles.sectionTitle}>
       <Text variant="labelLarge" style={{ color: colors.tertiary }}>
@@ -33,6 +33,37 @@ const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
 export const Home = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+  const { userId, firstName, lastName } = useContext(UserContext);
+  const games = [
+    { date: new Date("2022-12-10"), location: "hoops", type: "tennis" },
+  ];
+  const invitations = [
+    {
+      date: new Date("2022-12-12T10:10:15"),
+      location: "hoops",
+      type: "basketball",
+      inviter: "Alain H.",
+    },
+  ];
+  const venues = [
+    {
+      location: "hoops - Forn el chebbak",
+      name: "Basketball Hub",
+      rating: "2.6",
+    },
+  ];
+  const bookings = [
+    {
+      type: "basketball",
+      inviter: "Alain H.",
+      location: "Hoops - Furn el chebbak",
+      date: new Date("2022-12-12T10:10:15"),
+      gameDuration: 45,
+    },
+  ];
+  const activities = [
+    { date: new Date("2022-12-12T10:10:15"), type: "basketball" },
+  ];
   return (
     <AppHeader
       absolutePosition={false}
@@ -48,34 +79,58 @@ export const Home = ({ navigation, route }: Props) => {
     >
       <View style={styles.wrapperView}>
         <Text variant="headlineSmall" style={{ color: "white" }}>
-          Hi User,
+          Hi {firstName},
         </Text>
         <Text variant="labelLarge" style={styles.headerSubtext}>
           Upcoming Games
         </Text>
         <View>
-          <UpcomingGameCard gameType="basketball" />
-          <UpcomingGameCard gameType="football" />
+          {games.map((game) => (
+            <UpcomingGameCard
+              gameType={game.type}
+              date={game.date}
+              location={game.location}
+            />
+          ))}
         </View>
+
         <SectionTitle title="Invitations" styles={styles} />
         <ScrollView style={{ flexDirection: "row" }} horizontal>
-          <InvitationCard gameType="basketball" />
-          <InvitationCard gameType="football" />
+          {invitations.map((invitation) => (
+            <InvitationCard
+              gameType={invitation.type}
+              date={invitation.date}
+              location={invitation.location}
+            />
+          ))}
         </ScrollView>
         <SectionTitle title="Venues" styles={styles} />
         <ScrollView style={{ flexDirection: "row" }} horizontal>
-          <VenueCard />
-          <VenueCard />
+          {venues.map((venue) => (
+            <VenueCard
+              rating={venue.rating}
+              name={venue.name}
+              location={venue.location}
+            />
+          ))}
         </ScrollView>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
-          <BookingCard gameType="basketball" />
-          <BookingCard gameType="football" />
+          {bookings.map((booking) => (
+            <BookingCard
+              inviter={booking.inviter}
+              location={booking.location}
+              gameType={booking.type}
+              date={booking.date}
+              gameDuration={booking.gameDuration}
+            />
+          ))}
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
-          <ActivityCard gameType="basketball" />
-          <ActivityCard gameType="football" />
+          {activities.map((activity) => (
+            <ActivityCard date={activity.date} gameType={activity.type} />
+          ))}
         </View>
       </View>
     </AppHeader>

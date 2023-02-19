@@ -9,7 +9,15 @@ import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 
-export const VenueCard = () => {
+export const VenueCard = ({
+  name,
+  location,
+  rating,
+}: {
+  name: string;
+  location: string;
+  rating: string;
+}) => {
   const { colors } = useTheme();
   const { height } = useWindowDimensions();
   const styles = makeStyles(colors, height);
@@ -29,11 +37,11 @@ export const VenueCard = () => {
           style={{ width: 35, aspectRatio: 1 }}
         />
         <View style={styles.textView}>
-          <Text style={styles.title}>Basketball Hub</Text>
+          <Text style={styles.title}>{name}</Text>
           <View style={styles.ratingView}>
             <IonIcon name={"star"} color={colors.primary} />
-            <Text style={styles.rating}>3.6</Text>
-            <Text style={styles.location}> • Beirut, Lebanon</Text>
+            <Text style={styles.rating}>{rating}</Text>
+            <Text style={styles.location}> • {location}</Text>
           </View>
         </View>
       </View>
