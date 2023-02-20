@@ -39,41 +39,70 @@ export const Home = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const { userId, firstName, lastName } = useContext(UserContext);
-  const { data: venues } = useVenuesQuery();
-  const { data: games } = useGamesQuery(1);
-  const { data: bookings } = useBookingsQuery(1);
-  const { data: invitations } = useInvitationsQuery(1);
-  const { data: activities } = useActivitiesQuery(1);
-  // const games = [
-  //   { date: new Date("2022-12-10"), location: "hoops", type: "tennis" },
-  // ];
-  // const invitations = [
-  //   {
-  //     date: new Date("2022-12-12T10:10:15"),
-  //     location: "hoops",
-  //     type: "basketball",
-  //     inviter: "Alain H.",
-  //   },
-  // ];
-  // const venues = [
-  //   {
-  //     location: "hoops - Forn el chebbak",
-  //     name: "Basketball Hub",
-  //     rating: "2.6",
-  //   },
-  // ];
-  // const bookings = [
-  //   {
-  //     type: "basketball",
-  //     inviter: "Alain H.",
-  //     location: "Hoops - Furn el chebbak",
-  //     date: new Date("2022-12-12T10:10:15"),
-  //     gameDuration: 45,
-  //   },
-  // ];
-  // const activities = [
-  //   { date: new Date("2022-12-12T10:10:15"), type: "basketball" },
-  // ];
+  // const { data: venues } = useVenuesQuery();
+  // const { data: games } = useGamesQuery(1);
+  // const { data: bookings } = useBookingsQuery(1);
+  // const { data: invitations } = useInvitationsQuery(1);
+  // const { data: activities } = useActivitiesQuery(1);
+  const games = [
+    { date: new Date("2022-12-10"), location: "hoops", type: "tennis" },
+  ];
+  const invitations = [
+    {
+      friend: {
+        firstName: "Jane",
+        lastName: "Doe",
+      },
+      game: {
+        type: "Basketball",
+        date: new Date("2022-06-15T10:00:00.000Z"),
+        duration: 30,
+        court: {
+          branch: {
+            location: "New York",
+          },
+        },
+      },
+    },
+  ];
+  const venues = [
+    {
+      name: "ABC Sports Center",
+      branches: [
+        {
+          location: "New York",
+          rating: 0,
+        },
+      ],
+    },
+    {
+      name: "XYZ Sports Club",
+      branches: [
+        {
+          location: "Los Angeles",
+          rating: 0,
+        },
+      ],
+    },
+  ];
+  const bookings = [
+    {
+      date: new Date("2019-05-14T11:01:58.135Z"),
+      duration: 30,
+      type: "Basketball",
+      court: {
+        branch: {
+          location: "New York",
+          venue: {
+            name: "ABC Sports Center",
+          },
+        },
+      },
+    },
+  ];
+  const activities = [
+    { date: new Date("2022-12-12T10:10:15"), type: "basketball" },
+  ];
   return (
     <AppHeader
       absolutePosition={false}
@@ -108,10 +137,12 @@ export const Home = ({ navigation, route }: Props) => {
         <ScrollView style={{ flexDirection: "row" }} horizontal>
           {invitations.map((invitation: any) => (
             <InvitationCard
-              gameType={invitation.type}
-              date={invitation.date}
-              location={invitation.location}
-              inviter={invitation.inviter}
+              gameType={invitation.game.type.toLowerCase()}
+              date={invitation.game.date}
+              location={invitation.game.court.branch.location}
+              inviter={
+                invitation.friend.firstName + " " + invitation.friend.lastName
+              }
             />
           ))}
         </ScrollView>
@@ -130,10 +161,10 @@ export const Home = ({ navigation, route }: Props) => {
           {bookings.map((booking: any) => (
             <BookingCard
               inviter={booking.inviter}
-              location={booking.location}
-              gameType={booking.type}
+              location={booking.court.branch.location}
+              gameType={booking.type.toLowerCase()}
               date={booking.date}
-              gameDuration={booking.gameDuration}
+              gameDuration={booking.duration}
             />
           ))}
         </View>

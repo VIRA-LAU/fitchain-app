@@ -19,7 +19,6 @@ export const BookingCard = ({
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-
   const gameDurationHours = gameDuration / 60;
   const endTime = new Date(date.getTime() + gameDurationHours * 60 * 60 * 1000);
   const dateFormatter = new Intl.DateTimeFormat("en", {
@@ -39,7 +38,6 @@ export const BookingCard = ({
   const startTimeString = startTimeFormatter.format(date);
   const endTimeString = endTimeFormatter.format(endTime);
   const dateAndTime = `${dateString} - ${startTimeString} till ${endTimeString}`;
-
   return (
     <View style={styles.wrapper}>
       <Image
