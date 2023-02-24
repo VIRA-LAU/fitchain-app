@@ -1,8 +1,15 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 
 export const BookingCard = ({
   gameType,
@@ -38,18 +45,31 @@ export const BookingCard = ({
   const startTimeString = startTimeFormatter.format(date);
   const endTimeString = endTimeFormatter.format(endTime);
   const dateAndTime = `${dateString} - ${startTimeString} till ${endTimeString}`;
+
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<HomeStackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
   return (
-    <View style={styles.wrapper}>
-      <Image
-        source={
-          gameType === "basketball"
-            ? require("assets/images/home/basketball.png")
-            : gameType === "football"
-            ? require("assets/images/home/football.png")
-            : require("assets/images/home/tennis.png")
-        }
-        style={styles.leftImage}
-      />
+    <Pressable
+      style={styles.wrapper}
+      onPress={() => navigation.push("GameDetails")}
+    >
+      <View style={styles.leftImageView}>
+        <Image
+          source={
+            gameType === "basketball"
+              ? require("assets/images/home/basketball.png")
+              : gameType === "football"
+              ? require("assets/images/home/football.png")
+              : require("assets/images/home/tennis.png")
+          }
+          style={styles.leftImage}
+        />
+      </View>
       <View style={styles.content}>
         <Text style={[styles.greyText, { fontSize: 14 }]}>
           <Text style={styles.text}>
@@ -77,7 +97,7 @@ export const BookingCard = ({
           <Text style={styles.greyText}>{dateAndTime}</Text>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 
@@ -87,7 +107,7 @@ const makeStyles = (colors: MD3Colors) =>
       flexDirection: "row",
       justifyContent: "flex-end",
       borderRadius: 10,
-      marginBottom: 20,
+      marginBottom: 10,
     },
     content: {
       padding: 15,
@@ -97,11 +117,17 @@ const makeStyles = (colors: MD3Colors) =>
       borderBottomRightRadius: 10,
       justifyContent: "center",
     },
-    leftImage: {
-      width: "16%",
+    leftImageView: {
+      width: 55,
       height: 108,
       borderTopLeftRadius: 10,
       borderBottomLeftRadius: 10,
+      overflow: "hidden",
+      justifyContent: "center",
+    },
+    leftImage: {
+      height: "120%",
+      width: "140%",
     },
     greyText: {
       color: colors.tertiary,

@@ -1,37 +1,38 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  useWindowDimensions,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 
+type styleOptions = "vertical" | "horizontal" | "focused";
+
 export const VenueCard = ({
+  type,
+  promoted = true,
   name,
   location,
   rating,
 }: {
+  type: styleOptions;
+  promoted?: boolean;
   name: string;
   location: string;
   rating: string;
 }) => {
   const { colors } = useTheme();
-  const { height } = useWindowDimensions();
-  const styles = makeStyles(colors, height);
+  const styles = makeStyles(colors, type === "horizontal", type === "focused");
 
   return (
     <View style={styles.wrapper}>
       <Image
         source={require("assets/images/home/basketball-hub.png")}
-        style={styles.header}
+        style={styles.image}
       />
       <View style={styles.content}>
-        <View style={styles.promotedView}>
-          <Text style={styles.promoted}>Promoted</Text>
-        </View>
+        {promoted && (
+          <View style={styles.promotedView}>
+            <Text style={styles.promoted}>Promoted</Text>
+          </View>
+        )}
         <Image
           source={require("assets/images/home/basketball-hub-icon.png")}
           style={{ width: 35, aspectRatio: 1 }}
@@ -39,9 +40,13 @@ export const VenueCard = ({
         <View style={styles.textView}>
           <Text style={styles.title}>{name}</Text>
           <View style={styles.ratingView}>
-            <IonIcon name={"star"} color={colors.primary} />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <IonIcon name={"star"} color={colors.primary} />
             <Text style={styles.rating}>{rating}</Text>
-            <Text style={styles.location}> • {location}</Text>
+            </View>
+            <Text style={styles.location}>
+              {type !== "horizontal" && " • "}{location}
+            </Text>
           </View>
         </View>
       </View>
@@ -49,58 +54,70 @@ export const VenueCard = ({
   );
 };
 
-const makeStyles = (colors: MD3Colors, height: number) =>
+const makeStyles = (
+  colors: MD3Colors,
+  isHorizontal: boolean,
+  isFocused: boolean
+) =>
   StyleSheet.create({
     wrapper: {
-      backgroundColor: colors.primary,
+      flexDirection: isHorizontal ? "row" : "column",
       justifyContent: "flex-end",
-      marginRight: 10,
+      marginRight: isHorizontal || isFocused ? 0 : 10,
+      marginBottom: isHorizontal || isFocused ? 20 : 0,
       borderRadius: 10,
     },
-    header: {
-      height: 128,
-      width: "100%",
+    image: {
+      height: isHorizontal ? "100%" : 128,
+      width: isHorizontal ? "50%" : "100%",
       borderTopLeftRadius: 10,
-      borderTopRightRadius: 10,
+      borderTopRightRadius: isHorizontal ? 0 : 10,
+      borderBottomLeftRadius: isHorizontal ? 10 : 0,
     },
     content: {
-      flexDirection: "row",
+      flex: 1,
+      flexDirection: isHorizontal ? "column" : "row",
       backgroundColor: colors.secondary,
       padding: 15,
-      borderBottomLeftRadius: 10,
+      borderBottomLeftRadius: isHorizontal ? 0 : 10,
       borderBottomRightRadius: 10,
+      borderTopRightRadius: isHorizontal ? 10 : 0,
     },
     promotedView: {
       position: "absolute",
-      top: -26,
-      right: 5,
+      top: isFocused ? 10 : -26,
+      right: isFocused ? 10 : 5,
       backgroundColor: colors.secondary,
       paddingVertical: 3,
       paddingHorizontal: 10,
       borderRadius: 20,
       opacity: 0.9,
+      borderWidth: isFocused ? 1 : 0,
+      borderColor: colors.primary,
     },
     promoted: {
-      color: colors.tertiary,
-      fontSize: 10,
+      color: isFocused ? colors.primary : colors.tertiary,
+      fontSize: isFocused ? 12 : 10,
       fontFamily: "Inter-SemiBold",
     },
     textView: {
-      paddingHorizontal: 10,
+      paddingHorizontal: isHorizontal ? 0 : 10,
+      paddingTop: isHorizontal ? 10 : 0,
     },
     title: {
       color: "white",
       fontFamily: "Inter-SemiBold",
     },
     ratingView: {
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: isHorizontal ? "column" : "row",
+      alignItems: isHorizontal ? "flex-start" : "center",
     },
     rating: {
       color: "white",
       fontFamily: "Inter-Medium",
       fontSize: 12,
       marginLeft: 5,
+      paddingVertical: isHorizontal ? 5 : 0,
     },
     location: {
       color: colors.tertiary,
