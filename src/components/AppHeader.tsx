@@ -53,9 +53,6 @@ export const AppHeader = ({
   const { colors } = useTheme();
   const scrollViewRef: React.MutableRefObject<ScrollView | null> = useRef(null);
 
-  StatusBar.setTranslucent(true);
-  StatusBar.setBackgroundColor("transparent", false);
-
   const styles = makeStyles(
     colors,
     darkMode,
