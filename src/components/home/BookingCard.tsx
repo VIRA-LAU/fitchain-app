@@ -10,6 +10,8 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import "intl";
+import "intl/locale-data/jsonp/en";
 
 export const BookingCard = ({
   gameType,

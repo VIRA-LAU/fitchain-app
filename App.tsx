@@ -8,17 +8,12 @@ import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "react-native";
 import { AppNavigator } from "navigation";
 import { useFonts } from "expo-font/build/FontHooks";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { en, registerTranslation } from "react-native-paper-dates";
 
-export default function App() {
-  const [fontsLoaded] = useFonts({
-    "Inter-SemiBold": require("assets/fonts/Inter-SemiBold.ttf"),
-    "Inter-Medium": require("assets/fonts/Inter-Medium.ttf"),
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
+registerTranslation("en", en);
+// Define a separate component for the App content
+function AppContent() {
   const fontConfig = {
     headlineSmall: {
       fontFamily: "Inter-SemiBold",
@@ -50,10 +45,28 @@ export default function App() {
       <NavigationContainer theme={DarkTheme}>
         <StatusBar
           barStyle={"light-content"}
-          backgroundColor={theme.colors.background}
+          backgroundColor={"transparent"}
+          translucent
         />
         <AppNavigator />
       </NavigationContainer>
     </PaperProvider>
+  );
+}
+
+export default function App() {
+  const [fontsLoaded] = useFonts({
+    "Inter-SemiBold": require("assets/fonts/Inter-SemiBold.ttf"),
+    "Inter-Medium": require("assets/fonts/Inter-Medium.ttf"),
+  });
+  const queryClient = new QueryClient();
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppContent />
+    </QueryClientProvider>
   );
 }
