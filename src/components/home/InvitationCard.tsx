@@ -1,13 +1,21 @@
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import {
   StyleSheet,
   Text,
   useWindowDimensions,
   View,
   Image,
+  Pressable,
 } from "react-native";
 import { useTheme, Button } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import EntypoIcon from "react-native-vector-icons/Entypo";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 
 export const InvitationCard = ({
   gameType,
@@ -41,8 +49,19 @@ export const InvitationCard = ({
     ":" +
     minutes.toString().padStart(2, "0") +
     amPm;
+
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<HomeStackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
   return (
-    <View style={styles.wrapper}>
+    <Pressable
+      style={styles.wrapper}
+      onPress={() => navigation.push("GameDetails")}
+    >
       <Image
         source={
           gameType === "basketball"
@@ -57,6 +76,7 @@ export const InvitationCard = ({
         <Image
           source={require("assets/images/home/profile-picture.png")}
           style={styles.profilePicture}
+          resizeMode="contain"
         />
         <View style={{ maxWidth: 0.48 * width }}>
           <Text style={styles.greyText}>
@@ -72,7 +92,7 @@ export const InvitationCard = ({
             , at <Text style={styles.text}>{location}</Text>.
           </Text>
         </View>
-        <View style={styles.buttonView}>
+        <View style={styles.buttonsView}>
           <Button
             icon={"account-check-outline"}
             style={{ borderRadius: 5, flex: 1 }}
@@ -90,11 +110,9 @@ export const InvitationCard = ({
             Decline
           </Button>
           <EntypoIcon name="dots-three-horizontal" color="white" size={18} />
-          <View></View>
-          <View></View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 
@@ -121,10 +139,10 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
     },
     profilePicture: {
       position: "absolute",
-      height: "55%",
-      top: "-27.5%",
-      right: "6%",
-      aspectRatio: 1,
+      height: 60,
+      width: 60,
+      top: -30,
+      right: "7%",
       borderRadius: 50,
     },
     text: {
@@ -137,7 +155,7 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
       fontSize: 12,
       fontFamily: "Inter-Medium",
     },
-    buttonView: {
+    buttonsView: {
       flexDirection: "row",
       marginTop: 15,
       paddingRight: 10,

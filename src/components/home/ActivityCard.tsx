@@ -1,7 +1,14 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 
 export const ActivityCard = ({
   gameType,
@@ -22,8 +29,18 @@ export const ActivityCard = ({
     "Saturday",
   ];
 
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<HomeStackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
   return (
-    <View style={styles.wrapper}>
+    <Pressable
+      style={styles.wrapper}
+      onPress={() => navigation.push("GameDetails")}
+    >
       <Image
         source={
           gameType === "basketball"
@@ -50,7 +67,7 @@ export const ActivityCard = ({
         size={20}
         style={{ marginLeft: "auto" }}
       />
-    </View>
+    </Pressable>
   );
 };
 
@@ -61,7 +78,7 @@ const makeStyles = (colors: MD3Colors) =>
       borderRadius: 10,
       backgroundColor: colors.secondary,
       padding: 15,
-      marginBottom: 20,
+      marginBottom: 10,
       paddingBottom: 20,
     },
     gameIcon: {

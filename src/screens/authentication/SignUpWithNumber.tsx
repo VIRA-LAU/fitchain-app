@@ -41,13 +41,7 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
     });
   };
   return (
-    <AppHeader
-      navigation={navigation}
-      route={route}
-      statusBarColor="background"
-      backEnabled
-      autoScroll
-    >
+    <AppHeader navigation={navigation} route={route} backEnabled autoScroll>
       <View style={styles.wrapperView}>
         <Image
           source={require("assets/images/Logo-Icon.png")}
