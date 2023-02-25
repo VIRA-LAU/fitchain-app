@@ -1,9 +1,15 @@
 import { useQuery } from "react-query";
-import client from "../../client";
+import { UserContext, UserData } from "src/utils";
+import client, { getHeader } from "../../client";
+import React from "react";
+import { useContext } from "react";
 
-const getBookings = (userId: number) => async () => {
+const getBookings = (userData: UserData) => async () => {
+  // const { userData, setUserData } = useContext(UserContext) as any;
+  let head = getHeader(userData);
+
   return await client
-    .get(`/games/bookings?userId=${userId}`)
+    .get(`/games/bookings`, head)
     .then((res) => res.data)
     .catch((e) => {
       console.error("bookings-query", e);
@@ -11,5 +17,5 @@ const getBookings = (userId: number) => async () => {
     });
 };
 
-export const useBookingsQuery = (userId: number) =>
-  useQuery(["bookings", userId], getBookings(userId));
+export const useBookingsQuery = (userData: UserData) =>
+  useQuery(["bookings", userData.userId], getBookings(userData));

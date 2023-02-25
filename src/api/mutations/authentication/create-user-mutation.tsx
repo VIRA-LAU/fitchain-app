@@ -5,10 +5,16 @@ import { UserContext } from "src/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const createUser = async (data: object) => {
-  return await client.post("/auth/signup", data).then((res) => {
-    res.data;
-    console.log(res.data);
-  });
+  return await client
+    .post("/auth/signup", data)
+    .then((res) => {
+      console.log(res.data);
+      return res.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
 };
 
 export const useCreateUserMutation = () => {
@@ -18,11 +24,11 @@ export const useCreateUserMutation = () => {
     mutationFn: createUser,
     onSuccess: async (data: any) => {
       console.log("creating user");
-      setAuthentication((oldAuth: any) => ({
-        ...oldAuth,
-        firstName: data.firstName,
-        lastName: data.lastName,
-      }));
+      // setAuthentication((oldAuth: any) => ({
+      //   ...oldAuth,
+      //   firstName: data.firstName,
+      //   lastName: data.lastName,
+      // }));
       const storedAuthentication = JSON.parse(
         (await AsyncStorage.getItem("authentication")) as string
       );

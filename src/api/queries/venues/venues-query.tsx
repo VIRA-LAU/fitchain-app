@@ -1,14 +1,17 @@
 import { useQuery } from "react-query";
-import client from "../../client";
+import { UserData } from "src/utils";
+import client, { getHeader } from "../../client";
 
-const getVenues = () => async () => {
+const getVenues = () => async (userData: UserData) => {
+  const header = getHeader(userData);
   return await client
-    .get(`/`)
+    .get(`/venues`, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("get-venues-query", e);
       throw new Error(e);
     });
 };
-
-export const useVenuesQuery = () => useQuery(["Venues"], getVenues());
+export default getVenues;
+export const useVenuesQuery = (userData: UserData) =>
+  useQuery(["Venues"], getVenues(userData));

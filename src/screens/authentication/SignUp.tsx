@@ -56,7 +56,7 @@ export const SignUp = ({
       LoginUser(data);
     }
   };
-  StatusBar.setBackgroundColor("black", true);
+  // StatusBar.setBackgroundColor("black", true);
 
   return (
     <AppHeader autoScroll>

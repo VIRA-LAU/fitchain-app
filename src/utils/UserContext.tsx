@@ -1,21 +1,18 @@
 import React from "react";
 
-interface UserContextType {
-  token?: string | null;
-  userId: number | null;
-  firstName?: string | null;
-  lastName?: string | null;
-  setAuthentication?: Function;
-  signIn?: Function;
-  signOut?: Function;
-}
+export type UserData = {
+  userId: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  token: string;
+};
+export type ContextProps = {
+  readonly userData: UserData | null;
+  readonly setUserData: React.Dispatch<React.SetStateAction<UserData | null>>;
+};
 
-export const UserContext = React.createContext<UserContextType>({
-  token: null,
-  userId: null,
-  firstName: null,
-  lastName: null,
-  setAuthentication: () => {},
-  signIn: () => {},
-  signOut: () => {},
+export const UserContext = React.createContext<ContextProps>({
+  userData: null,
+  setUserData: () => {},
 });

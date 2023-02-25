@@ -9,17 +9,17 @@ import { StatusBar } from "react-native";
 import { AppNavigator } from "navigation";
 import { useFonts } from "expo-font/build/FontHooks";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { UserContext } from "src/utils";
+import { UserContext, UserData } from "src/utils";
+import { useState } from "react";
 
-export default function App() {
-  const [fontsLoaded] = useFonts({
-    "Inter-SemiBold": require("assets/fonts/Inter-SemiBold.ttf"),
-    "Inter-Medium": require("assets/fonts/Inter-Medium.ttf"),
-  });
-  const queryClient = new QueryClient();
-  if (!fontsLoaded) {
-    return null;
-  }
+// Define a separate component for the App content
+function AppContent() {
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  const value = {
+    userData,
+    setUserData,
+  };
 
   const fontConfig = {
     headlineSmall: {
@@ -35,7 +35,6 @@ export default function App() {
       fontFamily: "Inter-SemiBold",
     },
   };
-
   const theme = {
     ...DefaultTheme,
     colors: {
@@ -46,20 +45,34 @@ export default function App() {
     },
     fonts: configureFonts({ config: fontConfig }),
   };
+  return (
+    <UserContext.Provider value={value}>
+      <PaperProvider theme={theme}>
+        <NavigationContainer theme={DarkTheme}>
+          <StatusBar
+            barStyle={"light-content"}
+            backgroundColor={theme.colors.background}
+          />
+          <AppNavigator />
+        </NavigationContainer>
+      </PaperProvider>
+    </UserContext.Provider>
+  );
+}
+
+export default function App() {
+  const [fontsLoaded] = useFonts({
+    "Inter-SemiBold": require("assets/fonts/Inter-SemiBold.ttf"),
+    "Inter-Medium": require("assets/fonts/Inter-Medium.ttf"),
+  });
+  const queryClient = new QueryClient();
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
-    <UserContext.Provider value={{ userId: 1 }}>
-      <QueryClientProvider client={queryClient}>
-        <PaperProvider theme={theme}>
-          <NavigationContainer theme={DarkTheme}>
-            <StatusBar
-              barStyle={"light-content"}
-              backgroundColor={theme.colors.background}
-            />
-            <AppNavigator />
-          </NavigationContainer>
-        </PaperProvider>
-      </QueryClientProvider>
-    </UserContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <AppContent />
+    </QueryClientProvider>
   );
 }

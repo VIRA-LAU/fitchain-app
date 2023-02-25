@@ -39,7 +39,7 @@ export const AppHeader = ({
   const { colors } = useTheme();
   const scrollViewRef: React.MutableRefObject<ScrollView | null> = useRef(null);
 
-  StatusBar.setBackgroundColor(colors[statusBarColor], true);
+  // StatusBar.setBackgroundColor(colors[statusBarColor], true);
 
   const styles = makeStyles(colors);
 
@@ -62,8 +62,8 @@ export const AppHeader = ({
             size={25}
             onPress={() => {
               if (route.name === "SignUpWithNumber")
-                StatusBar.setBackgroundColor("black", true);
-              navigation.goBack();
+                // StatusBar.setBackgroundColor("black", true);
+                navigation.goBack();
             }}
           />
         ) : left ? (

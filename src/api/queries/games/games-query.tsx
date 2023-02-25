@@ -1,7 +1,8 @@
 import { useQuery } from "react-query";
-import client from "../../client";
+import { useAxios } from "../../client";
 
 const getGames = (userId: number) => async () => {
+  const client = useAxios();
   return await client
     .get(`/games?userId=${userId}`)
     .then((res) => res.data)
