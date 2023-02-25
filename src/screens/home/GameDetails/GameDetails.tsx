@@ -183,7 +183,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     contentView: {
       flex: 1,
-      paddingVertical: 10,
+      paddingTop: 10,
     },
     tabViewItem: {
       height: 40,

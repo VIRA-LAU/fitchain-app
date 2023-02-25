@@ -1,13 +1,33 @@
-import { Image, StyleSheet, View } from "react-native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { Image, StyleSheet, View, Pressable } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import OctIcon from "react-native-vector-icons/Octicons";
+import { BottomTabParamList, HomeStackParamList } from "navigation";
 
 export const Location = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<HomeStackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
   return (
-    <View style={styles.wrapperView}>
+    <Pressable
+      style={styles.wrapperView}
+      onPress={() => {
+        navigation.push("VenueBookingDetails");
+      }}
+    >
       <Image
         style={styles.background}
         source={require("assets/images/home/hoops-location.png")}
@@ -39,7 +59,7 @@ export const Location = () => {
       <View style={styles.icon}>
         <OctIcon name="location" color="white" size={24} />
       </View>
-    </View>
+    </Pressable>
   );
 };
 

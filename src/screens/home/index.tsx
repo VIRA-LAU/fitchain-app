@@ -5,3 +5,4 @@ export * from "./Profile";
 export * from "./Play";
 
 export * from "./GameDetails/GameDetails";
+export * from "./GameDetails/VenueBookingDetails";

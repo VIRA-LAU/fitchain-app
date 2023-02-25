@@ -2,7 +2,15 @@ import React, { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { GameDetails, Games, Home, Play, Profile, Venues } from "screens";
+import {
+  GameDetails,
+  Games,
+  Home,
+  Play,
+  Profile,
+  VenueBookingDetails,
+  Venues,
+} from "screens";
 import { StyleSheet, useWindowDimensions, View, Pressable } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { SignUpNavigator } from "./SignUpNavigator";
@@ -65,6 +73,7 @@ const BottomTabNavigator = () => {
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
   GameDetails: undefined;
+  VenueBookingDetails: undefined;
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();
@@ -76,6 +85,10 @@ export const AppNavigator = () => {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="BottomBar" component={BottomTabNavigator} />
+        <Stack.Screen
+          name="VenueBookingDetails"
+          component={VenueBookingDetails}
+        />
         <Stack.Screen name="GameDetails" component={GameDetails} />
       </Stack.Navigator>
     );

@@ -29,7 +29,7 @@ export const VenueCard = ({
         )}
         <Image
           source={require("assets/images/home/basketball-hub-icon.png")}
-          style={{ width: 35, aspectRatio: 1 }}
+          style={{ width: 35, height: 35, aspectRatio: 1 }}
         />
         <View style={styles.textView}>
           <Text style={styles.title}>Basketball Hub</Text>
@@ -57,7 +57,7 @@ const makeStyles = (
     wrapper: {
       flexDirection: isHorizontal ? "row" : "column",
       justifyContent: "flex-end",
-      marginRight: isHorizontal || isFocused ? 0 : 10,
+      marginHorizontal: isHorizontal || isFocused ? 0 : 5,
       marginBottom: isHorizontal || isFocused ? 20 : 0,
       borderRadius: 10,
     },

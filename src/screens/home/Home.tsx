@@ -54,12 +54,18 @@ export const Home = ({ navigation, route }: Props) => {
           <UpcomingGameCard gameType="football" />
         </View>
         <SectionTitle title="Invitations" styles={styles} />
-        <ScrollView style={{ flexDirection: "row" }} horizontal>
+        <ScrollView
+          style={{ flexDirection: "row", marginHorizontal: -20 }}
+          horizontal
+        >
           <InvitationCard gameType="basketball" />
           <InvitationCard gameType="football" />
         </ScrollView>
         <SectionTitle title="Venues" styles={styles} />
-        <ScrollView style={{ flexDirection: "row" }} horizontal>
+        <ScrollView
+          style={{ flexDirection: "row", marginHorizontal: -20 }}
+          horizontal
+        >
           <VenueCard type="vertical" />
           <VenueCard type="vertical" />
         </ScrollView>
