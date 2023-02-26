@@ -1,10 +1,11 @@
 import { useQuery } from "react-query";
-import { useAxios } from "../../client";
+import { UserData } from "src/utils";
+import client, { getHeader } from "../../client";
 
-const getGames = (userId: number) => async () => {
-  const client = useAxios();
+const getGames = (userData: UserData) => async () => {
+  const header = getHeader(userData);
   return await client
-    .get(`/games?userId=${userId}`)
+    .get(`/games/upcoming?userId=${userData.userId}`, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("games-query", e);
@@ -12,5 +13,5 @@ const getGames = (userId: number) => async () => {
     });
 };
 
-export const useGamesQuery = (userId: number) =>
-  useQuery(["games", userId], getGames(userId));
+export const useGamesQuery = (userData: UserData) =>
+  useQuery(["games", userData.userId], getGames(userData));

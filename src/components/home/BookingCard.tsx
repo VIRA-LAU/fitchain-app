@@ -27,6 +27,7 @@ export const BookingCard = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const gameDurationHours = gameDuration / 60;
+  date = new Date(date);
   const endTime = new Date(date.getTime() + gameDurationHours * 60 * 60 * 1000);
   const dateFormatter = new Intl.DateTimeFormat("en", {
     weekday: "short",

@@ -40,6 +40,7 @@ export const InvitationCard = ({
     "Friday",
     "Saturday",
   ];
+  date = new Date(date);
   const day = weekday[date.getDay()];
   const hours = date.getHours();
   const minutes = date.getMinutes();

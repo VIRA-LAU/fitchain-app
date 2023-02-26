@@ -18,10 +18,10 @@ export const useLoginUserMutation = () => {
     onSuccess: async (data) => {
       console.log(data);
       let fetchedInfo = {
-        userId: 1,
-        firstName: "Hadi",
-        lastName: "Younes",
-        email: "hadi@lau.edu",
+        userId: data.userId,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
         token: data.access_token,
       };
       setUserData(fetchedInfo);

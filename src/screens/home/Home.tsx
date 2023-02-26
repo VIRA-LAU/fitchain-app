@@ -16,7 +16,7 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { UserContext, UserData } from "src/utils";
 import { useContext } from "react";
-import { useVenuesQuery } from "src/api/queries";
+import { useBranchesQuery, useVenuesQuery } from "src/api/queries";
 import { useGamesQuery } from "src/api/queries/games/games-query";
 import { useBookingsQuery } from "src/api/queries/games/bookings-query";
 import { useInvitationsQuery } from "src/api/queries/games/invitations-query";
@@ -41,68 +41,11 @@ export const Home = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const { userData }: any = useContext(UserContext);
 
-  const { data: venues } = useVenuesQuery(userData);
-  // const { data: games } = useGamesQuery(1);
+  const { data: branchesVenues } = useBranchesQuery(userData);
+  const { data: games } = useGamesQuery(userData);
   const { data: bookings } = useBookingsQuery(userData);
-  const { data: invitations } = useInvitationsQuery(1);
-
+  const { data: invitations } = useInvitationsQuery(userData);
   // const { data: activities } = useActivitiesQuery(1);
-  const games = [
-    { date: new Date("2022-12-10"), location: "hoops", type: "tennis" },
-  ];
-  // const invitations = [
-  //   {
-  //     friend: {
-  //       firstName: "Jane",
-  //       lastName: "Doe",
-  //     },
-  //     game: {
-  //       type: "Basketball",
-  //       date: new Date("2022-06-15T10:00:00.000Z"),
-  //       duration: 30,
-  //       court: {
-  //         branch: {
-  //           location: "New York",
-  //         },
-  //       },
-  //     },
-  //   },
-  // ];
-  // const venues = [
-  //   {
-  //     name: "ABC Sports Center",
-  //     branches: [
-  //       {
-  //         location: "New York",
-  //         rating: 0,
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     name: "XYZ Sports Club",
-  //     branches: [
-  //       {
-  //         location: "Los Angeles",
-  //         rating: 0,
-  //       },
-  //     ],
-  //   },
-  // ];
-  // const bookings = [
-  //   {
-  //     date: new Date("2019-05-14T11:01:58.135Z"),
-  //     duration: 30,
-  //     type: "Basketball",
-  //     court: {
-  //       branch: {
-  //         location: "New York",
-  //         venue: {
-  //           name: "ABC Sports Center",
-  //         },
-  //       },
-  //     },
-  //   },
-  // ];
   const activities = [
     { date: new Date("2022-12-12T10:10:15"), type: "basketball" },
   ];
@@ -123,11 +66,15 @@ export const Home = ({ navigation, route }: Props) => {
           Upcoming Games
         </Text>
         <View>
-          {games.map((game: any) => (
+          {games?.map((game: any) => (
             <UpcomingGameCard
-              gameType={game.type}
+              gameType={game.type.toLowerCase()}
               date={game.date}
-              location={game.location}
+              location={
+                game.court.branch.venue.name +
+                " - " +
+                game.court.branch.location
+              }
             />
           ))}
         </View>
@@ -147,12 +94,12 @@ export const Home = ({ navigation, route }: Props) => {
         </ScrollView>
         <SectionTitle title="Venues" styles={styles} />
         <ScrollView style={{ flexDirection: "row" }} horizontal>
-          {venues?.map((venue: any) => (
+          {branchesVenues?.map((venuesBranch: any) => (
             <VenueCard
               type="vertical"
-              rating={venue.rating}
-              name={venue.name}
-              location={venue.location}
+              rating={venuesBranch.rating}
+              name={venuesBranch.venue.name}
+              location={venuesBranch.location}
             />
           ))}
         </ScrollView>
@@ -160,7 +107,7 @@ export const Home = ({ navigation, route }: Props) => {
         <View>
           {bookings?.map((booking: any) => (
             <BookingCard
-              inviter={booking.inviter}
+              inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
               location={booking.court.branch.location}
               gameType={booking.type.toLowerCase()}
               date={booking.date}

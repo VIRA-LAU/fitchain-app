@@ -54,6 +54,7 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
   const verifyCode = () => {
     if (code.join("").toString().match(correctCode)) {
       console.log("Code matches");
+      console.log("phone number is: " + route.params.phoneNumber);
       navigation.push("SignUpWithNumberDetails", {
         phoneNumber: route.params.phoneNumber,
       });

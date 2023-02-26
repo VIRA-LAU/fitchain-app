@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
-const getVenues = () => async (userData: UserData) => {
+const getVenues = (userData: UserData) => async () => {
   const header = getHeader(userData);
   return await client
     .get(`/venues`, header)

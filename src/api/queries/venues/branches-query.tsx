@@ -1,10 +1,11 @@
 import { useQuery } from "react-query";
-import { useAxios } from "../../client";
+import { UserData } from "src/utils";
+import client, { getHeader } from "../../client";
 
-const getBranches = () => async () => {
-  const client = useAxios();
+const getBranches = (userData: UserData) => async () => {
+  const header = getHeader(userData);
   return await client
-    .get(`/branches`)
+    .get(`/branches`, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("branches-query", e);
@@ -12,4 +13,5 @@ const getBranches = () => async () => {
     });
 };
 
-export const useBranchesQuery = () => useQuery(["branches"], getBranches());
+export const useBranchesQuery = (userData: UserData) =>
+  useQuery(["branches"], getBranches(userData));

@@ -1,21 +1,17 @@
 import { useQuery } from "react-query";
-import { useAxios } from "../../client";
+import { UserData } from "src/utils";
+import client, { getHeader } from "../../client";
 
-const getInvitations = (userId: number) => async () => {
-  const client = useAxios();
-  console.log("we are in invitations");
-  console.log(userId);
+const getInvitations = (userData: UserData) => async () => {
+  const header = getHeader(userData);
   return await client
-    .get(`/invitations?userId=${userId}`)
-    .then((res) => {
-      res.data;
-      console.log(res.data);
-    })
+    .get(`/invitations/received?userId=${userData.userId}`, header)
+    .then((res) => res.data)
     .catch((e) => {
       console.error("invitations-query", e);
       throw new Error(e);
     });
 };
 
-export const useInvitationsQuery = (userId: number) =>
-  useQuery(["invitations", userId], getInvitations(userId));
+export const useInvitationsQuery = (userData: UserData) =>
+  useQuery(["invitations", userData.userId], getInvitations(userData));

@@ -18,6 +18,7 @@ export const UpcomingGameCard = ({
   date: Date;
   location: string;
 }) => {
+  date = new Date(date);
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const weekday = [
