@@ -1,7 +1,14 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 
 type styleOptions = "vertical" | "horizontal" | "focused";
 
@@ -14,9 +21,21 @@ export const VenueCard = ({
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, type === "horizontal", type === "focused");
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<HomeStackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
 
   return (
-    <View style={styles.wrapper}>
+    <Pressable
+      style={styles.wrapper}
+      onPress={() => {
+        navigation.push("VenueDetails");
+      }}
+    >
       <Image
         source={require("assets/images/home/basketball-hub.png")}
         style={styles.image}
@@ -44,7 +63,7 @@ export const VenueCard = ({
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

@@ -9,6 +9,7 @@ import {
   Play,
   Profile,
   VenueBookingDetails,
+  VenueDetails,
   Venues,
 } from "screens";
 import { StyleSheet, useWindowDimensions, View, Pressable } from "react-native";
@@ -73,6 +74,7 @@ const BottomTabNavigator = () => {
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
   GameDetails: undefined;
+  VenueDetails: undefined;
   VenueBookingDetails: undefined;
 };
 
@@ -90,6 +92,7 @@ export const AppNavigator = () => {
           component={VenueBookingDetails}
         />
         <Stack.Screen name="GameDetails" component={GameDetails} />
+        <Stack.Screen name="VenueDetails" component={VenueDetails} />
       </Stack.Navigator>
     );
   else return <SignUpNavigator setSignedIn={setSignedIn} />;

@@ -10,7 +10,7 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
 
-export const Location = () => {
+export const VenueLocation = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -66,10 +66,10 @@ export const Location = () => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      marginHorizontal: 20,
       borderRadius: 10,
       flexDirection: "row",
       alignItems: "center",
+      marginBottom: 10,
     },
     background: {
       position: "absolute",

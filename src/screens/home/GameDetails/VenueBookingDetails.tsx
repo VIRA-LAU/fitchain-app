@@ -5,12 +5,14 @@ import { AppHeader } from "src/components";
 import Feather from "react-native-vector-icons/Feather";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
+import { StackScreenProps } from "@react-navigation/stack";
+import { HomeStackParamList } from "src/navigation";
 
-export const VenueBookingDetails = () => {
+type Props = StackScreenProps<HomeStackParamList, "VenueBookingDetails">;
+
+export const VenueBookingDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const navigation = useNavigation();
 
   return (
     <AppHeader
