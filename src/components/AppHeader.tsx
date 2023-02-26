@@ -71,20 +71,22 @@ export const AppHeader = ({
               {sportBackground[backgroundImage]}
             </View>
           )}
-          {backEnabled ? (
-            <MaterialIcon
-              name="arrow-back"
-              color={darkMode ? "black" : "white"}
-              size={25}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            />
-          ) : left ? (
-            left
-          ) : (
-            <View />
-          )}
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {backEnabled && (
+              <MaterialIcon
+                name="arrow-back"
+                color={darkMode ? "black" : "white"}
+                size={25}
+                onPress={() => {
+                  navigation.goBack();
+                }}
+                style={{ marginRight: 20 }}
+              />
+            )}
+            {left}
+          </View>
+          <View />
+
           <View style={styles.middleView}>
             {title && <Text style={styles.title}>{title}</Text>}
             {showLogo && (

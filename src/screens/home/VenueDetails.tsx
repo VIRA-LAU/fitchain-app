@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { AppHeader, VenueLocation } from "src/components";
+import { AppHeader, SportTypeDropdown, VenueLocation } from "src/components";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
@@ -25,6 +25,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
       route={route}
       right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
       title={"Hoops Club"}
+      left={<SportTypeDropdown />}
       backEnabled
     >
       <View>
