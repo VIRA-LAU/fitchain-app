@@ -1,7 +1,14 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 
 type styleOptions = "vertical" | "horizontal" | "focused";
 
@@ -20,9 +27,21 @@ export const VenueCard = ({
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, type === "horizontal", type === "focused");
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<HomeStackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
 
   return (
-    <View style={styles.wrapper}>
+    <Pressable
+      style={styles.wrapper}
+      onPress={() => {
+        navigation.push("VenueDetails");
+      }}
+    >
       <Image
         source={require("assets/images/home/basketball-hub.png")}
         style={styles.image}
@@ -35,22 +54,23 @@ export const VenueCard = ({
         )}
         <Image
           source={require("assets/images/home/basketball-hub-icon.png")}
-          style={{ width: 35, aspectRatio: 1 }}
+          style={{ width: 35, height: 35, aspectRatio: 1 }}
         />
         <View style={styles.textView}>
           <Text style={styles.title}>{name}</Text>
           <View style={styles.ratingView}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <IonIcon name={"star"} color={colors.primary} />
-            <Text style={styles.rating}>{rating}</Text>
+              <Text style={styles.rating}>{rating}</Text>
             </View>
             <Text style={styles.location}>
-              {type !== "horizontal" && " • "}{location}
+              {type !== "horizontal" && " • "}
+              {location}
             </Text>
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 
@@ -63,7 +83,7 @@ const makeStyles = (
     wrapper: {
       flexDirection: isHorizontal ? "row" : "column",
       justifyContent: "flex-end",
-      marginRight: isHorizontal || isFocused ? 0 : 10,
+      marginHorizontal: isHorizontal || isFocused ? 0 : 5,
       marginBottom: isHorizontal || isFocused ? 20 : 0,
       borderRadius: 10,
     },

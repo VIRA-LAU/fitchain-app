@@ -40,7 +40,8 @@ export const InvitationCard = ({
     "Friday",
     "Saturday",
   ];
-  const day = weekday[date.getDay()];
+  date = new Date(date);
+  const day = weekday[date?.getDay()];
   const hours = date.getHours();
   const minutes = date.getMinutes();
   const amPm = hours >= 12 ? "pm" : "am";
@@ -122,7 +123,7 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
       width: 0.7 * width,
       borderRadius: 10,
       justifyContent: "flex-end",
-      marginRight: 10,
+      marginHorizontal: 5,
     },
     content: {
       backgroundColor: colors.secondary,

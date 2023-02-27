@@ -29,7 +29,6 @@ export const ActivityCard = ({
     "Saturday",
   ];
 
-
   const navigation =
     useNavigation<
       CompositeNavigationProp<
@@ -58,7 +57,7 @@ export const ActivityCard = ({
           {gameType.substring(1)} game.
         </Text>
         <Text style={[styles.greyText, { fontSize: 10 }]}>
-          On {weekday[date.getDay()]}
+          On {weekday[date?.getDay()]}
         </Text>
       </View>
 

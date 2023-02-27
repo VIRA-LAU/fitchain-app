@@ -1,9 +1,11 @@
 import { useQuery } from "react-query";
-import client from "../../client";
+import { UserData } from "src/utils";
+import client, { getHeader } from "../../client";
 
-const getInvitations = (userId: number) => async () => {
+const getInvitations = (userData: UserData) => async () => {
+  const header = getHeader(userData);
   return await client
-    .get(`/games/invitations?userId=${userId}`)
+    .get(`/invitations/received?userId=${userData?.userId}`, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("invitations-query", e);
@@ -11,5 +13,5 @@ const getInvitations = (userId: number) => async () => {
     });
 };
 
-export const useInvitationsQuery = (userId: number) =>
-  useQuery(["invitations", userId], getInvitations(userId));
+export const useInvitationsQuery = (userData: UserData) =>
+  useQuery(["invitations", userData?.userId], getInvitations(userData));

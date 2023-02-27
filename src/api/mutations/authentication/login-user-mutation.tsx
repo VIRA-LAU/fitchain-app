@@ -5,32 +5,39 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "src/utils";
 
 const LoginUser = async (data: any) => {
-  console.log("login");
+  console.log("logging in");
   return await client.post("/auth/signin", data).then((res) => res.data);
 };
 
+export default LoginUser;
+
 export const useLoginUserMutation = () => {
-  const { userId, setAuthentication } = useContext(UserContext) as any;
+  const { userData, setUserData } = useContext(UserContext) as any;
   return useMutation({
     mutationFn: LoginUser,
     onSuccess: async (data) => {
-      setAuthentication((oldAuth: any) => ({
-        ...oldAuth,
+      console.log(data);
+      let fetchedInfo = {
+        userId: data.userId,
         firstName: data.firstName,
         lastName: data.lastName,
-      }));
-      const storedAuthentication = JSON.parse(
-        (await AsyncStorage.getItem("authentication")) as string
-      );
-      await AsyncStorage.setItem(
-        "authentication",
-        JSON.stringify({
-          token: storedAuthentication.token,
-          userId: userId,
-          firstName: data.firstName,
-          lastName: data.lastName,
-        })
-      );
+        email: data.email,
+        token: data.access_token,
+      };
+      setUserData(fetchedInfo);
+      //   client.interceptors.request.use(
+      //   async (config) => {
+      //     const { userData, setUserData } = useContext(UserContext) as any;
+      //     const token = userData?.token;
+      //     if (token) {
+      //       config.headers.Authorization = `Bearer ${token}`;
+      //     }
+      //     return config;
+      //   },
+      //   (error) => {
+      //     return Promise.reject(error);
+      //   }
+      // );
     },
   });
 };

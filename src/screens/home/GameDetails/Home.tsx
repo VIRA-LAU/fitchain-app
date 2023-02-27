@@ -1,7 +1,7 @@
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { Location, PlayerCard, Update } from "components";
+import { VenueLocation, PlayerCard, Update } from "components";
 
 export const Home = () => {
   const { colors } = useTheme();
@@ -23,7 +23,9 @@ export const Home = () => {
         resizeMode="contain"
         source={require("assets/images/home/basketball-court.png")}
       />
-      <Location />
+      <View style={{ marginHorizontal: 20, marginBottom: -10 }}>
+        <VenueLocation />
+      </View>
       <View style={styles.divider} />
       <Text variant="labelLarge" style={{ color: colors.tertiary, margin: 20 }}>
         Updates

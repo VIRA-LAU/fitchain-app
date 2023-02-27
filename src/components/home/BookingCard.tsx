@@ -10,6 +10,8 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import "intl";
+import "intl/locale-data/jsonp/en";
 
 export const BookingCard = ({
   gameType,
@@ -27,6 +29,7 @@ export const BookingCard = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const gameDurationHours = gameDuration / 60;
+  date = new Date(date);
   const endTime = new Date(date.getTime() + gameDurationHours * 60 * 60 * 1000);
   const dateFormatter = new Intl.DateTimeFormat("en", {
     weekday: "short",

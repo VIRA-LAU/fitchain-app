@@ -1,44 +1,47 @@
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { StyleSheet, View, Image, useWindowDimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  useWindowDimensions,
+  ScrollView,
+} from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { ActivityCard, AppHeader } from "src/components";
-import { BottomTabParamList } from "src/navigation";
+import { AppHeader, SportTypeDropdown, VenueLocation } from "src/components";
+import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
+import { StackScreenProps } from "@react-navigation/stack";
 
-type Props = BottomTabScreenProps<BottomTabParamList>;
+type Props = StackScreenProps<HomeStackParamList, "VenueDetails">;
 
-export const Profile = ({ navigation, route }: Props) => {
+export const VenueDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
-  const styles = makeStyles(
-    colors,
-    useWindowDimensions().width,
-    useWindowDimensions().height
-  );
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const styles = makeStyles(colors, windowWidth, windowHeight);
   return (
     <AppHeader
       navigation={navigation}
       route={route}
       right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
-      title={"Mazen K."}
+      title={"Hoops Club"}
+      left={<SportTypeDropdown />}
       backEnabled
     >
       <View>
         <View style={styles.headerView}>
           <Image
-            source={require("assets/images/home/profile-background.png")}
+            source={require("assets/images/home/basketball-hub.png")}
             style={styles.headerImage}
           />
           <View style={styles.headerContent}>
             <Image
-              source={require("assets/images/home/profile-picture.png")}
-              style={styles.profilePicture}
+              source={require("assets/images/home/basketball-hub-icon.png")}
+              style={styles.clubIcon}
             />
-            <Text style={styles.headerText1}>Played 42 games</Text>
-            <Text style={styles.headerText2}>
-              Enjoy playing sports as a professional hobby. Runner, football
-              player, member of the Lebanese Football Association.
+            <Text style={styles.headerText}>
+              Hoops is the leading Football academy in Lebanon, in partnership
+              with the French club Olympique Lyonnairs.
             </Text>
             <View style={styles.buttonsView}>
               <Button
@@ -51,9 +54,9 @@ export const Profile = ({ navigation, route }: Props) => {
                 )}
                 style={{ borderRadius: 5, flex: 1 }}
                 textColor={colors.secondary}
-                buttonColor={colors.tertiary}
+                buttonColor={colors.primary}
               >
-                Invite To Play
+                Book Court
               </Button>
               <Button
                 icon={() => (
@@ -63,7 +66,7 @@ export const Profile = ({ navigation, route }: Props) => {
                 textColor={"white"}
                 buttonColor={"transparent"}
               >
-                Follow Player
+                Follow Venue
               </Button>
             </View>
           </View>
@@ -73,7 +76,7 @@ export const Profile = ({ navigation, route }: Props) => {
             Teams
           </Text>
           <View style={styles.teamsView}>
-            <Text style={styles.rating}>3.6</Text>
+            <Text style={styles.rating}>4.2</Text>
             <View style={styles.ratingLabelsView}>
               <Text style={styles.ratingLabel}>PERFORMANCE</Text>
               <Text style={styles.ratingLabel}>PUNCTUALITY</Text>
@@ -96,49 +99,97 @@ export const Profile = ({ navigation, route }: Props) => {
             </View>
           </View>
           <View style={styles.divider} />
-          <Text
-            variant="labelLarge"
-            style={{ color: colors.tertiary, marginTop: 20 }}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginVertical: 20,
+            }}
           >
-            Achievements (3)
-          </Text>
-          <View style={styles.achievementsView}>
-            <View style={styles.achievementView}>
-              <Image
-                source={require("assets/images/home/achievement-mvp.png")}
-                style={styles.achievement}
-              />
-              <Text style={styles.achievementTitle}>MVP</Text>
-              <Text style={styles.achievementValue}>x3</Text>
-            </View>
-            <View style={styles.achievementView}>
-              <Image
-                source={require("assets/images/home/achievement-top-scorer.png")}
-                style={styles.achievement}
-              />
-              <Text style={styles.achievementTitle}>Top Scorer</Text>
-              <Text style={styles.achievementValue}>x11</Text>
-            </View>
-            <View style={styles.achievementView}>
-              <Image
-                source={require("assets/images/home/achievement-3-pointer.png")}
-                style={styles.achievement}
-              />
-              <Text style={styles.achievementTitle}>3-Pointer</Text>
-              <Text style={styles.achievementValue}>x3</Text>
-            </View>
+            <Text variant="labelLarge" style={{ color: colors.tertiary }}>
+              Requests (2)
+            </Text>
+
+            <FeatherIcon
+              name="chevron-right"
+              color={colors.tertiary}
+              size={20}
+              style={{ marginLeft: "auto" }}
+            />
           </View>
           <View style={styles.divider} />
           <Text
             variant="labelLarge"
-            style={{ color: colors.tertiary, marginVertical: 20 }}
+            style={{ color: colors.tertiary, marginTop: 20 }}
           >
-            Activity
+            Photos
           </Text>
-          <ActivityCard gameType="basketball" />
-          <ActivityCard gameType="football" />
-          <ActivityCard gameType="basketball" />
-          <ActivityCard gameType="basketball" />
+          <ScrollView style={styles.photosView} horizontal>
+            <Image
+              source={require("assets/images/home/profile-background.png")}
+              resizeMode={"contain"}
+              style={{
+                height: 0.25 * windowHeight,
+                width: 0.25 * windowHeight,
+                marginLeft: 20,
+              }}
+            />
+            <View style={styles.smallPhotosView}>
+              <Image
+                source={require("assets/images/home/profile-background.png")}
+                resizeMode={"contain"}
+                style={{
+                  height: "48%",
+                  aspectRatio: 1,
+                }}
+              />
+              <Image
+                source={require("assets/images/home/profile-background.png")}
+                resizeMode={"contain"}
+                style={{
+                  height: "48%",
+                  aspectRatio: 1,
+                }}
+              />
+            </View>
+            <Image
+              source={require("assets/images/home/profile-background.png")}
+              resizeMode={"contain"}
+              style={{
+                height: 0.25 * windowHeight,
+                width: 0.25 * windowHeight,
+                marginRight: 20,
+              }}
+            />
+            <View style={styles.uploadPhoto}>
+              <IonIcon name="camera-outline" color={"white"} size={20} />
+              <Text style={styles.uploadPhotoText}>Upload Photo</Text>
+            </View>
+          </ScrollView>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginVertical: 20,
+            }}
+          >
+            <View style={styles.divider} />
+            <Text variant="labelLarge" style={{ color: colors.tertiary }}>
+              Branches
+            </Text>
+
+            <FeatherIcon
+              name="chevron-right"
+              color={colors.tertiary}
+              size={20}
+              style={{ marginLeft: "auto" }}
+            />
+          </View>
+          <VenueLocation />
+          <VenueLocation />
+          <Text style={styles.viewAll}>View All</Text>
         </View>
       </View>
     </AppHeader>
@@ -166,7 +217,7 @@ const makeStyles = (
     headerContent: {
       alignItems: "center",
     },
-    profilePicture: {
+    clubIcon: {
       width: 0.33 * windowWidth,
       height: 0.33 * windowWidth,
       marginTop: (-0.33 * windowWidth) / 2,
@@ -177,12 +228,7 @@ const makeStyles = (
       justifyContent: "space-between",
       alignItems: "center",
     },
-    headerText1: {
-      fontFamily: "Inter-SemiBold",
-      color: colors.tertiary,
-      marginTop: 15,
-    },
-    headerText2: {
+    headerText: {
       fontFamily: "Inter-Medium",
       lineHeight: 20,
       color: "white",
@@ -230,28 +276,39 @@ const makeStyles = (
       height: "100%",
       borderRadius: 5,
     },
-    achievementsView: {
+    photosView: {
       flexDirection: "row",
-      justifyContent: "space-around",
-      marginVertical: 20,
+      marginTop: 20,
+      marginHorizontal: -20,
     },
-    achievementView: {
+    smallPhotosView: {
+      height: 0.25 * windowHeight,
+      flexDirection: "column",
+      marginHorizontal: 10,
+      justifyContent: "space-between",
+    },
+    uploadPhoto: {
+      position: "absolute",
+      bottom: 5,
+      left: 25,
+      flexDirection: "row",
       alignItems: "center",
+      backgroundColor: colors.secondary,
+      opacity: 0.9,
+      padding: 7.5,
+      borderRadius: 10,
     },
-    achievement: {
-      width: 0.1 * windowWidth,
-      height: 0.1 * windowWidth,
-    },
-    achievementTitle: {
-      fontFamily: "Inter-SemiBold",
-      color: colors.tertiary,
-      marginTop: 5,
+    uploadPhotoText: {
+      color: "white",
+      marginLeft: 5,
+      fontFamily: "Inter-Medium",
       fontSize: 12,
     },
-    achievementValue: {
-      fontFamily: "Inter-SemiBold",
-      color: "white",
-      fontSize: 16,
+    viewAll: {
+      color: colors.tertiary,
+      marginVertical: 10,
+      fontFamily: "Inter-Medium",
+      alignSelf: "center",
     },
     divider: {
       borderColor: colors.secondary,

@@ -18,6 +18,7 @@ export const UpcomingGameCard = ({
   date: Date;
   location: string;
 }) => {
+  date = new Date(date);
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const weekday = [
@@ -29,7 +30,6 @@ export const UpcomingGameCard = ({
     "Friday",
     "Saturday",
   ];
-
 
   const navigation =
     useNavigation<
@@ -44,7 +44,7 @@ export const UpcomingGameCard = ({
       onPress={() => navigation.push("GameDetails")}
     >
       <View>
-        <Text style={styles.text}>This {weekday[date.getDay()]},</Text>
+        <Text style={styles.text}>This {weekday[date?.getDay()]},</Text>
         <Text style={styles.greyText}>
           {"at "}
           <Text style={styles.text}>{location}</Text>

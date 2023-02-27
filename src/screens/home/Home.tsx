@@ -14,13 +14,14 @@ import { BottomTabParamList } from "src/navigation/tabScreenOptions";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { UserContext } from "src/utils";
+import { UserContext, UserData } from "src/utils";
 import { useContext } from "react";
-import { useVenuesQuery } from "src/api/queries";
+import { useBranchesQuery, useVenuesQuery } from "src/api/queries";
 import { useGamesQuery } from "src/api/queries/games/games-query";
 import { useBookingsQuery } from "src/api/queries/games/bookings-query";
 import { useInvitationsQuery } from "src/api/queries/games/invitations-query";
 import { useActivitiesQuery } from "src/api/queries/games/activities-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
 const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
@@ -38,68 +39,13 @@ const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
 export const Home = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const { userId, firstName, lastName } = useContext(UserContext);
-  // const { data: venues } = useVenuesQuery();
-  // const { data: games } = useGamesQuery(1);
-  // const { data: bookings } = useBookingsQuery(1);
-  // const { data: invitations } = useInvitationsQuery(1);
+  const { userData }: any = useContext(UserContext);
+
+  const { data: branchesVenues } = useBranchesQuery(userData);
+  const { data: games } = useGamesQuery(userData);
+  const { data: bookings } = useBookingsQuery(userData);
+  const { data: invitations } = useInvitationsQuery(userData);
   // const { data: activities } = useActivitiesQuery(1);
-  const games = [
-    { date: new Date("2022-12-10"), location: "hoops", type: "tennis" },
-  ];
-  const invitations = [
-    {
-      friend: {
-        firstName: "Jane",
-        lastName: "Doe",
-      },
-      game: {
-        type: "Basketball",
-        date: new Date("2022-06-15T10:00:00.000Z"),
-        duration: 30,
-        court: {
-          branch: {
-            location: "New York",
-          },
-        },
-      },
-    },
-  ];
-  const venues = [
-    {
-      name: "ABC Sports Center",
-      branches: [
-        {
-          location: "New York",
-          rating: 0,
-        },
-      ],
-    },
-    {
-      name: "XYZ Sports Club",
-      branches: [
-        {
-          location: "Los Angeles",
-          rating: 0,
-        },
-      ],
-    },
-  ];
-  const bookings = [
-    {
-      date: new Date("2019-05-14T11:01:58.135Z"),
-      duration: 30,
-      type: "Basketball",
-      court: {
-        branch: {
-          location: "New York",
-          venue: {
-            name: "ABC Sports Center",
-          },
-        },
-      },
-    },
-  ];
   const activities = [
     { date: new Date("2022-12-12T10:10:15"), type: "basketball" },
   ];
@@ -114,25 +60,34 @@ export const Home = ({ navigation, route }: Props) => {
     >
       <View style={styles.wrapperView}>
         <Text variant="headlineSmall" style={{ color: "white" }}>
-          Hi {firstName},
+          Hi {userData?.firstName},
         </Text>
         <Text variant="labelLarge" style={styles.headerSubtext}>
           Upcoming Games
         </Text>
         <View>
-          {games.map((game: any) => (
+          {games?.map((game: any, index: number) => (
             <UpcomingGameCard
-              gameType={game.type}
+              key={index}
+              gameType={game.type.toLowerCase()}
               date={game.date}
-              location={game.location}
+              location={
+                game.court.branch.venue.name +
+                " - " +
+                game.court.branch.location
+              }
             />
           ))}
         </View>
 
         <SectionTitle title="Invitations" styles={styles} />
-        <ScrollView style={{ flexDirection: "row" }} horizontal>
-          {invitations.map((invitation: any) => (
+        <ScrollView
+          style={{ flexDirection: "row", marginRight: -20 }}
+          horizontal
+        >
+          {invitations?.map((invitation: any, index: number) => (
             <InvitationCard
+              key={index}
               gameType={invitation.game.type.toLowerCase()}
               date={invitation.game.date}
               location={invitation.game.court.branch.location}
@@ -143,21 +98,26 @@ export const Home = ({ navigation, route }: Props) => {
           ))}
         </ScrollView>
         <SectionTitle title="Venues" styles={styles} />
-        <ScrollView style={{ flexDirection: "row" }} horizontal>
-          {venues.map((venue: any) => (
+        <ScrollView
+          style={{ flexDirection: "row", marginRight: -20 }}
+          horizontal
+        >
+          {branchesVenues?.map((venuesBranch: any, index: number) => (
             <VenueCard
+              key={index}
               type="vertical"
-              rating={venue.rating}
-              name={venue.name}
-              location={venue.location}
+              rating={venuesBranch.rating}
+              name={venuesBranch.venue.name}
+              location={venuesBranch.location}
             />
           ))}
         </ScrollView>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
-          {bookings.map((booking: any) => (
+          {bookings?.map((booking: any, index: number) => (
             <BookingCard
-              inviter={booking.inviter}
+              key={index}
+              inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
               location={booking.court.branch.location}
               gameType={booking.type.toLowerCase()}
               date={booking.date}
@@ -167,8 +127,12 @@ export const Home = ({ navigation, route }: Props) => {
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
-          {activities.map((activity: any) => (
-            <ActivityCard date={activity.date} gameType={activity.type} />
+          {activities.map((activity: any, index: number) => (
+            <ActivityCard
+              key={index}
+              date={activity.date}
+              gameType={activity.type}
+            />
           ))}
         </View>
       </View>

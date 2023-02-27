@@ -5,7 +5,7 @@ import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Dispatch, SetStateAction, useRef } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { useState } from "react";
 import { useCreateUserMutation } from "src/api/mutations";
 type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumberDetails">;
@@ -19,7 +19,7 @@ export const SignUpWithNumberDetails = ({
   route: Props["route"];
   setSignedIn: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { mutate: useMutation } = useCreateUserMutation();
+  const { mutate: createUser, data: loggedin } = useCreateUserMutation();
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [password, setPassword] = useState("");
@@ -32,6 +32,11 @@ export const SignUpWithNumberDetails = ({
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     return reg.test(email);
   };
+  useEffect(() => {
+    if (loggedin) {
+      setSignedIn(true);
+    }
+  }, [loggedin]);
 
   const signUp = () => {
     if (
@@ -44,12 +49,11 @@ export const SignUpWithNumberDetails = ({
       let data = {
         firstName: firstName,
         lastName: lastName,
-        phoneNumber: "03027609",
+        phoneNumber: route.params.phoneNumber,
         email: email,
         password: password,
       };
-      useMutation(data);
-      setSignedIn(true);
+      createUser(data);
     } else {
       setValidEntry(false);
     }

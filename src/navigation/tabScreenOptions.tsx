@@ -28,10 +28,6 @@ export const tabScreenOptions = ({
         return <FeatherIcon name={"home"} size={20} color={color} />;
       } else if (route.name === "Games") {
         return <FeatherIcon name={"calendar"} size={20} color={color} />;
-      } else if (route.name === "Play") {
-        return (
-          <IonIcon name={"basketball-outline"} size={35} color={"white"} />
-        );
       } else if (route.name === "Venues") {
         return <IonIcon name={"location-outline"} size={20} color={color} />;
       } else if (route.name === "Profile") {
