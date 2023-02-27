@@ -5,7 +5,7 @@ import client, { getHeader } from "../../client";
 const getInvitations = (userData: UserData) => async () => {
   const header = getHeader(userData);
   return await client
-    .get(`/invitations/received?userId=${userData.userId}`, header)
+    .get(`/invitations/received?userId=${userData?.userId}`, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("invitations-query", e);
@@ -14,4 +14,4 @@ const getInvitations = (userData: UserData) => async () => {
 };
 
 export const useInvitationsQuery = (userData: UserData) =>
-  useQuery(["invitations", userData.userId], getInvitations(userData));
+  useQuery(["invitations", userData?.userId], getInvitations(userData));

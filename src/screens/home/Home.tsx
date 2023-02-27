@@ -66,8 +66,9 @@ export const Home = ({ navigation, route }: Props) => {
           Upcoming Games
         </Text>
         <View>
-          {games?.map((game: any) => (
+          {games?.map((game: any, index: number) => (
             <UpcomingGameCard
+              key={index}
               gameType={game.type.toLowerCase()}
               date={game.date}
               location={
@@ -81,11 +82,12 @@ export const Home = ({ navigation, route }: Props) => {
 
         <SectionTitle title="Invitations" styles={styles} />
         <ScrollView
-          style={{ flexDirection: "row", marginHorizontal: -20 }}
+          style={{ flexDirection: "row", marginRight: -20 }}
           horizontal
         >
-          {invitations?.map((invitation: any) => (
+          {invitations?.map((invitation: any, index: number) => (
             <InvitationCard
+              key={index}
               gameType={invitation.game.type.toLowerCase()}
               date={invitation.game.date}
               location={invitation.game.court.branch.location}
@@ -97,11 +99,12 @@ export const Home = ({ navigation, route }: Props) => {
         </ScrollView>
         <SectionTitle title="Venues" styles={styles} />
         <ScrollView
-          style={{ flexDirection: "row", marginHorizontal: -20 }}
+          style={{ flexDirection: "row", marginRight: -20 }}
           horizontal
         >
-          {branchesVenues?.map((venuesBranch: any) => (
+          {branchesVenues?.map((venuesBranch: any, index: number) => (
             <VenueCard
+              key={index}
               type="vertical"
               rating={venuesBranch.rating}
               name={venuesBranch.venue.name}
@@ -111,8 +114,9 @@ export const Home = ({ navigation, route }: Props) => {
         </ScrollView>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
-          {bookings?.map((booking: any) => (
+          {bookings?.map((booking: any, index: number) => (
             <BookingCard
+              key={index}
               inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
               location={booking.court.branch.location}
               gameType={booking.type.toLowerCase()}
@@ -123,8 +127,12 @@ export const Home = ({ navigation, route }: Props) => {
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
-          {activities.map((activity: any) => (
-            <ActivityCard date={activity.date} gameType={activity.type} />
+          {activities.map((activity: any, index: number) => (
+            <ActivityCard
+              key={index}
+              date={activity.date}
+              gameType={activity.type}
+            />
           ))}
         </View>
       </View>

@@ -1,9 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  createBottomTabNavigator,
-  useBottomTabBarHeight,
-} from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React, { useState } from "react";
+import { useWindowDimensions, View, Pressable, StyleSheet } from "react-native";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Text, useTheme } from "react-native-paper";
@@ -84,7 +82,7 @@ export type HomeStackParamList = {
 const Stack = createStackNavigator<HomeStackParamList>();
 
 export const AppNavigator = () => {
-  const [signedIn, setSignedIn] = useState<boolean>(true);
+  const [signedIn, setSignedIn] = useState<boolean>(false);
 
   if (signedIn)
     return (

@@ -44,7 +44,7 @@ export const UpcomingGameCard = ({
       onPress={() => navigation.push("GameDetails")}
     >
       <View>
-        <Text style={styles.text}>This {weekday[date.getDay()]},</Text>
+        <Text style={styles.text}>This {weekday[date?.getDay()]},</Text>
         <Text style={styles.greyText}>
           {"at "}
           <Text style={styles.text}>{location}</Text>

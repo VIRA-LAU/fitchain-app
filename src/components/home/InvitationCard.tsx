@@ -41,7 +41,7 @@ export const InvitationCard = ({
     "Saturday",
   ];
   date = new Date(date);
-  const day = weekday[date.getDay()];
+  const day = weekday[date?.getDay()];
   const hours = date.getHours();
   const minutes = date.getMinutes();
   const amPm = hours >= 12 ? "pm" : "am";

@@ -1,6 +1,6 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { NavigationProp } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -23,6 +23,8 @@ import {
 } from "components";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import { UserContext } from "src/utils";
+import { useBookingsQuery } from "src/api/queries/games/bookings-query";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -38,6 +40,9 @@ const GamesIFollow = ({
   };
   styles: any;
 }) => {
+  const { userData }: any = useContext(UserContext);
+  const { data: bookings } = useBookingsQuery(userData);
+
   return (
     <ScrollView>
       <Text variant="labelLarge" style={styles.greyFont}>
@@ -49,20 +54,51 @@ const GamesIFollow = ({
       >
         Friday, May 14, 2022
       </Text>
-      <BookingCard gameType="basketball" />
+
+      <View>
+        {bookings?.map((booking: any, index: number) => (
+          <BookingCard
+            key={index}
+            inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
+            location={booking.court.branch.location}
+            gameType={booking.type.toLowerCase()}
+            date={booking.date}
+            gameDuration={booking.duration}
+          />
+        ))}
+      </View>
 
       <Text variant="labelLarge" style={styles.greyFont}>
         Tomorrow
       </Text>
-      <BookingCard gameType="football" />
-      <BookingCard gameType="basketball" />
-      <BookingCard gameType="tennis" />
+      <View>
+        {bookings?.map((booking: any, index: number) => (
+          <BookingCard
+            key={index}
+            inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
+            location={booking.court.branch.location}
+            gameType={booking.type.toLowerCase()}
+            date={booking.date}
+            gameDuration={booking.duration}
+          />
+        ))}
+      </View>
 
       <Text variant="labelLarge" style={styles.greyFont}>
         This Sunday
       </Text>
-      <BookingCard gameType="basketball" />
-      <BookingCard gameType="tennis" />
+      <View>
+        {bookings?.map((booking: any, index: number) => (
+          <BookingCard
+            key={index}
+            inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
+            location={booking.court.branch.location}
+            gameType={booking.type.toLowerCase()}
+            date={booking.date}
+            gameDuration={booking.duration}
+          />
+        ))}
+      </View>
     </ScrollView>
   );
 };
@@ -79,6 +115,9 @@ const PreviousGamesIFollow = ({
   };
   styles: any;
 }) => {
+  const { userData }: any = useContext(UserContext);
+  const { data: bookings } = useBookingsQuery(userData);
+
   return (
     <ScrollView>
       <Text variant="labelLarge" style={styles.greyFont}>
@@ -94,15 +133,34 @@ const PreviousGamesIFollow = ({
       <Text variant="labelLarge" style={styles.greyFont}>
         Yesterday
       </Text>
-      <BookingCard gameType="football" />
-      <BookingCard gameType="basketball" />
-      <BookingCard gameType="tennis" />
+      <View>
+        {bookings?.map((booking: any, index: number) => (
+          <BookingCard
+            key={index}
+            inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
+            location={booking.court.branch.location}
+            gameType={booking.type.toLowerCase()}
+            date={booking.date}
+            gameDuration={booking.duration}
+          />
+        ))}
+      </View>
 
       <Text variant="labelLarge" style={styles.greyFont}>
         Last Week
       </Text>
-      <BookingCard gameType="basketball" />
-      <BookingCard gameType="tennis" />
+      <View>
+        {bookings?.map((booking: any, index: number) => (
+          <BookingCard
+            key={index}
+            inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
+            location={booking.court.branch.location}
+            gameType={booking.type.toLowerCase()}
+            date={booking.date}
+            gameDuration={booking.duration}
+          />
+        ))}
+      </View>
     </ScrollView>
   );
 };

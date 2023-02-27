@@ -18,4 +18,4 @@ const getBookings = (userData: UserData) => async () => {
 };
 
 export const useBookingsQuery = (userData: UserData) =>
-  useQuery(["bookings", userData.userId], getBookings(userData));
+  useQuery(["bookings", userData?.userId], getBookings(userData));

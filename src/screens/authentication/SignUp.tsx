@@ -24,7 +24,6 @@ export const SignUp = ({
   const { fontScale } = useWindowDimensions();
   const { colors } = useTheme();
   const styles = makeStyles(fontScale, colors);
-  const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const [email, setEmail] = useState("");
   const { mutate: LoginUser, data: loggedin } = useLoginUserMutation();
 
@@ -77,7 +76,6 @@ export const SignUp = ({
               selectionColor={colors.primary}
               textContentType="emailAddress"
               autoCapitalize="none"
-              ref={emailRef}
               onChangeText={(email) => setEmail(email)}
             />
           </View>
@@ -94,7 +92,6 @@ export const SignUp = ({
               placeholder={"Password"}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
-              onSubmitEditing={() => emailRef.current?.focus()}
               secureTextEntry
               onChangeText={(password) => setPassword(password)}
             />
