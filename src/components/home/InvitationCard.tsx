@@ -19,12 +19,37 @@ import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 
 export const InvitationCard = ({
   gameType,
+  date,
+  location,
+  inviter,
 }: {
   gameType: "basketball" | "football" | "tennis";
+  date: Date;
+  location: string;
+  inviter: string;
 }) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
   const styles = makeStyles(colors, height, width);
+  const weekday = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  date = new Date(date);
+  const day = weekday[date.getDay()];
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const amPm = hours >= 12 ? "pm" : "am";
+  const timeString =
+    (hours % 12 || 12).toString().padStart(2, "0") +
+    ":" +
+    minutes.toString().padStart(2, "0") +
+    amPm;
 
   const navigation =
     useNavigation<
@@ -56,10 +81,16 @@ export const InvitationCard = ({
         />
         <View style={{ maxWidth: 0.48 * width }}>
           <Text style={styles.greyText}>
-            <Text style={styles.text}>Alain H.</Text> invited you to play{" "}
-            <Text style={styles.text}>Basketball</Text> this{" "}
-            <Text style={styles.text}>Monday, 8:15pm</Text>, at{" "}
-            <Text style={styles.text}>Hoops - Furn el Chebbak</Text>.
+            <Text style={styles.text}>{inviter}</Text> invited you to play{" "}
+            <Text style={styles.text}>
+              {gameType[0].toUpperCase()}
+              {gameType.substring(1)}
+            </Text>{" "}
+            this{" "}
+            <Text style={styles.text}>
+              {day}, {timeString}
+            </Text>
+            , at <Text style={styles.text}>{location}</Text>.
           </Text>
         </View>
         <View style={styles.buttonsView}>

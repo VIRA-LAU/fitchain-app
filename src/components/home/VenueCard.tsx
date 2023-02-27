@@ -15,9 +15,15 @@ type styleOptions = "vertical" | "horizontal" | "focused";
 export const VenueCard = ({
   type,
   promoted = true,
+  name,
+  location,
+  rating,
 }: {
   type: styleOptions;
   promoted?: boolean;
+  name: string;
+  location: string;
+  rating: string;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, type === "horizontal", type === "focused");
@@ -51,14 +57,15 @@ export const VenueCard = ({
           style={{ width: 35, height: 35, aspectRatio: 1 }}
         />
         <View style={styles.textView}>
-          <Text style={styles.title}>Basketball Hub</Text>
+          <Text style={styles.title}>{name}</Text>
           <View style={styles.ratingView}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <IonIcon name={"star"} color={colors.primary} />
-              <Text style={styles.rating}>3.6</Text>
+              <Text style={styles.rating}>{rating}</Text>
             </View>
             <Text style={styles.location}>
-              {type !== "horizontal" && " • "}Beirut, Lebanon
+              {type !== "horizontal" && " • "}
+              {location}
             </Text>
           </View>
         </View>

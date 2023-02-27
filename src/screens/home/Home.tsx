@@ -14,12 +14,18 @@ import { BottomTabParamList } from "src/navigation/tabScreenOptions";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
-
+import { UserContext, UserData } from "src/utils";
+import { useContext } from "react";
+import { useBranchesQuery, useVenuesQuery } from "src/api/queries";
+import { useGamesQuery } from "src/api/queries/games/games-query";
+import { useBookingsQuery } from "src/api/queries/games/bookings-query";
+import { useInvitationsQuery } from "src/api/queries/games/invitations-query";
+import { useActivitiesQuery } from "src/api/queries/games/activities-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
 const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
   const { colors } = useTheme();
-
   return (
     <View style={styles.sectionTitle}>
       <Text variant="labelLarge" style={{ color: colors.tertiary }}>
@@ -33,6 +39,16 @@ const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
 export const Home = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+  const { userData }: any = useContext(UserContext);
+
+  const { data: branchesVenues } = useBranchesQuery(userData);
+  const { data: games } = useGamesQuery(userData);
+  const { data: bookings } = useBookingsQuery(userData);
+  const { data: invitations } = useInvitationsQuery(userData);
+  // const { data: activities } = useActivitiesQuery(1);
+  const activities = [
+    { date: new Date("2022-12-12T10:10:15"), type: "basketball" },
+  ];
   return (
     <AppHeader
       absolutePosition={false}
@@ -44,40 +60,72 @@ export const Home = ({ navigation, route }: Props) => {
     >
       <View style={styles.wrapperView}>
         <Text variant="headlineSmall" style={{ color: "white" }}>
-          Hi User,
+          Hi {userData?.firstName},
         </Text>
         <Text variant="labelLarge" style={styles.headerSubtext}>
           Upcoming Games
         </Text>
         <View>
-          <UpcomingGameCard gameType="basketball" />
-          <UpcomingGameCard gameType="football" />
+          {games?.map((game: any) => (
+            <UpcomingGameCard
+              gameType={game.type.toLowerCase()}
+              date={game.date}
+              location={
+                game.court.branch.venue.name +
+                " - " +
+                game.court.branch.location
+              }
+            />
+          ))}
         </View>
+
         <SectionTitle title="Invitations" styles={styles} />
         <ScrollView
           style={{ flexDirection: "row", marginHorizontal: -20 }}
           horizontal
         >
-          <InvitationCard gameType="basketball" />
-          <InvitationCard gameType="football" />
+          {invitations?.map((invitation: any) => (
+            <InvitationCard
+              gameType={invitation.game.type.toLowerCase()}
+              date={invitation.game.date}
+              location={invitation.game.court.branch.location}
+              inviter={
+                invitation.friend.firstName + " " + invitation.friend.lastName
+              }
+            />
+          ))}
         </ScrollView>
         <SectionTitle title="Venues" styles={styles} />
         <ScrollView
           style={{ flexDirection: "row", marginHorizontal: -20 }}
           horizontal
         >
-          <VenueCard type="vertical" />
-          <VenueCard type="vertical" />
+          {branchesVenues?.map((venuesBranch: any) => (
+            <VenueCard
+              type="vertical"
+              rating={venuesBranch.rating}
+              name={venuesBranch.venue.name}
+              location={venuesBranch.location}
+            />
+          ))}
         </ScrollView>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
-          <BookingCard gameType="basketball" />
-          <BookingCard gameType="football" />
+          {bookings?.map((booking: any) => (
+            <BookingCard
+              inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
+              location={booking.court.branch.location}
+              gameType={booking.type.toLowerCase()}
+              date={booking.date}
+              gameDuration={booking.duration}
+            />
+          ))}
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
-          <ActivityCard gameType="basketball" />
-          <ActivityCard gameType="football" />
+          {activities.map((activity: any) => (
+            <ActivityCard date={activity.date} gameType={activity.type} />
+          ))}
         </View>
       </View>
     </AppHeader>

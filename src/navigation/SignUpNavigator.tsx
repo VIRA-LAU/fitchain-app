@@ -10,8 +10,8 @@ import {
 export type SignUpStackParamList = {
   SignUp: undefined;
   SignUpWithNumber: undefined;
-  VerifySignUpWithNumber: undefined;
-  SignUpWithNumberDetails: undefined;
+  VerifySignUpWithNumber: { code: string; phoneNumber: string };
+  SignUpWithNumberDetails: { phoneNumber: string };
 };
 
 const Stack = createStackNavigator<SignUpStackParamList>();

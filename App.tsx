@@ -9,11 +9,19 @@ import { StatusBar } from "react-native";
 import { AppNavigator } from "navigation";
 import { useFonts } from "expo-font/build/FontHooks";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { UserContext, UserData } from "src/utils";
+import { useState } from "react";
 import { en, registerTranslation } from "react-native-paper-dates";
 
 registerTranslation("en", en);
-// Define a separate component for the App content
 function AppContent() {
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  const value = {
+    userData,
+    setUserData,
+  };
+
   const fontConfig = {
     headlineSmall: {
       fontFamily: "Inter-SemiBold",
@@ -28,7 +36,6 @@ function AppContent() {
       fontFamily: "Inter-SemiBold",
     },
   };
-
   const theme = {
     ...DefaultTheme,
     colors: {
@@ -39,18 +46,18 @@ function AppContent() {
     },
     fonts: configureFonts({ config: fontConfig }),
   };
-
   return (
-    <PaperProvider theme={theme}>
-      <NavigationContainer theme={DarkTheme}>
-        <StatusBar
-          barStyle={"light-content"}
-          backgroundColor={"transparent"}
-          translucent
-        />
-        <AppNavigator />
-      </NavigationContainer>
-    </PaperProvider>
+    <UserContext.Provider value={value}>
+      <PaperProvider theme={theme}>
+        <NavigationContainer theme={DarkTheme}>
+          <StatusBar
+            barStyle={"light-content"}
+            backgroundColor={theme.colors.background}
+          />
+          <AppNavigator />
+        </NavigationContainer>
+      </PaperProvider>
+    </UserContext.Provider>
   );
 }
 

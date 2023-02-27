@@ -1,7 +1,12 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  createBottomTabNavigator,
+  useBottomTabBarHeight,
+} from "@react-navigation/bottom-tabs";
 import React, { useState } from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { Text, useTheme } from "react-native-paper";
 import {
   GameDetails,
   Games,
@@ -12,8 +17,6 @@ import {
   VenueDetails,
   Venues,
 } from "screens";
-import { StyleSheet, useWindowDimensions, View, Pressable } from "react-native";
-import { Text, useTheme } from "react-native-paper";
 import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";

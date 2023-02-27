@@ -11,11 +11,25 @@ import {
 
 export const UpcomingGameCard = ({
   gameType,
+  date,
+  location,
 }: {
-  gameType: "basketball" | "football" | "tennis";
+  gameType: any;
+  date: Date;
+  location: string;
 }) => {
+  date = new Date(date);
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+  const weekday = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   const navigation =
     useNavigation<
@@ -30,10 +44,10 @@ export const UpcomingGameCard = ({
       onPress={() => navigation.push("GameDetails")}
     >
       <View>
-        <Text style={styles.text}>This Monday,</Text>
+        <Text style={styles.text}>This {weekday[date.getDay()]},</Text>
         <Text style={styles.greyText}>
           {"at "}
-          <Text style={styles.text}>Hoops - Furn el Chebbak.</Text>
+          <Text style={styles.text}>{location}</Text>
         </Text>
       </View>
       <Image

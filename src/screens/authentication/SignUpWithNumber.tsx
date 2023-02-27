@@ -5,12 +5,41 @@ import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import PhoneInput from "react-native-phone-number-input";
+import { useState } from "react";
+import { useCreateUserMutation } from "../../api/mutations";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumber">;
-
 export const SignUpWithNumber = ({ navigation, route }: Props) => {
+  const { mutate: createUser } = useCreateUserMutation();
+  const [phoneNumber, setPhoneNumber] = useState("");
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+
+  // The options for sending the message (e.g. send the message as a regular SMS or an MMS)
+
+  const generateCode = () => {
+    return Math.floor(1000 + Math.random() * 9000).toString();
+  };
+
+  const createUserWithNumber = () => {
+    //   const options = {
+    //     prompt: false,
+    //   }
+    //   SendSMS.send({
+    //     body: 'The default body of the SMS!',
+    //     recipients: ['+96170661460'],
+    // }, (completed, cancelled, error) => {
+
+    //     console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
+
+    //   });
+    let code = generateCode();
+    console.log(code);
+    navigation.push("VerifySignUpWithNumber", {
+      code: code,
+      phoneNumber: phoneNumber,
+    });
+  };
   return (
     <AppHeader navigation={navigation} route={route} backEnabled autoScroll>
       <View style={styles.wrapperView}>
@@ -54,12 +83,16 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
               height: 45,
             }}
             withDarkTheme={true}
+            defaultValue={phoneNumber}
+            onChangeText={(text) => {
+              setPhoneNumber(text);
+            }}
           />
           <Button
             textColor={colors.background}
             buttonColor={colors.primary}
             style={styles.continueButton}
-            onPress={() => navigation.push("VerifySignUpWithNumber")}
+            onPress={() => createUserWithNumber()}
           >
             Continue
           </Button>

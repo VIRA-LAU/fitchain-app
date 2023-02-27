@@ -12,11 +12,22 @@ import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 
 export const ActivityCard = ({
   gameType,
+  date,
 }: {
   gameType: "basketball" | "football" | "tennis";
+  date: Date;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+  const weekday = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   const navigation =
     useNavigation<
@@ -42,9 +53,12 @@ export const ActivityCard = ({
       />
       <View style={styles.textView}>
         <Text style={styles.greyText}>
-          <Text style={styles.text}>Won</Text> a basketball game.
+          <Text style={styles.text}>Won</Text> a {gameType[0].toUpperCase()}
+          {gameType.substring(1)} game.
         </Text>
-        <Text style={[styles.greyText, { fontSize: 10 }]}>Today</Text>
+        <Text style={[styles.greyText, { fontSize: 10 }]}>
+          On {weekday[date.getDay()]}
+        </Text>
       </View>
 
       <FeatherIcon

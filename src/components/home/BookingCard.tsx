@@ -15,11 +15,39 @@ import "intl/locale-data/jsonp/en";
 
 export const BookingCard = ({
   gameType,
+  location,
+  date,
+  inviter,
+  gameDuration,
 }: {
   gameType: "basketball" | "football" | "tennis";
+  location: string;
+  date: Date;
+  inviter: string;
+  gameDuration: number;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+  const gameDurationHours = gameDuration / 60;
+  date = new Date(date);
+  const endTime = new Date(date.getTime() + gameDurationHours * 60 * 60 * 1000);
+  const dateFormatter = new Intl.DateTimeFormat("en", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+  const startTimeFormatter = new Intl.DateTimeFormat("en", {
+    hour: "numeric",
+    minute: "numeric",
+  });
+  const endTimeFormatter = new Intl.DateTimeFormat("en", {
+    hour: "numeric",
+    minute: "numeric",
+  });
+  const dateString = dateFormatter.format(date);
+  const startTimeString = startTimeFormatter.format(date);
+  const endTimeString = endTimeFormatter.format(endTime);
+  const dateAndTime = `${dateString} - ${startTimeString} till ${endTimeString}`;
 
   const navigation =
     useNavigation<
@@ -47,8 +75,11 @@ export const BookingCard = ({
       </View>
       <View style={styles.content}>
         <Text style={[styles.greyText, { fontSize: 14 }]}>
-          <Text style={styles.text}>Basketball Game</Text> By{" "}
-          <Text style={styles.text}>Alain H.</Text>
+          <Text style={styles.text}>
+            {gameType[0].toUpperCase()}
+            {gameType.substring(1)} Game
+          </Text>{" "}
+          By <Text style={styles.text}>{inviter}</Text>
         </Text>
         <View style={styles.textRow}>
           <IonIcon
@@ -57,7 +88,7 @@ export const BookingCard = ({
             color={colors.tertiary}
             style={{ marginRight: 5 }}
           />
-          <Text style={styles.greyText}>Hoops - Furn el Chebbak</Text>
+          <Text style={styles.greyText}>{location}</Text>
         </View>
         <View style={styles.textRow}>
           <FeatherIcon
@@ -66,7 +97,7 @@ export const BookingCard = ({
             color={colors.tertiary}
             style={{ marginRight: 5 }}
           />
-          <Text style={styles.greyText}>Fri Oct 2 - 22:15 till 00:15</Text>
+          <Text style={styles.greyText}>{dateAndTime}</Text>
         </View>
       </View>
     </Pressable>

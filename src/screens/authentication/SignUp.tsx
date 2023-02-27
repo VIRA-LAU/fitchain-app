@@ -6,9 +6,10 @@ import { SignUpStackParamList } from "navigation";
 import { Button, useTheme, Text } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Dispatch, SetStateAction, useRef } from "react";
+import { Dispatch, SetStateAction, useRef, useState, useEffect } from "react";
 import { AppHeader } from "src/components";
-
+import { useSignInQuery } from "src/api/queries";
+import { useLoginUserMutation } from "src/api/mutations";
 type Props = StackScreenProps<SignUpStackParamList, "SignUp">;
 
 export const SignUp = ({
@@ -24,7 +25,31 @@ export const SignUp = ({
   const { colors } = useTheme();
   const styles = makeStyles(fontScale, colors);
   const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
+  const [email, setEmail] = useState("");
+  const { mutate: LoginUser, data: loggedin } = useLoginUserMutation();
 
+  const [password, setPassword] = useState("");
+  const validateEmail = (email: string) => {
+    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return reg.test(email);
+  };
+  useEffect(() => {
+    if (loggedin) {
+      setSignedIn(true);
+    }
+  }, [loggedin]);
+
+  const signIn = () => {
+    let emailValid = validateEmail(email);
+    if (emailValid) {
+      let data = {
+        email: email,
+        password: password,
+      };
+      console.log("signing in");
+      LoginUser(data);
+    }
+  };
   return (
     <AppHeader autoScroll>
       <View style={styles.wrapperView}>
@@ -53,6 +78,7 @@ export const SignUp = ({
               textContentType="emailAddress"
               autoCapitalize="none"
               ref={emailRef}
+              onChangeText={(email) => setEmail(email)}
             />
           </View>
 
@@ -70,13 +96,14 @@ export const SignUp = ({
               selectionColor={colors.primary}
               onSubmitEditing={() => emailRef.current?.focus()}
               secureTextEntry
+              onChangeText={(password) => setPassword(password)}
             />
           </View>
           <Button
             textColor={colors.background}
             buttonColor={colors.primary}
             style={styles.signInButton}
-            onPress={() => setSignedIn(true)}
+            onPress={() => signIn()}
           >
             Sign In
           </Button>
