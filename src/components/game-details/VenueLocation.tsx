@@ -9,8 +9,9 @@ import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
+import { Booking } from "src/types";
 
-export const VenueLocation = () => {
+export const VenueLocation = ({ court }: { court: Booking["court"] }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -39,8 +40,8 @@ export const VenueLocation = () => {
             style={{ width: 35, aspectRatio: 1 }}
           />
           <View style={styles.titleView}>
-            <Text style={styles.title}>Hoops Club</Text>
-            <Text style={styles.subtitle}>Hazmieh</Text>
+            <Text style={styles.title}>{court.branch.venue.name}</Text>
+            <Text style={styles.subtitle}>{court.branch.location}</Text>
           </View>
         </View>
         <View style={styles.rowView}>

@@ -58,7 +58,9 @@ export const InvitationCard = ({
   return (
     <Pressable
       style={styles.wrapper}
-      onPress={() => navigation.push("GameDetails", { booking: game })}
+      onPress={() =>
+        navigation.push("GameDetails", { booking: JSON.stringify(game) })
+      }
     >
       <Image
         source={

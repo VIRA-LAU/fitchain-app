@@ -200,8 +200,8 @@ export const VenueDetails = ({ navigation, route }: Props) => {
               style={{ marginLeft: "auto" }}
             />
           </View>
-          <VenueLocation />
-          <VenueLocation />
+          {/* <VenueLocation court={} />
+          <VenueLocation /> */}
           <Text style={styles.viewAll}>View All</Text>
         </View>
       </View>

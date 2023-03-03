@@ -17,26 +17,22 @@ import { Booking, GameType } from "src/types";
 export const BookingCard = ({ booking }: { booking: Booking }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const gameDurationHours = booking.duration / 60;
+
   const endTime = new Date(
-    booking.date.getTime() + gameDurationHours * 60 * 60 * 1000
+    booking.date.getTime() + booking.duration * 60 * 1000
   );
   const dateFormatter = new Intl.DateTimeFormat("en", {
     weekday: "short",
     month: "short",
     day: "numeric",
   });
-  const startTimeFormatter = new Intl.DateTimeFormat("en", {
-    hour: "numeric",
-    minute: "numeric",
-  });
-  const endTimeFormatter = new Intl.DateTimeFormat("en", {
+  const durationTimeFormatter = new Intl.DateTimeFormat("en", {
     hour: "numeric",
     minute: "numeric",
   });
   const dateString = dateFormatter.format(booking.date);
-  const startTimeString = startTimeFormatter.format(booking.date);
-  const endTimeString = endTimeFormatter.format(endTime);
+  const startTimeString = durationTimeFormatter.format(booking.date);
+  const endTimeString = durationTimeFormatter.format(endTime);
   const dateAndTime = `${dateString} - ${startTimeString} till ${endTimeString}`;
 
   const navigation =
@@ -47,10 +43,13 @@ export const BookingCard = ({ booking }: { booking: Booking }) => {
       >
     >();
   const gameType = booking.type.toLowerCase() as GameType;
+
   return (
     <Pressable
       style={styles.wrapper}
-      onPress={() => navigation.push("GameDetails", { booking })}
+      onPress={() =>
+        navigation.push("GameDetails", { booking: JSON.stringify(booking) })
+      }
     >
       <View style={styles.leftImageView}>
         <Image

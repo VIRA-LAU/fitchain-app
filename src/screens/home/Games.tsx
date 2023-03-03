@@ -97,9 +97,16 @@ const GamesIFollow = ({
       ) {
         dayHeaders.push("this-week");
         upcomingGames.push(<DayHeader key={"this-week"} day="This Week" />);
-      } else if (dayDiff > 7 && !dayHeaders.includes("this-month")) {
+      } else if (
+        dayDiff > 7 &&
+        dayDiff <= 30 &&
+        !dayHeaders.includes("this-month")
+      ) {
         dayHeaders.push("this-month");
         upcomingGames.push(<DayHeader key={"this-month"} day="This Month" />);
+      } else if (dayDiff > 30 && !dayHeaders.includes("future")) {
+        dayHeaders.push("future");
+        upcomingGames.push(<DayHeader key={"future"} day="In the Future" />);
       }
 
       upcomingGames.push(<BookingCard key={index} booking={booking} />);
@@ -181,9 +188,16 @@ const PreviousGamesIFollow = ({
       ) {
         dayHeaders.push("last-week");
         previousGames.push(<DayHeader key={"last-week"} day="Last Week" />);
-      } else if (dayDiff > 7 && !dayHeaders.includes("last-month")) {
+      } else if (
+        dayDiff > 7 &&
+        dayDiff <= 30 &&
+        !dayHeaders.includes("last-month")
+      ) {
         dayHeaders.push("last-month");
         previousGames.push(<DayHeader key={"last-month"} day="Last Month" />);
+      } else if (dayDiff > 30 && !dayHeaders.includes("past")) {
+        dayHeaders.push("past");
+        previousGames.push(<DayHeader key={"past"} day="In the Past" />);
       }
 
       previousGames.push(<BookingCard key={index} booking={booking} />);

@@ -39,7 +39,7 @@ export const ActivityCard = ({
   return (
     <Pressable
       style={styles.wrapper}
-      onPress={() => navigation.push("GameDetails")}
+      onPress={() => navigation.push("GameDetails", { booking: "" })}
     >
       <Image
         source={

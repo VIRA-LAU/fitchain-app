@@ -75,7 +75,7 @@ const BottomTabNavigator = () => {
 
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
-  GameDetails: { booking: Booking };
+  GameDetails: { booking: string };
   VenueDetails: undefined;
   VenueBookingDetails: undefined;
 };

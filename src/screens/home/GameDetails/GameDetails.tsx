@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { AppHeader } from "src/components";
 import { View, StyleSheet, useWindowDimensions } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -14,6 +14,7 @@ import {
   TabView,
 } from "react-native-tab-view";
 import { Home } from "./Home";
+import { Booking, GameType } from "src/types";
 
 type Props = StackScreenProps<HomeStackParamList, "GameDetails">;
 
@@ -21,13 +22,46 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const windowWidth = useWindowDimensions().width;
-  const { booking } = route.params;
 
+  const { booking: bookingString } = route.params;
+  const booking: Booking = JSON.parse(bookingString);
+  booking.date = new Date(booking.date);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "Home", title: "Home" },
     { key: "Away", title: "Away" },
   ]);
+
+  const dateHeader = useMemo(() => {
+    const bookingDate = new Date(
+      booking.date
+        .toISOString()
+        .substring(0, booking.date.toISOString().indexOf("T"))
+    );
+    const todayDate = new Date(
+      new Date()
+        .toISOString()
+        .substring(0, new Date().toISOString().indexOf("T"))
+    );
+    const dayDiff =
+      (bookingDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
+
+    if (dayDiff === 0) return "Today";
+    else if (dayDiff === 1) return "Tomorrow";
+    else if (dayDiff <= 7) return "This Week";
+    else if (dayDiff <= 30) return "This Month";
+    else return "In the Future";
+  }, []);
+
+  const endTime = new Date(
+    booking.date.getTime() + booking.duration * 60 * 1000
+  );
+  const durationTimeFormatter = new Intl.DateTimeFormat("en", {
+    hour: "numeric",
+    minute: "numeric",
+  });
+  const startTimeString = durationTimeFormatter.format(booking.date);
+  const endTimeString = durationTimeFormatter.format(endTime);
 
   const renderScene = ({
     route,
@@ -39,9 +73,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
   }) => {
     switch (route.key) {
       case "Home":
-        return <Home />;
+        return <Home booking={booking} />;
       case "Away":
-        return <Home />;
+        return <Home booking={booking} />;
       default:
         return null;
     }
@@ -89,9 +123,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
     <AppHeader
       absolutePosition={false}
       backEnabled
-      title="Basketball"
+      title={booking.type}
       right={<IonIcon name="ellipsis-horizontal" color={"black"} size={24} />}
-      backgroundImage={"basketball"}
+      backgroundImage={booking.type.toLowerCase() as GameType}
       navigation={navigation}
       route={route}
       darkMode
@@ -99,7 +133,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
       <View style={styles.wrapperView}>
         <View style={styles.headerView}>
           <Text variant="labelLarge" style={styles.greyFont}>
-            Next week
+            {dateHeader}
           </Text>
           <View
             style={{
@@ -112,13 +146,20 @@ export const GameDetails = ({ navigation, route }: Props) => {
               variant="headlineSmall"
               style={{ color: "white", marginTop: -5, marginBottom: 10 }}
             >
-              Friday, May 14
+              {booking.date
+                .toLocaleDateString(undefined, {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })
+                .slice(0, -6)}
             </Text>
             <Text
               variant="labelLarge"
               style={{ color: "white", marginTop: -5, marginBottom: 10 }}
             >
-              22:15 - 23:45
+              {startTimeString} - {endTimeString}
             </Text>
           </View>
 
