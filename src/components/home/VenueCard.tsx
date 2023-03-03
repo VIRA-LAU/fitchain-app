@@ -23,7 +23,7 @@ export const VenueCard = ({
   promoted?: boolean;
   name: string;
   location: string;
-  rating: string;
+  rating: number;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, type === "horizontal", type === "focused");

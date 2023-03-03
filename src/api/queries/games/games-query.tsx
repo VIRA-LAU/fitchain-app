@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { Booking } from "src/types";
 import { UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
@@ -14,4 +15,4 @@ const getGames = (userData: UserData) => async () => {
 };
 
 export const useGamesQuery = (userData: UserData) =>
-  useQuery(["games", userData?.userId], getGames(userData));
+  useQuery<Booking[]>(["games", userData?.userId], getGames(userData));

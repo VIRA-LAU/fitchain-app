@@ -6,7 +6,7 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import PhoneInput from "react-native-phone-number-input";
 import { useState } from "react";
-import { useCreateUserMutation } from "../../api/mutations";
+import { useCreateUserMutation } from "src/api";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumber">;
 export const SignUpWithNumber = ({ navigation, route }: Props) => {

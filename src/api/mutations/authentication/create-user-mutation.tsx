@@ -18,11 +18,11 @@ const createUser = async (data: object) => {
 };
 export default createUser;
 export const useCreateUserMutation = () => {
-  const { userData, setUserData } = useContext(UserContext) as any;
+  const { setUserData } = useContext(UserContext);
 
   return useMutation({
     mutationFn: createUser,
-    onSuccess: async (data: any) => {
+    onSuccess: async (data) => {
       console.log("creating user");
       let fetchedInfo = {
         userId: data.userId,

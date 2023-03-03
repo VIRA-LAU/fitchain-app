@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { Invitation } from "src/types";
 import { UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
@@ -14,4 +15,7 @@ const getInvitations = (userData: UserData) => async () => {
 };
 
 export const useInvitationsQuery = (userData: UserData) =>
-  useQuery(["invitations", userData?.userId], getInvitations(userData));
+  useQuery<Invitation[]>(
+    ["invitations", userData?.userId],
+    getInvitations(userData)
+  );

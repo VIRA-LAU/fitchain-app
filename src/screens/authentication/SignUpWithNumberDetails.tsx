@@ -7,7 +7,7 @@ import { Button, useTheme, Text } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { useState } from "react";
-import { useCreateUserMutation } from "src/api/mutations";
+import { useCreateUserMutation } from "src/api";
 type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumberDetails">;
 
 export const SignUpWithNumberDetails = ({
@@ -47,11 +47,11 @@ export const SignUpWithNumberDetails = ({
     ) {
       console.log(firstName, lastName, email, password);
       let data = {
-        firstName: firstName,
-        lastName: lastName,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
         phoneNumber: route.params.phoneNumber,
-        email: email,
-        password: password,
+        email: email.trim(),
+        password: password.trim(),
       };
       createUser(data);
     } else {

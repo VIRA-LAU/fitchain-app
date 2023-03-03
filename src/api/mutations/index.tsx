@@ -1,2 +1,3 @@
-export * from "./authentication/create-user-mutation";
-export * from "./authentication/login-user-mutation";
+export * from "./authentication";
+export * from "./games";
+export * from "./users";

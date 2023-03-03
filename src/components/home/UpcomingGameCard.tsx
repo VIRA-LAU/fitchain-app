@@ -14,7 +14,7 @@ export const UpcomingGameCard = ({
   date,
   location,
 }: {
-  gameType: any;
+  gameType: "basketball" | "football" | "tennis";
   date: Date;
   location: string;
 }) => {

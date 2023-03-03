@@ -5,8 +5,8 @@ import { AppHeader, SportTypeDropdown, VenueCard } from "src/components";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { useBranchesQuery } from "src/api/queries";
-import { useContext } from "react";
+import { useBranchesQuery } from "src/api";
+import { useContext, useState } from "react";
 import { UserContext } from "src/utils";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
@@ -15,8 +15,14 @@ export const Venues = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { userData }: any = useContext(UserContext);
-  const { data: branchesVenues } = useBranchesQuery(userData);
+  const { userData } = useContext(UserContext);
+  const { data: branchesVenues } = useBranchesQuery(userData!);
+
+  const [selectedSports, setSelectedSports] = useState({
+    basketball: true,
+    football: true,
+    tennis: true,
+  });
 
   return (
     <AppHeader
@@ -25,7 +31,12 @@ export const Venues = ({ navigation, route }: Props) => {
       route={route}
       right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
       title={"Venues"}
-      left={<SportTypeDropdown />}
+      left={
+        <SportTypeDropdown
+          selectedSports={selectedSports}
+          setSelectedSports={setSelectedSports}
+        />
+      }
       searchBar
     >
       <View style={styles.wrapperView}>

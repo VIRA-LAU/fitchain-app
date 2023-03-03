@@ -12,6 +12,7 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import "intl";
 import "intl/locale-data/jsonp/en";
+import { GameType } from "src/types";
 
 export const BookingCard = ({
   gameType,
@@ -20,7 +21,7 @@ export const BookingCard = ({
   inviter,
   gameDuration,
 }: {
-  gameType: "basketball" | "football" | "tennis";
+  gameType: GameType;
   location: string;
   date: Date;
   inviter: string;

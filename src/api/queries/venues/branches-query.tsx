@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { VenueBranch } from "src/types";
 import { UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
@@ -14,4 +15,4 @@ const getBranches = (userData: UserData) => async () => {
 };
 
 export const useBranchesQuery = (userData: UserData) =>
-  useQuery(["branches"], getBranches(userData));
+  useQuery<VenueBranch[]>(["branches"], getBranches(userData));
