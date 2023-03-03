@@ -11,7 +11,7 @@ const updateGame = async (data: any) => {
 
 export const useUpdateGameMutation = () => {
   const queryClient = useQueryClient();
-  const { userId } = useContext(UserContext);
+  const { userData } = useContext(UserContext);
   return useMutation({
     mutationFn: updateGame,
     onSuccess: (data) => {

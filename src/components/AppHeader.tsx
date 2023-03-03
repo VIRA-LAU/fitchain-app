@@ -42,9 +42,9 @@ export const AppHeader = ({
   route?: any;
   title?: string;
   showLogo?: boolean;
-  right?: any;
-  middle?: any;
-  left?: any;
+  right?: JSX.Element;
+  middle?: JSX.Element;
+  left?: JSX.Element;
   searchBar?: boolean;
   backEnabled?: boolean;
   darkMode?: boolean;

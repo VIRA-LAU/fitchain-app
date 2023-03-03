@@ -16,17 +16,14 @@ import { useTheme, Button } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { Booking, GameType } from "src/types";
 
 export const InvitationCard = ({
-  gameType,
-  date,
-  location,
   inviter,
+  game,
 }: {
-  gameType: "basketball" | "football" | "tennis";
-  date: Date;
-  location: string;
   inviter: string;
+  game: Booking;
 }) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
@@ -40,10 +37,9 @@ export const InvitationCard = ({
     "Friday",
     "Saturday",
   ];
-  date = new Date(date);
-  const day = weekday[date?.getDay()];
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
+  const day = weekday[game.date?.getDay()];
+  const hours = game.date.getHours();
+  const minutes = game.date.getMinutes();
   const amPm = hours >= 12 ? "pm" : "am";
   const timeString =
     (hours % 12 || 12).toString().padStart(2, "0") +
@@ -58,10 +54,11 @@ export const InvitationCard = ({
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
+  const gameType = game.type.toLowerCase() as GameType;
   return (
     <Pressable
       style={styles.wrapper}
-      onPress={() => navigation.push("GameDetails")}
+      onPress={() => navigation.push("GameDetails", { booking: game })}
     >
       <Image
         source={
@@ -90,7 +87,7 @@ export const InvitationCard = ({
             <Text style={styles.text}>
               {day}, {timeString}
             </Text>
-            , at <Text style={styles.text}>{location}</Text>.
+            , at <Text style={styles.text}>{game.court.branch.location}</Text>.
           </Text>
         </View>
         <View style={styles.buttonsView}>

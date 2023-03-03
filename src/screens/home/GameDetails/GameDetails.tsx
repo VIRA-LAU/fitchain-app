@@ -21,6 +21,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const windowWidth = useWindowDimensions().width;
+  const { booking } = route.params;
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([

@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { Activity } from "src/types";
 import client from "../../client";
 
 const getActivities = (userId: number) => async () => {
@@ -12,4 +13,4 @@ const getActivities = (userId: number) => async () => {
 };
 
 export const useActivitiesQuery = (userId: number) =>
-  useQuery(["activities", userId], getActivities(userId));
+  useQuery<Activity[]>(["activities", userId], getActivities(userId));

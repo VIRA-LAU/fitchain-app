@@ -5,6 +5,7 @@ import {
   useWindowDimensions,
   ScrollView,
 } from "react-native";
+import { useState } from "react";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { AppHeader, SportTypeDropdown, VenueLocation } from "src/components";
@@ -19,13 +20,25 @@ export const VenueDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const styles = makeStyles(colors, windowWidth, windowHeight);
+
+  const [selectedSports, setSelectedSports] = useState({
+    basketball: true,
+    football: true,
+    tennis: true,
+  });
+
   return (
     <AppHeader
       navigation={navigation}
       route={route}
       right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
       title={"Hoops Club"}
-      left={<SportTypeDropdown />}
+      left={
+        <SportTypeDropdown
+          selectedSports={selectedSports}
+          setSelectedSports={setSelectedSports}
+        />
+      }
       backEnabled
     >
       <View>

@@ -8,8 +8,7 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Dispatch, SetStateAction, useRef, useState, useEffect } from "react";
 import { AppHeader } from "src/components";
-import { useSignInQuery } from "src/api/queries";
-import { useLoginUserMutation } from "src/api/mutations";
+import { useSignInQuery, useLoginUserMutation } from "src/api";
 type Props = StackScreenProps<SignUpStackParamList, "SignUp">;
 
 export const SignUp = ({
@@ -39,11 +38,11 @@ export const SignUp = ({
   }, [loggedin]);
 
   const signIn = () => {
-    let emailValid = validateEmail(email);
+    let emailValid = validateEmail(email.trim());
     if (emailValid) {
       let data = {
-        email: email,
-        password: password,
+        email: email.trim(),
+        password: password.trim(),
       };
       console.log("signing in");
       LoginUser(data);
