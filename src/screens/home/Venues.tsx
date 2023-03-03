@@ -8,6 +8,7 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { useBranchesQuery } from "src/api";
 import { useContext, useState } from "react";
 import { UserContext } from "src/utils";
+import { VenueBranch } from "src/types";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -40,14 +41,12 @@ export const Venues = ({ navigation, route }: Props) => {
       searchBar
     >
       <View style={styles.wrapperView}>
-        {branchesVenues?.map((venuesBranch: any, index: number) => (
+        {branchesVenues?.map((venuesBranch: VenueBranch, index: number) => (
           <VenueCard
             key={index}
             type="horizontal"
             promoted={false}
-            rating={venuesBranch.rating}
-            name={venuesBranch.venue.name}
-            location={venuesBranch.location}
+            venueBranch={venuesBranch}
           />
         ))}
       </View>

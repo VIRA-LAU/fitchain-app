@@ -7,6 +7,7 @@ export interface User {
 }
 
 export type GameType = "basketball" | "football" | "tennis";
+
 export interface Booking {
   date: Date;
   duration: number;
@@ -32,6 +33,14 @@ export interface Invitation {
     lastName: string;
   };
   game: Booking;
+}
+
+export interface Venue {
+  name: string;
+  managerEmail: string;
+  managerPhoneNumber: string;
+  managerFirstName: string;
+  managerLastName: string;
 }
 
 export interface VenueBranch {

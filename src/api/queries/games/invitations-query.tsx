@@ -17,5 +17,12 @@ const getInvitations = (userData: UserData) => async () => {
 export const useInvitationsQuery = (userData: UserData) =>
   useQuery<Invitation[]>(
     ["invitations", userData?.userId],
-    getInvitations(userData)
+    getInvitations(userData),
+    {
+      select: (invitations) =>
+        invitations.map((invitation) => {
+          invitation.game.date = new Date(invitation.game.date);
+          return invitation;
+        }),
+    }
   );

@@ -94,16 +94,7 @@ export const Home = ({ navigation, route }: Props) => {
                 selectedSports[type.toLowerCase() as GameType]
             )
             .map((game: Booking, index: number) => (
-              <UpcomingGameCard
-                key={index}
-                gameType={game.type.toLowerCase() as GameType}
-                date={game.date}
-                location={
-                  game.court.branch.venue.name +
-                  " - " +
-                  game.court.branch.location
-                }
-              />
+              <UpcomingGameCard key={index} game={game} />
             ))}
         </View>
 
@@ -120,12 +111,10 @@ export const Home = ({ navigation, route }: Props) => {
             .map((invitation: Invitation, index: number) => (
               <InvitationCard
                 key={index}
-                gameType={invitation.game.type.toLowerCase() as GameType}
-                date={invitation.game.date}
-                location={invitation.game.court.branch.location}
                 inviter={
                   invitation.user?.firstName + " " + invitation.user?.lastName
                 }
+                game={invitation.game}
               />
             ))}
         </ScrollView>
@@ -135,13 +124,7 @@ export const Home = ({ navigation, route }: Props) => {
           horizontal
         >
           {branchesVenues?.map((venuesBranch: VenueBranch, index: number) => (
-            <VenueCard
-              key={index}
-              type="vertical"
-              rating={venuesBranch.rating}
-              name={venuesBranch.venue.name}
-              location={venuesBranch.location}
-            />
+            <VenueCard key={index} type="vertical" venueBranch={venuesBranch} />
           ))}
         </ScrollView>
         <SectionTitle title="Bookings" styles={styles} />
@@ -163,16 +146,7 @@ export const Home = ({ navigation, route }: Props) => {
               );
             })
             .map((booking: Booking, index: number) => (
-              <BookingCard
-                key={index}
-                inviter={
-                  booking.admin?.firstName + " " + booking.admin?.lastName
-                }
-                location={booking.court.branch.location}
-                gameType={booking.type.toLowerCase() as GameType}
-                date={booking.date}
-                gameDuration={booking.duration}
-              />
+              <BookingCard key={index} booking={booking} />
             ))}
         </View>
         <SectionTitle title="Activities" styles={styles} />

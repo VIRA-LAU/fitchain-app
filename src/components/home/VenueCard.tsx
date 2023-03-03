@@ -9,21 +9,18 @@ import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { VenueBranch } from "src/types";
 
 type styleOptions = "vertical" | "horizontal" | "focused";
 
 export const VenueCard = ({
   type,
   promoted = true,
-  name,
-  location,
-  rating,
+  venueBranch,
 }: {
   type: styleOptions;
   promoted?: boolean;
-  name: string;
-  location: string;
-  rating: number;
+  venueBranch: VenueBranch;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, type === "horizontal", type === "focused");
@@ -57,15 +54,15 @@ export const VenueCard = ({
           style={{ width: 35, height: 35, aspectRatio: 1 }}
         />
         <View style={styles.textView}>
-          <Text style={styles.title}>{name}</Text>
+          <Text style={styles.title}>{venueBranch.venue.name}</Text>
           <View style={styles.ratingView}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <IonIcon name={"star"} color={colors.primary} />
-              <Text style={styles.rating}>{rating}</Text>
+              <Text style={styles.rating}>{venueBranch.rating}</Text>
             </View>
             <Text style={styles.location}>
               {type !== "horizontal" && " • "}
-              {location}
+              {venueBranch.location}
             </Text>
           </View>
         </View>

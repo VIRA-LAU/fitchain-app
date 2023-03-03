@@ -102,16 +102,7 @@ const GamesIFollow = ({
         upcomingGames.push(<DayHeader key={"this-month"} day="This Month" />);
       }
 
-      upcomingGames.push(
-        <BookingCard
-          key={index}
-          inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
-          location={booking.court.branch.location}
-          gameType={booking.type.toLowerCase() as GameType}
-          date={booking.date}
-          gameDuration={booking.duration}
-        />
-      );
+      upcomingGames.push(<BookingCard key={index} booking={booking} />);
     });
 
   return (
@@ -195,16 +186,7 @@ const PreviousGamesIFollow = ({
         previousGames.push(<DayHeader key={"last-month"} day="Last Month" />);
       }
 
-      previousGames.push(
-        <BookingCard
-          key={index}
-          inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
-          location={booking.court.branch.location}
-          gameType={booking.type.toLowerCase() as GameType}
-          date={booking.date}
-          gameDuration={booking.duration}
-        />
-      );
+      previousGames.push(<BookingCard key={index} booking={booking} />);
     });
 
   return (

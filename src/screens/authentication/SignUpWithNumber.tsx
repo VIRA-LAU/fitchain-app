@@ -36,8 +36,8 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
     let code = generateCode();
     console.log(code);
     navigation.push("VerifySignUpWithNumber", {
-      code: code,
-      phoneNumber: phoneNumber,
+      code,
+      phoneNumber,
     });
   };
   return (
