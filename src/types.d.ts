@@ -2,6 +2,7 @@ export interface User {
   access_token: string;
   firstName: string;
   lastName: string;
+  description: string;
   email: string;
   userId: number;
 }
@@ -35,18 +36,45 @@ export interface Invitation {
   game: Booking;
 }
 
-export interface Venue {
-  name: string;
-  managerEmail: string;
-  managerPhoneNumber: string;
-  managerFirstName: string;
-  managerLastName: string;
+// Contained inside Venue
+export interface Branch {
+  id: number;
+  location: string;
+  venueId: number;
+  photoDirectoryURL: string;
+  rating: number;
+  courts: {
+    id: number;
+    createdAt: string;
+    courtType: string;
+    nbOfPlayers: number;
+    branchId: number;
+    price: number;
+  }[];
 }
 
+export interface Venue {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  description: string;
+  managerFirstName: string;
+  managerLastName: string;
+  managerEmail: string;
+  managerPhoneNumber: number;
+  hash: string;
+  branches: Branch[];
+}
+
+// Shown on Home
 export interface VenueBranch {
   location: string;
-  venue: Venue;
   rating: number;
+  venue: {
+    id: number;
+    name: string;
+  };
 }
 
 export interface Activity {

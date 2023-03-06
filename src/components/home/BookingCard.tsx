@@ -44,6 +44,7 @@ export const BookingCard = ({ booking }: { booking: Booking }) => {
     >();
   const gameType = booking.type.toLowerCase() as GameType;
 
+  console.log(booking);
   return (
     <Pressable
       style={styles.wrapper}

@@ -1,7 +1,7 @@
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { VenueLocation, PlayerCard, Update } from "components";
+import { BranchLocation, PlayerCard, Update } from "components";
 import { Booking } from "src/types";
 
 export const Home = ({ booking }: { booking: Booking }) => {
@@ -25,7 +25,7 @@ export const Home = ({ booking }: { booking: Booking }) => {
         source={require("assets/images/home/basketball-court.png")}
       />
       <View style={{ marginHorizontal: 20, marginBottom: -10 }}>
-        <VenueLocation court={booking.court} />
+        <BranchLocation type="court" court={booking.court} />
       </View>
       <View style={styles.divider} />
       <Text variant="labelLarge" style={{ color: colors.tertiary, margin: 20 }}>

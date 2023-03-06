@@ -1,3 +1,3 @@
 export * from "./PlayerCard";
-export * from "./VenueLocation";
+export * from "./BranchLocation";
 export * from "./Update";

@@ -5,14 +5,16 @@ import {
   useWindowDimensions,
   ScrollView,
 } from "react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { AppHeader, SportTypeDropdown, VenueLocation } from "src/components";
+import { AppHeader, SportTypeDropdown, BranchLocation } from "src/components";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
+import { useVenueByIdQuery } from "src/api";
+import { UserContext } from "src/utils";
 
 type Props = StackScreenProps<HomeStackParamList, "VenueDetails">;
 
@@ -27,18 +29,23 @@ export const VenueDetails = ({ navigation, route }: Props) => {
     tennis: true,
   });
 
+  const { id } = route.params;
+  const { userData } = useContext(UserContext);
+  const { data: venue } = useVenueByIdQuery(userData!, id);
+
+  console.log(useVenueByIdQuery);
   return (
     <AppHeader
       navigation={navigation}
       route={route}
       right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
-      title={"Hoops Club"}
-      left={
-        <SportTypeDropdown
-          selectedSports={selectedSports}
-          setSelectedSports={setSelectedSports}
-        />
-      }
+      title={venue?.name}
+      // left={
+      //   <SportTypeDropdown
+      //     selectedSports={selectedSports}
+      //     setSelectedSports={setSelectedSports}
+      //   />
+      // }
       backEnabled
     >
       <View>
@@ -52,10 +59,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
               source={require("assets/images/home/basketball-hub-icon.png")}
               style={styles.clubIcon}
             />
-            <Text style={styles.headerText}>
-              Hoops is the leading Football academy in Lebanon, in partnership
-              with the French club Olympique Lyonnairs.
-            </Text>
+            <Text style={styles.headerText}>{venue?.description}</Text>
             <View style={styles.buttonsView}>
               <Button
                 icon={() => (
@@ -200,8 +204,29 @@ export const VenueDetails = ({ navigation, route }: Props) => {
               style={{ marginLeft: "auto" }}
             />
           </View>
-          {/* <VenueLocation court={} />
-          <VenueLocation /> */}
+          {venue?.branches.map((branch, index: number) => {
+            const pricesArr = branch.courts.map(({ price }) => price);
+            const prices =
+              pricesArr.length === 1
+                ? pricesArr[0].toString()
+                : `${Math.min.apply(null, pricesArr)} - ${Math.max.apply(
+                    null,
+                    pricesArr
+                  )}`;
+            return (
+              <BranchLocation
+                key={index}
+                type="branch"
+                branch={{
+                  location: branch.location,
+                  courts: branch.courts
+                    .map(({ courtType }) => courtType)
+                    .join(", "),
+                  prices,
+                }}
+              />
+            );
+          })}
           <Text style={styles.viewAll}>View All</Text>
         </View>
       </View>

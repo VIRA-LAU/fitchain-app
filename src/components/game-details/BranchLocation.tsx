@@ -11,7 +11,19 @@ import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
 import { Booking } from "src/types";
 
-export const VenueLocation = ({ court }: { court: Booking["court"] }) => {
+export const BranchLocation = ({
+  type,
+  court,
+  branch,
+}: {
+  type: "branch" | "court";
+  court?: Booking["court"];
+  branch?: {
+    location: string;
+    courts: string;
+    prices: string;
+  };
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -40,22 +52,44 @@ export const VenueLocation = ({ court }: { court: Booking["court"] }) => {
             style={{ width: 35, aspectRatio: 1 }}
           />
           <View style={styles.titleView}>
-            <Text style={styles.title}>{court.branch.venue.name}</Text>
-            <Text style={styles.subtitle}>{court.branch.location}</Text>
+            <Text style={styles.title}>
+              {type === "court" ? court?.branch.venue.name : branch?.location}
+            </Text>
+            <Text style={styles.subtitle}>
+              {type === "court" && court?.branch.location}
+            </Text>
           </View>
         </View>
-        <View style={styles.rowView}>
-          <Text style={styles.rowKey}>COURT</Text>
-          <Text style={styles.rowValue}>A003</Text>
-        </View>
-        <View style={styles.rowView}>
-          <Text style={styles.rowKey}>SIDE</Text>
-          <Text style={styles.rowValue}>Away</Text>
-        </View>
-        <View style={styles.rowView}>
-          <Text style={styles.rowKey}>PRICE</Text>
-          <Text style={styles.rowValue}>USD 12/hr</Text>
-        </View>
+        {type === "court" && (
+          <View style={styles.rowView}>
+            <Text style={styles.rowKey}>COURT</Text>
+            <Text style={styles.rowValue}>A003</Text>
+          </View>
+        )}
+        {type === "court" && (
+          <View style={styles.rowView}>
+            <Text style={styles.rowKey}>SIDE</Text>
+            <Text style={styles.rowValue}>Away</Text>
+          </View>
+        )}
+        {type === "court" && (
+          <View style={styles.rowView}>
+            <Text style={styles.rowKey}>PRICE</Text>
+            <Text style={styles.rowValue}>USD 12/hr</Text>
+          </View>
+        )}
+        {type === "branch" && (
+          <View style={styles.rowView}>
+            <Text style={styles.rowKey}>COURTS</Text>
+            <Text style={styles.rowValue}>{branch?.courts}</Text>
+          </View>
+        )}
+        {type === "branch" && (
+          <View style={styles.rowView}>
+            <Text style={styles.rowKey}>PRICE</Text>
+            <Text style={styles.rowValue}>USD {branch?.prices}/hr</Text>
+          </View>
+        )}
       </View>
       <View style={styles.icon}>
         <OctIcon name="location" color="white" size={24} />
