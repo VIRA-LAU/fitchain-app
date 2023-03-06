@@ -6,7 +6,7 @@ import client, { getHeader } from "../../client";
 const getGames = (userData: UserData) => async () => {
   const header = getHeader(userData);
   return await client
-    .get(`/games/upcoming?userId=${userData?.userId}`, header)
+    .get(`/games/upcomings?userId=${userData?.userId}`, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("games-query", e);

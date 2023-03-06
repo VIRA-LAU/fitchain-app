@@ -45,7 +45,6 @@ export const SignUpWithNumberDetails = ({
       firstName.length > 0 &&
       lastName.length > 0
     ) {
-      console.log(firstName, lastName, email, password);
       let data = {
         firstName: firstName.trim(),
         lastName: lastName.trim(),

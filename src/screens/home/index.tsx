@@ -6,3 +6,4 @@ export * from "./Play";
 export * from "./VenueDetails";
 export * from "./GameDetails/GameDetails";
 export * from "./GameDetails/VenueBookingDetails";
+export * from "./VenueBranches";

@@ -37,7 +37,9 @@ export const UpcomingGameCard = ({ game }: { game: Booking }) => {
   return (
     <Pressable
       style={styles.wrapper}
-      onPress={() => navigation.push("GameDetails", { booking: game })}
+      onPress={() =>
+        navigation.push("GameDetails", { booking: JSON.stringify(game) })
+      }
     >
       <View>
         <Text style={styles.text}>This {weekday[game.date?.getDay()]},</Text>

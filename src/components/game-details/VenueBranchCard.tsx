@@ -10,7 +10,7 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
 
-export const VenueLocation = () => {
+export const VenueBranchCard = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 

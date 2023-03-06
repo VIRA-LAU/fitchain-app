@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "src/utils";
 
 const LoginUser = async (data: any) => {
-  console.log("logging in");
   return await client.post("/auth/signin", data).then((res) => res.data);
 };
 

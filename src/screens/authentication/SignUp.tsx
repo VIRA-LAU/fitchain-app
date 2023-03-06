@@ -44,7 +44,6 @@ export const SignUp = ({
         email: email.trim(),
         password: password.trim(),
       };
-      console.log("signing in");
       LoginUser(data);
     }
   };

@@ -51,8 +51,7 @@ export const Profile = ({ navigation, route }: Props) => {
             />
             <Text style={styles.headerText1}>Played {games?.length} games</Text>
             <Text style={styles.headerText2}>
-              Enjoy playing sports as a professional hobby. Runner, football
-              player, member of the Lebanese Football Association.
+              Computer Engineering Student. Frontend Developer.
             </Text>
             {/* <View style={styles.buttonsView}>
               <Button
@@ -203,7 +202,8 @@ const makeStyles = (
       fontFamily: "Inter-Medium",
       lineHeight: 20,
       color: "white",
-      marginVertical: 10,
+      marginTop: 10,
+      marginBottom: 20,
       textAlign: "center",
     },
     contentView: {

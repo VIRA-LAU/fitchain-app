@@ -1,9 +1,10 @@
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { VenueLocation, PlayerCard, Update } from "components";
+import { BranchLocation, PlayerCard, Update } from "components";
+import { Booking } from "src/types";
 
-export const Home = () => {
+export const Home = ({ booking }: { booking: Booking }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   return (
@@ -13,9 +14,9 @@ export const Home = () => {
         contentContainerStyle={{ alignItems: "center" }}
         horizontal
       >
-        <PlayerCard />
-        <PlayerCard isActive />
-        <PlayerCard />
+        <PlayerCard player={booking.admin} />
+        <PlayerCard player={booking.admin} isActive />
+        <PlayerCard player={booking.admin} />
       </ScrollView>
 
       <Image
@@ -24,7 +25,7 @@ export const Home = () => {
         source={require("assets/images/home/basketball-court.png")}
       />
       <View style={{ marginHorizontal: 20, marginBottom: -10 }}>
-        <VenueLocation />
+        <BranchLocation type="court" court={booking.court} />
       </View>
       <View style={styles.divider} />
       <Text variant="labelLarge" style={{ color: colors.tertiary, margin: 20 }}>
