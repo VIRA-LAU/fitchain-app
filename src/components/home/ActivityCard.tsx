@@ -9,14 +9,9 @@ import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { Activity } from "src/types";
 
-export const ActivityCard = ({
-  gameType,
-  date,
-}: {
-  gameType: "basketball" | "football" | "tennis";
-  date: Date;
-}) => {
+export const ActivityCard = ({ date, type, isWinner }: Activity) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const weekday = [
@@ -43,9 +38,9 @@ export const ActivityCard = ({
     >
       <Image
         source={
-          gameType === "basketball"
+          type === "Basketball"
             ? require("assets/images/home/basketball.png")
-            : gameType === "football"
+            : type === "Football"
             ? require("assets/images/home/football.png")
             : require("assets/images/home/tennis.png")
         }
@@ -53,11 +48,12 @@ export const ActivityCard = ({
       />
       <View style={styles.textView}>
         <Text style={styles.greyText}>
-          <Text style={styles.text}>Won</Text> a {gameType[0].toUpperCase()}
-          {gameType.substring(1)} game.
+          <Text style={styles.text}>{isWinner ? "Won" : "Lost"}</Text> a{" "}
+          {type[0].toLowerCase()}
+          {type.substring(1)} game.
         </Text>
         <Text style={[styles.greyText, { fontSize: 10 }]}>
-          {weekday[date?.getDay()]}
+          {weekday[new Date(date)?.getDay()]}
         </Text>
       </View>
 

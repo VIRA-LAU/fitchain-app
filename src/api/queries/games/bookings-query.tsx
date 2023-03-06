@@ -4,10 +4,10 @@ import client, { getHeader } from "../../client";
 import { Booking } from "src/types";
 
 const getBookings = (userData: UserData) => async () => {
-  let head = getHeader(userData);
+  const header = getHeader(userData);
 
   return await client
-    .get(`/games/bookings`, head)
+    .get(`/games/bookings`, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("bookings-query", e);

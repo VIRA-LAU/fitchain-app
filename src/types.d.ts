@@ -7,7 +7,7 @@ export interface User {
   userId: number;
 }
 
-export type GameType = "basketball" | "football" | "tennis";
+export type GameType = "Basketball" | "Football" | "Tennis";
 
 export interface Booking {
   date: Date;
@@ -84,5 +84,6 @@ export interface VenueBranch {
 
 export interface Activity {
   date: Date;
-  gameType: GameType;
+  type: GameType;
+  isWinner: boolean;
 }

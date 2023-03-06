@@ -72,7 +72,7 @@ const GamesIFollow = ({
       );
       return (
         (bookingDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24) >=
-          0 && selectedSports[booking.type.toLowerCase() as GameType]
+          0 && selectedSports[booking.type]
       );
     })
     .forEach((booking: Booking, index: number) => {
@@ -162,7 +162,7 @@ const PreviousGamesIFollow = ({
       );
       return (
         (bookingDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24) <
-          0 && selectedSports[booking.type.toLowerCase() as GameType]
+          0 && selectedSports[booking.type]
       );
     })
     .reverse()
@@ -236,9 +236,9 @@ export const Games = ({ navigation, route }: Props) => {
   const windowWidth = useWindowDimensions().width;
 
   const [selectedSports, setSelectedSports] = useState({
-    basketball: true,
-    football: true,
-    tennis: true,
+    Basketball: true,
+    Football: true,
+    Tennis: true,
   });
 
   const renderScene = ({

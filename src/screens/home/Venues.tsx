@@ -20,9 +20,9 @@ export const Venues = ({ navigation, route }: Props) => {
   const { data: branchesVenues } = useBranchesQuery(userData!);
 
   const [selectedSports, setSelectedSports] = useState({
-    basketball: true,
-    football: true,
-    tennis: true,
+    Basketball: true,
+    Football: true,
+    Tennis: true,
   });
 
   return (

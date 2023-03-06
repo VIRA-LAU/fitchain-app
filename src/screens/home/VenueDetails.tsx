@@ -24,9 +24,9 @@ export const VenueDetails = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors, windowWidth, windowHeight);
 
   // const [selectedSports, setSelectedSports] = useState({
-  //   basketball: true,
-  //   football: true,
-  //   tennis: true,
+  //   Basketball: true,
+  //   Football: true,
+  //   Tennis: true,
   // });
 
   const { id } = route.params;

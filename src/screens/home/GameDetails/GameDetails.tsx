@@ -125,7 +125,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
       backEnabled
       title={booking.type}
       right={<IonIcon name="ellipsis-horizontal" color={"black"} size={24} />}
-      backgroundImage={booking.type.toLowerCase() as GameType}
+      backgroundImage={booking.type}
       navigation={navigation}
       route={route}
       darkMode

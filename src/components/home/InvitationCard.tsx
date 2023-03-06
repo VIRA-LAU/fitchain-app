@@ -16,7 +16,7 @@ import { useTheme, Button } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
-import { Booking, GameType } from "src/types";
+import { Booking } from "src/types";
 
 export const InvitationCard = ({
   inviter,
@@ -54,7 +54,6 @@ export const InvitationCard = ({
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
-  const gameType = game.type.toLowerCase() as GameType;
   return (
     <Pressable
       style={styles.wrapper}
@@ -64,9 +63,9 @@ export const InvitationCard = ({
     >
       <Image
         source={
-          gameType === "basketball"
+          game.type === "Basketball"
             ? require("assets/images/home/basketball.png")
-            : gameType === "football"
+            : game.type === "Football"
             ? require("assets/images/home/football.png")
             : require("assets/images/home/tennis.png")
         }
@@ -81,11 +80,7 @@ export const InvitationCard = ({
         <View style={{ maxWidth: 0.48 * width }}>
           <Text style={styles.greyText}>
             <Text style={styles.text}>{inviter}</Text> invited you to play{" "}
-            <Text style={styles.text}>
-              {gameType[0].toUpperCase()}
-              {gameType.substring(1)}
-            </Text>{" "}
-            this{" "}
+            <Text style={styles.text}>{game.type}</Text> this{" "}
             <Text style={styles.text}>
               {day}, {timeString}
             </Text>

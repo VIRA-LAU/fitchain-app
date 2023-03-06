@@ -5,15 +5,19 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { ActivityCard, AppHeader } from "src/components";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import FeatherIcon from "react-native-vector-icons/Feather";
 import { Activity } from "src/types";
 import { useContext } from "react";
 import { UserContext } from "src/utils";
-import { useGamesQuery } from "src/api";
+import { useActivitiesQuery, useGamesQuery } from "src/api";
+import FeatherIcon from "react-native-vector-icons/Feather";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
-export const Profile = ({ navigation, route }: Props) => {
+export const Profile = ({
+  navigation,
+  route,
+  isUserProfile,
+}: Props & { isUserProfile: boolean }) => {
   const { colors } = useTheme();
   const styles = makeStyles(
     colors,
@@ -25,10 +29,7 @@ export const Profile = ({ navigation, route }: Props) => {
   const { firstName, lastName } = userData!;
 
   const { data: games } = useGamesQuery(userData!);
-
-  const activities: Activity[] = [
-    { date: new Date("2022-12-12T10:10:15"), gameType: "basketball" },
-  ];
+  const { data: activities } = useActivitiesQuery(userData!);
 
   return (
     <AppHeader
@@ -53,32 +54,34 @@ export const Profile = ({ navigation, route }: Props) => {
             <Text style={styles.headerText2}>
               Computer Engineering Student. Frontend Developer.
             </Text>
-            {/* <View style={styles.buttonsView}>
-              <Button
-                icon={() => (
-                  <IonIcon
-                    name={"basketball-outline"}
-                    size={26}
-                    color={colors.secondary}
-                  />
-                )}
-                style={{ borderRadius: 5, flex: 1 }}
-                textColor={colors.secondary}
-                buttonColor={colors.tertiary}
-              >
-                Invite To Play
-              </Button>
-              <Button
-                icon={() => (
-                  <FeatherIcon name="thumbs-up" size={22} color={"white"} />
-                )}
-                style={{ borderRadius: 5, flex: 1 }}
-                textColor={"white"}
-                buttonColor={"transparent"}
-              >
-                Follow Player
-              </Button>
-            </View> */}
+            {!isUserProfile && (
+              <View style={styles.buttonsView}>
+                <Button
+                  icon={() => (
+                    <IonIcon
+                      name={"basketball-outline"}
+                      size={26}
+                      color={colors.secondary}
+                    />
+                  )}
+                  style={{ borderRadius: 5, flex: 1 }}
+                  textColor={colors.secondary}
+                  buttonColor={colors.tertiary}
+                >
+                  Invite To Play
+                </Button>
+                <Button
+                  icon={() => (
+                    <FeatherIcon name="thumbs-up" size={22} color={"white"} />
+                  )}
+                  style={{ borderRadius: 5, flex: 1 }}
+                  textColor={"white"}
+                  buttonColor={"transparent"}
+                >
+                  Follow Player
+                </Button>
+              </View>
+            )}
           </View>
         </View>
         <View style={styles.contentView}>
@@ -148,13 +151,11 @@ export const Profile = ({ navigation, route }: Props) => {
           >
             Activity
           </Text>
-          {activities.map((activity: Activity, index: number) => (
-            <ActivityCard
-              key={index}
-              date={activity.date}
-              gameType={activity.gameType}
-            />
-          ))}
+          <View>
+            {activities?.map((activity: Activity, index: number) => (
+              <ActivityCard key={index} {...activity} />
+            ))}
+          </View>
         </View>
       </View>
     </AppHeader>

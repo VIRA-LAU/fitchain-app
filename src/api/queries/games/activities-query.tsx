@@ -1,10 +1,13 @@
 import { useQuery } from "react-query";
 import { Activity } from "src/types";
-import client from "../../client";
+import { UserData } from "src/utils";
+import client, { getHeader } from "../../client";
 
-const getActivities = (userId: number) => async () => {
+const getActivities = (userData: UserData) => async () => {
+  const header = getHeader(userData);
+
   return await client
-    .get(`/games/activities?userId=${userId}`)
+    .get(`/games/activities`, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("activities-query", e);
@@ -12,5 +15,5 @@ const getActivities = (userId: number) => async () => {
     });
 };
 
-export const useActivitiesQuery = (userId: number) =>
-  useQuery<Activity[]>(["activities", userId], getActivities(userId));
+export const useActivitiesQuery = (userData: UserData) =>
+  useQuery<Activity[]>(["activities"], getActivities(userData));

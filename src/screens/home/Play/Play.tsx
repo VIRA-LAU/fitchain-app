@@ -17,8 +17,8 @@ export const Play = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [selectedSport, setSelectedSport] = useState<
-    "basketball" | "football" | "tennis"
-  >("basketball");
+    "Basketball" | "Football" | "Tennis"
+  >("Basketball");
   const [dateTimePickerVisible, setDateTimePickerVisible] =
     useState<boolean>(false);
 
@@ -46,12 +46,12 @@ export const Play = ({
         <ScrollView style={styles.typePicker} horizontal>
           <Pressable
             onPress={() => {
-              setSelectedSport("basketball");
+              setSelectedSport("Basketball");
             }}
             style={[
               styles.sportType,
               { marginLeft: 20 },
-              selectedSport === "basketball"
+              selectedSport === "Basketball"
                 ? { borderColor: colors.primary }
                 : {},
             ]}
@@ -59,7 +59,7 @@ export const Play = ({
             <Text
               style={[
                 styles.sportText,
-                selectedSport === "basketball" ? { color: colors.primary } : {},
+                selectedSport === "Basketball" ? { color: colors.primary } : {},
               ]}
             >
               Basketball
@@ -71,11 +71,11 @@ export const Play = ({
           </Pressable>
           <Pressable
             onPress={() => {
-              setSelectedSport("football");
+              setSelectedSport("Football");
             }}
             style={[
               styles.sportType,
-              selectedSport === "football"
+              selectedSport === "Football"
                 ? { borderColor: colors.primary }
                 : {},
             ]}
@@ -83,7 +83,7 @@ export const Play = ({
             <Text
               style={[
                 styles.sportText,
-                selectedSport === "football" ? { color: colors.primary } : {},
+                selectedSport === "Football" ? { color: colors.primary } : {},
               ]}
             >
               Football
@@ -95,18 +95,18 @@ export const Play = ({
           </Pressable>
           <Pressable
             onPress={() => {
-              setSelectedSport("tennis");
+              setSelectedSport("Tennis");
             }}
             style={[
               styles.sportType,
               { marginRight: 20 },
-              selectedSport === "tennis" ? { borderColor: colors.primary } : {},
+              selectedSport === "Tennis" ? { borderColor: colors.primary } : {},
             ]}
           >
             <Text
               style={[
                 styles.sportText,
-                selectedSport === "tennis" ? { color: colors.primary } : {},
+                selectedSport === "Tennis" ? { color: colors.primary } : {},
               ]}
             >
               Tennis
