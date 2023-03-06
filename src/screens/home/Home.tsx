@@ -18,20 +18,13 @@ import { UserContext, UserData } from "src/utils";
 import { useContext, useState } from "react";
 import {
   useBranchesQuery,
-  useVenuesQuery,
   useGamesQuery,
   useBookingsQuery,
   useInvitationsQuery,
   useActivitiesQuery,
 } from "src/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  Activity,
-  Booking,
-  GameType,
-  Invitation,
-  VenueBranch,
-} from "src/types";
+import { Activity, Booking, Invitation, VenueBranch } from "src/types";
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
 const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
@@ -51,19 +44,16 @@ export const Home = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const { userData } = useContext(UserContext);
 
-  const { data: branchesVenues } = useBranchesQuery(userData!);
-  const { data: games } = useGamesQuery(userData!);
-  const { data: bookings } = useBookingsQuery(userData!);
-  const { data: invitations } = useInvitationsQuery(userData!);
-  // const { data: activities } = useActivitiesQuery(1);
-  const activities: Activity[] = [
-    { date: new Date("2022-12-12T10:10:15"), gameType: "basketball" },
-  ];
+  const { data: branchesVenues } = useBranchesQuery();
+  const { data: games } = useGamesQuery();
+  const { data: bookings } = useBookingsQuery();
+  const { data: invitations } = useInvitationsQuery();
+  const { data: activities } = useActivitiesQuery();
 
   const [selectedSports, setSelectedSports] = useState({
-    basketball: true,
-    football: true,
-    tennis: true,
+    Basketball: true,
+    Football: true,
+    Tennis: true,
   });
 
   return (
@@ -89,10 +79,7 @@ export const Home = ({ navigation, route }: Props) => {
         </Text>
         <View>
           {games
-            ?.filter(
-              ({ type }: Booking) =>
-                selectedSports[type.toLowerCase() as GameType]
-            )
+            ?.filter(({ type }: Booking) => selectedSports[type])
             .map((game: Booking, index: number) => (
               <UpcomingGameCard key={index} game={game} />
             ))}
@@ -104,10 +91,7 @@ export const Home = ({ navigation, route }: Props) => {
           horizontal
         >
           {invitations
-            ?.filter(
-              ({ game }: Invitation) =>
-                selectedSports[game.type.toLowerCase() as GameType]
-            )
+            ?.filter(({ game }: Invitation) => selectedSports[game.type])
             .map((invitation: Invitation, index: number) => (
               <InvitationCard
                 key={index}
@@ -142,7 +126,7 @@ export const Home = ({ navigation, route }: Props) => {
               return (
                 (bookingDate.getTime() - todayDate.getTime()) /
                   (1000 * 60 * 60 * 24) >=
-                  0 && selectedSports[type.toLowerCase() as GameType]
+                  0 && selectedSports[type]
               );
             })
             .map((booking: Booking, index: number) => (
@@ -151,13 +135,11 @@ export const Home = ({ navigation, route }: Props) => {
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
-          {activities.map((activity: Activity, index: number) => (
-            <ActivityCard
-              key={index}
-              date={activity.date}
-              gameType={activity.gameType}
-            />
-          ))}
+          {activities
+            ?.filter(({ type }) => selectedSports[type])
+            .map((activity: Activity, index: number) => (
+              <ActivityCard key={index} {...activity} />
+            ))}
         </View>
       </View>
     </AppHeader>

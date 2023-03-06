@@ -18,7 +18,7 @@ export const VenueBranches = ({ navigation, route }: Props) => {
 
   const { id } = route.params;
   const { userData } = useContext(UserContext);
-  const { data: branches } = useBranchesQuery(userData!, id);
+  const { data: branches } = useBranchesQuery(id);
 
   return (
     <AppHeader

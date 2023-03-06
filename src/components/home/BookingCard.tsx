@@ -12,7 +12,7 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import "intl";
 import "intl/locale-data/jsonp/en";
-import { Booking, GameType } from "src/types";
+import { Booking } from "src/types";
 
 export const BookingCard = ({ booking }: { booking: Booking }) => {
   const { colors } = useTheme();
@@ -42,7 +42,6 @@ export const BookingCard = ({ booking }: { booking: Booking }) => {
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
-  const gameType = booking.type.toLowerCase() as GameType;
 
   return (
     <Pressable
@@ -54,9 +53,9 @@ export const BookingCard = ({ booking }: { booking: Booking }) => {
       <View style={styles.leftImageView}>
         <Image
           source={
-            gameType === "basketball"
+            booking.type === "Basketball"
               ? require("assets/images/home/basketball.png")
-              : gameType === "football"
+              : booking.type === "Football"
               ? require("assets/images/home/football.png")
               : require("assets/images/home/tennis.png")
           }
@@ -65,11 +64,7 @@ export const BookingCard = ({ booking }: { booking: Booking }) => {
       </View>
       <View style={styles.content}>
         <Text style={[styles.greyText, { fontSize: 14 }]}>
-          <Text style={styles.text}>
-            {gameType[0].toUpperCase()}
-            {gameType.substring(1)} Game
-          </Text>{" "}
-          By{" "}
+          <Text style={styles.text}>{booking.type} Game</Text> By{" "}
           <Text style={styles.text}>
             {booking.admin?.firstName + " " + booking.admin?.lastName}
           </Text>

@@ -1,6 +1,7 @@
+import { useContext } from "react";
 import { useQuery } from "react-query";
 import { Invitation } from "src/types";
-import { UserData } from "src/utils";
+import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
 const getInvitations = (userData: UserData) => async () => {
@@ -14,10 +15,11 @@ const getInvitations = (userData: UserData) => async () => {
     });
 };
 
-export const useInvitationsQuery = (userData: UserData) =>
-  useQuery<Invitation[]>(
+export const useInvitationsQuery = () => {
+  const { userData } = useContext(UserContext);
+  return useQuery<Invitation[]>(
     ["invitations", userData?.userId],
-    getInvitations(userData),
+    getInvitations(userData!),
     {
       select: (invitations) =>
         invitations.map((invitation) => {
@@ -26,3 +28,4 @@ export const useInvitationsQuery = (userData: UserData) =>
         }),
     }
   );
+};

@@ -14,9 +14,9 @@ import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
 
 const sportBackground = {
-  basketball: <Image source={require("assets/images/home/basketball.png")} />,
-  football: <Image source={require("assets/images/home/football.png")} />,
-  tennis: <Image source={require("assets/images/home/tennis.png")} />,
+  Basketball: <Image source={require("assets/images/home/basketball.png")} />,
+  Football: <Image source={require("assets/images/home/football.png")} />,
+  Tennis: <Image source={require("assets/images/home/tennis.png")} />,
 };
 
 export const AppHeader = ({
@@ -48,7 +48,7 @@ export const AppHeader = ({
   searchBar?: boolean;
   backEnabled?: boolean;
   darkMode?: boolean;
-  backgroundImage?: "basketball" | "football" | "tennis";
+  backgroundImage?: "Basketball" | "Football" | "Tennis";
 }) => {
   const { colors } = useTheme();
   const scrollViewRef: React.MutableRefObject<ScrollView | null> = useRef(null);

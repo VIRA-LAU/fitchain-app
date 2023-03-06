@@ -31,7 +31,6 @@ export const UpcomingGameCard = ({ game }: { game: Booking }) => {
       >
     >();
 
-  const gameType = game.type.toLowerCase() as GameType;
   const location = `${game.court.branch.venue.name} - ${game.court.branch.location}`;
 
   return (
@@ -50,9 +49,9 @@ export const UpcomingGameCard = ({ game }: { game: Booking }) => {
       </View>
       <Image
         source={
-          gameType === "basketball"
+          game.type === "Basketball"
             ? require("assets/images/home/basketball.png")
-            : gameType === "football"
+            : game.type === "Football"
             ? require("assets/images/home/football.png")
             : require("assets/images/home/tennis.png")
         }
