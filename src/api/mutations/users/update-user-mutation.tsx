@@ -1,37 +1,25 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import client from "../../client";
-import { useContext } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import { UserContext } from "../../../utils/UserContext";
+import client, { getHeader } from "../../client";
+import { useMutation } from "react-query";
+import { UserData } from "../../../utils/UserContext";
 
-const updateUser = async (data: any) => {
-  return await client.patch(`/users/${data.id}`, data).then((res) => res.data);
+type Props = {};
+
+const updateUser = (userData: UserData) => async (data: Props) => {
+  const header = getHeader(userData);
+  return await client
+    .patch("/user/update", {
+      ...header,
+      data,
+    })
+    .then((res) => res.data)
+    .catch((e) => {
+      console.error("update-user-mutation", e);
+      throw new Error(e);
+    });
 };
 
-export const useUpdateUserMutation = () => {
-  const queryClient = useQueryClient();
-  const { setUserData } = useContext(UserContext);
-  return useMutation({
-    mutationFn: updateUser,
-    // onSuccess: async (data) => {
-    //   queryClient.refetchQueries(["userDetails", userId]);
-    // setUserData((oldData) => ({
-    //   ...oldData,
-    //   firstName: data.firstName,
-    //   lastName: data.lastName,
-    // }));
-    // const storedAuthentication = JSON.parse(
-    //   await AsyncStorage.getItem("authentication")
-    // );
-    // await AsyncStorage.setItem(
-    //   "authentication",
-    //   JSON.stringify({
-    //     token: storedAuthentication.token,
-    //     userId: userId,
-    //     firstName: data.firstName,
-    //     lastName: data.lastName,
-    //   })
-    // );
-    // },
+export const useUpdateUserMutation = (userData: UserData) => {
+  return useMutation<unknown, unknown, Props>({
+    mutationFn: updateUser(userData),
   });
 };

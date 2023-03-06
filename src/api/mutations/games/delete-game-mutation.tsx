@@ -1,19 +1,25 @@
-import client from "../../client";
-import { useContext } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import { UserContext } from "../../../utils/UserContext";
+import client, { getHeader } from "../../client";
+import { useMutation } from "react-query";
+import { UserData } from "../../../utils/UserContext";
 
-const deleteGame = async (rideId: number) => {
-  return await client.delete(`/games/${rideId}`).then((res) => res.data);
+type Props = {};
+
+const deleteGame = (userData: UserData) => async (data: Props) => {
+  const header = getHeader(userData);
+  return await client
+    .delete("/game/", {
+      ...header,
+      data,
+    })
+    .then((res) => res.data)
+    .catch((e) => {
+      console.error("delete-game-mutation", e);
+      throw new Error(e);
+    });
 };
 
-export const useDeleteGameMutation = () => {
-  const queryClient = useQueryClient();
-  const { userId } = useContext(UserContext);
-  return useMutation({
-    mutationFn: deleteGame,
-    onSuccess: (data) => {
-      queryClient.refetchQueries(["games"]);
-    },
+export const useDeleteGameMutation = (userData: UserData) => {
+  return useMutation<unknown, unknown, Props>({
+    mutationFn: deleteGame(userData),
   });
 };

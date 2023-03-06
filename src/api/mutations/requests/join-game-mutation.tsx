@@ -2,24 +2,27 @@ import client, { getHeader } from "../../client";
 import { useMutation } from "react-query";
 import { UserData } from "../../../utils/UserContext";
 
-type Props = {};
+type Props = {
+  gameId: number;
+  team: "HOME" | "AWAY";
+};
 
-const updateGame = (userData: UserData) => async (data: Props) => {
+const joinGame = (userData: UserData) => async (data: Props) => {
   const header = getHeader(userData);
   return await client
-    .patch("/game/update", {
+    .post("/gamerequests", {
       ...header,
       data,
     })
     .then((res) => res.data)
     .catch((e) => {
-      console.error("update-game-mutation", e);
+      console.error("join-game-mutation", e);
       throw new Error(e);
     });
 };
 
-export const useUpdateGameMutation = (userData: UserData) => {
+export const useJoinGameMutation = (userData: UserData) => {
   return useMutation<unknown, unknown, Props>({
-    mutationFn: updateGame(userData),
+    mutationFn: joinGame(userData),
   });
 };

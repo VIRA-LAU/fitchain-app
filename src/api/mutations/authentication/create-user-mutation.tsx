@@ -3,21 +3,32 @@ import { useContext } from "react";
 import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { User } from "src/types";
 
-const createUser = async (data: object) => {
+type Props = {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  password: string;
+};
+
+const createUser = async (data: Props) => {
   return await client
     .post("/auth/signup", data)
     .then((res) => res.data)
     .catch((error) => {
-      console.error(error);
+      console.error("signup-mutation", error);
       throw error;
     });
 };
-export default createUser;
-export const useCreateUserMutation = () => {
+
+export const useCreateUserMutation = (
+  setSignedIn: React.Dispatch<React.SetStateAction<boolean>>
+) => {
   const { setUserData } = useContext(UserContext);
 
-  return useMutation({
+  return useMutation<User, unknown, Props>({
     mutationFn: createUser,
     onSuccess: async (data) => {
       let fetchedInfo = {
@@ -28,6 +39,7 @@ export const useCreateUserMutation = () => {
         token: data.access_token,
       };
       setUserData(fetchedInfo);
+      setSignedIn(true);
     },
   });
 };
