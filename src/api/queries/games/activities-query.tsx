@@ -1,6 +1,7 @@
+import { useContext } from "react";
 import { useQuery } from "react-query";
 import { Activity } from "src/types";
-import { UserData } from "src/utils";
+import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
 const getActivities = (userData: UserData) => async () => {
@@ -15,5 +16,7 @@ const getActivities = (userData: UserData) => async () => {
     });
 };
 
-export const useActivitiesQuery = (userData: UserData) =>
-  useQuery<Activity[]>(["activities"], getActivities(userData));
+export const useActivitiesQuery = () => {
+  const { userData } = useContext(UserContext);
+  return useQuery<Activity[]>(["activities"], getActivities(userData!));
+};

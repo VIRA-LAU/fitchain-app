@@ -28,8 +28,8 @@ export const Profile = ({
   const { userData } = useContext(UserContext);
   const { firstName, lastName } = userData!;
 
-  const { data: games } = useGamesQuery(userData!);
-  const { data: activities } = useActivitiesQuery(userData!);
+  const { data: games } = useGamesQuery();
+  const { data: activities } = useActivitiesQuery();
 
   return (
     <AppHeader

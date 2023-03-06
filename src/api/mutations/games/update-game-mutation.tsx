@@ -1,6 +1,7 @@
 import client, { getHeader } from "../../client";
 import { useMutation } from "react-query";
-import { UserData } from "../../../utils/UserContext";
+import { UserContext, UserData } from "../../../utils/UserContext";
+import { useContext } from "react";
 
 type Props = {};
 
@@ -18,8 +19,9 @@ const updateGame = (userData: UserData) => async (data: Props) => {
     });
 };
 
-export const useUpdateGameMutation = (userData: UserData) => {
+export const useUpdateGameMutation = () => {
+  const { userData } = useContext(UserContext);
   return useMutation<unknown, unknown, Props>({
-    mutationFn: updateGame(userData),
+    mutationFn: updateGame(userData!),
   });
 };

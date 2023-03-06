@@ -44,11 +44,11 @@ export const Home = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const { userData } = useContext(UserContext);
 
-  const { data: branchesVenues } = useBranchesQuery(userData!);
-  const { data: games } = useGamesQuery(userData!);
-  const { data: bookings } = useBookingsQuery(userData!);
-  const { data: invitations } = useInvitationsQuery(userData!);
-  const { data: activities } = useActivitiesQuery(userData!);
+  const { data: branchesVenues } = useBranchesQuery();
+  const { data: games } = useGamesQuery();
+  const { data: bookings } = useBookingsQuery();
+  const { data: invitations } = useInvitationsQuery();
+  const { data: activities } = useActivitiesQuery();
 
   const [selectedSports, setSelectedSports] = useState({
     Basketball: true,
@@ -135,9 +135,11 @@ export const Home = ({ navigation, route }: Props) => {
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
-          {activities?.map((activity: Activity, index: number) => (
-            <ActivityCard key={index} {...activity} />
-          ))}
+          {activities
+            ?.filter(({ type }) => selectedSports[type])
+            .map((activity: Activity, index: number) => (
+              <ActivityCard key={index} {...activity} />
+            ))}
         </View>
       </View>
     </AppHeader>

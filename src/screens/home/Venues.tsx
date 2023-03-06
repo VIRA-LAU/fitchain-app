@@ -17,7 +17,7 @@ export const Venues = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
 
   const { userData } = useContext(UserContext);
-  const { data: branchesVenues } = useBranchesQuery(userData!);
+  const { data: branchesVenues } = useBranchesQuery();
 
   const [selectedSports, setSelectedSports] = useState({
     Basketball: true,

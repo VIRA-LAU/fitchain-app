@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useContext } from "react";
 import { AppHeader } from "src/components";
 import { View, StyleSheet, useWindowDimensions } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -15,6 +15,8 @@ import {
 } from "react-native-tab-view";
 import { Home } from "./Home";
 import { Booking, GameType } from "src/types";
+import { useJoinGameMutation } from "src/api";
+import { UserContext } from "src/utils";
 
 type Props = StackScreenProps<HomeStackParamList, "GameDetails">;
 
@@ -119,6 +121,11 @@ export const GameDetails = ({ navigation, route }: Props) => {
     />
   );
 
+  const [joinDisabled, setJoinDisabled] = useState(false);
+  // const {data: isInGame} = useCheckInGameQuery(booking.id)
+
+  const { userData } = useContext(UserContext);
+  const { mutate: joinGame } = useJoinGameMutation(setJoinDisabled);
   return (
     <AppHeader
       absolutePosition={false}
@@ -174,7 +181,14 @@ export const GameDetails = ({ navigation, route }: Props) => {
               )}
               style={{ borderRadius: 5, flex: 1 }}
               textColor={colors.secondary}
-              buttonColor={colors.primary}
+              buttonColor={joinDisabled ? colors.tertiary : colors.primary}
+              onPress={() => {
+                joinGame({
+                  gameId: booking.id,
+                  team: "HOME",
+                });
+              }}
+              disabled={joinDisabled}
             >
               Join Game
             </Button>

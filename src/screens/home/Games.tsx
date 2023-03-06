@@ -24,9 +24,9 @@ import {
 } from "components";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { UserContext, UserData } from "src/utils";
+import { UserContext } from "src/utils";
 import { useBookingsQuery } from "src/api";
-import { Booking, GameType } from "src/types";
+import { Booking } from "src/types";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -54,8 +54,7 @@ const GamesIFollow = ({
   };
   selectedSports: SportSelection;
 }) => {
-  const { userData } = useContext(UserContext);
-  const { data: bookings } = useBookingsQuery(userData!);
+  const { data: bookings } = useBookingsQuery();
   const today = new Date();
   const upcomingGames: JSX.Element[] = [];
   const dayHeaders: string[] = [];
@@ -143,8 +142,7 @@ const PreviousGamesIFollow = ({
   };
   selectedSports: SportSelection;
 }) => {
-  const { userData } = useContext(UserContext);
-  const { data: bookings } = useBookingsQuery(userData!);
+  const { data: bookings } = useBookingsQuery();
 
   const today = new Date();
   const previousGames: JSX.Element[] = [];

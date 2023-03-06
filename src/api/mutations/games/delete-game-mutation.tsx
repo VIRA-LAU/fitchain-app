@@ -1,6 +1,7 @@
 import client, { getHeader } from "../../client";
 import { useMutation } from "react-query";
-import { UserData } from "../../../utils/UserContext";
+import { UserContext, UserData } from "../../../utils/UserContext";
+import { useContext } from "react";
 
 type Props = {};
 
@@ -18,8 +19,9 @@ const deleteGame = (userData: UserData) => async (data: Props) => {
     });
 };
 
-export const useDeleteGameMutation = (userData: UserData) => {
+export const useDeleteGameMutation = () => {
+  const { userData } = useContext(UserContext);
   return useMutation<unknown, unknown, Props>({
-    mutationFn: deleteGame(userData),
+    mutationFn: deleteGame(userData!),
   });
 };

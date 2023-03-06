@@ -1,6 +1,7 @@
 import client, { getHeader } from "../../client";
 import { useMutation } from "react-query";
-import { UserData } from "../../../utils/UserContext";
+import { UserContext, UserData } from "../../../utils/UserContext";
+import { useContext } from "react";
 
 type Props = {
   gameId: number;
@@ -10,10 +11,7 @@ type Props = {
 const joinGame = (userData: UserData) => async (data: Props) => {
   const header = getHeader(userData);
   return await client
-    .post("/gamerequests", {
-      ...header,
-      data,
-    })
+    .post("/gamerequests", data, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("join-game-mutation", e);
@@ -21,8 +19,11 @@ const joinGame = (userData: UserData) => async (data: Props) => {
     });
 };
 
-export const useJoinGameMutation = (userData: UserData) => {
+export const useJoinGameMutation = (
+  setJoinDisabled: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+  const { userData } = useContext(UserContext);
   return useMutation<unknown, unknown, Props>({
-    mutationFn: joinGame(userData),
+    mutationFn: joinGame(userData!),
   });
 };

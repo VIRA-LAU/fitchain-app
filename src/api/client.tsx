@@ -1,9 +1,8 @@
 import axios from "axios";
-import { UserContext, UserData } from "src/utils";
-import { useContext } from "react";
+import { UserData } from "src/utils";
 
 const client = axios.create({
-  baseURL: "http://192.168.0.100:3000",
+  baseURL: "http://192.168.220.187:3000",
 });
 
 export default client;

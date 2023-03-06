@@ -1,6 +1,7 @@
+import { useContext } from "react";
 import { useQuery } from "react-query";
 import { Booking } from "src/types";
-import { UserData } from "src/utils";
+import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
 const getGames = (userData: UserData) => async () => {
@@ -14,10 +15,13 @@ const getGames = (userData: UserData) => async () => {
     });
 };
 
-export const useGamesQuery = (userData: UserData) =>
-  useQuery<Booking[]>(["games", userData?.userId], getGames(userData), {
+export const useGamesQuery = () => {
+  const { userData } = useContext(UserContext);
+
+  return useQuery<Booking[]>(["games", userData?.userId], getGames(userData!), {
     select: (games) =>
       games
         .map((game) => ({ ...game, date: new Date(game.date) }))
         .sort((a, b) => a.date.getTime() - b.date.getTime()),
   });
+};
