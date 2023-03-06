@@ -48,7 +48,10 @@ const BottomTabNavigator = () => {
           }}
         />
         <Tab.Screen name="Venues" component={Venues} />
-        <Tab.Screen name="Profile" component={Profile} />
+        <Tab.Screen
+          name="Profile"
+          children={(props) => <Profile isUserProfile={true} {...props} />}
+        />
       </Tab.Navigator>
       <View
         style={{

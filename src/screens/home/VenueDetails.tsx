@@ -5,7 +5,6 @@ import {
   useWindowDimensions,
   ScrollView,
 } from "react-native";
-import { useContext } from "react";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { AppHeader, BranchLocation } from "src/components";
@@ -14,7 +13,6 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
 import { useVenueByIdQuery } from "src/api";
-import { UserContext } from "src/utils";
 
 type Props = StackScreenProps<HomeStackParamList, "VenueDetails">;
 
@@ -24,14 +22,13 @@ export const VenueDetails = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors, windowWidth, windowHeight);
 
   // const [selectedSports, setSelectedSports] = useState({
-  //   basketball: true,
-  //   football: true,
-  //   tennis: true,
+  //   Basketball: true,
+  //   Football: true,
+  //   Tennis: true,
   // });
 
   const { id } = route.params;
-  const { userData } = useContext(UserContext);
-  const { data: venue } = useVenueByIdQuery(userData!, id);
+  const { data: venue } = useVenueByIdQuery(id);
 
   return (
     <AppHeader

@@ -2,12 +2,13 @@ import { useQuery } from "react-query";
 import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 import { Booking } from "src/types";
+import { useContext } from "react";
 
 const getBookings = (userData: UserData) => async () => {
-  let head = getHeader(userData);
+  const header = getHeader(userData);
 
   return await client
-    .get(`/games/bookings`, head)
+    .get(`/games/bookings`, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("bookings-query", e);
@@ -15,10 +16,16 @@ const getBookings = (userData: UserData) => async () => {
     });
 };
 
-export const useBookingsQuery = (userData: UserData) =>
-  useQuery<Booking[]>(["bookings", userData?.userId], getBookings(userData), {
-    select: (bookings) =>
-      bookings
-        .map((booking) => ({ ...booking, date: new Date(booking.date) }))
-        .sort((a, b) => a.date.getTime() - b.date.getTime()),
-  });
+export const useBookingsQuery = () => {
+  const { userData } = useContext(UserContext);
+  return useQuery<Booking[]>(
+    ["bookings", userData?.userId],
+    getBookings(userData!),
+    {
+      select: (bookings) =>
+        bookings
+          .map((booking) => ({ ...booking, date: new Date(booking.date) }))
+          .sort((a, b) => a.date.getTime() - b.date.getTime()),
+    }
+  );
+};

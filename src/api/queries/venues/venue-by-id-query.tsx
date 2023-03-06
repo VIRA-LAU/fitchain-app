@@ -1,6 +1,7 @@
+import { useContext } from "react";
 import { useQuery } from "react-query";
 import { Venue } from "src/types";
-import { UserData } from "src/utils";
+import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
 const getVenueById = (userData: UserData, id: number) => async () => {
@@ -14,5 +15,7 @@ const getVenueById = (userData: UserData, id: number) => async () => {
     });
 };
 
-export const useVenueByIdQuery = (userData: UserData, id: number) =>
-  useQuery<Venue>(["Venue", id], getVenueById(userData, id));
+export const useVenueByIdQuery = (id: number) => {
+  const { userData } = useContext(UserContext);
+  return useQuery<Venue>(["Venue", id], getVenueById(userData!, id));
+};

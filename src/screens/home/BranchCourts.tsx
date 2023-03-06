@@ -17,7 +17,7 @@ export const BranchCourts = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
 
   const { userData } = useContext(UserContext);
-  const { data: branchesVenues } = useBranchesQuery(userData!);
+  const { data: branchesVenues } = useBranchesQuery();
 
   return (
     <AppHeader

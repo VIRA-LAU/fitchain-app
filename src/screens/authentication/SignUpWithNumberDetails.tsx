@@ -19,7 +19,7 @@ export const SignUpWithNumberDetails = ({
   route: Props["route"];
   setSignedIn: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { mutate: createUser, data: loggedin } = useCreateUserMutation();
+  const { mutate: createUser } = useCreateUserMutation(setSignedIn);
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [password, setPassword] = useState("");
@@ -32,11 +32,6 @@ export const SignUpWithNumberDetails = ({
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     return reg.test(email);
   };
-  useEffect(() => {
-    if (loggedin) {
-      setSignedIn(true);
-    }
-  }, [loggedin]);
 
   const signUp = () => {
     if (

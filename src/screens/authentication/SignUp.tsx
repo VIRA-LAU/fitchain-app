@@ -24,18 +24,13 @@ export const SignUp = ({
   const { colors } = useTheme();
   const styles = makeStyles(fontScale, colors);
   const [email, setEmail] = useState("");
-  const { mutate: LoginUser, data: loggedin } = useLoginUserMutation();
+  const { mutate: loginUser } = useLoginUserMutation(setSignedIn);
 
   const [password, setPassword] = useState("");
   const validateEmail = (email: string) => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     return reg.test(email);
   };
-  useEffect(() => {
-    if (loggedin) {
-      setSignedIn(true);
-    }
-  }, [loggedin]);
 
   const signIn = () => {
     let emailValid = validateEmail(email.trim());
@@ -44,7 +39,7 @@ export const SignUp = ({
         email: email.trim(),
         password: password.trim(),
       };
-      LoginUser(data);
+      loginUser(data);
     }
   };
   return (

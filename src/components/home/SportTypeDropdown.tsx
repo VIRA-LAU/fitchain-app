@@ -13,9 +13,9 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import { GameType } from "src/types";
 
 export type SportSelection = {
-  basketball: boolean;
-  football: boolean;
-  tennis: boolean;
+  Basketball: boolean;
+  Football: boolean;
+  Tennis: boolean;
 };
 
 type SportOption = {
@@ -128,9 +128,7 @@ export const SportTypeDropdown = ({
             return (
               <Pressable
                 key={index}
-                onPress={() =>
-                  updateSelectedSports(sport.type.toLowerCase() as GameType)
-                }
+                onPress={() => updateSelectedSports(sport.type)}
               >
                 <View style={styles.sportRowView}>
                   {sport.image}
@@ -142,7 +140,7 @@ export const SportTypeDropdown = ({
                   >
                     {sport.type}
                   </Text>
-                  {selectedSports[sport.type.toLowerCase() as GameType] && (
+                  {selectedSports[sport.type] && (
                     <FeatherIcon
                       name="check"
                       color={"white"}

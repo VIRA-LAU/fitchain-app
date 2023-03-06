@@ -1,6 +1,7 @@
+import { useContext } from "react";
 import { useQuery } from "react-query";
 import { VenueBranch } from "src/types";
-import { UserData } from "src/utils";
+import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
 const getBranches = (userData: UserData, venueId?: number) => async () => {
@@ -15,5 +16,7 @@ const getBranches = (userData: UserData, venueId?: number) => async () => {
     });
 };
 
-export const useBranchesQuery = (userData: UserData, venueId?: number) =>
-  useQuery<VenueBranch[]>(["branches"], getBranches(userData, venueId));
+export const useBranchesQuery = (venueId?: number) => {
+  const { userData } = useContext(UserContext);
+  return useQuery<VenueBranch[]>(["branches"], getBranches(userData!, venueId));
+};

@@ -1,20 +1,27 @@
-import { useAxios } from "../../client";
+import client, { getHeader } from "../../client";
+import { useMutation } from "react-query";
+import { UserContext, UserData } from "../../../utils/UserContext";
 import { useContext } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import { UserContext } from "../../../utils/UserContext";
 
-const createGame = async (data: any) => {
-  const client = useAxios();
-  return await client.post("/game", data).then((res) => res.data);
+type Props = {};
+
+const createGame = (userData: UserData) => async (data: Props) => {
+  const header = getHeader(userData);
+  return await client
+    .post("/game", {
+      ...header,
+      data,
+    })
+    .then((res) => res.data)
+    .catch((e) => {
+      console.error("create-game-mutation", e);
+      throw new Error(e);
+    });
 };
 
 export const useCreateGameMutation = () => {
-  const queryClient = useQueryClient();
   const { userData } = useContext(UserContext);
-  return useMutation({
-    mutationFn: createGame,
-    onSuccess: (data) => {
-      queryClient.refetchQueries(["games"]);
-    },
+  return useMutation<unknown, unknown, Props>({
+    mutationFn: createGame(userData!),
   });
 };
