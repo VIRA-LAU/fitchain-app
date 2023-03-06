@@ -11,7 +11,7 @@ import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
 import FeatherIcon from "react-native-vector-icons/Feather";
 
-export const VenueLocation = ({ branch = false }: { branch?: boolean }) => {
+export const CourtCard = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -26,59 +26,39 @@ export const VenueLocation = ({ branch = false }: { branch?: boolean }) => {
     <Pressable
       style={styles.wrapperView}
       onPress={() => {
-        navigation.push("branchCourts");
+        navigation.push("VenueBookingDetails");
       }}
     >
-      <Image
-        style={styles.background}
-        source={require("assets/images/home/hoops-location.png")}
-      />
       <View style={styles.dataView}>
-        {!branch ? (
-          <View style={styles.headerView}>
+        <View style={styles.headerView}>
+          <View style={styles.titleView}>
             <Image
-              source={require("assets/images/home/basketball-hub-icon.png")}
-              style={{ width: 35, aspectRatio: 1 }}
+              style={styles.background}
+              source={require("assets/images/home/basketball-court-icon.png")}
             />
-            <View style={styles.titleView}>
-              <Text style={styles.title}>Hoops Club</Text>
-              <Text style={styles.subtitle}>Hazmieh</Text>
-            </View>
           </View>
-        ) : (
-          <View style={styles.headerView}>
-            <View>
-              <Text style={styles.title}>Hazmieh</Text>
+          <View style={{ flex: 1 }}>
+            <View style={styles.rowView}>
+              <Text variant="labelLarge" style={styles.courtType}>
+                Basketball
+              </Text>
+              <View style={styles.rating}>
+                <FeatherIcon name={`star`} color={"white"} size={14} />
+                <Text style={styles.title}>3.6</Text>
+              </View>
             </View>
-            <FeatherIcon
-              name={`star`}
-              color={"white"}
-              size={14}
-              style={{ marginLeft: 50, marginRight: 5 }}
-            />
-            <View>
-              <Text style={styles.title}>3.6</Text>
-            </View>
-          </View>
-        )}
-        <View style={styles.rowView}>
-          <Text style={styles.rowKey}>COURTS</Text>
-          <Text style={styles.rowValue}>Football, Basketball</Text>
-        </View>
-        {!branch && (
-          <View style={styles.rowView}>
-            <Text style={styles.rowKey}>SIDE</Text>
-            <Text style={styles.rowValue}>Away</Text>
-          </View>
-        )}
 
-        <View style={styles.rowView}>
-          <Text style={styles.rowKey}>PRICE</Text>
-          <Text style={styles.rowValue}>USD 12-23/hr</Text>
+            <View style={[styles.rowView, { marginVertical: -10 }]}>
+              <Text style={styles.subtitle}>TYPE</Text>
+              <Text style={styles.rowValue}>Full-Court</Text>
+            </View>
+            <View style={styles.rowView}>
+              <Text style={styles.subtitle}>PRICE</Text>
+              <Text style={styles.rowValue}>USD 12-23/hr</Text>
+            </View>
+          </View>
         </View>
-      </View>
-      <View style={styles.icon}>
-        <OctIcon name="location" color="white" size={24} />
+        <View style={styles.lineStyle} />
       </View>
     </Pressable>
   );
@@ -86,28 +66,31 @@ export const VenueLocation = ({ branch = false }: { branch?: boolean }) => {
 
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
+    rating: {
+      flexDirection: "row",
+    },
+    lineStyle: {
+      marginTop: 10,
+      borderWidth: 0.3,
+      borderColor: colors.tertiary,
+    },
+    courtType: {
+      color: "white",
+    },
     wrapperView: {
-      borderRadius: 10,
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 10,
     },
     background: {
-      position: "absolute",
-      height: "100%",
-      width: "100%",
+      height: 75,
+      width: 75,
       borderRadius: 10,
     },
     dataView: {
-      width: "50%",
-      margin: 10,
-      backgroundColor: colors.secondary,
-      borderRadius: 10,
-      padding: 10,
+      width: "100%",
     },
     headerView: {
       flexDirection: "row",
-      alignItems: "center",
       padding: 5,
     },
     titleView: { marginLeft: 10 },
@@ -116,13 +99,16 @@ const makeStyles = (colors: MD3Colors) =>
       alignItems: "center",
     },
     rowView: {
+      marginTop: 10,
       flexDirection: "row",
+      flex: 1,
       justifyContent: "space-between",
-      marginVertical: 2,
+      marginHorizontal: 10,
     },
     title: {
       color: "white",
       fontFamily: "Inter-Medium",
+      marginLeft: 5,
     },
     subtitle: {
       color: colors.tertiary,

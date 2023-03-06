@@ -4,6 +4,7 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
+  Pressable,
 } from "react-native";
 import { useState } from "react";
 import { Button, Text, useTheme } from "react-native-paper";
@@ -57,20 +58,27 @@ export const VenueDetails = ({ navigation, route }: Props) => {
               with the French club Olympique Lyonnairs.
             </Text>
             <View style={styles.buttonsView}>
-              <Button
-                icon={() => (
-                  <IonIcon
-                    name={"basketball-outline"}
-                    size={26}
-                    color={colors.secondary}
-                  />
-                )}
-                style={{ borderRadius: 5, flex: 1 }}
-                textColor={colors.secondary}
-                buttonColor={colors.primary}
+              <Pressable
+                onPress={() => {
+                  navigation.push("VenueBranches");
+                }}
               >
-                Book Court
-              </Button>
+                <Button
+                  icon={() => (
+                    <IonIcon
+                      name={"basketball-outline"}
+                      size={26}
+                      color={colors.secondary}
+                    />
+                  )}
+                  style={{ borderRadius: 5, flex: 1 }}
+                  textColor={colors.secondary}
+                  buttonColor={colors.primary}
+                >
+                  Book Court
+                </Button>
+              </Pressable>
+
               <Button
                 icon={() => (
                   <FeatherIcon name="thumbs-up" size={22} color={"white"} />

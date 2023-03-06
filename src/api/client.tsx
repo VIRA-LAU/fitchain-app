@@ -2,7 +2,7 @@ import axios from "axios";
 import { UserData } from "src/utils";
 
 const client = axios.create({
-  baseURL: "http://192.168.55.187:3000",
+  baseURL: "http://192.168.55.22:3000",
 });
 
 export default client;

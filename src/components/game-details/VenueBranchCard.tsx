@@ -9,9 +9,8 @@ import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
-import FeatherIcon from "react-native-vector-icons/Feather";
 
-export const VenueLocation = ({ branch = false }: { branch?: boolean }) => {
+export const VenueBranchCard = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -26,7 +25,7 @@ export const VenueLocation = ({ branch = false }: { branch?: boolean }) => {
     <Pressable
       style={styles.wrapperView}
       onPress={() => {
-        navigation.push("branchCourts");
+        navigation.push("VenueBookingDetails");
       }}
     >
       <Image
@@ -34,47 +33,27 @@ export const VenueLocation = ({ branch = false }: { branch?: boolean }) => {
         source={require("assets/images/home/hoops-location.png")}
       />
       <View style={styles.dataView}>
-        {!branch ? (
-          <View style={styles.headerView}>
-            <Image
-              source={require("assets/images/home/basketball-hub-icon.png")}
-              style={{ width: 35, aspectRatio: 1 }}
-            />
-            <View style={styles.titleView}>
-              <Text style={styles.title}>Hoops Club</Text>
-              <Text style={styles.subtitle}>Hazmieh</Text>
-            </View>
+        <View style={styles.headerView}>
+          <Image
+            source={require("assets/images/home/basketball-hub-icon.png")}
+            style={{ width: 35, aspectRatio: 1 }}
+          />
+          <View style={styles.titleView}>
+            <Text style={styles.title}>Hoops Club</Text>
+            <Text style={styles.subtitle}>Hazmieh</Text>
           </View>
-        ) : (
-          <View style={styles.headerView}>
-            <View>
-              <Text style={styles.title}>Hazmieh</Text>
-            </View>
-            <FeatherIcon
-              name={`star`}
-              color={"white"}
-              size={14}
-              style={{ marginLeft: 50, marginRight: 5 }}
-            />
-            <View>
-              <Text style={styles.title}>3.6</Text>
-            </View>
-          </View>
-        )}
-        <View style={styles.rowView}>
-          <Text style={styles.rowKey}>COURTS</Text>
-          <Text style={styles.rowValue}>Football, Basketball</Text>
         </View>
-        {!branch && (
-          <View style={styles.rowView}>
-            <Text style={styles.rowKey}>SIDE</Text>
-            <Text style={styles.rowValue}>Away</Text>
-          </View>
-        )}
-
+        <View style={styles.rowView}>
+          <Text style={styles.rowKey}>COURT</Text>
+          <Text style={styles.rowValue}>A003</Text>
+        </View>
+        <View style={styles.rowView}>
+          <Text style={styles.rowKey}>SIDE</Text>
+          <Text style={styles.rowValue}>Away</Text>
+        </View>
         <View style={styles.rowView}>
           <Text style={styles.rowKey}>PRICE</Text>
-          <Text style={styles.rowValue}>USD 12-23/hr</Text>
+          <Text style={styles.rowValue}>USD 12/hr</Text>
         </View>
       </View>
       <View style={styles.icon}>
