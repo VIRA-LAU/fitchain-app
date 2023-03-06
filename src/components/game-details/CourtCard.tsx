@@ -7,7 +7,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { Image, StyleSheet, View, Pressable } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
 import FeatherIcon from "react-native-vector-icons/Feather";
 
@@ -31,12 +30,10 @@ export const CourtCard = () => {
     >
       <View style={styles.dataView}>
         <View style={styles.headerView}>
-          <View style={styles.titleView}>
-            <Image
-              style={styles.background}
-              source={require("assets/images/home/basketball-court-icon.png")}
-            />
-          </View>
+          <Image
+            style={styles.background}
+            source={require("assets/images/home/basketball-court-icon.png")}
+          />
           <View style={{ flex: 1 }}>
             <View style={styles.rowView}>
               <Text variant="labelLarge" style={styles.courtType}>
@@ -70,7 +67,7 @@ const makeStyles = (colors: MD3Colors) =>
       flexDirection: "row",
     },
     lineStyle: {
-      marginTop: 10,
+      marginVertical: 5,
       borderWidth: 0.3,
       borderColor: colors.tertiary,
     },
@@ -85,6 +82,7 @@ const makeStyles = (colors: MD3Colors) =>
       height: 75,
       width: 75,
       borderRadius: 10,
+      marginLeft: 10,
     },
     dataView: {
       width: "100%",
@@ -92,6 +90,7 @@ const makeStyles = (colors: MD3Colors) =>
     headerView: {
       flexDirection: "row",
       padding: 5,
+      alignItems: "center",
     },
     titleView: { marginLeft: 10 },
     icon: {
@@ -114,11 +113,6 @@ const makeStyles = (colors: MD3Colors) =>
       color: colors.tertiary,
       fontFamily: "Inter-Medium",
       fontSize: 12,
-    },
-    rowKey: {
-      color: colors.tertiary,
-      fontFamily: "Inter-Medium",
-      fontSize: 10,
     },
     rowValue: {
       color: "white",

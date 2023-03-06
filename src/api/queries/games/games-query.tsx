@@ -5,7 +5,6 @@ import client, { getHeader } from "../../client";
 
 const getGames = (userData: UserData) => async () => {
   const header = getHeader(userData);
-  console.log(userData?.userId);
   return await client
     .get(`/games/upcomings?userId=${userData?.userId}`, header)
     .then((res) => res.data)

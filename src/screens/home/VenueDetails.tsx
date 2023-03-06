@@ -4,12 +4,11 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
-  Pressable,
 } from "react-native";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { AppHeader, SportTypeDropdown, BranchLocation } from "src/components";
+import { AppHeader, BranchLocation } from "src/components";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
@@ -24,17 +23,16 @@ export const VenueDetails = ({ navigation, route }: Props) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const styles = makeStyles(colors, windowWidth, windowHeight);
 
-  const [selectedSports, setSelectedSports] = useState({
-    basketball: true,
-    football: true,
-    tennis: true,
-  });
+  // const [selectedSports, setSelectedSports] = useState({
+  //   basketball: true,
+  //   football: true,
+  //   tennis: true,
+  // });
 
   const { id } = route.params;
   const { userData } = useContext(UserContext);
   const { data: venue } = useVenueByIdQuery(userData!, id);
 
-  console.log(useVenueByIdQuery);
   return (
     <AppHeader
       navigation={navigation}
@@ -62,26 +60,23 @@ export const VenueDetails = ({ navigation, route }: Props) => {
             />
             <Text style={styles.headerText}>{venue?.description}</Text>
             <View style={styles.buttonsView}>
-              <Pressable
+              <Button
                 onPress={() => {
-                  navigation.push("VenueBranches");
+                  navigation.push("VenueBranches", { id });
                 }}
+                icon={() => (
+                  <IonIcon
+                    name={"basketball-outline"}
+                    size={26}
+                    color={colors.secondary}
+                  />
+                )}
+                style={{ borderRadius: 5, flex: 1 }}
+                textColor={colors.secondary}
+                buttonColor={colors.primary}
               >
-                <Button
-                  icon={() => (
-                    <IonIcon
-                      name={"basketball-outline"}
-                      size={26}
-                      color={colors.secondary}
-                    />
-                  )}
-                  style={{ borderRadius: 5, flex: 1 }}
-                  textColor={colors.secondary}
-                  buttonColor={colors.primary}
-                >
-                  Book Court
-                </Button>
-              </Pressable>
+                Book Court
+              </Button>
 
               <Button
                 icon={() => (

@@ -75,6 +75,11 @@ export interface VenueBranch {
     id: number;
     name: string;
   };
+  courts: {
+    id: number;
+    courtType: string;
+    price: number;
+  }[];
 }
 
 export interface Activity {

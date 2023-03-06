@@ -10,11 +10,13 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
 import { Booking } from "src/types";
+import FeatherIcon from "react-native-vector-icons/Feather";
 
 export const BranchLocation = ({
   type,
   court,
   branch,
+  isPressable = false,
 }: {
   type: "branch" | "court";
   court?: Booking["court"];
@@ -23,6 +25,7 @@ export const BranchLocation = ({
     courts: string;
     prices: string;
   };
+  isPressable?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -38,7 +41,7 @@ export const BranchLocation = ({
     <Pressable
       style={styles.wrapperView}
       onPress={() => {
-        navigation.push("VenueBookingDetails");
+        if (isPressable) navigation.push("BranchCourts");
       }}
     >
       <Image
@@ -55,10 +58,25 @@ export const BranchLocation = ({
             <Text style={styles.title}>
               {type === "court" ? court?.branch.venue.name : branch?.location}
             </Text>
-            <Text style={styles.subtitle}>
-              {type === "court" && court?.branch.location}
-            </Text>
+            {type === "court" && (
+              <Text style={styles.subtitle}>
+                {type === "court" && court?.branch.location}
+              </Text>
+            )}
           </View>
+          {type === "branch" && (
+            <FeatherIcon
+              name={"star"}
+              color={"white"}
+              size={14}
+              style={{ marginLeft: "auto", marginRight: 5 }}
+            />
+          )}
+          {type === "branch" && (
+            <View>
+              <Text style={styles.title}>3.6</Text>
+            </View>
+          )}
         </View>
         {type === "court" && (
           <View style={styles.rowView}>
@@ -113,7 +131,7 @@ const makeStyles = (colors: MD3Colors) =>
       borderRadius: 10,
     },
     dataView: {
-      width: "50%",
+      width: "60%",
       margin: 10,
       backgroundColor: colors.secondary,
       borderRadius: 10,
@@ -122,7 +140,7 @@ const makeStyles = (colors: MD3Colors) =>
     headerView: {
       flexDirection: "row",
       alignItems: "center",
-      padding: 5,
+      paddingVertical: 5,
     },
     titleView: { marginLeft: 10 },
     icon: {

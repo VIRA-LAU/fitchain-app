@@ -1,43 +1,25 @@
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import {
-  CompositeNavigationProp,
-  useNavigation,
-} from "@react-navigation/native";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
-import { Image, StyleSheet, View, Pressable } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { StackScreenProps } from "@react-navigation/stack";
+import { StyleSheet, View } from "react-native";
+import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import OctIcon from "react-native-vector-icons/Octicons";
-import { BottomTabParamList, HomeStackParamList } from "navigation";
-import {
-  AppHeader,
-  SportTypeDropdown,
-  VenueCard,
-  VenueLocation,
-} from "src/components";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { HomeStackParamList } from "navigation";
+import { AppHeader, BranchLocation } from "src/components";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useBranchesQuery } from "src/api";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { UserContext } from "src/utils";
-import { VenueBranch } from "src/types";
 import { ScrollView } from "react-native-gesture-handler";
-import { VenueBranchCard } from "src/components/game-details/VenueBranchCard";
 
-type Props = StackScreenProps<HomeStackParamList, "venueBranches">;
+type Props = StackScreenProps<HomeStackParamList, "VenueBranches">;
 
 export const VenueBranches = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
+  const { id } = route.params;
   const { userData } = useContext(UserContext);
-  const { data: branchesVenues } = useBranchesQuery(userData!);
+  const { data: branches } = useBranchesQuery(userData!, id);
 
-  const [selectedSports, setSelectedSports] = useState({
-    basketball: true,
-    football: true,
-    tennis: true,
-  });
   return (
     <AppHeader
       absolutePosition={false}
@@ -45,19 +27,35 @@ export const VenueBranches = ({ navigation, route }: Props) => {
       route={route}
       right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
       title={"Branches"}
-      left={
-        <SportTypeDropdown
-          selectedSports={selectedSports}
-          setSelectedSports={setSelectedSports}
-        />
-      }
       searchBar
+      backEnabled
     >
       <View style={styles.wrapperView}>
         <ScrollView style={styles.contentView}>
-          <VenueLocation branch />
-          <VenueLocation branch />
-          <VenueLocation branch />
+          {branches?.map((branch, index: number) => {
+            const pricesArr = branch.courts.map(({ price }) => price);
+            const prices =
+              pricesArr.length === 1
+                ? pricesArr[0].toString()
+                : `${Math.min.apply(null, pricesArr)} - ${Math.max.apply(
+                    null,
+                    pricesArr
+                  )}`;
+            return (
+              <BranchLocation
+                key={index}
+                type="branch"
+                isPressable
+                branch={{
+                  location: branch.location,
+                  courts: branch.courts
+                    .map(({ courtType }) => courtType)
+                    .join(", "),
+                  prices,
+                }}
+              />
+            );
+          })}
         </ScrollView>
       </View>
     </AppHeader>
