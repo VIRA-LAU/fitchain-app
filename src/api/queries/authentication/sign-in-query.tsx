@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { User } from "src/types";
 import client from "../../client";
 
 const signInQuery = () => async () => {
@@ -11,4 +12,4 @@ const signInQuery = () => async () => {
     });
 };
 
-export const useSignInQuery = () => useQuery(["sign-in"], signInQuery());
+export const useSignInQuery = () => useQuery<User>(["sign-in"], signInQuery());

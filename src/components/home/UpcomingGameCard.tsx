@@ -8,17 +8,9 @@ import {
   CompositeNavigationProp,
   useNavigation,
 } from "@react-navigation/native";
+import { Booking, GameType } from "src/types";
 
-export const UpcomingGameCard = ({
-  gameType,
-  date,
-  location,
-}: {
-  gameType: any;
-  date: Date;
-  location: string;
-}) => {
-  date = new Date(date);
+export const UpcomingGameCard = ({ game }: { game: Booking }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const weekday = [
@@ -38,13 +30,19 @@ export const UpcomingGameCard = ({
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
+
+  const gameType = game.type.toLowerCase() as GameType;
+  const location = `${game.court.branch.venue.name} - ${game.court.branch.location}`;
+
   return (
     <Pressable
       style={styles.wrapper}
-      onPress={() => navigation.push("GameDetails")}
+      onPress={() =>
+        navigation.push("GameDetails", { booking: JSON.stringify(game) })
+      }
     >
       <View>
-        <Text style={styles.text}>This {weekday[date?.getDay()]},</Text>
+        <Text style={styles.text}>This {weekday[game.date?.getDay()]},</Text>
         <Text style={styles.greyText}>
           {"at "}
           <Text style={styles.text}>{location}</Text>

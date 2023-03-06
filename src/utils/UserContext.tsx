@@ -7,6 +7,7 @@ export type UserData = {
   email: string;
   token: string;
 };
+
 export type ContextProps = {
   readonly userData: UserData | null;
   readonly setUserData: React.Dispatch<React.SetStateAction<UserData | null>>;

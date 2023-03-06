@@ -7,10 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const createUser = async (data: object) => {
   return await client
     .post("/auth/signup", data)
-    .then((res) => {
-      console.log(res.data);
-      return res.data;
-    })
+    .then((res) => res.data)
     .catch((error) => {
       console.error(error);
       throw error;
@@ -18,12 +15,11 @@ const createUser = async (data: object) => {
 };
 export default createUser;
 export const useCreateUserMutation = () => {
-  const { userData, setUserData } = useContext(UserContext) as any;
+  const { setUserData } = useContext(UserContext);
 
   return useMutation({
     mutationFn: createUser,
-    onSuccess: async (data: any) => {
-      console.log("creating user");
+    onSuccess: async (data) => {
       let fetchedInfo = {
         userId: data.userId,
         firstName: data.firstName,

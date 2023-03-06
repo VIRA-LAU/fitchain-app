@@ -3,10 +3,10 @@ import { Venue } from "src/types";
 import { UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
-const getVenues = (userData: UserData) => async () => {
+const getVenueById = (userData: UserData, id: number) => async () => {
   const header = getHeader(userData);
   return await client
-    .get(`/venues`, header)
+    .get(`/venues/${id}`, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("get-venues-query", e);
@@ -14,5 +14,5 @@ const getVenues = (userData: UserData) => async () => {
     });
 };
 
-export const useVenuesQuery = (userData: UserData) =>
-  useQuery<Venue[]>(["Venues"], getVenues(userData));
+export const useVenueByIdQuery = (userData: UserData, id: number) =>
+  useQuery<Venue>(["Venue", id], getVenueById(userData, id));

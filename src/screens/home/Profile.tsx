@@ -6,6 +6,10 @@ import { ActivityCard, AppHeader } from "src/components";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
+import { Activity } from "src/types";
+import { useContext } from "react";
+import { UserContext } from "src/utils";
+import { useGamesQuery } from "src/api";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -16,12 +20,22 @@ export const Profile = ({ navigation, route }: Props) => {
     useWindowDimensions().width,
     useWindowDimensions().height
   );
+
+  const { userData } = useContext(UserContext);
+  const { firstName, lastName } = userData!;
+
+  const { data: games } = useGamesQuery(userData!);
+
+  const activities: Activity[] = [
+    { date: new Date("2022-12-12T10:10:15"), gameType: "basketball" },
+  ];
+
   return (
     <AppHeader
       navigation={navigation}
       route={route}
       right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
-      title={"Mazen K."}
+      title={`${firstName} ${lastName}`}
       backEnabled
     >
       <View>
@@ -35,12 +49,11 @@ export const Profile = ({ navigation, route }: Props) => {
               source={require("assets/images/home/profile-picture.png")}
               style={styles.profilePicture}
             />
-            <Text style={styles.headerText1}>Played 42 games</Text>
+            <Text style={styles.headerText1}>Played {games?.length} games</Text>
             <Text style={styles.headerText2}>
-              Enjoy playing sports as a professional hobby. Runner, football
-              player, member of the Lebanese Football Association.
+              Computer Engineering Student. Frontend Developer.
             </Text>
-            <View style={styles.buttonsView}>
+            {/* <View style={styles.buttonsView}>
               <Button
                 icon={() => (
                   <IonIcon
@@ -65,7 +78,7 @@ export const Profile = ({ navigation, route }: Props) => {
               >
                 Follow Player
               </Button>
-            </View>
+            </View> */}
           </View>
         </View>
         <View style={styles.contentView}>
@@ -135,10 +148,13 @@ export const Profile = ({ navigation, route }: Props) => {
           >
             Activity
           </Text>
-          <ActivityCard gameType="basketball" />
-          <ActivityCard gameType="football" />
-          <ActivityCard gameType="basketball" />
-          <ActivityCard gameType="basketball" />
+          {activities.map((activity: Activity, index: number) => (
+            <ActivityCard
+              key={index}
+              date={activity.date}
+              gameType={activity.gameType}
+            />
+          ))}
         </View>
       </View>
     </AppHeader>
@@ -186,7 +202,8 @@ const makeStyles = (
       fontFamily: "Inter-Medium",
       lineHeight: 20,
       color: "white",
-      marginTop: 5,
+      marginTop: 10,
+      marginBottom: 20,
       textAlign: "center",
     },
     contentView: {

@@ -1,14 +1,14 @@
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React from "react";
-import { UserContext } from "src/utils";
+import { UserContext, UserData } from "src/utils";
+import { useContext } from "react";
+
 const client = axios.create({
-  baseURL: "http://192.168.2.155:3000",
+  baseURL: "http://192.168.0.100:3000",
 });
 
 export default client;
 
-export function getHeader(userData: any) {
+export function getHeader(userData: UserData) {
   return {
     headers: {
       Authorization: `Bearer ${userData?.token}`,

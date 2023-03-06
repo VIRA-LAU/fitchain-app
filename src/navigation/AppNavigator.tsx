@@ -12,6 +12,7 @@ import {
   Play,
   Profile,
   VenueBookingDetails,
+  VenueBranches,
   VenueDetails,
   Venues,
 } from "screens";
@@ -19,6 +20,8 @@ import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import { Booking } from "src/types";
+import { BranchCourts } from "src/screens/home/BranchCourts";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -74,9 +77,11 @@ const BottomTabNavigator = () => {
 
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
-  GameDetails: undefined;
-  VenueDetails: undefined;
+  GameDetails: { booking: string };
+  VenueDetails: { id: number };
   VenueBookingDetails: undefined;
+  VenueBranches: { id: number };
+  BranchCourts: undefined;
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();
@@ -94,6 +99,8 @@ export const AppNavigator = () => {
         />
         <Stack.Screen name="GameDetails" component={GameDetails} />
         <Stack.Screen name="VenueDetails" component={VenueDetails} />
+        <Stack.Screen name="VenueBranches" component={VenueBranches} />
+        <Stack.Screen name="BranchCourts" component={BranchCourts} />
       </Stack.Navigator>
     );
   else return <SignUpNavigator setSignedIn={setSignedIn} />;

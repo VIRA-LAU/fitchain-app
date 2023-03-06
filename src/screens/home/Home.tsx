@@ -15,13 +15,23 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { UserContext, UserData } from "src/utils";
-import { useContext } from "react";
-import { useBranchesQuery, useVenuesQuery } from "src/api/queries";
-import { useGamesQuery } from "src/api/queries/games/games-query";
-import { useBookingsQuery } from "src/api/queries/games/bookings-query";
-import { useInvitationsQuery } from "src/api/queries/games/invitations-query";
-import { useActivitiesQuery } from "src/api/queries/games/activities-query";
+import { useContext, useState } from "react";
+import {
+  useBranchesQuery,
+  useVenuesQuery,
+  useGamesQuery,
+  useBookingsQuery,
+  useInvitationsQuery,
+  useActivitiesQuery,
+} from "src/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  Activity,
+  Booking,
+  GameType,
+  Invitation,
+  VenueBranch,
+} from "src/types";
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
 const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
@@ -39,23 +49,35 @@ const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
 export const Home = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const { userData }: any = useContext(UserContext);
+  const { userData } = useContext(UserContext);
 
-  const { data: branchesVenues } = useBranchesQuery(userData);
-  const { data: games } = useGamesQuery(userData);
-  const { data: bookings } = useBookingsQuery(userData);
-  const { data: invitations } = useInvitationsQuery(userData);
+  const { data: branchesVenues } = useBranchesQuery(userData!);
+  const { data: games } = useGamesQuery(userData!);
+  const { data: bookings } = useBookingsQuery(userData!);
+  const { data: invitations } = useInvitationsQuery(userData!);
   // const { data: activities } = useActivitiesQuery(1);
-  const activities = [
-    { date: new Date("2022-12-12T10:10:15"), type: "basketball" },
+  const activities: Activity[] = [
+    { date: new Date("2022-12-12T10:10:15"), gameType: "basketball" },
   ];
+
+  const [selectedSports, setSelectedSports] = useState({
+    basketball: true,
+    football: true,
+    tennis: true,
+  });
+
   return (
     <AppHeader
       absolutePosition={false}
       navigation={navigation}
       route={route}
       right={<IonIcon name="notifications-outline" color="white" size={24} />}
-      left={<SportTypeDropdown />}
+      left={
+        <SportTypeDropdown
+          selectedSports={selectedSports}
+          setSelectedSports={setSelectedSports}
+        />
+      }
       showLogo
     >
       <View style={styles.wrapperView}>
@@ -66,18 +88,14 @@ export const Home = ({ navigation, route }: Props) => {
           Upcoming Games
         </Text>
         <View>
-          {games?.map((game: any, index: number) => (
-            <UpcomingGameCard
-              key={index}
-              gameType={game.type.toLowerCase()}
-              date={game.date}
-              location={
-                game.court.branch.venue.name +
-                " - " +
-                game.court.branch.location
-              }
-            />
-          ))}
+          {games
+            ?.filter(
+              ({ type }: Booking) =>
+                selectedSports[type.toLowerCase() as GameType]
+            )
+            .map((game: Booking, index: number) => (
+              <UpcomingGameCard key={index} game={game} />
+            ))}
         </View>
 
         <SectionTitle title="Invitations" styles={styles} />
@@ -85,53 +103,59 @@ export const Home = ({ navigation, route }: Props) => {
           style={{ flexDirection: "row", marginRight: -20 }}
           horizontal
         >
-          {invitations?.map((invitation: any, index: number) => (
-            <InvitationCard
-              key={index}
-              gameType={invitation.game.type.toLowerCase()}
-              date={invitation.game.date}
-              location={invitation.game.court.branch.location}
-              inviter={
-                invitation.friend.firstName + " " + invitation.friend.lastName
-              }
-            />
-          ))}
+          {invitations
+            ?.filter(
+              ({ game }: Invitation) =>
+                selectedSports[game.type.toLowerCase() as GameType]
+            )
+            .map((invitation: Invitation, index: number) => (
+              <InvitationCard
+                key={index}
+                inviter={
+                  invitation.user?.firstName + " " + invitation.user?.lastName
+                }
+                game={invitation.game}
+              />
+            ))}
         </ScrollView>
         <SectionTitle title="Venues" styles={styles} />
         <ScrollView
           style={{ flexDirection: "row", marginRight: -20 }}
           horizontal
         >
-          {branchesVenues?.map((venuesBranch: any, index: number) => (
-            <VenueCard
-              key={index}
-              type="vertical"
-              rating={venuesBranch.rating}
-              name={venuesBranch.venue.name}
-              location={venuesBranch.location}
-            />
+          {branchesVenues?.map((venuesBranch: VenueBranch, index: number) => (
+            <VenueCard key={index} type="vertical" venueBranch={venuesBranch} />
           ))}
         </ScrollView>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
-          {bookings?.map((booking: any, index: number) => (
-            <BookingCard
-              key={index}
-              inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
-              location={booking.court.branch.location}
-              gameType={booking.type.toLowerCase()}
-              date={booking.date}
-              gameDuration={booking.duration}
-            />
-          ))}
+          {bookings
+            ?.filter(({ type, date }: Booking) => {
+              const bookingDate = new Date(
+                date.toISOString().substring(0, date.toISOString().indexOf("T"))
+              );
+              const todayDate = new Date(
+                new Date()
+                  .toISOString()
+                  .substring(0, new Date().toISOString().indexOf("T"))
+              );
+              return (
+                (bookingDate.getTime() - todayDate.getTime()) /
+                  (1000 * 60 * 60 * 24) >=
+                  0 && selectedSports[type.toLowerCase() as GameType]
+              );
+            })
+            .map((booking: Booking, index: number) => (
+              <BookingCard key={index} booking={booking} />
+            ))}
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
-          {activities.map((activity: any, index: number) => (
+          {activities.map((activity: Activity, index: number) => (
             <ActivityCard
               key={index}
               date={activity.date}
-              gameType={activity.type}
+              gameType={activity.gameType}
             />
           ))}
         </View>

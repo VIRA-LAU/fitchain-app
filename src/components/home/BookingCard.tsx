@@ -12,41 +12,27 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import "intl";
 import "intl/locale-data/jsonp/en";
+import { Booking, GameType } from "src/types";
 
-export const BookingCard = ({
-  gameType,
-  location,
-  date,
-  inviter,
-  gameDuration,
-}: {
-  gameType: "basketball" | "football" | "tennis";
-  location: string;
-  date: Date;
-  inviter: string;
-  gameDuration: number;
-}) => {
+export const BookingCard = ({ booking }: { booking: Booking }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const gameDurationHours = gameDuration / 60;
-  date = new Date(date);
-  const endTime = new Date(date.getTime() + gameDurationHours * 60 * 60 * 1000);
+
+  const endTime = new Date(
+    booking.date.getTime() + booking.duration * 60 * 1000
+  );
   const dateFormatter = new Intl.DateTimeFormat("en", {
     weekday: "short",
     month: "short",
     day: "numeric",
   });
-  const startTimeFormatter = new Intl.DateTimeFormat("en", {
+  const durationTimeFormatter = new Intl.DateTimeFormat("en", {
     hour: "numeric",
     minute: "numeric",
   });
-  const endTimeFormatter = new Intl.DateTimeFormat("en", {
-    hour: "numeric",
-    minute: "numeric",
-  });
-  const dateString = dateFormatter.format(date);
-  const startTimeString = startTimeFormatter.format(date);
-  const endTimeString = endTimeFormatter.format(endTime);
+  const dateString = dateFormatter.format(booking.date);
+  const startTimeString = durationTimeFormatter.format(booking.date);
+  const endTimeString = durationTimeFormatter.format(endTime);
   const dateAndTime = `${dateString} - ${startTimeString} till ${endTimeString}`;
 
   const navigation =
@@ -56,10 +42,14 @@ export const BookingCard = ({
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
+  const gameType = booking.type.toLowerCase() as GameType;
+
   return (
     <Pressable
       style={styles.wrapper}
-      onPress={() => navigation.push("GameDetails")}
+      onPress={() =>
+        navigation.push("GameDetails", { booking: JSON.stringify(booking) })
+      }
     >
       <View style={styles.leftImageView}>
         <Image
@@ -79,7 +69,10 @@ export const BookingCard = ({
             {gameType[0].toUpperCase()}
             {gameType.substring(1)} Game
           </Text>{" "}
-          By <Text style={styles.text}>{inviter}</Text>
+          By{" "}
+          <Text style={styles.text}>
+            {booking.admin?.firstName + " " + booking.admin?.lastName}
+          </Text>
         </Text>
         <View style={styles.textRow}>
           <IonIcon
@@ -88,7 +81,7 @@ export const BookingCard = ({
             color={colors.tertiary}
             style={{ marginRight: 5 }}
           />
-          <Text style={styles.greyText}>{location}</Text>
+          <Text style={styles.greyText}>{booking.court.branch.location}</Text>
         </View>
         <View style={styles.textRow}>
           <FeatherIcon

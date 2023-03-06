@@ -19,86 +19,114 @@ import {
   AppHeader,
   BookingCard,
   DurationDropdown,
+  SportSelection,
   SportTypeDropdown,
 } from "components";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { UserContext } from "src/utils";
-import { useBookingsQuery } from "src/api/queries/games/bookings-query";
+import { UserContext, UserData } from "src/utils";
+import { useBookingsQuery } from "src/api";
+import { Booking, GameType } from "src/types";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
+
+const DayHeader = ({ day }: { day: string }) => {
+  const { colors } = useTheme();
+  return (
+    <Text
+      variant="labelLarge"
+      style={{ marginVertical: 10, color: colors.tertiary }}
+    >
+      {day}
+    </Text>
+  );
+};
 
 const GamesIFollow = ({
   navigation,
   route,
-  styles,
+  selectedSports,
 }: {
   navigation: NavigationProp<BottomTabParamList>;
   route: {
     key: string;
     title: string;
   };
-  styles: any;
+  selectedSports: SportSelection;
 }) => {
-  const { userData }: any = useContext(UserContext);
-  const { data: bookings } = useBookingsQuery(userData);
+  const { userData } = useContext(UserContext);
+  const { data: bookings } = useBookingsQuery(userData!);
+  const today = new Date();
+  const upcomingGames: JSX.Element[] = [];
+  const dayHeaders: string[] = [];
+
+  bookings
+    ?.filter((booking: Booking) => {
+      const bookingDate = new Date(
+        booking.date
+          .toISOString()
+          .substring(0, booking.date.toISOString().indexOf("T"))
+      );
+      const todayDate = new Date(
+        today.toISOString().substring(0, today.toISOString().indexOf("T"))
+      );
+      return (
+        (bookingDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24) >=
+          0 && selectedSports[booking.type.toLowerCase() as GameType]
+      );
+    })
+    .forEach((booking: Booking, index: number) => {
+      const bookingDate = new Date(
+        booking.date
+          .toISOString()
+          .substring(0, booking.date.toISOString().indexOf("T"))
+      );
+      const todayDate = new Date(
+        today.toISOString().substring(0, today.toISOString().indexOf("T"))
+      );
+      const dayDiff =
+        (bookingDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
+
+      if (dayDiff === 1 && !dayHeaders.includes("tomorrow")) {
+        dayHeaders.push("tomorrow");
+        upcomingGames.push(<DayHeader key={"tomorrow"} day="Tomorrow" />);
+      } else if (
+        dayDiff > 1 &&
+        dayDiff <= 7 &&
+        !dayHeaders.includes("this-week")
+      ) {
+        dayHeaders.push("this-week");
+        upcomingGames.push(<DayHeader key={"this-week"} day="This Week" />);
+      } else if (
+        dayDiff > 7 &&
+        dayDiff <= 30 &&
+        !dayHeaders.includes("this-month")
+      ) {
+        dayHeaders.push("this-month");
+        upcomingGames.push(<DayHeader key={"this-month"} day="This Month" />);
+      } else if (dayDiff > 30 && !dayHeaders.includes("future")) {
+        dayHeaders.push("future");
+        upcomingGames.push(<DayHeader key={"future"} day="In the Future" />);
+      }
+
+      upcomingGames.push(<BookingCard key={index} booking={booking} />);
+    });
 
   return (
     <ScrollView>
-      <Text variant="labelLarge" style={styles.greyFont}>
-        Today
-      </Text>
+      <DayHeader day="Today" />
       <Text
         variant="headlineSmall"
         style={{ color: "white", marginTop: -5, marginBottom: 10 }}
       >
-        Friday, May 14, 2022
+        {today.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
       </Text>
-
-      <View>
-        {bookings?.map((booking: any, index: number) => (
-          <BookingCard
-            key={index}
-            inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
-            location={booking.court.branch.location}
-            gameType={booking.type.toLowerCase()}
-            date={booking.date}
-            gameDuration={booking.duration}
-          />
-        ))}
-      </View>
-
-      <Text variant="labelLarge" style={styles.greyFont}>
-        Tomorrow
-      </Text>
-      <View>
-        {bookings?.map((booking: any, index: number) => (
-          <BookingCard
-            key={index}
-            inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
-            location={booking.court.branch.location}
-            gameType={booking.type.toLowerCase()}
-            date={booking.date}
-            gameDuration={booking.duration}
-          />
-        ))}
-      </View>
-
-      <Text variant="labelLarge" style={styles.greyFont}>
-        This Sunday
-      </Text>
-      <View>
-        {bookings?.map((booking: any, index: number) => (
-          <BookingCard
-            key={index}
-            inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
-            location={booking.court.branch.location}
-            gameType={booking.type.toLowerCase()}
-            date={booking.date}
-            gameDuration={booking.duration}
-          />
-        ))}
-      </View>
+      {upcomingGames}
     </ScrollView>
   );
 };
@@ -106,61 +134,91 @@ const GamesIFollow = ({
 const PreviousGamesIFollow = ({
   navigation,
   route,
-  styles,
+  selectedSports,
 }: {
   navigation: NavigationProp<BottomTabParamList>;
   route: {
     key: string;
     title: string;
   };
-  styles: any;
+  selectedSports: SportSelection;
 }) => {
-  const { userData }: any = useContext(UserContext);
-  const { data: bookings } = useBookingsQuery(userData);
+  const { userData } = useContext(UserContext);
+  const { data: bookings } = useBookingsQuery(userData!);
+
+  const today = new Date();
+  const previousGames: JSX.Element[] = [];
+  const dayHeaders: string[] = [];
+
+  bookings
+    ?.filter((booking: Booking) => {
+      const bookingDate = new Date(
+        booking.date
+          .toISOString()
+          .substring(0, booking.date.toISOString().indexOf("T"))
+      );
+      const todayDate = new Date(
+        today.toISOString().substring(0, today.toISOString().indexOf("T"))
+      );
+      return (
+        (bookingDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24) <
+          0 && selectedSports[booking.type.toLowerCase() as GameType]
+      );
+    })
+    .reverse()
+    .forEach((booking: Booking, index: number) => {
+      const bookingDate = new Date(
+        booking.date
+          .toISOString()
+          .substring(0, booking.date.toISOString().indexOf("T"))
+      );
+      const todayDate = new Date(
+        today.toISOString().substring(0, today.toISOString().indexOf("T"))
+      );
+      const dayDiff =
+        -(bookingDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
+
+      if (dayDiff === 1 && !dayHeaders.includes("yesterday")) {
+        dayHeaders.push("yesterday");
+        previousGames.push(<DayHeader key={"yesterday"} day="Yesterday" />);
+      } else if (
+        dayDiff > 1 &&
+        dayDiff <= 7 &&
+        !dayHeaders.includes("last-week")
+      ) {
+        dayHeaders.push("last-week");
+        previousGames.push(<DayHeader key={"last-week"} day="Last Week" />);
+      } else if (
+        dayDiff > 7 &&
+        dayDiff <= 30 &&
+        !dayHeaders.includes("last-month")
+      ) {
+        dayHeaders.push("last-month");
+        previousGames.push(<DayHeader key={"last-month"} day="Last Month" />);
+      } else if (dayDiff > 30 && !dayHeaders.includes("past")) {
+        dayHeaders.push("past");
+        previousGames.push(<DayHeader key={"past"} day="In the Past" />);
+      }
+
+      previousGames.push(<BookingCard key={index} booking={booking} />);
+    });
 
   return (
     <ScrollView>
-      <Text variant="labelLarge" style={styles.greyFont}>
-        Today
-      </Text>
+      <DayHeader day="Today" />
       <Text
         variant="headlineSmall"
         style={{ color: "white", marginTop: -5, marginBottom: 10 }}
       >
-        Friday, May 14, 2022
+        {today.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
       </Text>
 
-      <Text variant="labelLarge" style={styles.greyFont}>
-        Yesterday
-      </Text>
-      <View>
-        {bookings?.map((booking: any, index: number) => (
-          <BookingCard
-            key={index}
-            inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
-            location={booking.court.branch.location}
-            gameType={booking.type.toLowerCase()}
-            date={booking.date}
-            gameDuration={booking.duration}
-          />
-        ))}
-      </View>
-
-      <Text variant="labelLarge" style={styles.greyFont}>
-        Last Week
-      </Text>
-      <View>
-        {bookings?.map((booking: any, index: number) => (
-          <BookingCard
-            key={index}
-            inviter={booking.admin?.firstName + " " + booking.admin?.lastName}
-            location={booking.court.branch.location}
-            gameType={booking.type.toLowerCase()}
-            date={booking.date}
-            gameDuration={booking.duration}
-          />
-        ))}
-      </View>
+      {previousGames}
     </ScrollView>
   );
 };
@@ -177,6 +235,12 @@ export const Games = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const windowWidth = useWindowDimensions().width;
 
+  const [selectedSports, setSelectedSports] = useState({
+    basketball: true,
+    football: true,
+    tennis: true,
+  });
+
   const renderScene = ({
     route,
   }: SceneRendererProps & {
@@ -192,7 +256,7 @@ export const Games = ({ navigation, route }: Props) => {
             <GamesIFollow
               navigation={navigation}
               route={route}
-              styles={styles}
+              selectedSports={selectedSports}
             />
           );
         case "AllGames":
@@ -200,7 +264,7 @@ export const Games = ({ navigation, route }: Props) => {
             <GamesIFollow
               navigation={navigation}
               route={route}
-              styles={styles}
+              selectedSports={selectedSports}
             />
           );
         default:
@@ -213,7 +277,7 @@ export const Games = ({ navigation, route }: Props) => {
             <PreviousGamesIFollow
               navigation={navigation}
               route={route}
-              styles={styles}
+              selectedSports={selectedSports}
             />
           );
         case "AllGames":
@@ -221,7 +285,7 @@ export const Games = ({ navigation, route }: Props) => {
             <PreviousGamesIFollow
               navigation={navigation}
               route={route}
-              styles={styles}
+              selectedSports={selectedSports}
             />
           );
         default:
@@ -274,7 +338,12 @@ export const Games = ({ navigation, route }: Props) => {
       middle={
         <DurationDropdown index={durationIndex} setIndex={setDurationIndex} />
       }
-      left={<SportTypeDropdown />}
+      left={
+        <SportTypeDropdown
+          selectedSports={selectedSports}
+          setSelectedSports={setSelectedSports}
+        />
+      }
     >
       <View style={styles.wrapperView}>
         <TabView
@@ -304,5 +373,4 @@ const makeStyles = (colors: MD3Colors) =>
       justifyContent: "center",
       alignItems: "center",
     },
-    greyFont: { marginVertical: 10, color: colors.tertiary },
   });

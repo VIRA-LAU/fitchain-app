@@ -10,28 +10,49 @@ import {
 import { useTheme, Text } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
+import { GameType } from "src/types";
+
+export type SportSelection = {
+  basketball: boolean;
+  football: boolean;
+  tennis: boolean;
+};
+
+type SportOption = {
+  type: "Basketball" | "Football" | "Tennis";
+  image: JSX.Element;
+};
 
 const SportIcons = ({
   sports,
   selectedSports,
 }: {
-  sports: any[];
-  selectedSports: boolean[];
+  sports: SportOption[];
+  selectedSports: SportSelection;
 }) => {
   return (
     <View style={{ flexDirection: "row" }}>
       {sports
-        .filter((sport, index) => selectedSports[index])
+        .filter(
+          (sport, index) =>
+            selectedSports[Object.keys(selectedSports)[index] as GameType]
+        )
         .map((sport) => sport.image)}
     </View>
   );
 };
 
-export const SportTypeDropdown = () => {
+export const SportTypeDropdown = ({
+  selectedSports,
+  setSelectedSports,
+}: {
+  selectedSports: SportSelection;
+  setSelectedSports: React.Dispatch<React.SetStateAction<SportSelection>>;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const sports = (absolute = false) => [
+  const sports = (absolute = false): SportOption[] => [
     {
       type: "Basketball",
       image: (
@@ -65,23 +86,18 @@ export const SportTypeDropdown = () => {
   ];
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedSports, setSelectedSports] = useState([true, false, false]);
 
-  const updateSelectedSports = (index: number) => {
+  const updateSelectedSports = (sport: GameType) => {
     let numSelectedSports = 0;
-    selectedSports.forEach((sport) => {
-      if (sport) numSelectedSports++;
+    Object.keys(selectedSports).forEach((key) => {
+      if (selectedSports[key as GameType]) numSelectedSports++;
     });
-    if (numSelectedSports !== 1 || !selectedSports[index])
+    if (numSelectedSports !== 1 || !selectedSports[sport])
       setSelectedSports((oldSelectedSports) => {
-        const updatedSelectedSports = oldSelectedSports.map(
-          (selectedSport, i) => {
-            if (i === index) {
-              return !selectedSport;
-            }
-            return selectedSport;
-          }
-        );
+        const updatedSelectedSports = {
+          ...oldSelectedSports,
+          [sport]: !selectedSports[sport],
+        };
         return updatedSelectedSports;
       });
   };
@@ -112,7 +128,9 @@ export const SportTypeDropdown = () => {
             return (
               <Pressable
                 key={index}
-                onPress={() => updateSelectedSports(index)}
+                onPress={() =>
+                  updateSelectedSports(sport.type.toLowerCase() as GameType)
+                }
               >
                 <View style={styles.sportRowView}>
                   {sport.image}
@@ -124,7 +142,7 @@ export const SportTypeDropdown = () => {
                   >
                     {sport.type}
                   </Text>
-                  {selectedSports[index] && (
+                  {selectedSports[sport.type.toLowerCase() as GameType] && (
                     <FeatherIcon
                       name="check"
                       color={"white"}
