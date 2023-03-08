@@ -9,7 +9,7 @@ export interface User {
 
 export type GameType = "Basketball" | "Football" | "Tennis";
 
-export interface Booking {
+export interface Game {
   id;
   date: Date;
   duration: number;
@@ -34,7 +34,7 @@ export interface Invitation {
     firstName: string;
     lastName: string;
   };
-  game: Booking;
+  game: Game;
 }
 
 // Contained inside Venue
@@ -84,7 +84,14 @@ export interface VenueBranch {
 }
 
 export interface Activity {
+  gameId: number;
   date: Date;
   type: GameType;
   isWinner: boolean;
+}
+
+export interface PlayerStatus {
+  hasRequestedtoJoin: false | "APPROVED" | "REJECTED" | "PENDING";
+  hasBeenInvited: false | "ACCEPTED" | "REJECTED" | "PENDING";
+  isAdmin: false;
 }

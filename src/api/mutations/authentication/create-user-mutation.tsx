@@ -5,7 +5,7 @@ import { UserContext } from "src/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "src/types";
 
-type Props = {
+type Request = {
   firstName: string;
   lastName: string;
   phoneNumber: string;
@@ -13,7 +13,7 @@ type Props = {
   password: string;
 };
 
-const createUser = async (data: Props) => {
+const createUser = async (data: Request) => {
   return await client
     .post("/auth/signup", data)
     .then((res) => res.data)
@@ -28,7 +28,7 @@ export const useCreateUserMutation = (
 ) => {
   const { setUserData } = useContext(UserContext);
 
-  return useMutation<User, unknown, Props>({
+  return useMutation<User, unknown, Request>({
     mutationFn: createUser,
     onSuccess: async (data) => {
       let fetchedInfo = {

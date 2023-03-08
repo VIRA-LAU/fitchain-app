@@ -12,12 +12,13 @@ type Props = StackScreenProps<HomeStackParamList, "VenueBookingDetails">;
 
 export const VenueBookingDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
+  const { venueName, courtType, price } = route.params;
   const styles = makeStyles(colors);
 
   return (
     <AppHeader
       absolutePosition={false}
-      title={"Hoops Club"}
+      title={venueName}
       right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
       navigation={navigation}
       backEnabled
@@ -30,16 +31,16 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             />
             <View style={styles.headerContentInfo}>
               <Text style={{ color: "white", fontFamily: "Inter-SemiBold" }}>
-                Basketball
+                {courtType}
               </Text>
-              <Text style={styles.headerContentText}>Outdoors</Text>
-              <Text style={styles.headerContentText}>Grass floor</Text>
-              <Text style={styles.headerContentText}>Air-Conditioned</Text>
+              <Text style={styles.headerContentText}>Outdoors(?)</Text>
+              <Text style={styles.headerContentText}>Grass floor(?)</Text>
+              <Text style={styles.headerContentText}>Air-Conditioned(?)</Text>
             </View>
             <Image
               source={require("assets/images/home/basketball-hub-icon.png")}
               resizeMode={"contain"}
-              style={{ flex: 1, height: "50%" }}
+              style={{ flex: 1, height: "50%", marginLeft: "auto" }}
             />
           </View>
           <View style={styles.directionsView}>
@@ -115,7 +116,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
                 { marginRight: 10, color: colors.tertiary },
               ]}
             >
-              USD 22.00
+              USD {price}
             </Text>
           </View>
           <View style={styles.contentRow}>
@@ -126,13 +127,13 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
                 { marginRight: 10, color: colors.tertiary },
               ]}
             >
-              USD 2.20
+              USD ??
             </Text>
           </View>
           <View style={styles.contentRow}>
             <Text style={[styles.labelText, { color: "white" }]}>Total</Text>
             <Text style={[styles.valueText, { marginRight: 10 }]}>
-              USD 24.20
+              USD {price}
             </Text>
           </View>
         </View>

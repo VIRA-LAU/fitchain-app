@@ -20,7 +20,7 @@ import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { Booking } from "src/types";
+import { VenueBranch } from "src/types";
 import { BranchCourts } from "src/screens/home/BranchCourts";
 import { ChooseVenue } from "src/screens/home/Play/ChooseVenue";
 
@@ -81,11 +81,19 @@ const BottomTabNavigator = () => {
 
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
-  GameDetails: { booking: string };
+  GameDetails: { id: number };
   VenueDetails: { id: number; play: boolean };
-  VenueBookingDetails: undefined;
-  VenueBranches: { id: number };
-  BranchCourts: undefined;
+  VenueBookingDetails: {
+    venueName: string;
+    courtType: string;
+    price: number;
+  };
+  VenueBranches: { id: number; venueName: string };
+  BranchCourts: {
+    venueName: string;
+    courts: VenueBranch["courts"];
+    branchLocation: string;
+  };
   chooseVenue: undefined;
 };
 

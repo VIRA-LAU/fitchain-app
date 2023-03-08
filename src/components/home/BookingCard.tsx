@@ -12,9 +12,9 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import "intl";
 import "intl/locale-data/jsonp/en";
-import { Booking } from "src/types";
+import { Game } from "src/types";
 
-export const BookingCard = ({ booking }: { booking: Booking }) => {
+export const BookingCard = ({ booking }: { booking: Game }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -46,9 +46,7 @@ export const BookingCard = ({ booking }: { booking: Booking }) => {
   return (
     <Pressable
       style={styles.wrapper}
-      onPress={() =>
-        navigation.push("GameDetails", { booking: JSON.stringify(booking) })
-      }
+      onPress={() => navigation.push("GameDetails", { id: booking.id })}
     >
       <View style={styles.leftImageView}>
         <Image
@@ -66,7 +64,7 @@ export const BookingCard = ({ booking }: { booking: Booking }) => {
         <Text style={[styles.greyText, { fontSize: 14 }]}>
           <Text style={styles.text}>{booking.type} Game</Text> By{" "}
           <Text style={styles.text}>
-            {booking.admin?.firstName + " " + booking.admin?.lastName}
+            {booking?.admin?.firstName + " " + booking?.admin?.lastName}
           </Text>
         </Text>
         <View style={styles.textRow}>

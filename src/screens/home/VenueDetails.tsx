@@ -71,7 +71,10 @@ export const VenueDetails = ({ navigation, route }: Props) => {
             <View style={styles.buttonsView}>
               <Button
                 onPress={() => {
-                  navigation.push("VenueBranches", { id });
+                  navigation.push("VenueBranches", {
+                    id,
+                    venueName: venue!.name,
+                  });
                 }}
                 icon={() => (
                   <IonIcon
@@ -221,57 +224,50 @@ export const VenueDetails = ({ navigation, route }: Props) => {
                 style={{ marginLeft: "auto" }}
               />
             </View>
-            {venue?.branches.map((branch, index: number) => {
-              const pricesArr = branch.courts.map(({ price }) => price);
-              const prices =
-                pricesArr.length === 1
-                  ? pricesArr[0].toString()
-                  : `${Math.min.apply(null, pricesArr)} - ${Math.max.apply(
-                      null,
-                      pricesArr
-                    )}`;
-              return (
-                <BranchLocation
-                  key={index}
-                  type="branch"
-                  branch={{
-                    location: branch.location,
-                    courts: branch.courts
-                      .map(({ courtType }) => courtType)
-                      .join(", "),
-                    prices,
-                  }}
-                />
-              );
-            })}
+            {venue?.branches.map((branch, index: number) => (
+              <BranchLocation
+                key={index}
+                type="branch"
+                branch={{
+                  location: branch.location,
+                  courts: branch.courts,
+                  rating: branch.rating,
+                  venueName: venue.name,
+                }}
+              />
+            ))}
             <Text style={styles.viewAll}>View All</Text>
           </View>
         )}
       </View>
-      <View style={styles.bookCourtView}>
-        <Pressable
-          style={styles.bookCourtPressable}
-          onPress={() => {
-            navigation.push("BranchCourts");
-          }}
-        >
-          <View style={{ flexDirection: "row" }}>
-            <View style={{ alignContent: "center", justifyContent: "center" }}>
-              <IonIcon
-                name={"basketball-outline"}
-                size={25}
-                color={colors.background}
-              />
+      {play && (
+        <View style={styles.bookCourtView}>
+          <Pressable
+            style={styles.bookCourtPressable}
+            onPress={() => {
+              // navigation.push("BranchCourts", { });
+            }}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <View
+                style={{ alignContent: "center", justifyContent: "center" }}
+              >
+                <IonIcon
+                  name={"basketball-outline"}
+                  size={25}
+                  color={colors.background}
+                />
+              </View>
+              <View>
+                <Text variant="titleSmall" style={styles.bookCourtButton}>
+                  Book Court
+                </Text>
+                <Text variant="labelMedium">USD 7-20/hr</Text>
+              </View>
             </View>
-            <View>
-              <Text variant="titleSmall" style={styles.bookCourtButton}>
-                Book Court
-              </Text>
-              <Text variant="labelMedium">USD 7-20/hr</Text>
-            </View>
-          </View>
-        </Pressable>
-      </View>
+          </Pressable>
+        </View>
+      )}
     </AppHeader>
   );
 };

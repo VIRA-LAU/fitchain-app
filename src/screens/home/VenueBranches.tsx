@@ -6,8 +6,6 @@ import { HomeStackParamList } from "navigation";
 import { AppHeader, BranchLocation } from "src/components";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useBranchesQuery } from "src/api";
-import { useContext } from "react";
-import { UserContext } from "src/utils";
 import { ScrollView } from "react-native-gesture-handler";
 
 type Props = StackScreenProps<HomeStackParamList, "VenueBranches">;
@@ -16,8 +14,7 @@ export const VenueBranches = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { id } = route.params;
-  const { userData } = useContext(UserContext);
+  const { id, venueName } = route.params;
   const { data: branches } = useBranchesQuery(id);
 
   return (
@@ -33,25 +30,16 @@ export const VenueBranches = ({ navigation, route }: Props) => {
       <View style={styles.wrapperView}>
         <ScrollView style={styles.contentView}>
           {branches?.map((branch, index: number) => {
-            const pricesArr = branch.courts.map(({ price }) => price);
-            const prices =
-              pricesArr.length === 1
-                ? pricesArr[0].toString()
-                : `${Math.min.apply(null, pricesArr)} - ${Math.max.apply(
-                    null,
-                    pricesArr
-                  )}`;
             return (
               <BranchLocation
                 key={index}
                 type="branch"
                 isPressable
                 branch={{
+                  venueName,
                   location: branch.location,
-                  courts: branch.courts
-                    .map(({ courtType }) => courtType)
-                    .join(", "),
-                  prices,
+                  courts: branch.courts,
+                  rating: branch.rating,
                 }}
               />
             );
