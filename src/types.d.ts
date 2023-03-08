@@ -1,10 +1,20 @@
 export interface User {
+  id?: number;
+  userId?: number;
   access_token: string;
   firstName: string;
   lastName: string;
   description: string;
   email: string;
-  userId: number;
+  phoneNumber: number;
+  description: string;
+  gender: string;
+  height: string;
+  weight: string;
+  age: string;
+  nationality: string;
+  position: string;
+  rating: number;
 }
 
 export type GameType = "Basketball" | "Football" | "Tennis";

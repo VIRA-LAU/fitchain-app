@@ -9,7 +9,7 @@ import { useContext } from "react";
 import { UserContext } from "src/utils";
 import { ScrollView } from "react-native-gesture-handler";
 
-type Props = StackScreenProps<HomeStackParamList, "chooseVenue">;
+type Props = StackScreenProps<HomeStackParamList, "ChooseVenue">;
 
 export const ChooseVenue = ({ navigation, route }: Props) => {
   const { colors } = useTheme();

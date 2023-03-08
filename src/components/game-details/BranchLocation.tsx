@@ -16,6 +16,7 @@ export const BranchLocation = ({
   type,
   court,
   branch,
+  team,
   isPressable = false,
 }: {
   type: "branch" | "court";
@@ -26,6 +27,7 @@ export const BranchLocation = ({
     courts: VenueBranch["courts"];
     rating: number;
   };
+  team?: "Home" | "Away";
   isPressable?: boolean;
 }) => {
   const { colors } = useTheme();
@@ -106,7 +108,7 @@ export const BranchLocation = ({
         {type === "court" && (
           <View style={styles.rowView}>
             <Text style={styles.rowKey}>SIDE</Text>
-            <Text style={styles.rowValue}>Away</Text>
+            <Text style={styles.rowValue}>{team}</Text>
           </View>
         )}
         {type === "court" && (

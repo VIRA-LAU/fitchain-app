@@ -8,7 +8,11 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { Activity } from "src/types";
 import { useContext } from "react";
 import { UserContext } from "src/utils";
-import { useActivitiesQuery, useGamesQuery } from "src/api";
+import {
+  useActivitiesQuery,
+  useGamesQuery,
+  useUserDetailsQuery,
+} from "src/api";
 import FeatherIcon from "react-native-vector-icons/Feather";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
@@ -29,6 +33,7 @@ export const Profile = ({
   const { firstName, lastName } = userData!;
 
   const { data: games } = useGamesQuery();
+  const { data: userDetails } = useUserDetailsQuery();
   const { data: activities } = useActivitiesQuery();
 
   return (
@@ -51,9 +56,7 @@ export const Profile = ({
               style={styles.profilePicture}
             />
             <Text style={styles.headerText1}>Played {games?.length} games</Text>
-            <Text style={styles.headerText2}>
-              Computer Engineering Student. Frontend Developer.
-            </Text>
+            <Text style={styles.headerText2}>{userDetails?.description}</Text>
             {!isUserProfile && (
               <View style={styles.buttonsView}>
                 <Button

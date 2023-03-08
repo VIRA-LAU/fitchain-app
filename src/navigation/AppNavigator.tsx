@@ -94,7 +94,7 @@ export type HomeStackParamList = {
     courts: VenueBranch["courts"];
     branchLocation: string;
   };
-  chooseVenue: undefined;
+  ChooseVenue: undefined;
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();
@@ -114,7 +114,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="VenueDetails" component={VenueDetails} />
         <Stack.Screen name="VenueBranches" component={VenueBranches} />
         <Stack.Screen name="BranchCourts" component={BranchCourts} />
-        <Stack.Screen name="chooseVenue" component={ChooseVenue} />
+        <Stack.Screen name="ChooseVenue" component={ChooseVenue} />
       </Stack.Navigator>
     );
   else return <SignUpNavigator setSignedIn={setSignedIn} />;
