@@ -45,7 +45,7 @@ export const Home = ({ navigation, route }: Props) => {
   const { userData } = useContext(UserContext);
 
   const { data: branchesVenues } = useBranchesQuery();
-  const { data: games } = useGamesQuery();
+  const { data: games } = useGamesQuery({ type: "upcoming", limit: 5 });
   const { data: bookings } = useBookingsQuery();
   const { data: invitations } = useInvitationsQuery();
   const { data: activities } = useActivitiesQuery();

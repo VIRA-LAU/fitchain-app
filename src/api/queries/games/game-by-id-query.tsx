@@ -8,7 +8,7 @@ const getGameById = (userData: UserData, id: number) => async () => {
   const header = getHeader(userData);
 
   return await client
-    .get(`/games/bookings/${id}`, header)
+    .get(`/games/${id}`, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("bookings-query", e);

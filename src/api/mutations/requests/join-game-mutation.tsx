@@ -40,7 +40,7 @@ export const useJoinGameMutation = (
         hasBeenInvited: false,
         isAdmin: false,
       });
-      queryClient.refetchQueries("invitations");
+      queryClient.refetchQueries(["games"]);
     },
   });
 };
