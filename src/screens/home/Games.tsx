@@ -25,7 +25,7 @@ import {
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useBookingsQuery } from "src/api";
-import { Booking } from "src/types";
+import { Game } from "src/types";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -59,7 +59,7 @@ const GamesIFollow = ({
   const dayHeaders: string[] = [];
 
   bookings
-    ?.filter((booking: Booking) => {
+    ?.filter((booking: Game) => {
       const bookingDate = new Date(
         booking.date
           .toISOString()
@@ -73,7 +73,7 @@ const GamesIFollow = ({
           0 && selectedSports[booking.type]
       );
     })
-    .forEach((booking: Booking, index: number) => {
+    .forEach((booking: Game, index: number) => {
       const bookingDate = new Date(
         booking.date
           .toISOString()
@@ -148,7 +148,7 @@ const PreviousGamesIFollow = ({
   const dayHeaders: string[] = [];
 
   bookings
-    ?.filter((booking: Booking) => {
+    ?.filter((booking: Game) => {
       const bookingDate = new Date(
         booking.date
           .toISOString()
@@ -163,7 +163,7 @@ const PreviousGamesIFollow = ({
       );
     })
     .reverse()
-    .forEach((booking: Booking, index: number) => {
+    .forEach((booking: Game, index: number) => {
       const bookingDate = new Date(
         booking.date
           .toISOString()

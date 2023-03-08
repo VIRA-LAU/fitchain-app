@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useQuery } from "react-query";
-import { Booking } from "src/types";
+import { Game } from "src/types";
 import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
@@ -18,7 +18,7 @@ const getGames = (userData: UserData) => async () => {
 export const useGamesQuery = () => {
   const { userData } = useContext(UserContext);
 
-  return useQuery<Booking[]>("games", getGames(userData!), {
+  return useQuery<Game[]>("games", getGames(userData!), {
     select: (games) =>
       games
         .map((game) => ({ ...game, date: new Date(game.date) }))

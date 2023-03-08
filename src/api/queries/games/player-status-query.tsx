@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useQuery } from "react-query";
-import { Booking, PlayerStatus } from "src/types";
+import { Game, PlayerStatus } from "src/types";
 import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
@@ -20,6 +20,9 @@ export const usePlayerStatusQuery = (gameId: number) => {
 
   return useQuery<PlayerStatus>(
     ["playerStatus", gameId],
-    getPlayerStatus(userData!, gameId)
+    getPlayerStatus(userData!, gameId),
+    {
+      enabled: false,
+    }
   );
 };

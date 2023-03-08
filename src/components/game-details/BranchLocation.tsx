@@ -9,7 +9,7 @@ import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
-import { Booking, VenueBranch } from "src/types";
+import { Game, VenueBranch } from "src/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 
 export const BranchLocation = ({
@@ -19,7 +19,7 @@ export const BranchLocation = ({
   isPressable = false,
 }: {
   type: "branch" | "court";
-  court?: Booking["court"];
+  court?: Game["court"];
   branch?: {
     venueName: string;
     location: string;

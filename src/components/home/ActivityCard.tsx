@@ -11,7 +11,7 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { Activity } from "src/types";
 
-export const ActivityCard = ({ date, type, isWinner }: Activity) => {
+export const ActivityCard = ({ gameId, date, type, isWinner }: Activity) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const weekday = [
@@ -34,7 +34,7 @@ export const ActivityCard = ({ date, type, isWinner }: Activity) => {
   return (
     <Pressable
       style={styles.wrapper}
-      onPress={() => navigation.push("GameDetails", { booking: "" })}
+      onPress={() => navigation.push("GameDetails", { id: gameId })}
     >
       <Image
         source={
