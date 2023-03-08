@@ -2,9 +2,9 @@ import client, { getHeader } from "../../client";
 import { useMutation } from "react-query";
 import { UserData } from "../../../utils/UserContext";
 
-type Props = {};
+type Request = {};
 
-const updateUser = (userData: UserData) => async (data: Props) => {
+const updateUser = (userData: UserData) => async (data: Request) => {
   const header = getHeader(userData);
   return await client
     .patch("/user/update", {
@@ -19,7 +19,7 @@ const updateUser = (userData: UserData) => async (data: Props) => {
 };
 
 export const useUpdateUserMutation = (userData: UserData) => {
-  return useMutation<unknown, unknown, Props>({
+  return useMutation<unknown, unknown, Request>({
     mutationFn: updateUser(userData),
   });
 };

@@ -10,7 +10,17 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
 import FeatherIcon from "react-native-vector-icons/Feather";
 
-export const CourtCard = () => {
+export const CourtCard = ({
+  venueName,
+  type,
+  // rating,
+  price,
+}: {
+  venueName: string;
+  type: string;
+  // rating: number;
+  price: number;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -25,7 +35,11 @@ export const CourtCard = () => {
     <Pressable
       style={styles.wrapperView}
       onPress={() => {
-        navigation.push("VenueBookingDetails");
+        navigation.push("VenueBookingDetails", {
+          venueName: venueName,
+          courtType: type,
+          price,
+        });
       }}
     >
       <View style={styles.dataView}>
@@ -37,7 +51,7 @@ export const CourtCard = () => {
           <View style={{ flex: 1 }}>
             <View style={styles.rowView}>
               <Text variant="labelLarge" style={styles.courtType}>
-                Basketball
+                {type}
               </Text>
               <View style={styles.rating}>
                 <FeatherIcon name={`star`} color={"white"} size={14} />
@@ -47,11 +61,11 @@ export const CourtCard = () => {
 
             <View style={[styles.rowView, { marginVertical: -10 }]}>
               <Text style={styles.subtitle}>TYPE</Text>
-              <Text style={styles.rowValue}>Full-Court</Text>
+              <Text style={styles.rowValue}>{type}</Text>
             </View>
             <View style={styles.rowView}>
               <Text style={styles.subtitle}>PRICE</Text>
-              <Text style={styles.rowValue}>USD 12-23/hr</Text>
+              <Text style={styles.rowValue}>USD {price}/hr</Text>
             </View>
           </View>
         </View>
@@ -65,6 +79,7 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     rating: {
       flexDirection: "row",
+      alignItems: "center",
     },
     lineStyle: {
       marginVertical: 5,

@@ -38,6 +38,7 @@ export const VenueCard = ({
       onPress={() => {
         navigation.push("VenueDetails", {
           id: venueBranch.venue.id,
+          play: false,
         });
       }}
     >

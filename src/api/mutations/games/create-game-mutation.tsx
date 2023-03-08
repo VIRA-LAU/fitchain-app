@@ -3,9 +3,9 @@ import { useMutation } from "react-query";
 import { UserContext, UserData } from "../../../utils/UserContext";
 import { useContext } from "react";
 
-type Props = {};
+type Request = {};
 
-const createGame = (userData: UserData) => async (data: Props) => {
+const createGame = (userData: UserData) => async (data: Request) => {
   const header = getHeader(userData);
   return await client
     .post("/game", {
@@ -21,7 +21,7 @@ const createGame = (userData: UserData) => async (data: Props) => {
 
 export const useCreateGameMutation = () => {
   const { userData } = useContext(UserContext);
-  return useMutation<unknown, unknown, Props>({
+  return useMutation<unknown, unknown, Request>({
     mutationFn: createGame(userData!),
   });
 };

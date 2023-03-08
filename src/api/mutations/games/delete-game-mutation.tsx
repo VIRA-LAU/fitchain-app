@@ -3,9 +3,9 @@ import { useMutation } from "react-query";
 import { UserContext, UserData } from "../../../utils/UserContext";
 import { useContext } from "react";
 
-type Props = {};
+type Request = {};
 
-const deleteGame = (userData: UserData) => async (data: Props) => {
+const deleteGame = (userData: UserData) => async (data: Request) => {
   const header = getHeader(userData);
   return await client
     .delete("/game/", {
@@ -21,7 +21,7 @@ const deleteGame = (userData: UserData) => async (data: Props) => {
 
 export const useDeleteGameMutation = () => {
   const { userData } = useContext(UserContext);
-  return useMutation<unknown, unknown, Props>({
+  return useMutation<unknown, unknown, Request>({
     mutationFn: deleteGame(userData!),
   });
 };

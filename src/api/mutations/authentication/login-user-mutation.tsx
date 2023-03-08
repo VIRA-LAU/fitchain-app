@@ -5,12 +5,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "src/utils";
 import { User } from "src/types";
 
-type Props = {
+type Request = {
   email: string;
   password: string;
 };
 
-const LoginUser = async (data: Props) => {
+const LoginUser = async (data: Request) => {
   return await client.post("/auth/signin", data).then((res) => res.data);
 };
 
@@ -18,7 +18,7 @@ export const useLoginUserMutation = (
   setSignedIn: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const { setUserData } = useContext(UserContext) as any;
-  return useMutation<User, unknown, Props>({
+  return useMutation<User, unknown, Request>({
     mutationFn: LoginUser,
     onSuccess: async (data) => {
       console.log(data);

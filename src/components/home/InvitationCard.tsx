@@ -16,14 +16,14 @@ import { useTheme, Button } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
-import { Booking } from "src/types";
+import { Game } from "src/types";
 
 export const InvitationCard = ({
   inviter,
   game,
 }: {
   inviter: string;
-  game: Booking;
+  game: Game;
 }) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
@@ -57,9 +57,7 @@ export const InvitationCard = ({
   return (
     <Pressable
       style={styles.wrapper}
-      onPress={() =>
-        navigation.push("GameDetails", { booking: JSON.stringify(game) })
-      }
+      onPress={() => navigation.push("GameDetails", { id: game.id })}
     >
       <Image
         source={

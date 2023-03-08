@@ -24,7 +24,7 @@ import {
   useActivitiesQuery,
 } from "src/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Activity, Booking, Invitation, VenueBranch } from "src/types";
+import { Activity, Game, Invitation, VenueBranch } from "src/types";
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
 const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
@@ -45,7 +45,7 @@ export const Home = ({ navigation, route }: Props) => {
   const { userData } = useContext(UserContext);
 
   const { data: branchesVenues } = useBranchesQuery();
-  const { data: games } = useGamesQuery();
+  const { data: games } = useGamesQuery({ type: "upcoming", limit: 5 });
   const { data: bookings } = useBookingsQuery();
   const { data: invitations } = useInvitationsQuery();
   const { data: activities } = useActivitiesQuery();
@@ -79,8 +79,8 @@ export const Home = ({ navigation, route }: Props) => {
         </Text>
         <View>
           {games
-            ?.filter(({ type }: Booking) => selectedSports[type])
-            .map((game: Booking, index: number) => (
+            ?.filter(({ type }: Game) => selectedSports[type])
+            .map((game: Game, index: number) => (
               <UpcomingGameCard key={index} game={game} />
             ))}
         </View>
@@ -114,7 +114,7 @@ export const Home = ({ navigation, route }: Props) => {
         <SectionTitle title="Bookings" styles={styles} />
         <View>
           {bookings
-            ?.filter(({ type, date }: Booking) => {
+            ?.filter(({ type, date }: Game) => {
               const bookingDate = new Date(
                 date.toISOString().substring(0, date.toISOString().indexOf("T"))
               );
@@ -129,7 +129,7 @@ export const Home = ({ navigation, route }: Props) => {
                   0 && selectedSports[type]
               );
             })
-            .map((booking: Booking, index: number) => (
+            .map((booking: Game, index: number) => (
               <BookingCard key={index} booking={booking} />
             ))}
         </View>

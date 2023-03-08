@@ -8,9 +8,9 @@ import {
   CompositeNavigationProp,
   useNavigation,
 } from "@react-navigation/native";
-import { Booking, GameType } from "src/types";
+import { Game, GameType } from "src/types";
 
-export const UpcomingGameCard = ({ game }: { game: Booking }) => {
+export const UpcomingGameCard = ({ game }: { game: Game }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const weekday = [
@@ -36,9 +36,7 @@ export const UpcomingGameCard = ({ game }: { game: Booking }) => {
   return (
     <Pressable
       style={styles.wrapper}
-      onPress={() =>
-        navigation.push("GameDetails", { booking: JSON.stringify(game) })
-      }
+      onPress={() => navigation.push("GameDetails", { id: game.id })}
     >
       <View>
         <Text style={styles.text}>This {weekday[game.date?.getDay()]},</Text>

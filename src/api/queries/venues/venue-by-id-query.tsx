@@ -17,5 +17,5 @@ const getVenueById = (userData: UserData, id: number) => async () => {
 
 export const useVenueByIdQuery = (id: number) => {
   const { userData } = useContext(UserContext);
-  return useQuery<Venue>(["Venue", id], getVenueById(userData!, id));
+  return useQuery<Venue>(["venue", id], getVenueById(userData!, id));
 };

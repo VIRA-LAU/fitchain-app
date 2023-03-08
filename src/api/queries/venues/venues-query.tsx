@@ -15,4 +15,4 @@ const getVenues = (userData: UserData) => async () => {
 };
 
 export const useVenuesQuery = (userData: UserData) =>
-  useQuery<Venue[]>(["Venues"], getVenues(userData));
+  useQuery<Venue[]>("venues", getVenues(userData));

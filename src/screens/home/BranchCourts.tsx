@@ -4,9 +4,6 @@ import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList } from "navigation";
 import { AppHeader } from "src/components";
-import { useBranchesQuery } from "src/api";
-import { useContext, useState } from "react";
-import { UserContext } from "src/utils";
 import { ScrollView } from "react-native-gesture-handler";
 import { CourtCard } from "src/components/game-details/CourtCard";
 
@@ -16,8 +13,7 @@ export const BranchCourts = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { userData } = useContext(UserContext);
-  const { data: branchesVenues } = useBranchesQuery();
+  const { courts, venueName, branchLocation } = route.params;
 
   return (
     <AppHeader
@@ -33,13 +29,17 @@ export const BranchCourts = ({ navigation, route }: Props) => {
             variant="labelLarge"
             style={[{ color: colors.tertiary }, styles.locationComponent]}
           >
-            Hoops Club, Hazmieh
+            {venueName}, {branchLocation}
           </Text>
-          <CourtCard />
-          <CourtCard />
-          <CourtCard />
-          <CourtCard />
-          <CourtCard />
+          {courts.map((court, index: number) => (
+            <CourtCard
+              key={index}
+              venueName={venueName}
+              type={court.courtType}
+              price={court.price}
+              // rating={court.rating}
+            />
+          ))}
         </ScrollView>
       </View>
     </AppHeader>
