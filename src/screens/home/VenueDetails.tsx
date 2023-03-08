@@ -21,7 +21,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const styles = makeStyles(colors, windowWidth, windowHeight);
-
+  const play = route.params.play;
   const [selectedSports, setSelectedSports] = useState({
     basketball: true,
     football: true,
@@ -32,13 +32,23 @@ export const VenueDetails = ({ navigation, route }: Props) => {
     <AppHeader
       navigation={navigation}
       route={route}
-      right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
+      right={
+        !play ? (
+          <IonIcon name="ellipsis-horizontal" color="white" size={24} />
+        ) : (
+          <IonIcon name="close-outline" color="white" size={24} />
+        )
+      }
       title={"Hoops Club"}
       left={
-        <SportTypeDropdown
-          selectedSports={selectedSports}
-          setSelectedSports={setSelectedSports}
-        />
+        !play ? (
+          <SportTypeDropdown
+            selectedSports={selectedSports}
+            setSelectedSports={setSelectedSports}
+          />
+        ) : (
+          <View></View>
+        )
       }
       backEnabled
     >
@@ -57,39 +67,41 @@ export const VenueDetails = ({ navigation, route }: Props) => {
               Hoops is the leading Football academy in Lebanon, in partnership
               with the French club Olympique Lyonnairs.
             </Text>
-            <View style={styles.buttonsView}>
-              <Pressable
-                onPress={() => {
-                  navigation.push("VenueBranches");
-                }}
-              >
+            {!play && (
+              <View style={styles.buttonsView}>
+                <Pressable
+                  onPress={() => {
+                    navigation.push("VenueBranches");
+                  }}
+                >
+                  <Button
+                    icon={() => (
+                      <IonIcon
+                        name={"basketball-outline"}
+                        size={26}
+                        color={colors.secondary}
+                      />
+                    )}
+                    style={{ borderRadius: 5, flex: 1 }}
+                    textColor={colors.secondary}
+                    buttonColor={colors.primary}
+                  >
+                    Book Court
+                  </Button>
+                </Pressable>
+
                 <Button
                   icon={() => (
-                    <IonIcon
-                      name={"basketball-outline"}
-                      size={26}
-                      color={colors.secondary}
-                    />
+                    <FeatherIcon name="thumbs-up" size={22} color={"white"} />
                   )}
                   style={{ borderRadius: 5, flex: 1 }}
-                  textColor={colors.secondary}
-                  buttonColor={colors.primary}
+                  textColor={"white"}
+                  buttonColor={"transparent"}
                 >
-                  Book Court
+                  Follow Venue
                 </Button>
-              </Pressable>
-
-              <Button
-                icon={() => (
-                  <FeatherIcon name="thumbs-up" size={22} color={"white"} />
-                )}
-                style={{ borderRadius: 5, flex: 1 }}
-                textColor={"white"}
-                buttonColor={"transparent"}
-              >
-                Follow Venue
-              </Button>
-            </View>
+              </View>
+            )}
           </View>
         </View>
         <View style={styles.contentView}>
@@ -120,25 +132,27 @@ export const VenueDetails = ({ navigation, route }: Props) => {
             </View>
           </View>
           <View style={styles.divider} />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginVertical: 20,
-            }}
-          >
-            <Text variant="labelLarge" style={{ color: colors.tertiary }}>
-              Requests (2)
-            </Text>
+          {!play && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginVertical: 20,
+              }}
+            >
+              <Text variant="labelLarge" style={{ color: colors.tertiary }}>
+                Requests (2)
+              </Text>
 
-            <FeatherIcon
-              name="chevron-right"
-              color={colors.tertiary}
-              size={20}
-              style={{ marginLeft: "auto" }}
-            />
-          </View>
+              <FeatherIcon
+                name="chevron-right"
+                color={colors.tertiary}
+                size={20}
+                style={{ marginLeft: "auto" }}
+              />
+            </View>
+          )}
           <View style={styles.divider} />
           <Text
             variant="labelLarge"
@@ -188,30 +202,58 @@ export const VenueDetails = ({ navigation, route }: Props) => {
               <Text style={styles.uploadPhotoText}>Upload Photo</Text>
             </View>
           </ScrollView>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginVertical: 20,
-            }}
-          >
-            <View style={styles.divider} />
-            <Text variant="labelLarge" style={{ color: colors.tertiary }}>
-              Branches
-            </Text>
+          {!play && (
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginVertical: 20,
+                }}
+              >
+                <View style={styles.divider} />
+                <Text variant="labelLarge" style={{ color: colors.tertiary }}>
+                  Branches
+                </Text>
 
-            <FeatherIcon
-              name="chevron-right"
-              color={colors.tertiary}
-              size={20}
-              style={{ marginLeft: "auto" }}
-            />
-          </View>
-          <VenueLocation />
-          <VenueLocation />
-          <Text style={styles.viewAll}>View All</Text>
+                <FeatherIcon
+                  name="chevron-right"
+                  color={colors.tertiary}
+                  size={20}
+                  style={{ marginLeft: "auto" }}
+                />
+              </View>
+              <VenueLocation />
+              <VenueLocation />
+              <Text style={styles.viewAll}>View All</Text>
+            </View>
+          )}
         </View>
+      </View>
+      <View style={styles.bookCourtView}>
+        <Pressable
+          style={styles.bookCourtPressable}
+          onPress={() => {
+            navigation.push("branchCourts");
+          }}
+        >
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ alignContent: "center", justifyContent: "center" }}>
+              <IonIcon
+                name={"basketball-outline"}
+                size={25}
+                color={colors.background}
+              />
+            </View>
+            <View>
+              <Text variant="titleSmall" style={styles.bookCourtButton}>
+                Book Court
+              </Text>
+              <Text variant="labelMedium">USD 7-20/hr</Text>
+            </View>
+          </View>
+        </Pressable>
       </View>
     </AppHeader>
   );
@@ -223,6 +265,23 @@ const makeStyles = (
   windowHeight: number
 ) =>
   StyleSheet.create({
+    bookCourtView: {
+      borderRadius: 5,
+      height: 50,
+      width: "90%",
+      alignSelf: "center",
+      backgroundColor: colors.primary,
+    },
+    bookCourtPressable: {
+      borderRadius: 20,
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    bookCourtButton: {
+      backgroundColor: colors.primary,
+      color: colors.background,
+    },
     headerView: {
       backgroundColor: colors.secondary,
       borderBottomLeftRadius: 10,

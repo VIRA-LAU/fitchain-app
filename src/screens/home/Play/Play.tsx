@@ -6,6 +6,13 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
 import { DateTimePickerView } from "./DateTimePickerView";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
 export const Play = ({
   visible,
@@ -22,6 +29,13 @@ export const Play = ({
   const [dateTimePickerVisible, setDateTimePickerVisible] =
     useState<boolean>(false);
 
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<HomeStackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
   return (
     <React.Fragment>
       <Pressable
@@ -169,6 +183,18 @@ export const Play = ({
             </Text>
           </View>
         </View>
+        <View style={styles.findVenueView}>
+          <Pressable
+            style={styles.findVenuePressable}
+            onPress={() => {
+              navigation.push("chooseVenue");
+            }}
+          >
+            <Text variant="titleSmall" style={styles.findVenueButton}>
+              Find Venue
+            </Text>
+          </Pressable>
+        </View>
       </View>
       <DateTimePickerView
         visible={dateTimePickerVisible}
@@ -180,6 +206,23 @@ export const Play = ({
 
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
+    findVenueView: {
+      borderRadius: 10,
+      marginTop: 100,
+      height: 40,
+      width: "100%",
+      backgroundColor: colors.primary,
+    },
+    findVenuePressable: {
+      borderRadius: 20,
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    findVenueButton: {
+      backgroundColor: colors.primary,
+      color: colors.background,
+    },
     backgroundView: {
       position: "absolute",
       width: "100%",

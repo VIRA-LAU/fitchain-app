@@ -36,7 +36,7 @@ export const VenueCard = ({
     <Pressable
       style={styles.wrapper}
       onPress={() => {
-        navigation.push("VenueDetails");
+        navigation.push("VenueDetails", { play: false });
       }}
     >
       <Image
