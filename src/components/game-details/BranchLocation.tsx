@@ -9,7 +9,7 @@ import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
-import { Booking } from "src/types";
+import { Booking, VenueBranch } from "src/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 
 export const BranchLocation = ({
@@ -21,15 +21,15 @@ export const BranchLocation = ({
   type: "branch" | "court";
   court?: Booking["court"];
   branch?: {
+    venueName: string;
     location: string;
-    courts: string;
-    prices: string;
+    courts: VenueBranch["courts"];
+    rating: number;
   };
   isPressable?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-
   const navigation =
     useNavigation<
       CompositeNavigationProp<
@@ -37,11 +37,30 @@ export const BranchLocation = ({
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
+  let courtsStr = "";
+  let prices = "";
+  if (branch) {
+    const pricesArr = branch?.courts.map(({ price }) => price);
+    prices =
+      pricesArr?.length === 1
+        ? pricesArr[0].toString()
+        : `${Math.min.apply(null, pricesArr!)} - ${Math.max.apply(
+            null,
+            pricesArr!
+          )}`;
+
+    courtsStr = branch.courts.map(({ courtType }) => courtType).join(", ");
+  }
   return (
     <Pressable
       style={styles.wrapperView}
       onPress={() => {
-        if (isPressable) navigation.push("BranchCourts");
+        if (isPressable && branch)
+          navigation.push("BranchCourts", {
+            courts: branch.courts,
+            venueName: branch.venueName,
+            branchLocation: branch.location,
+          });
       }}
     >
       <Image
@@ -74,7 +93,7 @@ export const BranchLocation = ({
           )}
           {type === "branch" && (
             <View>
-              <Text style={styles.title}>3.6</Text>
+              <Text style={styles.title}>{branch?.rating}</Text>
             </View>
           )}
         </View>
@@ -99,13 +118,13 @@ export const BranchLocation = ({
         {type === "branch" && (
           <View style={styles.rowView}>
             <Text style={styles.rowKey}>COURTS</Text>
-            <Text style={styles.rowValue}>{branch?.courts}</Text>
+            <Text style={styles.rowValue}>{courtsStr}</Text>
           </View>
         )}
         {type === "branch" && (
           <View style={styles.rowView}>
             <Text style={styles.rowKey}>PRICE</Text>
-            <Text style={styles.rowValue}>USD {branch?.prices}/hr</Text>
+            <Text style={styles.rowValue}>USD {prices}/hr</Text>
           </View>
         )}
       </View>

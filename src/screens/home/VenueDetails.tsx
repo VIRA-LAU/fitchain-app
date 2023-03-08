@@ -59,7 +59,10 @@ export const VenueDetails = ({ navigation, route }: Props) => {
             <View style={styles.buttonsView}>
               <Button
                 onPress={() => {
-                  navigation.push("VenueBranches", { id });
+                  navigation.push("VenueBranches", {
+                    id,
+                    venueName: venue!.name,
+                  });
                 }}
                 icon={() => (
                   <IonIcon
@@ -205,24 +208,15 @@ export const VenueDetails = ({ navigation, route }: Props) => {
             />
           </View>
           {venue?.branches.map((branch, index: number) => {
-            const pricesArr = branch.courts.map(({ price }) => price);
-            const prices =
-              pricesArr.length === 1
-                ? pricesArr[0].toString()
-                : `${Math.min.apply(null, pricesArr)} - ${Math.max.apply(
-                    null,
-                    pricesArr
-                  )}`;
             return (
               <BranchLocation
                 key={index}
                 type="branch"
                 branch={{
+                  venueName: venue.name,
                   location: branch.location,
-                  courts: branch.courts
-                    .map(({ courtType }) => courtType)
-                    .join(", "),
-                  prices,
+                  courts: branch.courts,
+                  rating: branch.rating,
                 }}
               />
             );
