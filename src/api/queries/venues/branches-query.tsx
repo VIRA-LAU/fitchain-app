@@ -18,5 +18,5 @@ const getBranches = (userData: UserData, venueId?: number) => async () => {
 
 export const useBranchesQuery = (venueId?: number) => {
   const { userData } = useContext(UserContext);
-  return useQuery<VenueBranch[]>(["branches"], getBranches(userData!, venueId));
+  return useQuery<VenueBranch[]>("branches", getBranches(userData!, venueId));
 };

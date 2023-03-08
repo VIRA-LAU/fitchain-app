@@ -18,7 +18,7 @@ const getGames = (userData: UserData) => async () => {
 export const useGamesQuery = () => {
   const { userData } = useContext(UserContext);
 
-  return useQuery<Booking[]>(["games", userData?.userId], getGames(userData!), {
+  return useQuery<Booking[]>("games", getGames(userData!), {
     select: (games) =>
       games
         .map((game) => ({ ...game, date: new Date(game.date) }))

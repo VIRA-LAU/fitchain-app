@@ -1,14 +1,20 @@
 import client, { getHeader } from "../../client";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { UserContext, UserData } from "../../../utils/UserContext";
 import { useContext } from "react";
 
-type Props = {
+type Request = {
   gameId: number;
   team: "HOME" | "AWAY";
 };
 
-const joinGame = (userData: UserData) => async (data: Props) => {
+type Response = {
+  gameId: number;
+  status: string;
+  team: string;
+};
+
+const joinGame = (userData: UserData) => async (data: Request) => {
   const header = getHeader(userData);
   return await client
     .post("/gamerequests", data, header)
@@ -23,7 +29,18 @@ export const useJoinGameMutation = (
   setJoinDisabled: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const { userData } = useContext(UserContext);
-  return useMutation<unknown, unknown, Props>({
+  const queryClient = useQueryClient();
+
+  return useMutation<Response, unknown, Request>({
     mutationFn: joinGame(userData!),
+    onSuccess: (data) => {
+      setJoinDisabled(true);
+      queryClient.setQueryData(["playerStatus", data.gameId], {
+        hasRequestedtoJoin: "PENDING",
+        hasBeenInvited: false,
+        isAdmin: false,
+      });
+      queryClient.refetchQueries("invitations");
+    },
   });
 };

@@ -18,5 +18,5 @@ const getActivities = (userData: UserData) => async () => {
 
 export const useActivitiesQuery = () => {
   const { userData } = useContext(UserContext);
-  return useQuery<Activity[]>(["activities"], getActivities(userData!));
+  return useQuery<Activity[]>("activities", getActivities(userData!));
 };

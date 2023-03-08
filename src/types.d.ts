@@ -88,3 +88,9 @@ export interface Activity {
   type: GameType;
   isWinner: boolean;
 }
+
+export interface PlayerStatus {
+  hasRequestedtoJoin: false | "APPROVED" | "REJECTED" | "PENDING";
+  hasBeenInvited: false | "ACCEPTED" | "REJECTED" | "PENDING";
+  isAdmin: false;
+}

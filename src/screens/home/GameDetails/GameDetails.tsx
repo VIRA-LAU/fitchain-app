@@ -1,4 +1,4 @@
-import { useState, useMemo, useContext } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { AppHeader } from "src/components";
 import { View, StyleSheet, useWindowDimensions } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -14,9 +14,8 @@ import {
   TabView,
 } from "react-native-tab-view";
 import { Home } from "./Home";
-import { Booking, GameType } from "src/types";
-import { useJoinGameMutation } from "src/api";
-import { UserContext } from "src/utils";
+import { Booking } from "src/types";
+import { useJoinGameMutation, usePlayerStatusQuery } from "src/api";
 
 type Props = StackScreenProps<HomeStackParamList, "GameDetails">;
 
@@ -27,6 +26,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
 
   const { booking: bookingString } = route.params;
   const booking: Booking = JSON.parse(bookingString);
+
   booking.date = new Date(booking.date);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -121,11 +121,20 @@ export const GameDetails = ({ navigation, route }: Props) => {
     />
   );
 
-  const [joinDisabled, setJoinDisabled] = useState(false);
-  // const {data: isInGame} = useCheckInGameQuery(booking.id)
+  const [joinDisabled, setJoinDisabled] = useState<boolean>(false);
+  const { data: playerStatus } = usePlayerStatusQuery(booking.id);
 
-  const { userData } = useContext(UserContext);
   const { mutate: joinGame } = useJoinGameMutation(setJoinDisabled);
+
+  useEffect(() => {
+    setJoinDisabled(
+      playerStatus?.hasBeenInvited === "ACCEPTED" ||
+        playerStatus?.hasBeenInvited === "PENDING" ||
+        playerStatus?.hasRequestedtoJoin === "APPROVED" ||
+        playerStatus?.hasRequestedtoJoin === "PENDING"
+    );
+  }, [JSON.stringify(playerStatus)]);
+
   return (
     <AppHeader
       absolutePosition={false}
@@ -169,41 +178,54 @@ export const GameDetails = ({ navigation, route }: Props) => {
               {startTimeString} - {endTimeString}
             </Text>
           </View>
-
-          <View style={styles.buttonsView}>
-            <Button
-              icon={() => (
-                <IonIcon
-                  name={"basketball-outline"}
-                  size={26}
-                  color={colors.secondary}
-                />
-              )}
-              style={{ borderRadius: 5, flex: 1 }}
-              textColor={colors.secondary}
-              buttonColor={joinDisabled ? colors.tertiary : colors.primary}
-              onPress={() => {
-                joinGame({
-                  gameId: booking.id,
-                  team: "HOME",
-                });
-              }}
-              disabled={joinDisabled}
-            >
-              Join Game
-            </Button>
-            <Button
-              icon={() => (
-                <FeatherIcon name="thumbs-up" size={22} color={"white"} />
-              )}
-              style={{ borderRadius: 5, flex: 1 }}
-              textColor={"white"}
-              buttonColor={"transparent"}
-            >
-              Follow Game
-            </Button>
-          </View>
+          {!playerStatus?.isAdmin && (
+            <View style={styles.buttonsView}>
+              <Button
+                icon={() => (
+                  <IonIcon
+                    name={"basketball-outline"}
+                    size={26}
+                    color={colors.secondary}
+                  />
+                )}
+                style={{
+                  borderRadius: 5,
+                  flex: 1,
+                  backgroundColor: joinDisabled
+                    ? colors.tertiary
+                    : colors.primary,
+                }}
+                textColor={colors.secondary}
+                onPress={() => {
+                  joinGame({
+                    gameId: booking.id,
+                    team: "HOME",
+                  });
+                }}
+                disabled={joinDisabled}
+              >
+                {playerStatus?.hasBeenInvited === "ACCEPTED" ||
+                playerStatus?.hasBeenInvited === "PENDING"
+                  ? "Invited to Game"
+                  : playerStatus?.hasRequestedtoJoin === "APPROVED" ||
+                    playerStatus?.hasRequestedtoJoin === "PENDING"
+                  ? "Requested to Join"
+                  : "Join Game"}
+              </Button>
+              <Button
+                icon={() => (
+                  <FeatherIcon name="thumbs-up" size={22} color={"white"} />
+                )}
+                style={{ borderRadius: 5, flex: 1 }}
+                textColor={"white"}
+                buttonColor={"transparent"}
+              >
+                Follow Game
+              </Button>
+            </View>
+          )}
         </View>
+
         <View style={styles.contentView}>
           <TabView
             navigationState={{ index, routes }}

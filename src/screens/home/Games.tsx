@@ -1,6 +1,6 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { NavigationProp } from "@react-navigation/native";
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -24,7 +24,6 @@ import {
 } from "components";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { UserContext } from "src/utils";
 import { useBookingsQuery } from "src/api";
 import { Booking } from "src/types";
 

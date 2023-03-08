@@ -18,14 +18,10 @@ const getBookings = (userData: UserData) => async () => {
 
 export const useBookingsQuery = () => {
   const { userData } = useContext(UserContext);
-  return useQuery<Booking[]>(
-    ["bookings", userData?.userId],
-    getBookings(userData!),
-    {
-      select: (bookings) =>
-        bookings
-          .map((booking) => ({ ...booking, date: new Date(booking.date) }))
-          .sort((a, b) => a.date.getTime() - b.date.getTime()),
-    }
-  );
+  return useQuery<Booking[]>("bookings", getBookings(userData!), {
+    select: (bookings) =>
+      bookings
+        .map((booking) => ({ ...booking, date: new Date(booking.date) }))
+        .sort((a, b) => a.date.getTime() - b.date.getTime()),
+  });
 };
