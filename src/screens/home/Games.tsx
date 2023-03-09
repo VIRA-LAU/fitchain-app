@@ -49,19 +49,20 @@ const DayHeader = ({ day }: { day: string }) => {
 
 const AllGames = (props: Props) => {
   const { data: allGames } = useGamesQuery({ type: props.type });
-  return <GameList {...props} games={allGames} />;
+  return <GameList {...props} games={allGames} isFollowed={false} />;
 };
 
 const FollowedGames = (props: Props) => {
-  const { data: followedGames } = useFollowedGamesQuery();
-  return <GameList {...props} games={followedGames} />;
+  const { data: followedGames } = useFollowedGamesQuery({ type: props.type });
+  return <GameList {...props} games={followedGames} isFollowed={true} />;
 };
 
 const GameList = ({
   selectedSports,
   type,
   games,
-}: Props & { games?: Game[] }) => {
+  isFollowed,
+}: Props & { games?: Game[]; isFollowed: boolean }) => {
   const { colors } = useTheme();
   const today = new Date();
   const gameCards: JSX.Element[] = [];
@@ -177,7 +178,7 @@ const GameList = ({
             textAlignVertical: "center",
           }}
         >
-          You have no {type} games.
+          You have no {type} {isFollowed && "followed "}games.
         </Text>
       )}
     </ScrollView>
