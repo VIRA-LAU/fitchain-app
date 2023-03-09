@@ -1,6 +1,6 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
 import { StyleSheet, View, Image, ScrollView, Pressable } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,6 +13,7 @@ import {
 import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { GameType } from "src/types";
 
 export const Play = ({
   visible,
@@ -23,11 +24,13 @@ export const Play = ({
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const [selectedSport, setSelectedSport] = useState<
-    "Basketball" | "Football" | "Tennis"
-  >("Basketball");
+  const [gameType, setGameType] = useState<GameType>("Basketball");
   const [dateTimePickerVisible, setDateTimePickerVisible] =
     useState<boolean>(false);
+  const [searchLocation, setSearchLocation] =
+    useState<string>("Beirut, Lebanon");
+  const [searchDate, setSearchDate] = useState<Date>(new Date());
+  const [slotDuration, setSlotDuration] = useState<number>(60);
 
   const navigation =
     useNavigation<
@@ -60,20 +63,18 @@ export const Play = ({
         <ScrollView style={styles.typePicker} horizontal>
           <Pressable
             onPress={() => {
-              setSelectedSport("Basketball");
+              setGameType("Basketball");
             }}
             style={[
               styles.sportType,
               { marginLeft: 20 },
-              selectedSport === "Basketball"
-                ? { borderColor: colors.primary }
-                : {},
+              gameType === "Basketball" ? { borderColor: colors.primary } : {},
             ]}
           >
             <Text
               style={[
                 styles.sportText,
-                selectedSport === "Basketball" ? { color: colors.primary } : {},
+                gameType === "Basketball" ? { color: colors.primary } : {},
               ]}
             >
               Basketball
@@ -85,19 +86,17 @@ export const Play = ({
           </Pressable>
           <Pressable
             onPress={() => {
-              setSelectedSport("Football");
+              setGameType("Football");
             }}
             style={[
               styles.sportType,
-              selectedSport === "Football"
-                ? { borderColor: colors.primary }
-                : {},
+              gameType === "Football" ? { borderColor: colors.primary } : {},
             ]}
           >
             <Text
               style={[
                 styles.sportText,
-                selectedSport === "Football" ? { color: colors.primary } : {},
+                gameType === "Football" ? { color: colors.primary } : {},
               ]}
             >
               Football
@@ -109,18 +108,18 @@ export const Play = ({
           </Pressable>
           <Pressable
             onPress={() => {
-              setSelectedSport("Tennis");
+              setGameType("Tennis");
             }}
             style={[
               styles.sportType,
               { marginRight: 20 },
-              selectedSport === "Tennis" ? { borderColor: colors.primary } : {},
+              gameType === "Tennis" ? { borderColor: colors.primary } : {},
             ]}
           >
             <Text
               style={[
                 styles.sportText,
-                selectedSport === "Tennis" ? { color: colors.primary } : {},
+                gameType === "Tennis" ? { color: colors.primary } : {},
               ]}
             >
               Tennis
@@ -139,7 +138,7 @@ export const Play = ({
               color={"white"}
               style={{ marginRight: 10 }}
             />
-            <Text style={styles.labelText}>Nearby: Beirut, Lebanon</Text>
+            <Text style={styles.labelText}>Nearby: {searchLocation}</Text>
           </View>
           <Text style={styles.buttonText}>Change</Text>
         </View>
@@ -183,18 +182,21 @@ export const Play = ({
             </Text>
           </View>
         </View>
-        <View style={styles.findVenueView}>
-          <Pressable
-            style={styles.findVenuePressable}
-            onPress={() => {
-              navigation.push("chooseVenue");
-            }}
-          >
-            <Text variant="titleSmall" style={styles.findVenueButton}>
-              Find Venue
-            </Text>
-          </Pressable>
-        </View>
+        <Button
+          buttonColor={colors.primary}
+          textColor={"black"}
+          style={{ borderRadius: 5, marginTop: "auto" }}
+          onPress={() => {
+            navigation.push("ChooseVenue", {
+              location: searchLocation,
+              date: JSON.stringify(searchDate),
+              gameType,
+              duration: slotDuration,
+            });
+          }}
+        >
+          Find Venue
+        </Button>
       </View>
       <DateTimePickerView
         visible={dateTimePickerVisible}
@@ -206,23 +208,6 @@ export const Play = ({
 
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
-    findVenueView: {
-      borderRadius: 10,
-      marginTop: 100,
-      height: 40,
-      width: "100%",
-      backgroundColor: colors.primary,
-    },
-    findVenuePressable: {
-      borderRadius: 20,
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    findVenueButton: {
-      backgroundColor: colors.primary,
-      color: colors.background,
-    },
     backgroundView: {
       position: "absolute",
       width: "100%",
@@ -233,12 +218,13 @@ const makeStyles = (colors: MD3Colors) =>
     wrapperView: {
       position: "absolute",
       bottom: 0,
-      height: "85%",
+      height: "75%",
       width: "100%",
       backgroundColor: colors.background,
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,
       padding: 20,
+      paddingBottom: 30,
     },
     header: {
       margin: 20,

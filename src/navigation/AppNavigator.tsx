@@ -20,7 +20,7 @@ import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { VenueBranch } from "src/types";
+import { GameType, VenueBranch } from "src/types";
 import { BranchCourts } from "src/screens/home/BranchCourts";
 import { ChooseVenue } from "src/screens/home/Play/ChooseVenue";
 
@@ -82,19 +82,44 @@ const BottomTabNavigator = () => {
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
   GameDetails: { id: number };
-  VenueDetails: { id: number; play: boolean };
+  VenueDetails: {
+    id: number;
+    isPlayScreen: boolean;
+    playScreenBranch: VenueBranch | null;
+    playScreenBookingDetails: {
+      date: string;
+      duration: number;
+      gameType: GameType;
+    } | null;
+  };
   VenueBookingDetails: {
     venueName: string;
     courtType: string;
     price: number;
+    bookingDetails: {
+      courtId: number;
+      date: string;
+      duration: number;
+      gameType: GameType;
+    };
   };
   VenueBranches: { id: number; venueName: string };
   BranchCourts: {
     venueName: string;
     courts: VenueBranch["courts"];
     branchLocation: string;
+    bookingDetails: {
+      date: string;
+      duration: number;
+      gameType: GameType;
+    };
   };
-  ChooseVenue: undefined;
+  ChooseVenue: {
+    location: string;
+    date: string;
+    duration: number;
+    gameType: GameType;
+  };
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();

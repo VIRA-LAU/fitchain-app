@@ -8,10 +8,7 @@ type Request = {};
 const deleteGame = (userData: UserData) => async (data: Request) => {
   const header = getHeader(userData);
   return await client
-    .delete("/game/", {
-      ...header,
-      data,
-    })
+    .delete("/game/", header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("delete-game-mutation", e);

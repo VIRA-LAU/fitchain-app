@@ -9,7 +9,7 @@ import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
-import { VenueBranch } from "src/types";
+import { GameType, VenueBranch } from "src/types";
 
 type styleOptions = "vertical" | "horizontal" | "focused";
 
@@ -17,10 +17,18 @@ export const VenueCard = ({
   type,
   promoted = true,
   venueBranch,
+  isPlayScreen = false,
+  playScreenBookingDetails,
 }: {
   type: styleOptions;
   promoted?: boolean;
   venueBranch: VenueBranch;
+  isPlayScreen?: boolean;
+  playScreenBookingDetails?: {
+    date: string;
+    duration: number;
+    gameType: GameType;
+  };
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, type === "horizontal", type === "focused");
@@ -38,7 +46,11 @@ export const VenueCard = ({
       onPress={() => {
         navigation.push("VenueDetails", {
           id: venueBranch.venue.id,
-          play: false,
+          isPlayScreen,
+          playScreenBranch: isPlayScreen ? venueBranch : null,
+          playScreenBookingDetails: isPlayScreen
+            ? playScreenBookingDetails!
+            : null,
         });
       }}
     >
