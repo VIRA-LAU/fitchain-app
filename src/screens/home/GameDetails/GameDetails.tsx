@@ -128,7 +128,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
           backgroundColor: colors.secondary,
           borderRadius: 10,
           marginHorizontal: 20,
-          marginBottom: 10,
         }}
         renderTabBarItem={({ route }) => {
           let isActive = route.key === props.navigationState.routes[index].key;
@@ -276,7 +275,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     headerView: {
       paddingTop: 10,
-      paddingBottom: 20,
+      paddingBottom: 10,
       paddingHorizontal: 20,
       borderRadius: 10,
       backgroundColor: colors.secondary,
@@ -284,7 +283,7 @@ const makeStyles = (colors: MD3Colors) =>
     greyFont: { marginVertical: 10, color: colors.tertiary },
     buttonsView: {
       flexDirection: "row",
-      marginTop: 15,
+      marginTop: 10,
       justifyContent: "space-between",
       alignItems: "center",
     },

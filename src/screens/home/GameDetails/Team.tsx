@@ -25,7 +25,7 @@ export const Team = ({
             style={styles.playerCardView}
             contentContainerStyle={{
               alignItems: "center",
-              marginHorizontal: 20,
+              paddingHorizontal: 20,
             }}
             horizontal
           >
@@ -81,7 +81,7 @@ const makeStyles = (colors: MD3Colors) =>
       marginHorizontal: 20,
     },
     placeholderText: {
-      height: 80,
+      height: 120,
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
       textAlign: "center",
