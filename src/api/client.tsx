@@ -1,10 +1,10 @@
 import axios from "axios";
 import { UserData } from "src/utils";
+import { API_URL } from "@dotenv";
 
 const client = axios.create({
-  baseURL: "http://192.168.220.187:3000",
+  baseURL: API_URL,
 });
-
 export default client;
 
 export function getHeader(userData: UserData) {
