@@ -1,18 +1,13 @@
 import { useState, useMemo, useEffect } from "react";
 import { AppHeader } from "src/components";
-import { View, StyleSheet, useWindowDimensions } from "react-native";
+import { View, StyleSheet, useWindowDimensions, Pressable } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import {
-  SceneRendererProps,
-  TabBar,
-  TabBarProps,
-  TabView,
-} from "react-native-tab-view";
+import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
 import { Team } from "./Team";
 import {
   useGameByIdQuery,
@@ -96,14 +91,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
     const startTimeString = durationTimeFormatter.format(date);
     const endTimeString = durationTimeFormatter.format(endTime);
 
-    const renderScene = ({
-      route,
-    }: SceneRendererProps & {
-      route: {
-        key: string;
-        title: string;
-      };
-    }) => {
+    const renderScene = () => {
+      const route = routes[index];
       switch (route.key) {
         case "Home":
           return (
@@ -144,7 +133,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
         renderTabBarItem={({ route }) => {
           let isActive = route.key === props.navigationState.routes[index].key;
           return (
-            <View
+            <Pressable
               style={[
                 styles.tabViewItem,
                 {
@@ -154,6 +143,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     : colors.secondary,
                 },
               ]}
+              onPress={() => {
+                setIndex(routes.findIndex(({ key }) => route.key === key));
+              }}
             >
               <Text
                 style={{
@@ -163,7 +155,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               >
                 {route.title}
               </Text>
-            </View>
+            </Pressable>
           );
         }}
         renderIndicator={() => <View style={{ width: 0 }} />}
@@ -268,6 +260,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               renderScene={renderScene}
               onIndexChange={setIndex}
               initialLayout={{ width: windowWidth }}
+              swipeEnabled={false}
             />
           </View>
         </View>
