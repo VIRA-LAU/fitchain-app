@@ -43,6 +43,7 @@ export const useCreateGameMutation = () => {
     mutationFn: createGame(userData!),
     onSuccess: () => {
       queryClient.refetchQueries(["games"]);
+      queryClient.refetchQueries(["bookings"]);
       navigation.pop(4);
       navigation.navigate("Home");
     },

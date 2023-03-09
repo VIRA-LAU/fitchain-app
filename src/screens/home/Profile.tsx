@@ -212,6 +212,7 @@ const makeStyles = (
     },
     contentView: {
       padding: 20,
+      marginBottom: 30,
     },
     teamsView: {
       flexDirection: "row",

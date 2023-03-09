@@ -1,7 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState } from "react";
-import { useWindowDimensions, View, Pressable, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  useWindowDimensions,
+  View,
+  Pressable,
+  StyleSheet,
+  BackHandler,
+} from "react-native";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Text, useTheme } from "react-native-paper";
@@ -30,6 +36,19 @@ const BottomTabNavigator = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, useWindowDimensions().width);
   const [playScreenVisible, setPlayScreenVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleBack = () => {
+      if (playScreenVisible) {
+        setPlayScreenVisible(false);
+        return true;
+      } else return false;
+    };
+    BackHandler.addEventListener("hardwareBackPress", handleBack);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBack);
+    };
+  }, [playScreenVisible]);
 
   return (
     <View style={{ height: "100%", position: "relative" }}>

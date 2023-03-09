@@ -23,11 +23,12 @@ export const VenueDetails = ({ navigation, route }: Props) => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const styles = makeStyles(colors, windowWidth, windowHeight);
   const { isPlayScreen } = route.params;
-  const [selectedSports, setSelectedSports] = useState({
-    Basketball: true,
-    Football: true,
-    Tennis: true,
-  });
+
+  // const [selectedSports, setSelectedSports] = useState({
+  //   Basketball: true,
+  //   Football: true,
+  //   Tennis: true,
+  // });
 
   const { id, playScreenBranch, playScreenBookingDetails } = route.params;
   const { data: venue } = useVenueByIdQuery(id);
@@ -51,16 +52,16 @@ export const VenueDetails = ({ navigation, route }: Props) => {
         )
       }
       title={venue?.name}
-      left={
-        !isPlayScreen ? (
-          <SportTypeDropdown
-            selectedSports={selectedSports}
-            setSelectedSports={setSelectedSports}
-          />
-        ) : (
-          <View />
-        )
-      }
+      // left={
+      //   !isPlayScreen ? (
+      //     <SportTypeDropdown
+      //       selectedSports={selectedSports}
+      //       setSelectedSports={setSelectedSports}
+      //     />
+      //   ) : (
+      //     <View />
+      //   )
+      // }
       backEnabled
     >
       <View style={styles.headerView}>
