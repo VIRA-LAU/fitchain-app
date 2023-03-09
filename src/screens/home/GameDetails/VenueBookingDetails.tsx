@@ -143,9 +143,13 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
         <Pressable
           style={styles.paymentView}
           onPress={() => {
+            const bookingDate = new Date(JSON.parse(bookingDetails.date));
+            bookingDate.setDate(bookingDate.getDate() + 1);
             createGame({
-              ...bookingDetails,
-              date: new Date(JSON.parse(bookingDetails.date)),
+              courtId: bookingDetails.courtId,
+              duration: bookingDetails.duration,
+              date: bookingDate,
+              type: bookingDetails.gameType,
             });
           }}
         >

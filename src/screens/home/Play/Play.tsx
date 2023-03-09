@@ -187,6 +187,7 @@ export const Play = ({
           textColor={"black"}
           style={{ borderRadius: 5, marginTop: "auto" }}
           onPress={() => {
+            setVisible(false);
             navigation.push("ChooseVenue", {
               location: searchLocation,
               date: JSON.stringify(searchDate),
