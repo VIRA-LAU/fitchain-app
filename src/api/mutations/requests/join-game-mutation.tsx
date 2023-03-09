@@ -41,6 +41,7 @@ export const useJoinGameMutation = (
         isAdmin: false,
       });
       queryClient.refetchQueries(["games"]);
+      queryClient.refetchQueries(["game-players", data.gameId]);
     },
   });
 };

@@ -1,11 +1,12 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { NavigationProp } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
   useWindowDimensions,
   View,
+  Pressable,
 } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -24,10 +25,15 @@ import {
 } from "components";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { useGamesQuery } from "src/api";
+import { useFollowedGamesQuery, useGamesQuery } from "src/api";
 import { Game } from "src/types";
 
-type Props = BottomTabScreenProps<BottomTabParamList>;
+type NavigationProps = BottomTabScreenProps<BottomTabParamList>;
+type Props = {
+  selectedSports: SportSelection;
+  type: "upcoming" | "previous";
+  isFollowedGames: boolean;
+};
 
 const DayHeader = ({ day }: { day: string }) => {
   const { colors } = useTheme();
@@ -41,64 +47,118 @@ const DayHeader = ({ day }: { day: string }) => {
   );
 };
 
-const GamesIFollow = ({
-  navigation,
-  route,
+const AllGames = (props: Props) => {
+  const { data: allGames } = useGamesQuery({ type: props.type });
+  return <GameList {...props} games={allGames} isFollowed={false} />;
+};
+
+const FollowedGames = (props: Props) => {
+  const { data: followedGames } = useFollowedGamesQuery({ type: props.type });
+  return <GameList {...props} games={followedGames} isFollowed={true} />;
+};
+
+const GameList = ({
   selectedSports,
-}: {
-  navigation: NavigationProp<BottomTabParamList>;
-  route: {
-    key: string;
-    title: string;
-  };
-  selectedSports: SportSelection;
-}) => {
-  const { data: games } = useGamesQuery({ type: "upcoming" });
+  type,
+  games,
+  isFollowed,
+}: Props & { games?: Game[]; isFollowed: boolean }) => {
+  const { colors } = useTheme();
   const today = new Date();
-  const upcomingGames: JSX.Element[] = [];
+  const gameCards: JSX.Element[] = [];
   const dayHeaders: string[] = [];
 
-  games?.forEach((game: Game, index: number) => {
-    const gameDate = new Date(
-      game.date.toISOString().substring(0, game.date.toISOString().indexOf("T"))
-    );
-    const todayDate = new Date(
-      today.toISOString().substring(0, today.toISOString().indexOf("T"))
-    );
-    const dayDiff =
-      (gameDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
+  if (type === "upcoming")
+    games
+      ?.filter((game) => selectedSports[game.type])
+      .forEach((game: Game, index: number) => {
+        const gameDate = new Date(
+          game.date
+            .toISOString()
+            .substring(0, game.date.toISOString().indexOf("T"))
+        );
+        const todayDate = new Date(
+          today.toISOString().substring(0, today.toISOString().indexOf("T"))
+        );
+        const dayDiff =
+          (gameDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
 
-    if (dayDiff === 1 && !dayHeaders.includes("tomorrow")) {
-      dayHeaders.push("tomorrow");
-      upcomingGames.push(<DayHeader key={"tomorrow"} day="Tomorrow" />);
-    } else if (
-      dayDiff > 1 &&
-      dayDiff <= 7 &&
-      !dayHeaders.includes("this-week")
-    ) {
-      dayHeaders.push("this-week");
-      upcomingGames.push(<DayHeader key={"this-week"} day="This Week" />);
-    } else if (
-      dayDiff > 7 &&
-      dayDiff <= 30 &&
-      !dayHeaders.includes("this-month")
-    ) {
-      dayHeaders.push("this-month");
-      upcomingGames.push(<DayHeader key={"this-month"} day="This Month" />);
-    } else if (dayDiff > 30 && !dayHeaders.includes("future")) {
-      dayHeaders.push("future");
-      upcomingGames.push(<DayHeader key={"future"} day="In the Future" />);
-    }
+        if (dayDiff === 1 && !dayHeaders.includes("tomorrow")) {
+          dayHeaders.push("tomorrow");
+          gameCards.push(<DayHeader key={"tomorrow"} day="Tomorrow" />);
+        } else if (
+          dayDiff > 1 &&
+          dayDiff <= 7 &&
+          !dayHeaders.includes("this-week")
+        ) {
+          dayHeaders.push("this-week");
+          gameCards.push(<DayHeader key={"this-week"} day="This Week" />);
+        } else if (
+          dayDiff > 7 &&
+          dayDiff <= 30 &&
+          !dayHeaders.includes("this-month")
+        ) {
+          dayHeaders.push("this-month");
+          gameCards.push(<DayHeader key={"this-month"} day="This Month" />);
+        } else if (dayDiff > 30 && !dayHeaders.includes("future")) {
+          dayHeaders.push("future");
+          gameCards.push(<DayHeader key={"future"} day="In the Future" />);
+        }
 
-    upcomingGames.push(<BookingCard key={index} booking={game} />);
-  });
+        gameCards.push(<BookingCard key={index} booking={game} />);
+      });
+  else
+    games
+      ?.filter((game) => selectedSports[game.type])
+      .forEach((game: Game, index: number) => {
+        const gameDate = new Date(
+          game.date
+            .toISOString()
+            .substring(0, game.date.toISOString().indexOf("T"))
+        );
+        const todayDate = new Date(
+          today.toISOString().substring(0, today.toISOString().indexOf("T"))
+        );
+        const dayDiff =
+          -(gameDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
+
+        if (dayDiff === 1 && !dayHeaders.includes("yesterday")) {
+          dayHeaders.push("yesterday");
+          gameCards.push(<DayHeader key={"yesterday"} day="Yesterday" />);
+        } else if (
+          dayDiff > 1 &&
+          dayDiff <= 7 &&
+          !dayHeaders.includes("last-week")
+        ) {
+          dayHeaders.push("last-week");
+          gameCards.push(<DayHeader key={"last-week"} day="Last Week" />);
+        } else if (
+          dayDiff > 7 &&
+          dayDiff <= 30 &&
+          !dayHeaders.includes("last-month")
+        ) {
+          dayHeaders.push("last-month");
+          gameCards.push(<DayHeader key={"last-month"} day="Last Month" />);
+        } else if (dayDiff > 30 && !dayHeaders.includes("past")) {
+          dayHeaders.push("past");
+          gameCards.push(<DayHeader key={"past"} day="In the Past" />);
+        }
+
+        gameCards.push(<BookingCard key={index} booking={game} />);
+      });
 
   return (
-    <ScrollView>
+    <ScrollView
+      contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20 }}
+    >
       <DayHeader day="Today" />
       <Text
         variant="headlineSmall"
-        style={{ color: "white", marginTop: -5, marginBottom: 10 }}
+        style={{
+          color: "white",
+          marginTop: -5,
+          marginBottom: 10,
+        }}
       >
         {today.toLocaleDateString("en-US", {
           weekday: "long",
@@ -107,85 +167,25 @@ const GamesIFollow = ({
           day: "numeric",
         })}
       </Text>
-      {upcomingGames}
+      {gameCards}
+      {gameCards.length === 0 && (
+        <Text
+          style={{
+            height: 100,
+            fontFamily: "Inter-Medium",
+            color: colors.tertiary,
+            textAlign: "center",
+            textAlignVertical: "center",
+          }}
+        >
+          You have no {type} {isFollowed && "followed "}games.
+        </Text>
+      )}
     </ScrollView>
   );
 };
 
-const PreviousGamesIFollow = ({
-  navigation,
-  route,
-  selectedSports,
-}: {
-  navigation: NavigationProp<BottomTabParamList>;
-  route: {
-    key: string;
-    title: string;
-  };
-  selectedSports: SportSelection;
-}) => {
-  const { data: games } = useGamesQuery({ type: "previous" });
-
-  const today = new Date();
-  const previousGames: JSX.Element[] = [];
-  const dayHeaders: string[] = [];
-
-  games?.forEach((game: Game, index: number) => {
-    const gameDate = new Date(
-      game.date.toISOString().substring(0, game.date.toISOString().indexOf("T"))
-    );
-    const todayDate = new Date(
-      today.toISOString().substring(0, today.toISOString().indexOf("T"))
-    );
-    const dayDiff =
-      -(gameDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
-
-    if (dayDiff === 1 && !dayHeaders.includes("yesterday")) {
-      dayHeaders.push("yesterday");
-      previousGames.push(<DayHeader key={"yesterday"} day="Yesterday" />);
-    } else if (
-      dayDiff > 1 &&
-      dayDiff <= 7 &&
-      !dayHeaders.includes("last-week")
-    ) {
-      dayHeaders.push("last-week");
-      previousGames.push(<DayHeader key={"last-week"} day="Last Week" />);
-    } else if (
-      dayDiff > 7 &&
-      dayDiff <= 30 &&
-      !dayHeaders.includes("last-month")
-    ) {
-      dayHeaders.push("last-month");
-      previousGames.push(<DayHeader key={"last-month"} day="Last Month" />);
-    } else if (dayDiff > 30 && !dayHeaders.includes("past")) {
-      dayHeaders.push("past");
-      previousGames.push(<DayHeader key={"past"} day="In the Past" />);
-    }
-
-    previousGames.push(<BookingCard key={index} booking={game} />);
-  });
-
-  return (
-    <ScrollView>
-      <DayHeader day="Today" />
-      <Text
-        variant="headlineSmall"
-        style={{ color: "white", marginTop: -5, marginBottom: 10 }}
-      >
-        {today.toLocaleDateString("en-US", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })}
-      </Text>
-
-      {previousGames}
-    </ScrollView>
-  );
-};
-
-export const Games = ({ navigation, route }: Props) => {
+export const Games = ({ navigation, route }: NavigationProps) => {
   const [index, setIndex] = useState(0);
   const [durationIndex, setDurationIndex] = useState(0);
   const [routes] = useState([
@@ -203,56 +203,28 @@ export const Games = ({ navigation, route }: Props) => {
     Tennis: true,
   });
 
-  const renderScene = ({
-    route,
-  }: SceneRendererProps & {
-    route: {
-      key: string;
-      title: string;
-    };
-  }) => {
-    if (durationIndex === 0)
-      switch (route.key) {
-        case "GamesIFollow":
-          return (
-            <GamesIFollow
-              navigation={navigation}
-              route={route}
-              selectedSports={selectedSports}
-            />
-          );
-        case "AllGames":
-          return (
-            <GamesIFollow
-              navigation={navigation}
-              route={route}
-              selectedSports={selectedSports}
-            />
-          );
-        default:
-          return null;
-      }
-    else
-      switch (route.key) {
-        case "GamesIFollow":
-          return (
-            <PreviousGamesIFollow
-              navigation={navigation}
-              route={route}
-              selectedSports={selectedSports}
-            />
-          );
-        case "AllGames":
-          return (
-            <PreviousGamesIFollow
-              navigation={navigation}
-              route={route}
-              selectedSports={selectedSports}
-            />
-          );
-        default:
-          return null;
-      }
+  const renderScene = () => {
+    const route = routes[index];
+    switch (route.key) {
+      case "GamesIFollow":
+        return (
+          <FollowedGames
+            type={durationIndex === 0 ? "upcoming" : "previous"}
+            selectedSports={selectedSports}
+            isFollowedGames={true}
+          />
+        );
+      case "AllGames":
+        return (
+          <AllGames
+            type={durationIndex === 0 ? "upcoming" : "previous"}
+            selectedSports={selectedSports}
+            isFollowedGames={false}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   const renderTabBar = (props: TabBarProps<any>) => (
@@ -261,11 +233,12 @@ export const Games = ({ navigation, route }: Props) => {
       style={{
         backgroundColor: colors.secondary,
         borderRadius: 10,
+        marginHorizontal: 20,
       }}
       renderTabBarItem={({ route }) => {
         let isActive = route.key === props.navigationState.routes[index].key;
         return (
-          <View
+          <Pressable
             style={[
               styles.tabViewItem,
               {
@@ -275,6 +248,9 @@ export const Games = ({ navigation, route }: Props) => {
                   : colors.secondary,
               },
             ]}
+            onPress={() => {
+              setIndex(routes.findIndex(({ key }) => route.key === key));
+            }}
           >
             <Text
               style={{
@@ -284,7 +260,7 @@ export const Games = ({ navigation, route }: Props) => {
             >
               {route.title}
             </Text>
-          </View>
+          </Pressable>
         );
       }}
       renderIndicator={() => <View style={{ width: 0 }} />}
@@ -314,6 +290,7 @@ export const Games = ({ navigation, route }: Props) => {
           renderScene={renderScene}
           onIndexChange={setIndex}
           initialLayout={{ width: windowWidth }}
+          swipeEnabled={false}
         />
       </View>
     </AppHeader>
@@ -325,7 +302,6 @@ const makeStyles = (colors: MD3Colors) =>
     wrapperView: {
       flex: 1,
       paddingTop: 10,
-      paddingHorizontal: 20,
       backgroundColor: colors.background,
     },
     tabViewItem: {

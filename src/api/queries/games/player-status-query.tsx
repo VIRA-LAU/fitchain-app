@@ -20,9 +20,6 @@ export const usePlayerStatusQuery = (gameId: number) => {
 
   return useQuery<PlayerStatus>(
     ["playerStatus", gameId],
-    getPlayerStatus(userData!, gameId),
-    {
-      enabled: false,
-    }
+    getPlayerStatus(userData!, gameId)
   );
 };

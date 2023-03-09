@@ -8,7 +8,8 @@ import {
   CompositeNavigationProp,
   useNavigation,
 } from "@react-navigation/native";
-import { Game, GameType } from "src/types";
+import { Game } from "src/types";
+import { useMemo } from "react";
 
 export const UpcomingGameCard = ({ game }: { game: Game }) => {
   const { colors } = useTheme();
@@ -32,6 +33,24 @@ export const UpcomingGameCard = ({ game }: { game: Game }) => {
     >();
 
   const location = `${game.court.branch.venue.name} - ${game.court.branch.location}`;
+  const dateHeader = useMemo(() => {
+    const bookingDate = new Date(
+      game.date.toISOString().substring(0, game.date.toISOString().indexOf("T"))
+    );
+    const todayDate = new Date(
+      new Date()
+        .toISOString()
+        .substring(0, new Date().toISOString().indexOf("T"))
+    );
+    const dayDiff =
+      (bookingDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
+
+    if (dayDiff === 0) return "Today";
+    else if (dayDiff === 1) return "Tomorrow";
+    else if (dayDiff <= 7) return "This Week";
+    else if (dayDiff <= 30) return "This Month";
+    else return "In the Future";
+  }, []);
 
   return (
     <Pressable
@@ -39,7 +58,8 @@ export const UpcomingGameCard = ({ game }: { game: Game }) => {
       onPress={() => navigation.push("GameDetails", { id: game.id })}
     >
       <View>
-        <Text style={styles.text}>This {weekday[game.date?.getDay()]},</Text>
+        {/* <Text style={styles.text}>This {weekday[game.date?.getDay()]},</Text> */}
+        <Text style={styles.text}>{dateHeader},</Text>
         <Text style={styles.greyText}>
           {"at "}
           <Text style={styles.text}>{location}</Text>

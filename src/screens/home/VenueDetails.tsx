@@ -32,7 +32,19 @@ export const VenueDetails = ({ navigation, route }: Props) => {
 
   const { id, playScreenBranch, playScreenBookingDetails } = route.params;
   const { data: venue } = useVenueByIdQuery(id);
-
+  const courtPrices: number[] = [];
+  venue?.branches.forEach((branch) => {
+    branch.courts.forEach((court) => courtPrices.push(court.price));
+  });
+  const pricesStr =
+    courtPrices.length > 0
+      ? courtPrices.length === 1
+        ? courtPrices[0].toString()
+        : `${Math.min.apply(null, courtPrices!)}-${Math.max.apply(
+            null,
+            courtPrices!
+          )}`
+      : "";
   return (
     <AppHeader
       navigation={navigation}
@@ -99,7 +111,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
                     variant="labelMedium"
                     style={{ color: colors.secondary }}
                   >
-                    USD 7-20/hr
+                    USD {pricesStr}/hr
                   </Text>
                 </View>
               </Pressable>
@@ -275,7 +287,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
                 Book Court
               </Text>
               <Text variant="labelMedium" style={{ color: colors.secondary }}>
-                USD 7-20/hr
+                USD {pricesStr}/hr
               </Text>
             </View>
           </Pressable>

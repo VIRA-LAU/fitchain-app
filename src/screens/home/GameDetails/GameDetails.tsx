@@ -1,21 +1,19 @@
 import { useState, useMemo, useEffect } from "react";
 import { AppHeader } from "src/components";
-import { View, StyleSheet, useWindowDimensions } from "react-native";
+import { View, StyleSheet, useWindowDimensions, Pressable } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import FeatherIcon from "react-native-vector-icons/Feather";
+import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
+import { Team } from "./Team";
 import {
-  SceneRendererProps,
-  TabBar,
-  TabBarProps,
-  TabView,
-} from "react-native-tab-view";
-import { Home } from "./Home";
-import {
+  useFollowedGamesQuery,
+  useFollowGameMutation,
   useGameByIdQuery,
+  useGamePlayersQuery,
   useJoinGameMutation,
   usePlayerStatusQuery,
 } from "src/api";
@@ -27,26 +25,27 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const windowWidth = useWindowDimensions().width;
 
-  const { id } = route.params;
-  const { data: game } = useGameByIdQuery(id);
-
-  const durationTimeFormatter = new Intl.DateTimeFormat("en", {
-    hour: "numeric",
-    minute: "numeric",
-  });
-
+  const [joinDisabled, setJoinDisabled] = useState<boolean>(false);
+  const [followDisabled, setFollowDisabled] = useState<boolean>(false);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "Home", title: "Home" },
     { key: "Away", title: "Away" },
   ]);
 
-  const [joinDisabled, setJoinDisabled] = useState<boolean>(false);
-  const { data: playerStatus, refetch: getPlayerStatus } = usePlayerStatusQuery(
-    game?.id
-  );
+  const { id } = route.params;
+  const { data: game } = useGameByIdQuery(id);
+  const { data: players } = useGamePlayersQuery(id);
+  const { data: playerStatus } = usePlayerStatusQuery(id);
+  const { data: followedGames } = useFollowedGamesQuery();
 
   const { mutate: joinGame } = useJoinGameMutation(setJoinDisabled);
+  const { mutate: followGame } = useFollowGameMutation(setFollowDisabled);
+
+  const durationTimeFormatter = new Intl.DateTimeFormat("en", {
+    hour: "numeric",
+    minute: "numeric",
+  });
 
   const dateHeader = useMemo(() => {
     if (game?.date) {
@@ -71,21 +70,21 @@ export const GameDetails = ({ navigation, route }: Props) => {
   }, [game?.date]);
 
   useEffect(() => {
-    if (game) {
-      getPlayerStatus();
-    }
-  }, [JSON.stringify(game)]);
-
-  useEffect(() => {
-    setJoinDisabled(
-      playerStatus?.hasBeenInvited === "ACCEPTED" ||
-        playerStatus?.hasBeenInvited === "PENDING" ||
-        playerStatus?.hasRequestedtoJoin === "APPROVED" ||
-        playerStatus?.hasRequestedtoJoin === "PENDING"
-    );
+    if (playerStatus)
+      setJoinDisabled(
+        playerStatus.hasBeenInvited === "ACCEPTED" ||
+          playerStatus.hasBeenInvited === "PENDING" ||
+          playerStatus.hasRequestedtoJoin === "APPROVED" ||
+          playerStatus.hasRequestedtoJoin === "PENDING"
+      );
   }, [JSON.stringify(playerStatus)]);
 
-  if (!game) return <View />;
+  useEffect(() => {
+    if (followedGames)
+      setFollowDisabled(followedGames.some((game) => game.id === id));
+  }, [JSON.stringify(followedGames)]);
+
+  if (!game || !players || !playerStatus || !followedGames) return <View />;
   else {
     const date = new Date(game.date);
 
@@ -94,19 +93,31 @@ export const GameDetails = ({ navigation, route }: Props) => {
     const startTimeString = durationTimeFormatter.format(date);
     const endTimeString = durationTimeFormatter.format(endTime);
 
-    const renderScene = ({
-      route,
-    }: SceneRendererProps & {
-      route: {
-        key: string;
-        title: string;
-      };
-    }) => {
+    const renderScene = () => {
+      const route = routes[index];
       switch (route.key) {
         case "Home":
-          return <Home game={game} />;
+          return (
+            <Team
+              name={"Home"}
+              game={game}
+              players={players?.filter(
+                ({ team, status }) => team === "HOME" && status !== "REJECTED"
+              )}
+              adminId={game.admin.id}
+            />
+          );
         case "Away":
-          return <Home game={game} />;
+          return (
+            <Team
+              name={"Away"}
+              game={game}
+              players={players?.filter(
+                ({ team, status }) => team === "AWAY" && status !== "REJECTED"
+              )}
+              adminId={game.admin.id}
+            />
+          );
         default:
           return null;
       }
@@ -119,12 +130,11 @@ export const GameDetails = ({ navigation, route }: Props) => {
           backgroundColor: colors.secondary,
           borderRadius: 10,
           marginHorizontal: 20,
-          marginBottom: 10,
         }}
         renderTabBarItem={({ route }) => {
           let isActive = route.key === props.navigationState.routes[index].key;
           return (
-            <View
+            <Pressable
               style={[
                 styles.tabViewItem,
                 {
@@ -134,6 +144,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     : colors.secondary,
                 },
               ]}
+              onPress={() => {
+                setIndex(routes.findIndex(({ key }) => route.key === key));
+              }}
             >
               <Text
                 style={{
@@ -143,7 +156,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               >
                 {route.title}
               </Text>
-            </View>
+            </Pressable>
           );
         }}
         renderIndicator={() => <View style={{ width: 0 }} />}
@@ -229,13 +242,26 @@ export const GameDetails = ({ navigation, route }: Props) => {
                 </Button>
                 <Button
                   icon={() => (
-                    <FeatherIcon name="thumbs-up" size={22} color={"white"} />
+                    <FontAwesomeIcon
+                      name={followDisabled ? "thumbs-up" : "thumbs-o-up"}
+                      size={22}
+                      color={"white"}
+                    />
                   )}
                   style={{ borderRadius: 5, flex: 1 }}
                   textColor={"white"}
                   buttonColor={"transparent"}
+                  onPress={
+                    followDisabled
+                      ? undefined
+                      : () => {
+                          followGame({
+                            gameId: game.id,
+                          });
+                        }
+                  }
                 >
-                  Follow Game
+                  {followDisabled ? "Following" : "Follow Game"}
                 </Button>
               </View>
             )}
@@ -248,6 +274,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               renderScene={renderScene}
               onIndexChange={setIndex}
               initialLayout={{ width: windowWidth }}
+              swipeEnabled={false}
             />
           </View>
         </View>
@@ -263,7 +290,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     headerView: {
       paddingTop: 10,
-      paddingBottom: 20,
+      paddingBottom: 10,
       paddingHorizontal: 20,
       borderRadius: 10,
       backgroundColor: colors.secondary,
@@ -271,7 +298,7 @@ const makeStyles = (colors: MD3Colors) =>
     greyFont: { marginVertical: 10, color: colors.tertiary },
     buttonsView: {
       flexDirection: "row",
-      marginTop: 15,
+      marginTop: 10,
       justifyContent: "space-between",
       alignItems: "center",
     },
