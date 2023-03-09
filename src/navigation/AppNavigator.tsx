@@ -1,7 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useState } from "react";
-import { useWindowDimensions, View, Pressable, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  useWindowDimensions,
+  View,
+  Pressable,
+  StyleSheet,
+  BackHandler,
+} from "react-native";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Text, useTheme } from "react-native-paper";
@@ -20,7 +26,7 @@ import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { VenueBranch } from "src/types";
+import { GameType, VenueBranch } from "src/types";
 import { BranchCourts } from "src/screens/home/BranchCourts";
 import { ChooseVenue } from "src/screens/home/Play/ChooseVenue";
 
@@ -30,6 +36,19 @@ const BottomTabNavigator = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, useWindowDimensions().width);
   const [playScreenVisible, setPlayScreenVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleBack = () => {
+      if (playScreenVisible) {
+        setPlayScreenVisible(false);
+        return true;
+      } else return false;
+    };
+    BackHandler.addEventListener("hardwareBackPress", handleBack);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBack);
+    };
+  }, [playScreenVisible]);
 
   return (
     <View style={{ height: "100%", position: "relative" }}>
@@ -82,19 +101,44 @@ const BottomTabNavigator = () => {
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
   GameDetails: { id: number };
-  VenueDetails: { id: number; play: boolean };
+  VenueDetails: {
+    id: number;
+    isPlayScreen: boolean;
+    playScreenBranch: VenueBranch | null;
+    playScreenBookingDetails?: {
+      date: string;
+      duration: number;
+      gameType: GameType;
+    } | null;
+  };
   VenueBookingDetails: {
     venueName: string;
     courtType: string;
     price: number;
+    bookingDetails: {
+      courtId: number;
+      date: string;
+      duration: number;
+      gameType: GameType;
+    };
   };
   VenueBranches: { id: number; venueName: string };
   BranchCourts: {
     venueName: string;
     courts: VenueBranch["courts"];
     branchLocation: string;
+    bookingDetails?: {
+      date: string;
+      duration: number;
+      gameType: GameType;
+    };
   };
-  chooseVenue: undefined;
+  ChooseVenue: {
+    location: string;
+    date: string;
+    duration: number;
+    gameType: GameType;
+  };
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();
@@ -114,7 +158,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="VenueDetails" component={VenueDetails} />
         <Stack.Screen name="VenueBranches" component={VenueBranches} />
         <Stack.Screen name="BranchCourts" component={BranchCourts} />
-        <Stack.Screen name="chooseVenue" component={ChooseVenue} />
+        <Stack.Screen name="ChooseVenue" component={ChooseVenue} />
       </Stack.Navigator>
     );
   else return <SignUpNavigator setSignedIn={setSignedIn} />;

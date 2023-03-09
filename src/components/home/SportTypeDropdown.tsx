@@ -180,7 +180,7 @@ const makeStyles = (colors: MD3Colors) =>
       paddingVertical: 15,
       borderColor: colors.tertiary,
       borderWidth: 1,
-      shadowColor: "#000",
+      shadowColor: "#000000",
       shadowOffset: {
         width: 0,
         height: 2,

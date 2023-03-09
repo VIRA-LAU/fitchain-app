@@ -23,7 +23,7 @@ export const useLoginUserMutation = (
     onSuccess: async (data) => {
       console.log(data);
       let fetchedInfo = {
-        userId: data.userId,
+        userId: data.userId!,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,

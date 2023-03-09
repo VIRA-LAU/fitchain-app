@@ -1,13 +1,12 @@
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { View, StyleSheet } from "react-native";
-import { useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { AppHeader, SportTypeDropdown, VenueCard } from "src/components";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useBranchesQuery } from "src/api";
-import { useContext, useState } from "react";
-import { UserContext } from "src/utils";
+import { useState } from "react";
 import { VenueBranch } from "src/types";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
@@ -16,14 +15,18 @@ export const Venues = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { userData } = useContext(UserContext);
-  const { data: branchesVenues } = useBranchesQuery();
+  const { data: venueBranches } = useBranchesQuery();
 
+  const [searchBarText, setSearchBarText] = useState<string>("");
   const [selectedSports, setSelectedSports] = useState({
     Basketball: true,
     Football: true,
     Tennis: true,
   });
+
+  const filteredVenueBranches = venueBranches?.filter((venueBranch) =>
+    venueBranch.venue.name.toLowerCase().includes(searchBarText.toLowerCase())
+  );
 
   return (
     <AppHeader
@@ -39,16 +42,25 @@ export const Venues = ({ navigation, route }: Props) => {
         />
       }
       searchBar
+      setSearchBarText={setSearchBarText}
     >
       <View style={styles.wrapperView}>
-        {branchesVenues?.map((venuesBranch: VenueBranch, index: number) => (
-          <VenueCard
-            key={index}
-            type="horizontal"
-            promoted={false}
-            venueBranch={venuesBranch}
-          />
-        ))}
+        {filteredVenueBranches?.map(
+          (venueBranch: VenueBranch, index: number) => (
+            <VenueCard
+              key={index}
+              type="horizontal"
+              promoted={false}
+              venueBranch={venueBranch}
+            />
+          )
+        )}
+
+        {(!filteredVenueBranches || filteredVenueBranches.length === 0) && (
+          <Text style={styles.placeholderText}>
+            There are no nearby venues.
+          </Text>
+        )}
       </View>
     </AppHeader>
   );
@@ -58,5 +70,12 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
       margin: 20,
+    },
+    placeholderText: {
+      height: 50,
+      fontFamily: "Inter-Medium",
+      color: colors.tertiary,
+      textAlign: "center",
+      textAlignVertical: "center",
     },
   });

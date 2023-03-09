@@ -1,10 +1,20 @@
 export interface User {
+  id?: number;
+  userId?: number;
   access_token: string;
   firstName: string;
   lastName: string;
   description: string;
   email: string;
-  userId: number;
+  phoneNumber: number;
+  description: string;
+  gender: string;
+  height: string;
+  weight: string;
+  age: string;
+  nationality: string;
+  position: string;
+  rating: number;
 }
 
 export type GameType = "Basketball" | "Football" | "Tennis";
@@ -88,6 +98,14 @@ export interface Activity {
   date: Date;
   type: GameType;
   isWinner: boolean;
+}
+
+export interface TeamPlayer {
+  id: number;
+  team: "HOME" | "AWAY";
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  firstName: string;
+  lastName: string;
 }
 
 export interface PlayerStatus {

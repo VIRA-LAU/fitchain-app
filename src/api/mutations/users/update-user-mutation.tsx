@@ -7,10 +7,7 @@ type Request = {};
 const updateUser = (userData: UserData) => async (data: Request) => {
   const header = getHeader(userData);
   return await client
-    .patch("/user/update", {
-      ...header,
-      data,
-    })
+    .patch("/user/update", data, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("update-user-mutation", e);

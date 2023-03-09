@@ -3,19 +3,21 @@ import { StyleSheet, View, Pressable } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList } from "navigation";
-import { AppHeader } from "src/components";
+import { AppHeader, VenueCard } from "src/components";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { useContext } from "react";
-import { UserContext } from "src/utils";
 import { ScrollView } from "react-native-gesture-handler";
+import { useBranchesQuery } from "src/api";
+import { VenueBranch } from "src/types";
 
-type Props = StackScreenProps<HomeStackParamList, "chooseVenue">;
+type Props = StackScreenProps<HomeStackParamList, "ChooseVenue">;
 
 export const ChooseVenue = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { userData } = useContext(UserContext);
+  const { location, date: dateStr, duration, gameType } = route.params;
+  const { data: branches } = useBranchesQuery();
+  const date = new Date(JSON.parse(dateStr));
 
   return (
     <AppHeader
@@ -27,28 +29,37 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
     >
       <View style={styles.wrapperView}>
         <ScrollView style={styles.contentView}>
-          <View style={{ margin: 20 }}>
-            <View style={styles.infoView}>
-              <IonIcon name={"location-outline"} size={20} color={"white"} />
-              <Text variant="labelLarge" style={styles.information}>
-                Hoops Club, Hazmieh
-              </Text>
-            </View>
-            <View style={styles.infoView}>
-              <IonIcon name={"calendar-outline"} size={20} color={"white"} />
-              <Text variant="labelLarge" style={styles.information}>
-                Hoops Club, Hazmieh
-              </Text>
-            </View>
+          <View style={styles.infoView}>
+            <IonIcon name={"location-outline"} size={20} color={"white"} />
+            <Text variant="labelLarge" style={styles.information}>
+              {location}
+            </Text>
           </View>
-          <Pressable
-            onPress={() => {
-              navigation.push("VenueDetails", { play: true, id: 1 });
-            }}
-          >
-            <Text>Press</Text>
-          </Pressable>
-          {/* <VenueCard type="horizontal" venueBranch={""}/> */}
+          <View style={[styles.infoView, { marginBottom: 20 }]}>
+            <IonIcon name={"calendar-outline"} size={20} color={"white"} />
+            <Text variant="labelLarge" style={styles.information}>
+              {date.toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </Text>
+          </View>
+          {branches?.map((venuesBranch: VenueBranch, index: number) => (
+            <VenueCard
+              key={index}
+              type="horizontal"
+              venueBranch={venuesBranch}
+              promoted={false}
+              isPlayScreen
+              playScreenBookingDetails={{
+                date: dateStr,
+                duration,
+                gameType,
+              }}
+            />
+          ))}
         </ScrollView>
       </View>
     </AppHeader>
@@ -62,15 +73,13 @@ const makeStyles = (colors: MD3Colors) =>
       flexDirection: "row",
     },
     information: {
-      marginLeft: 5,
+      marginLeft: 10,
       color: "white",
-    },
-    locationComponent: {
-      margin: 20,
     },
     wrapperView: {
       flexDirection: "row",
       alignItems: "center",
+      margin: 20,
     },
 
     contentView: {},

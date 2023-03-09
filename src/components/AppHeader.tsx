@@ -31,6 +31,7 @@ export const AppHeader = ({
   middle,
   left,
   searchBar,
+  setSearchBarText = () => {},
   backEnabled = false,
   darkMode = false,
   backgroundImage,
@@ -46,6 +47,7 @@ export const AppHeader = ({
   middle?: JSX.Element;
   left?: JSX.Element;
   searchBar?: boolean;
+  setSearchBarText?: React.Dispatch<React.SetStateAction<string>>;
   backEnabled?: boolean;
   darkMode?: boolean;
   backgroundImage?: "Basketball" | "Football" | "Tennis";
@@ -104,6 +106,7 @@ export const AppHeader = ({
               placeholder="Search..."
               placeholderTextColor={colors.tertiary}
               cursorColor={colors.primary}
+              onChangeText={setSearchBarText}
             />
             <IonIcon name="search-outline" color="white" size={20} />
           </View>
@@ -163,12 +166,14 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      paddingHorizontal: 20,
+      paddingRight: 20,
     },
     searchBar: {
       color: "white",
       fontFamily: "Inter-Medium",
       height: 40,
+      flexGrow: 1,
+      paddingHorizontal: 20,
     },
     middleView: {
       position: "absolute",

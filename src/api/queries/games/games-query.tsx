@@ -39,8 +39,6 @@ export const useGamesQuery = (params?: Props) => {
 
   return useQuery<Game[]>(["games", params], getGames(userData!, params), {
     select: (games) =>
-      games
-        .map((game) => ({ ...game, date: new Date(game.date) }))
-        .sort((a, b) => a.date.getTime() - b.date.getTime()),
+      games.map((game) => ({ ...game, date: new Date(game.date) })),
   });
 };

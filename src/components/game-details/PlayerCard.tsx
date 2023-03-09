@@ -2,18 +2,19 @@ import { View, StyleSheet, Image, useWindowDimensions } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { User } from "src/types";
+import { TeamPlayer, User } from "src/types";
 
 export const PlayerCard = ({
   isActive = false,
-  player,
+  player: { firstName, lastName, status },
 }: {
   isActive?: boolean;
-  player: User;
+  player: TeamPlayer;
 }) => {
   const { colors } = useTheme();
   const windowWidth = useWindowDimensions().width;
   const styles = makeStyles(colors, windowWidth);
+  const displayedStatus = status === "APPROVED" ? "Confirmed" : "Pending";
   return (
     <View
       style={[
@@ -34,14 +35,14 @@ export const PlayerCard = ({
           resizeMode="contain"
         />
         <Text style={styles.name}>
-          {player.firstName} {player.lastName}
+          {firstName} {lastName}
         </Text>
         <View style={styles.ratingView}>
           <IonIcon name={"star"} color={"white"} />
           <Text style={styles.ratingText}>3.6</Text>
         </View>
         <View style={styles.statusView}>
-          <Text style={styles.statusText}>Confirmed</Text>
+          <Text style={styles.statusText}>{displayedStatus}</Text>
         </View>
         <IonIcon
           name="ellipsis-horizontal"

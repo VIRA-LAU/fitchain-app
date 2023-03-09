@@ -1,3 +1,3 @@
 export * from "./GameDetails";
-export * from "./Home";
+export * from "./Team";
 export * from "./VenueBookingDetails";
