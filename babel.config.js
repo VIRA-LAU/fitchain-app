@@ -23,7 +23,7 @@ module.exports = function (api) {
           moduleName: "@dotenv",
           path: ".env.local",
           safe: false,
-          allowUndefined: false,
+          allowUndefined: true,
         },
       ],
     ],
