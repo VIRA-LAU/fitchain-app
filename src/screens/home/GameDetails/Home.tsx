@@ -7,7 +7,6 @@ import { Game } from "src/types";
 export const Home = ({ game }: { game: Game }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-
   return (
     <ScrollView style={{ backgroundColor: colors.background }}>
       <ScrollView
@@ -26,7 +25,7 @@ export const Home = ({ game }: { game: Game }) => {
         source={require("assets/images/home/basketball-court.png")}
       />
       <View style={{ marginHorizontal: 20, marginBottom: -10 }}>
-        <BranchLocation type="court" court={game.court} />
+        <BranchLocation type="court" court={game.court} team={"Home"} />
       </View>
       <View style={styles.divider} />
       <Text variant="labelLarge" style={{ color: colors.tertiary, margin: 20 }}>

@@ -83,34 +83,60 @@ export const Home = ({ navigation, route }: Props) => {
             .map((game: Game, index: number) => (
               <UpcomingGameCard key={index} game={game} />
             ))}
+          {!games && (
+            <Text style={styles.placeholderText}>
+              You have no upcoming games.
+            </Text>
+          )}
         </View>
 
         <SectionTitle title="Invitations" styles={styles} />
-        <ScrollView
-          style={{ flexDirection: "row", marginRight: -20 }}
-          horizontal
-        >
-          {invitations
-            ?.filter(({ game }: Invitation) => selectedSports[game.type])
-            .map((invitation: Invitation, index: number) => (
-              <InvitationCard
+        <View>
+          <ScrollView
+            style={{
+              flexDirection: "row",
+              marginRight: -20,
+            }}
+            horizontal
+          >
+            {invitations
+              ?.filter(({ game }: Invitation) => selectedSports[game.type])
+              .map((invitation: Invitation, index: number) => (
+                <InvitationCard
+                  key={index}
+                  inviter={
+                    invitation.user?.firstName + " " + invitation.user?.lastName
+                  }
+                  game={invitation.game}
+                />
+              ))}
+          </ScrollView>
+          {!invitations && (
+            <Text style={styles.placeholderText}>
+              You have no pending invitations.
+            </Text>
+          )}
+        </View>
+        <SectionTitle title="Venues" styles={styles} />
+        <View>
+          <ScrollView
+            style={{ flexDirection: "row", marginRight: -20 }}
+            horizontal
+          >
+            {branchesVenues?.map((venuesBranch: VenueBranch, index: number) => (
+              <VenueCard
                 key={index}
-                inviter={
-                  invitation.user?.firstName + " " + invitation.user?.lastName
-                }
-                game={invitation.game}
+                type="vertical"
+                venueBranch={venuesBranch}
               />
             ))}
-        </ScrollView>
-        <SectionTitle title="Venues" styles={styles} />
-        <ScrollView
-          style={{ flexDirection: "row", marginRight: -20 }}
-          horizontal
-        >
-          {branchesVenues?.map((venuesBranch: VenueBranch, index: number) => (
-            <VenueCard key={index} type="vertical" venueBranch={venuesBranch} />
-          ))}
-        </ScrollView>
+          </ScrollView>
+          {!branchesVenues && (
+            <Text style={styles.placeholderText}>
+              There are no nearby venues.
+            </Text>
+          )}
+        </View>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
           {bookings
@@ -132,6 +158,11 @@ export const Home = ({ navigation, route }: Props) => {
             .map((booking: Game, index: number) => (
               <BookingCard key={index} booking={booking} />
             ))}
+          {!bookings && (
+            <Text style={styles.placeholderText}>
+              There are no nearby bookings.
+            </Text>
+          )}
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
@@ -140,6 +171,11 @@ export const Home = ({ navigation, route }: Props) => {
             .map((activity: Activity, index: number) => (
               <ActivityCard key={index} {...activity} />
             ))}
+          {!activities && (
+            <Text style={styles.placeholderText}>
+              You have no recent activities.
+            </Text>
+          )}
         </View>
       </View>
     </AppHeader>
@@ -152,6 +188,7 @@ const makeStyles = (colors: MD3Colors) =>
       flex: 1,
       backgroundColor: colors.background,
       padding: 20,
+      marginBottom: 30,
     },
     headerSubtext: { color: colors.tertiary, marginTop: 10, marginBottom: 20 },
     sectionTitle: {
@@ -160,5 +197,13 @@ const makeStyles = (colors: MD3Colors) =>
       alignItems: "center",
       marginTop: 30,
       marginBottom: 20,
+    },
+    placeholderText: {
+      height: 50,
+      fontFamily: "Inter-Medium",
+      color: colors.tertiary,
+      textAlign: "center",
+      textAlignVertical: "center",
+      marginBottom: -10,
     },
   });

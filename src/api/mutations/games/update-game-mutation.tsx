@@ -8,10 +8,7 @@ type Request = {};
 const updateGame = (userData: UserData) => async (data: Request) => {
   const header = getHeader(userData);
   return await client
-    .patch("/game/update", {
-      ...header,
-      data,
-    })
+    .patch("/game/update", data, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("update-game-mutation", e);

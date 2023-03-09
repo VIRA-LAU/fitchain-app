@@ -32,7 +32,7 @@ export const useCreateUserMutation = (
     mutationFn: createUser,
     onSuccess: async (data) => {
       let fetchedInfo = {
-        userId: data.userId,
+        userId: data.userId!,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,

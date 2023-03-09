@@ -1,22 +1,22 @@
+import { useContext } from "react";
 import { useQuery } from "react-query";
+import { User } from "src/types";
 import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
-import { Game } from "src/types";
-import { useContext } from "react";
 
-const getGameById = (userData: UserData, id: number) => async () => {
+const getUserDetails = (userData: UserData) => async () => {
   const header = getHeader(userData);
 
   return await client
-    .get(`/games/${id}`, header)
+    .get(`/users/me`, header)
     .then((res) => res.data)
     .catch((e) => {
-      console.error("game-by-id-query", e);
+      console.error("user-details-query", e);
       throw new Error(e);
     });
 };
 
-export const useGameByIdQuery = (id: number) => {
+export const useUserDetailsQuery = () => {
   const { userData } = useContext(UserContext);
-  return useQuery<Game>(["games", id], getGameById(userData!, id));
+  return useQuery<User>("user-details", getUserDetails(userData!));
 };

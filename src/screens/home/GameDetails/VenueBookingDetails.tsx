@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Pressable } from "react-native";
 import { useTheme, Text } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { AppHeader } from "src/components";
@@ -7,13 +7,16 @@ import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { StackScreenProps } from "@react-navigation/stack";
 import { HomeStackParamList } from "src/navigation";
+import { useCreateGameMutation } from "src/api";
 
 type Props = StackScreenProps<HomeStackParamList, "VenueBookingDetails">;
 
 export const VenueBookingDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
-  const { venueName, courtType, price } = route.params;
+  const { venueName, courtType, price, bookingDetails } = route.params;
   const styles = makeStyles(colors);
+
+  const { mutate: createGame } = useCreateGameMutation();
 
   return (
     <AppHeader
@@ -137,7 +140,19 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             </Text>
           </View>
         </View>
-        <View style={styles.paymentView}>
+        <Pressable
+          style={styles.paymentView}
+          onPress={() => {
+            const bookingDate = new Date(JSON.parse(bookingDetails.date));
+            bookingDate.setDate(bookingDate.getDate() + 1);
+            createGame({
+              courtId: bookingDetails.courtId,
+              duration: bookingDetails.duration,
+              date: bookingDate,
+              type: bookingDetails.gameType,
+            });
+          }}
+        >
           <View>
             <Text style={{ fontFamily: "Inter-Medium", fontSize: 10 }}>
               TOTAL
@@ -147,7 +162,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
           <Text style={{ fontFamily: "Inter-SemiBold" }}>
             Continue To Payment
           </Text>
-        </View>
+        </Pressable>
       </View>
     </AppHeader>
   );

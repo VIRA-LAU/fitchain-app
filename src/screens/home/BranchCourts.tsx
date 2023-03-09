@@ -13,7 +13,7 @@ export const BranchCourts = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { courts, venueName, branchLocation } = route.params;
+  const { courts, venueName, branchLocation, bookingDetails } = route.params;
 
   return (
     <AppHeader
@@ -24,7 +24,7 @@ export const BranchCourts = ({ navigation, route }: Props) => {
       backEnabled
     >
       <View style={styles.wrapperView}>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ flex: 1 }}>
           <Text
             variant="labelLarge"
             style={[{ color: colors.tertiary }, styles.locationComponent]}
@@ -34,9 +34,11 @@ export const BranchCourts = ({ navigation, route }: Props) => {
           {courts.map((court, index: number) => (
             <CourtCard
               key={index}
+              id={court.id}
               venueName={venueName}
               type={court.courtType}
               price={court.price}
+              bookingDetails={bookingDetails}
               // rating={court.rating}
             />
           ))}
@@ -54,5 +56,6 @@ const makeStyles = (colors: MD3Colors) =>
     wrapperView: {
       flexDirection: "row",
       alignItems: "center",
+      flex: 1,
     },
   });
