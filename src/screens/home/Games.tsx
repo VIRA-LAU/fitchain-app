@@ -1,6 +1,6 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { NavigationProp } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -25,10 +25,15 @@ import {
 } from "components";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { useGamesQuery } from "src/api";
+import { useFollowedGamesQuery, useGamesQuery } from "src/api";
 import { Game } from "src/types";
 
-type Props = BottomTabScreenProps<BottomTabParamList>;
+type NavigationProps = BottomTabScreenProps<BottomTabParamList>;
+type Props = {
+  selectedSports: SportSelection;
+  type: "upcoming" | "previous";
+  isFollowedGames: boolean;
+};
 
 const DayHeader = ({ day }: { day: string }) => {
   const { colors } = useTheme();
@@ -42,21 +47,21 @@ const DayHeader = ({ day }: { day: string }) => {
   );
 };
 
-const AllGames = ({
-  navigation,
-  route,
+const AllGames = (props: Props) => {
+  const { data: allGames } = useGamesQuery({ type: props.type });
+  return <GameList {...props} games={allGames} />;
+};
+
+const FollowedGames = (props: Props) => {
+  const { data: followedGames } = useFollowedGamesQuery();
+  return <GameList {...props} games={followedGames} />;
+};
+
+const GameList = ({
   selectedSports,
   type,
-}: {
-  navigation: NavigationProp<BottomTabParamList>;
-  route: {
-    key: string;
-    title: string;
-  };
-  selectedSports: SportSelection;
-  type: "upcoming" | "previous";
-}) => {
-  const { data: games } = useGamesQuery({ type });
+  games,
+}: Props & { games?: Game[] }) => {
   const { colors } = useTheme();
   const today = new Date();
   const gameCards: JSX.Element[] = [];
@@ -179,7 +184,7 @@ const AllGames = ({
   );
 };
 
-export const Games = ({ navigation, route }: Props) => {
+export const Games = ({ navigation, route }: NavigationProps) => {
   const [index, setIndex] = useState(0);
   const [durationIndex, setDurationIndex] = useState(0);
   const [routes] = useState([
@@ -202,20 +207,18 @@ export const Games = ({ navigation, route }: Props) => {
     switch (route.key) {
       case "GamesIFollow":
         return (
-          <AllGames
+          <FollowedGames
             type={durationIndex === 0 ? "upcoming" : "previous"}
-            navigation={navigation}
-            route={route}
             selectedSports={selectedSports}
+            isFollowedGames={true}
           />
         );
       case "AllGames":
         return (
           <AllGames
             type={durationIndex === 0 ? "upcoming" : "previous"}
-            navigation={navigation}
-            route={route}
             selectedSports={selectedSports}
+            isFollowedGames={false}
           />
         );
       default:

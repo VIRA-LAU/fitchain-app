@@ -5,3 +5,4 @@ export * from "./invitations-query";
 export * from "./player-status-query";
 export * from "./game-by-id-query";
 export * from "./game-players-query";
+export * from "./followed-games-query";

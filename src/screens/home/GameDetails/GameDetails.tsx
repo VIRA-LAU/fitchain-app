@@ -4,12 +4,14 @@ import { View, StyleSheet, useWindowDimensions, Pressable } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import FeatherIcon from "react-native-vector-icons/Feather";
 import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
 import { Team } from "./Team";
 import {
+  useFollowedGamesQuery,
+  useFollowGameMutation,
   useGameByIdQuery,
   useGamePlayersQuery,
   useJoinGameMutation,
@@ -23,27 +25,27 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const windowWidth = useWindowDimensions().width;
 
-  const { id } = route.params;
-  const { data: game } = useGameByIdQuery(id);
-
-  const durationTimeFormatter = new Intl.DateTimeFormat("en", {
-    hour: "numeric",
-    minute: "numeric",
-  });
-
+  const [joinDisabled, setJoinDisabled] = useState<boolean>(false);
+  const [followDisabled, setFollowDisabled] = useState<boolean>(false);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "Home", title: "Home" },
     { key: "Away", title: "Away" },
   ]);
 
-  const [joinDisabled, setJoinDisabled] = useState<boolean>(false);
-  const { data: playerStatus, refetch: getPlayerStatus } = usePlayerStatusQuery(
-    game?.id
-  );
+  const { id } = route.params;
+  const { data: game } = useGameByIdQuery(id);
+  const { data: players } = useGamePlayersQuery(id);
+  const { data: playerStatus } = usePlayerStatusQuery(id);
+  const { data: followedGames } = useFollowedGamesQuery();
 
   const { mutate: joinGame } = useJoinGameMutation(setJoinDisabled);
-  const { data: players } = useGamePlayersQuery(id);
+  const { mutate: followGame } = useFollowGameMutation(setFollowDisabled);
+
+  const durationTimeFormatter = new Intl.DateTimeFormat("en", {
+    hour: "numeric",
+    minute: "numeric",
+  });
 
   const dateHeader = useMemo(() => {
     if (game?.date) {
@@ -68,21 +70,21 @@ export const GameDetails = ({ navigation, route }: Props) => {
   }, [game?.date]);
 
   useEffect(() => {
-    if (game) {
-      getPlayerStatus();
-    }
-  }, [JSON.stringify(game)]);
-
-  useEffect(() => {
-    setJoinDisabled(
-      playerStatus?.hasBeenInvited === "ACCEPTED" ||
-        playerStatus?.hasBeenInvited === "PENDING" ||
-        playerStatus?.hasRequestedtoJoin === "APPROVED" ||
-        playerStatus?.hasRequestedtoJoin === "PENDING"
-    );
+    if (playerStatus)
+      setJoinDisabled(
+        playerStatus.hasBeenInvited === "ACCEPTED" ||
+          playerStatus.hasBeenInvited === "PENDING" ||
+          playerStatus.hasRequestedtoJoin === "APPROVED" ||
+          playerStatus.hasRequestedtoJoin === "PENDING"
+      );
   }, [JSON.stringify(playerStatus)]);
 
-  if (!game || !playerStatus) return <View />;
+  useEffect(() => {
+    if (followedGames)
+      setFollowDisabled(followedGames.some((game) => game.id === id));
+  }, [JSON.stringify(followedGames)]);
+
+  if (!game || !players || !playerStatus || !followedGames) return <View />;
   else {
     const date = new Date(game.date);
 
@@ -240,13 +242,26 @@ export const GameDetails = ({ navigation, route }: Props) => {
                 </Button>
                 <Button
                   icon={() => (
-                    <FeatherIcon name="thumbs-up" size={22} color={"white"} />
+                    <FontAwesomeIcon
+                      name={followDisabled ? "thumbs-up" : "thumbs-o-up"}
+                      size={22}
+                      color={"white"}
+                    />
                   )}
                   style={{ borderRadius: 5, flex: 1 }}
                   textColor={"white"}
                   buttonColor={"transparent"}
+                  onPress={
+                    followDisabled
+                      ? undefined
+                      : () => {
+                          followGame({
+                            gameId: game.id,
+                          });
+                        }
+                  }
                 >
-                  Follow Game
+                  {followDisabled ? "Following" : "Follow Game"}
                 </Button>
               </View>
             )}
