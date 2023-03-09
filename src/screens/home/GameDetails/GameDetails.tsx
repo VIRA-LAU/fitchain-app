@@ -13,9 +13,10 @@ import {
   TabBarProps,
   TabView,
 } from "react-native-tab-view";
-import { Home } from "./Home";
+import { Team } from "./Team";
 import {
   useGameByIdQuery,
+  useGamePlayersQuery,
   useJoinGameMutation,
   usePlayerStatusQuery,
 } from "src/api";
@@ -47,6 +48,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
   );
 
   const { mutate: joinGame } = useJoinGameMutation(setJoinDisabled);
+  const { data: players } = useGamePlayersQuery(id);
 
   const dateHeader = useMemo(() => {
     if (game?.date) {
@@ -85,7 +87,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
     );
   }, [JSON.stringify(playerStatus)]);
 
-  if (!game) return <View />;
+  if (!game || !playerStatus) return <View />;
   else {
     const date = new Date(game.date);
 
@@ -104,9 +106,27 @@ export const GameDetails = ({ navigation, route }: Props) => {
     }) => {
       switch (route.key) {
         case "Home":
-          return <Home game={game} />;
+          return (
+            <Team
+              name={"Home"}
+              game={game}
+              players={players?.filter(
+                ({ team, status }) => team === "HOME" && status !== "REJECTED"
+              )}
+              adminId={game.admin.id}
+            />
+          );
         case "Away":
-          return <Home game={game} />;
+          return (
+            <Team
+              name={"Away"}
+              game={game}
+              players={players?.filter(
+                ({ team, status }) => team === "AWAY" && status !== "REJECTED"
+              )}
+              adminId={game.admin.id}
+            />
+          );
         default:
           return null;
       }

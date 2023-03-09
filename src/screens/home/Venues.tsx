@@ -77,6 +77,5 @@ const makeStyles = (colors: MD3Colors) =>
       color: colors.tertiary,
       textAlign: "center",
       textAlignVertical: "center",
-      marginBottom: -10,
     },
   });

@@ -105,7 +105,7 @@ export type HomeStackParamList = {
     id: number;
     isPlayScreen: boolean;
     playScreenBranch: VenueBranch | null;
-    playScreenBookingDetails: {
+    playScreenBookingDetails?: {
       date: string;
       duration: number;
       gameType: GameType;
@@ -127,7 +127,7 @@ export type HomeStackParamList = {
     venueName: string;
     courts: VenueBranch["courts"];
     branchLocation: string;
-    bookingDetails: {
+    bookingDetails?: {
       date: string;
       duration: number;
       gameType: GameType;

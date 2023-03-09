@@ -100,6 +100,14 @@ export interface Activity {
   isWinner: boolean;
 }
 
+export interface TeamPlayer {
+  id: number;
+  team: "HOME" | "AWAY";
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  firstName: string;
+  lastName: string;
+}
+
 export interface PlayerStatus {
   hasRequestedtoJoin: false | "APPROVED" | "REJECTED" | "PENDING";
   hasBeenInvited: false | "ACCEPTED" | "REJECTED" | "PENDING";

@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./src/assets/images/Logo.png",
-      "resizeMode": "contain",
+      "resize": "native",
       "backgroundColor": "black"
     },
     "backgroundColor": "#2e2d36",

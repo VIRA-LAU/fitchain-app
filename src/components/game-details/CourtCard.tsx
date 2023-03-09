@@ -30,7 +30,7 @@ export const CourtCard = ({
   type: string;
   // rating: number;
   price: number;
-  bookingDetails: {
+  bookingDetails?: {
     date: string;
     duration: number;
     gameType: GameType;
@@ -50,15 +50,16 @@ export const CourtCard = ({
     <Pressable
       style={styles.wrapperView}
       onPress={() => {
-        navigation.push("VenueBookingDetails", {
-          venueName: venueName,
-          courtType: type,
-          price,
-          bookingDetails: {
-            ...bookingDetails,
-            courtId: id,
-          },
-        });
+        if (bookingDetails)
+          navigation.push("VenueBookingDetails", {
+            venueName: venueName,
+            courtType: type,
+            price,
+            bookingDetails: {
+              ...bookingDetails,
+              courtId: id,
+            },
+          });
       }}
     >
       <View style={styles.contentView}>
