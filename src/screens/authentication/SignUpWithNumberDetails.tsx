@@ -36,9 +36,9 @@ export const SignUpWithNumberDetails = ({
   const signUp = () => {
     if (
       passwordValid &&
-      validateEmail(email) &&
-      firstName.length > 0 &&
-      lastName.length > 0
+      validateEmail(email.trim()) &&
+      firstName.trim().length > 0 &&
+      lastName.trim().length > 0
     ) {
       let data = {
         firstName: firstName.trim(),

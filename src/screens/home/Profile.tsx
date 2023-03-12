@@ -158,6 +158,12 @@ export const Profile = ({
             {activities?.map((activity: Activity, index: number) => (
               <ActivityCard key={index} {...activity} />
             ))}
+            {!activities ||
+              (activities.length === 0 && (
+                <Text style={styles.placeholderText}>
+                  You have no recent activities.
+                </Text>
+              ))}
           </View>
         </View>
       </View>
@@ -278,5 +284,13 @@ const makeStyles = (
     divider: {
       borderColor: colors.secondary,
       borderBottomWidth: 1,
+    },
+    placeholderText: {
+      height: 50,
+      fontFamily: "Inter-Medium",
+      color: colors.tertiary,
+      textAlign: "center",
+      textAlignVertical: "center",
+      marginBottom: -10,
     },
   });
