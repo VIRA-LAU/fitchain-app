@@ -19,25 +19,21 @@ import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { Game } from "src/types";
 
 export const InvitationCard = ({
-  inviter,
+  user,
+  type,
   game,
+  isFirst,
+  isLast,
 }: {
-  inviter: string;
+  user: string;
+  type: "invitation" | "request";
   game: Game;
+  isFirst: boolean;
+  isLast: boolean;
 }) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
   const styles = makeStyles(colors, height, width);
-  const weekday = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const day = weekday[game.date?.getDay()];
   const hours = game.date.getHours();
   const minutes = game.date.getMinutes();
   const amPm = hours >= 12 ? "pm" : "am";
@@ -56,7 +52,11 @@ export const InvitationCard = ({
     >();
   return (
     <Pressable
-      style={styles.wrapper}
+      style={[
+        styles.wrapper,
+        isFirst ? { marginLeft: 20 } : {},
+        isLast ? { marginRight: 20 } : {},
+      ]}
       onPress={() => navigation.push("GameDetails", { id: game.id })}
     >
       <Image
@@ -77,12 +77,24 @@ export const InvitationCard = ({
         />
         <View style={{ maxWidth: 0.48 * width }}>
           <Text style={styles.greyText}>
-            <Text style={styles.text}>{inviter}</Text> invited you to play{" "}
-            <Text style={styles.text}>{game.type}</Text> this{" "}
+            <Text style={styles.text}>{user}</Text>
+            {type === "invitation"
+              ? " invited you to play "
+              : " request to join "}
+            <Text style={styles.text}>{game.type}</Text> on{" "}
             <Text style={styles.text}>
-              {day}, {timeString}
+              {game.date
+                .toLocaleDateString(undefined, {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })
+                .slice(0, -6)}
+              , {timeString}
             </Text>
-            , at <Text style={styles.text}>{game.court.branch.location}</Text>.
+            , at <Text style={styles.text}>{game.court.branch.venue.name}</Text>
+            .
           </Text>
         </View>
         <View style={styles.buttonsView}>

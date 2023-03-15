@@ -14,17 +14,25 @@ import { BottomTabParamList } from "src/navigation/tabScreenOptions";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { UserContext, UserData } from "src/utils";
-import { useContext, useState } from "react";
+import { UserContext } from "src/utils";
+import { useContext, useMemo, useState } from "react";
 import {
   useBranchesQuery,
   useGamesQuery,
   useBookingsQuery,
   useInvitationsQuery,
   useActivitiesQuery,
+  useReceivedRequestsQuery,
 } from "src/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Activity, Game, Invitation, VenueBranch } from "src/types";
+import {
+  Activity,
+  Game,
+  GameRequest,
+  Invitation,
+  VenueBranch,
+} from "src/types";
+
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
 const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
@@ -48,6 +56,7 @@ export const Home = ({ navigation, route }: Props) => {
   const { data: games } = useGamesQuery({ type: "upcoming", limit: 5 });
   const { data: bookings } = useBookingsQuery({ type: "upcoming" });
   const { data: invitations } = useInvitationsQuery();
+  const { data: receivedRequests } = useReceivedRequestsQuery();
   const { data: activities } = useActivitiesQuery();
 
   const [selectedSports, setSelectedSports] = useState({
@@ -55,6 +64,46 @@ export const Home = ({ navigation, route }: Props) => {
     Football: true,
     Tennis: true,
   });
+
+  const invitationsRequests = useMemo(() => {
+    let result: ((Invitation | GameRequest) & {
+      type: "invitation" | "request";
+    })[] = [];
+    if (invitations)
+      result = result.concat(
+        invitations.map((invitation) => ({ type: "invitation", ...invitation }))
+      );
+    if (receivedRequests)
+      result = result.concat(
+        receivedRequests.map((request) => ({ type: "request", ...request }))
+      );
+
+    const filtedResult = result.filter(
+      ({ game }: Invitation) => selectedSports[game.type]
+    );
+
+    const sortedResult = result.sort(
+      (a, b) => a.game.createdAt.getTime() - b.game.createdAt.getTime()
+    );
+    const mappedResult = filtedResult.map(
+      (
+        invReq: (Invitation | GameRequest) & {
+          type: "invitation" | "request";
+        },
+        index: number
+      ) => (
+        <InvitationCard
+          key={index}
+          type={invReq.type}
+          user={invReq.user?.firstName + " " + invReq.user?.lastName}
+          game={invReq.game}
+          isFirst={index === 0}
+          isLast={index === filtedResult.length - 1}
+        />
+      )
+    );
+    return mappedResult;
+  }, [JSON.stringify(invitations), JSON.stringify(receivedRequests)]);
 
   return (
     <AppHeader
@@ -97,35 +146,22 @@ export const Home = ({ navigation, route }: Props) => {
           <ScrollView
             style={{
               flexDirection: "row",
-              marginRight: -20,
+              marginHorizontal: -20,
             }}
             horizontal
           >
-            {invitations
-              ?.filter(({ game }: Invitation) => selectedSports[game.type])
-              .map((invitation: Invitation, index: number) => (
-                <InvitationCard
-                  key={index}
-                  inviter={
-                    invitation.user?.firstName + " " + invitation.user?.lastName
-                  }
-                  game={invitation.game}
-                />
-              ))}
+            {invitationsRequests}
           </ScrollView>
-          {!invitations ||
-            (invitations.filter(
-              ({ game }: Invitation) => selectedSports[game.type]
-            ).length === 0 && (
-              <Text style={styles.placeholderText}>
-                You have no pending invitations.
-              </Text>
-            ))}
+          {invitationsRequests.length === 0 && (
+            <Text style={styles.placeholderText}>
+              You have no pending invitations.
+            </Text>
+          )}
         </View>
         <SectionTitle title="Venues" styles={styles} />
         <View>
           <ScrollView
-            style={{ flexDirection: "row", marginRight: -20 }}
+            style={{ flexDirection: "row", marginHorizontal: -20 }}
             horizontal
           >
             {branchesVenues?.map((venuesBranch: VenueBranch, index: number) => (
@@ -133,6 +169,8 @@ export const Home = ({ navigation, route }: Props) => {
                 key={index}
                 type="vertical"
                 venueBranch={venuesBranch}
+                isFirst={index === 0}
+                isLast={index === branchesVenues.length - 1}
               />
             ))}
           </ScrollView>

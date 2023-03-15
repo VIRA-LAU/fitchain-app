@@ -21,6 +21,7 @@ export const useInvitationsQuery = () => {
     select: (invitations) =>
       invitations.map((invitation) => {
         invitation.game.date = new Date(invitation.game.date);
+        invitation.game.createdAt = new Date(invitation.game.createdAt);
         return invitation;
       }),
   });

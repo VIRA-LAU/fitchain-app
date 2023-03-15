@@ -33,6 +33,7 @@ export interface Game {
     };
   };
   admin: User;
+  createdAt: Date;
 }
 
 export interface Invitation {
@@ -47,6 +48,12 @@ export interface Invitation {
   game: Game;
 }
 
+export interface GameRequest {
+  team: string;
+  status: "PENDING" | "APPROVED" | "REJECED";
+  user: User;
+  game: Game;
+}
 // Contained inside Venue
 export interface Branch {
   id: number;
