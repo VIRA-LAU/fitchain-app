@@ -54,7 +54,7 @@ export const InvitationCard = ({
     >();
 
   const { mutate: editJoinRequest } = useEditJoinRequestMutation();
-  console.log(isFirst, isLast);
+
   return (
     <View
       style={[

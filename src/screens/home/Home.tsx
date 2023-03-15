@@ -1,4 +1,5 @@
 import { StyleSheet, View, ScrollView, RefreshControl } from "react-native";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
@@ -15,7 +16,6 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { UserContext } from "src/utils";
-import { useContext, useEffect, useMemo, useState, useCallback } from "react";
 import {
   useBranchesQuery,
   useGamesQuery,
@@ -160,8 +160,7 @@ export const Home = ({ navigation, route }: Props) => {
     activitiesLoading,
   ]);
 
-  const onRefresh = useCallback(() => {
-    console.log("??");
+  const onRefresh = () => {
     setRefreshing(true);
     refetchGames();
     refetchInvitations();
@@ -169,7 +168,7 @@ export const Home = ({ navigation, route }: Props) => {
     refetchBookings();
     refetchBranches();
     refetchActivities();
-  }, []);
+  };
 
   return (
     <AppHeader
@@ -186,7 +185,7 @@ export const Home = ({ navigation, route }: Props) => {
       showLogo
     >
       <ScrollView
-        style={styles.wrapperView}
+        contentContainerStyle={styles.wrapperView}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -224,6 +223,7 @@ export const Home = ({ navigation, route }: Props) => {
               flexDirection: "row",
               marginHorizontal: -20,
             }}
+            contentContainerStyle={{ flexGrow: 1 }}
             horizontal
           >
             {invitationsRequests}
@@ -295,10 +295,10 @@ export const Home = ({ navigation, route }: Props) => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      flex: 1,
+      flexGrow: 1,
       backgroundColor: colors.background,
       padding: 20,
-      marginBottom: 30,
+      paddingBottom: 40,
     },
     headerSubtext: { color: colors.tertiary, marginTop: 10, marginBottom: 20 },
     sectionTitle: {
