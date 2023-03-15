@@ -33,13 +33,15 @@ export const useFollowGameMutation = (
   return useMutation<Response, unknown, Request>({
     mutationFn: followGame(userData!),
     onSuccess: (data) => {
-      setFollowDisabled(true);
       // queryClient.setQueryData(["playerStatus", data.gameId], {
       //   hasRequestedtoJoin: "PENDING",
       //   hasBeenInvited: false,
       //   isAdmin: false,
       // });
       queryClient.refetchQueries(["followed-games"]);
+    },
+    onError: (e) => {
+      setFollowDisabled(false);
     },
   });
 };

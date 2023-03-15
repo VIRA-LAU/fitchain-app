@@ -56,6 +56,21 @@ export const Home = ({ navigation, route }: Props) => {
     Tennis: true,
   });
 
+  const filteredBookings = bookings?.filter(({ type, date }: Game) => {
+    const bookingDate = new Date(
+      date.toISOString().substring(0, date.toISOString().indexOf("T"))
+    );
+    const todayDate = new Date(
+      new Date()
+        .toISOString()
+        .substring(0, new Date().toISOString().indexOf("T"))
+    );
+    return (
+      (bookingDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24) >=
+        0 && selectedSports[type]
+    );
+  });
+
   return (
     <AppHeader
       absolutePosition={false}
@@ -83,11 +98,12 @@ export const Home = ({ navigation, route }: Props) => {
             .map((game: Game, index: number) => (
               <UpcomingGameCard key={index} game={game} />
             ))}
-          {!games && (
-            <Text style={styles.placeholderText}>
-              You have no upcoming games.
-            </Text>
-          )}
+          {!games ||
+            (games.length === 0 && (
+              <Text style={styles.placeholderText}>
+                You have no upcoming games.
+              </Text>
+            ))}
         </View>
 
         <SectionTitle title="Invitations" styles={styles} />
@@ -111,11 +127,12 @@ export const Home = ({ navigation, route }: Props) => {
                 />
               ))}
           </ScrollView>
-          {!invitations && (
-            <Text style={styles.placeholderText}>
-              You have no pending invitations.
-            </Text>
-          )}
+          {!invitations ||
+            (invitations.length === 0 && (
+              <Text style={styles.placeholderText}>
+                You have no pending invitations.
+              </Text>
+            ))}
         </View>
         <SectionTitle title="Venues" styles={styles} />
         <View>
@@ -131,38 +148,24 @@ export const Home = ({ navigation, route }: Props) => {
               />
             ))}
           </ScrollView>
-          {!branchesVenues && (
-            <Text style={styles.placeholderText}>
-              There are no nearby venues.
-            </Text>
-          )}
+          {!branchesVenues ||
+            (branchesVenues.length === 0 && (
+              <Text style={styles.placeholderText}>
+                There are no nearby venues.
+              </Text>
+            ))}
         </View>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
-          {bookings
-            ?.filter(({ type, date }: Game) => {
-              const bookingDate = new Date(
-                date.toISOString().substring(0, date.toISOString().indexOf("T"))
-              );
-              const todayDate = new Date(
-                new Date()
-                  .toISOString()
-                  .substring(0, new Date().toISOString().indexOf("T"))
-              );
-              return (
-                (bookingDate.getTime() - todayDate.getTime()) /
-                  (1000 * 60 * 60 * 24) >=
-                  0 && selectedSports[type]
-              );
-            })
-            .map((booking: Game, index: number) => (
-              <BookingCard key={index} booking={booking} />
+          {filteredBookings?.map((booking: Game, index: number) => (
+            <BookingCard key={index} booking={booking} />
+          ))}
+          {!filteredBookings ||
+            (filteredBookings.length === 0 && (
+              <Text style={styles.placeholderText}>
+                There are no nearby bookings.
+              </Text>
             ))}
-          {!bookings && (
-            <Text style={styles.placeholderText}>
-              There are no nearby bookings.
-            </Text>
-          )}
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
@@ -171,11 +174,12 @@ export const Home = ({ navigation, route }: Props) => {
             .map((activity: Activity, index: number) => (
               <ActivityCard key={index} {...activity} />
             ))}
-          {!activities && (
-            <Text style={styles.placeholderText}>
-              You have no recent activities.
-            </Text>
-          )}
+          {!activities ||
+            (activities.length === 0 && (
+              <Text style={styles.placeholderText}>
+                You have no recent activities.
+              </Text>
+            ))}
         </View>
       </View>
     </AppHeader>

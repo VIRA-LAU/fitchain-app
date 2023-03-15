@@ -34,7 +34,6 @@ export const useJoinGameMutation = (
   return useMutation<Response, unknown, Request>({
     mutationFn: joinGame(userData!),
     onSuccess: (data) => {
-      setJoinDisabled(true);
       queryClient.setQueryData(["playerStatus", data.gameId], {
         hasRequestedtoJoin: "PENDING",
         hasBeenInvited: false,
@@ -42,6 +41,9 @@ export const useJoinGameMutation = (
       });
       queryClient.refetchQueries(["games"]);
       queryClient.refetchQueries(["game-players", data.gameId]);
+    },
+    onError: (e) => {
+      setJoinDisabled(false);
     },
   });
 };

@@ -113,6 +113,9 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
           >
             Continue
           </Button>
+          <Text style={styles.placeholderText}>
+            {route.params.code ? route.params.code : "Code will appear here."}
+          </Text>
         </View>
       </View>
     </AppHeader>
@@ -164,5 +167,12 @@ const makeStyles = (colors: MD3Colors) =>
       marginTop: "5%",
       height: 50,
       justifyContent: "center",
+    },
+    placeholderText: {
+      height: 50,
+      fontFamily: "Inter-Medium",
+      color: colors.tertiary,
+      textAlign: "center",
+      textAlignVertical: "center",
     },
   });

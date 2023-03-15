@@ -225,6 +225,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   }}
                   textColor={colors.secondary}
                   onPress={() => {
+                    setJoinDisabled(true);
                     joinGame({
                       gameId: game.id,
                       team: "HOME",
@@ -255,6 +256,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     followDisabled
                       ? undefined
                       : () => {
+                          setFollowDisabled(true);
                           followGame({
                             gameId: game.id,
                           });
