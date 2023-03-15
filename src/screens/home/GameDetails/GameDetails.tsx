@@ -11,6 +11,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
+import Feather from "react-native-vector-icons/Feather";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
@@ -23,6 +24,7 @@ import {
   useGamePlayersQuery,
   useJoinGameMutation,
   usePlayerStatusQuery,
+  useRespondToInviteMutation,
   useUnfollowGameMutation,
 } from "src/api";
 
@@ -33,9 +35,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const windowWidth = useWindowDimensions().width;
 
-  const [promptVisible, setPromptVisible] = useState<"join" | "cancel" | null>(
-    null
-  );
+  const [promptVisible, setPromptVisible] = useState<
+    "join" | "cancel" | "handleInvite" | null
+  >(null);
   const [joinDisabled, setJoinDisabled] = useState<boolean>(false);
   const [followDisabled, setFollowDisabled] = useState<boolean>(false);
   const [index, setIndex] = useState(0);
@@ -51,6 +53,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const { data: followedGames } = useFollowedGamesQuery();
 
   const { mutate: joinGame } = useJoinGameMutation(setJoinDisabled);
+  const { mutate: respondToInvite } =
+    useRespondToInviteMutation(setJoinDisabled);
   const { mutate: followGame } = useFollowGameMutation(setFollowDisabled);
   const { mutate: unfollowGame } = useUnfollowGameMutation(setFollowDisabled);
   const { mutate: cancelRequest } =
@@ -113,7 +117,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             <Team
               name={"Home"}
               game={game}
-              players={players?.filter(
+              players={players.filter(
                 ({ team, status }) => team === "HOME" && status !== "REJECTED"
               )}
               adminId={game.admin.id}
@@ -124,7 +128,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             <Team
               name={"Away"}
               game={game}
-              players={players?.filter(
+              players={players.filter(
                 ({ team, status }) => team === "AWAY" && status !== "REJECTED"
               )}
               adminId={game.admin.id}
@@ -236,7 +240,10 @@ export const GameDetails = ({ navigation, route }: Props) => {
             {promptVisible === "cancel" && (
               <View style={styles.prompt}>
                 <Text style={styles.promptText}>
-                  Are you sure you want to cancel your game request?
+                  Are you sure you want to{" "}
+                  {playerStatus.hasRequestedtoJoin === "APPROVED"
+                    ? "leave game"
+                    : "cancel your game request"}
                 </Text>
                 <Button
                   buttonColor={colors.primary}
@@ -261,6 +268,60 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   Yes
                 </Button>
                 <Button onPress={() => setPromptVisible(null)}>No</Button>
+              </View>
+            )}
+            {promptVisible === "handleInvite" && (
+              <View style={styles.prompt}>
+                <Text style={styles.promptText}>
+                  Would you like to join this game?
+                </Text>
+                <Button
+                  buttonColor={colors.primary}
+                  textColor={colors.background}
+                  style={{
+                    borderRadius: 5,
+                    marginBottom: 10,
+                    marginHorizontal: 20,
+                  }}
+                  onPress={() => {
+                    setJoinDisabled(true);
+                    respondToInvite({
+                      gameId: game.id,
+                      invitationId: 1,
+                      status: "APPROVED",
+                    });
+                    if (followedGames.some((game) => game.id === id)) {
+                      setFollowDisabled(true);
+                      followGame({
+                        gameId: game.id,
+                      });
+                    }
+                    setPromptVisible(null);
+                  }}
+                >
+                  Yes
+                </Button>
+                <Button
+                  buttonColor={colors.primary}
+                  textColor={colors.background}
+                  style={{
+                    borderRadius: 5,
+                    marginBottom: 10,
+                    marginHorizontal: 20,
+                  }}
+                  onPress={() => {
+                    setJoinDisabled(true);
+                    respondToInvite({
+                      gameId: game.id,
+                      invitationId: 1,
+                      status: "REJECTED",
+                    });
+                    setPromptVisible(null);
+                  }}
+                >
+                  No
+                </Button>
+                <Button onPress={() => setPromptVisible(null)}>Later</Button>
               </View>
             )}
           </Pressable>
@@ -309,7 +370,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   {startTimeString} - {endTimeString}
                 </Text>
               </View>
-              {!playerStatus?.isAdmin && (
+              {!playerStatus.isAdmin && (
                 <View style={styles.buttonsView}>
                   <Button
                     icon={() => (
@@ -330,21 +391,27 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     onPress={
                       joinDisabled
                         ? undefined
-                        : playerStatus?.hasRequestedtoJoin === "APPROVED" ||
-                          playerStatus?.hasRequestedtoJoin === "PENDING"
+                        : playerStatus.hasRequestedtoJoin === "APPROVED" ||
+                          playerStatus.hasRequestedtoJoin === "PENDING" ||
+                          playerStatus.hasBeenInvited === "ACCEPTED"
                         ? () => {
                             setPromptVisible("cancel");
+                          }
+                        : playerStatus.hasBeenInvited === "PENDING"
+                        ? () => {
+                            setPromptVisible("handleInvite");
                           }
                         : () => {
                             setPromptVisible("join");
                           }
                     }
                   >
-                    {playerStatus?.hasBeenInvited === "ACCEPTED" ||
-                    playerStatus?.hasBeenInvited === "PENDING"
+                    {playerStatus.hasBeenInvited === "ACCEPTED" ||
+                    playerStatus.hasRequestedtoJoin === "APPROVED"
+                      ? "Leave Game"
+                      : playerStatus.hasBeenInvited === "PENDING"
                       ? "Invited to Game"
-                      : playerStatus?.hasRequestedtoJoin === "APPROVED" ||
-                        playerStatus?.hasRequestedtoJoin === "PENDING"
+                      : playerStatus.hasRequestedtoJoin === "PENDING"
                       ? "Cancel Request"
                       : "Join Game"}
                   </Button>
@@ -386,6 +453,23 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       : "Follow Game"}
                   </Button>
                 </View>
+              )}
+              {(playerStatus.isAdmin ||
+                playerStatus.hasBeenInvited === "ACCEPTED" ||
+                playerStatus.hasRequestedtoJoin === "APPROVED") && (
+                <Button
+                  buttonColor={colors.primary}
+                  textColor={colors.secondary}
+                  style={{ borderRadius: 5, marginTop: 10 }}
+                  icon={({ size, color }) => (
+                    <Feather name="user-plus" size={size} color={color} />
+                  )}
+                  onPress={() => {
+                    navigation.push("InviteUsers", { gameId: game.id });
+                  }}
+                >
+                  Invite Players
+                </Button>
               )}
             </View>
 

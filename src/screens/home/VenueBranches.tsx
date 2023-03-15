@@ -27,7 +27,7 @@ export const VenueBranches = ({ navigation, route }: Props) => {
       searchBar
       backEnabled
     >
-      <ScrollView style={styles.wrapperView}>
+      <ScrollView contentContainerStyle={styles.wrapperView}>
         {branches?.map((branch, index: number) => {
           return (
             <BranchLocation
