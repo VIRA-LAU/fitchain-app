@@ -10,12 +10,14 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
 import { Team } from "./Team";
 import {
+  useDeleteJoinRequestMutation,
   useFollowedGamesQuery,
   useFollowGameMutation,
   useGameByIdQuery,
   useGamePlayersQuery,
   useJoinGameMutation,
   usePlayerStatusQuery,
+  useUnfollowGameMutation,
 } from "src/api";
 
 type Props = StackScreenProps<HomeStackParamList, "GameDetails">;
@@ -41,6 +43,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
 
   const { mutate: joinGame } = useJoinGameMutation(setJoinDisabled);
   const { mutate: followGame } = useFollowGameMutation(setFollowDisabled);
+  const { mutate: unfollowGame } = useUnfollowGameMutation(setFollowDisabled);
+  const { mutate: cancelRequest } =
+    useDeleteJoinRequestMutation(setJoinDisabled);
 
   const durationTimeFormatter = new Intl.DateTimeFormat("en", {
     hour: "numeric",
@@ -68,21 +73,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
       else return "In the Future";
     }
   }, [game?.date]);
-
-  useEffect(() => {
-    if (playerStatus)
-      setJoinDisabled(
-        playerStatus.hasBeenInvited === "ACCEPTED" ||
-          playerStatus.hasBeenInvited === "PENDING" ||
-          playerStatus.hasRequestedtoJoin === "APPROVED" ||
-          playerStatus.hasRequestedtoJoin === "PENDING"
-      );
-  }, [JSON.stringify(playerStatus)]);
-
-  useEffect(() => {
-    if (followedGames)
-      setFollowDisabled(followedGames.some((game) => game.id === id));
-  }, [JSON.stringify(followedGames)]);
 
   if (!game || !players || !playerStatus || !followedGames) return <View />;
   else {
@@ -224,27 +214,52 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       : colors.primary,
                   }}
                   textColor={colors.secondary}
-                  onPress={() => {
-                    setJoinDisabled(true);
-                    joinGame({
-                      gameId: game.id,
-                      team: "HOME",
-                    });
-                  }}
-                  disabled={joinDisabled}
+                  onPress={
+                    joinDisabled
+                      ? undefined
+                      : playerStatus?.hasRequestedtoJoin === "APPROVED" ||
+                        playerStatus?.hasRequestedtoJoin === "PENDING"
+                      ? () => {
+                          setJoinDisabled(true);
+                          cancelRequest({ gameId: game.id });
+                          if (followedGames.some((game) => game.id === id)) {
+                            setFollowDisabled(true);
+                            unfollowGame({
+                              gameId: game.id,
+                            });
+                          }
+                        }
+                      : () => {
+                          setJoinDisabled(true);
+                          joinGame({
+                            gameId: game.id,
+                            team: "HOME",
+                          });
+                          if (!followedGames.some((game) => game.id === id)) {
+                            setFollowDisabled(true);
+                            followGame({
+                              gameId: game.id,
+                            });
+                          }
+                        }
+                  }
                 >
                   {playerStatus?.hasBeenInvited === "ACCEPTED" ||
                   playerStatus?.hasBeenInvited === "PENDING"
                     ? "Invited to Game"
                     : playerStatus?.hasRequestedtoJoin === "APPROVED" ||
                       playerStatus?.hasRequestedtoJoin === "PENDING"
-                    ? "Requested to Join"
+                    ? "Cancel Request"
                     : "Join Game"}
                 </Button>
                 <Button
                   icon={() => (
                     <FontAwesomeIcon
-                      name={followDisabled ? "thumbs-up" : "thumbs-o-up"}
+                      name={
+                        followedGames.some((game) => game.id === id)
+                          ? "thumbs-up"
+                          : "thumbs-o-up"
+                      }
                       size={22}
                       color={"white"}
                     />
@@ -255,6 +270,13 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   onPress={
                     followDisabled
                       ? undefined
+                      : followedGames.some((game) => game.id === id)
+                      ? () => {
+                          setFollowDisabled(true);
+                          unfollowGame({
+                            gameId: game.id,
+                          });
+                        }
                       : () => {
                           setFollowDisabled(true);
                           followGame({
@@ -263,7 +285,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
                         }
                   }
                 >
-                  {followDisabled ? "Following" : "Follow Game"}
+                  {followedGames.some((game) => game.id === id)
+                    ? "Unfollow Game"
+                    : "Follow Game"}
                 </Button>
               </View>
             )}

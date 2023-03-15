@@ -3,6 +3,7 @@ import { UserData } from "src/utils";
 import { API_URL } from "@dotenv";
 
 let client: AxiosInstance;
+
 if (API_URL) {
   // Local URL for development
   client = axios.create({
