@@ -1,6 +1,6 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { NavigationProp } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -25,7 +25,11 @@ import {
 } from "components";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { useFollowedGamesQuery, useGamesQuery } from "src/api";
+import {
+  useBookingsQuery,
+  useFollowedGamesQuery,
+  useGamesQuery,
+} from "src/api";
 import { Game } from "src/types";
 
 type NavigationProps = BottomTabScreenProps<BottomTabParamList>;
@@ -48,13 +52,29 @@ const DayHeader = ({ day }: { day: string }) => {
 };
 
 const AllGames = (props: Props) => {
-  const { data: allGames } = useGamesQuery({ type: props.type });
+  const { data: allGames } = useBookingsQuery({ type: props.type });
   return <GameList {...props} games={allGames} isFollowed={false} />;
 };
 
 const FollowedGames = (props: Props) => {
   const { data: followedGames } = useFollowedGamesQuery({ type: props.type });
-  return <GameList {...props} games={followedGames} isFollowed={true} />;
+  const { data: myGames } = useGamesQuery({ type: props.type });
+
+  const games = useMemo(() => {
+    let games: Game[] = [];
+    if (followedGames) games = games.concat(followedGames);
+    if (myGames) games = games.concat(myGames);
+    games = games.filter((game, index) => {
+      return index === games.findIndex((otherGame) => otherGame.id === game.id);
+    });
+    return games.sort((a, b) =>
+      props.type === "upcoming"
+        ? a.date.getTime() - b.date.getTime()
+        : b.date.getTime() - a.date.getTime()
+    );
+  }, [JSON.stringify(followedGames), JSON.stringify(myGames)]);
+
+  return <GameList {...props} games={games} isFollowed={true} />;
 };
 
 const GameList = ({

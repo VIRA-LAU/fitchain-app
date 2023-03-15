@@ -46,7 +46,7 @@ export const Home = ({ navigation, route }: Props) => {
 
   const { data: branchesVenues } = useBranchesQuery();
   const { data: games } = useGamesQuery({ type: "upcoming", limit: 5 });
-  const { data: bookings } = useBookingsQuery();
+  const { data: bookings } = useBookingsQuery({ type: "upcoming" });
   const { data: invitations } = useInvitationsQuery();
   const { data: activities } = useActivitiesQuery();
 
@@ -54,21 +54,6 @@ export const Home = ({ navigation, route }: Props) => {
     Basketball: true,
     Football: true,
     Tennis: true,
-  });
-
-  const filteredBookings = bookings?.filter(({ type, date }: Game) => {
-    const bookingDate = new Date(
-      date.toISOString().substring(0, date.toISOString().indexOf("T"))
-    );
-    const todayDate = new Date(
-      new Date()
-        .toISOString()
-        .substring(0, new Date().toISOString().indexOf("T"))
-    );
-    return (
-      (bookingDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24) >=
-        0 && selectedSports[type]
-    );
   });
 
   return (
@@ -99,7 +84,8 @@ export const Home = ({ navigation, route }: Props) => {
               <UpcomingGameCard key={index} game={game} />
             ))}
           {!games ||
-            (games.length === 0 && (
+            (games.filter(({ type }: Game) => selectedSports[type]).length ===
+              0 && (
               <Text style={styles.placeholderText}>
                 You have no upcoming games.
               </Text>
@@ -128,7 +114,9 @@ export const Home = ({ navigation, route }: Props) => {
               ))}
           </ScrollView>
           {!invitations ||
-            (invitations.length === 0 && (
+            (invitations.filter(
+              ({ game }: Invitation) => selectedSports[game.type]
+            ).length === 0 && (
               <Text style={styles.placeholderText}>
                 You have no pending invitations.
               </Text>
@@ -157,11 +145,14 @@ export const Home = ({ navigation, route }: Props) => {
         </View>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
-          {filteredBookings?.map((booking: Game, index: number) => (
-            <BookingCard key={index} booking={booking} />
-          ))}
-          {!filteredBookings ||
-            (filteredBookings.length === 0 && (
+          {bookings
+            ?.filter(({ type }: Game) => selectedSports[type])
+            .map((booking: Game, index: number) => (
+              <BookingCard key={index} booking={booking} />
+            ))}
+          {!bookings ||
+            (bookings.filter(({ type }: Game) => selectedSports[type])
+              .length === 0 && (
               <Text style={styles.placeholderText}>
                 There are no nearby bookings.
               </Text>
@@ -175,7 +166,8 @@ export const Home = ({ navigation, route }: Props) => {
               <ActivityCard key={index} {...activity} />
             ))}
           {!activities ||
-            (activities.length === 0 && (
+            (activities.filter(({ type }) => selectedSports[type]).length ===
+              0 && (
               <Text style={styles.placeholderText}>
                 You have no recent activities.
               </Text>
