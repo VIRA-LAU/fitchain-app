@@ -37,6 +37,7 @@ export interface Game {
 }
 
 export interface Invitation {
+  id: number;
   user?: {
     firstName: string;
     lastName: string;
@@ -49,6 +50,7 @@ export interface Invitation {
 }
 
 export interface GameRequest {
+  id: number;
   team: string;
   status: "PENDING" | "APPROVED" | "REJECED";
   user: User;

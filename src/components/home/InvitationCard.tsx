@@ -10,21 +10,23 @@ import {
   useWindowDimensions,
   View,
   Image,
-  Pressable,
 } from "react-native";
 import { useTheme, Button } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import EntypoIcon from "react-native-vector-icons/Entypo";
+import { useEditJoinRequestMutation } from "src/api";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { Game } from "src/types";
 
 export const InvitationCard = ({
+  id,
   user,
   type,
   game,
   isFirst,
   isLast,
 }: {
+  id: number;
   user: string;
   type: "invitation" | "request";
   game: Game;
@@ -50,14 +52,16 @@ export const InvitationCard = ({
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
+
+  const { mutate: editJoinRequest } = useEditJoinRequestMutation();
+  console.log(isFirst, isLast);
   return (
-    <Pressable
+    <View
       style={[
         styles.wrapper,
         isFirst ? { marginLeft: 20 } : {},
         isLast ? { marginRight: 20 } : {},
       ]}
-      onPress={() => navigation.push("GameDetails", { id: game.id })}
     >
       <Image
         source={
@@ -103,6 +107,14 @@ export const InvitationCard = ({
             style={{ borderRadius: 5, flex: 1 }}
             textColor={colors.secondary}
             buttonColor={colors.primary}
+            onPress={() => {
+              if (type === "request")
+                editJoinRequest({
+                  requestId: id,
+                  status: "APPROVED",
+                  gameId: game.id,
+                });
+            }}
           >
             Accept
           </Button>
@@ -111,13 +123,26 @@ export const InvitationCard = ({
             style={{ borderRadius: 5, flex: 1 }}
             textColor={"white"}
             buttonColor={"transparent"}
+            onPress={() => {
+              if (type === "request")
+                editJoinRequest({
+                  requestId: id,
+                  status: "REJECTED",
+                  gameId: game.id,
+                });
+            }}
           >
             Decline
           </Button>
-          <EntypoIcon name="dots-three-horizontal" color="white" size={18} />
+          <EntypoIcon
+            name="dots-three-horizontal"
+            color="white"
+            size={18}
+            onPress={() => navigation.push("GameDetails", { id: game.id })}
+          />
         </View>
       </View>
-    </Pressable>
+    </View>
   );
 };
 

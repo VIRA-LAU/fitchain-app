@@ -112,16 +112,7 @@ export const AppHeader = ({
           </View>
         )}
       </View>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        ref={scrollViewRef}
-        onContentSizeChange={() => {
-          if (autoScroll)
-            scrollViewRef.current?.scrollToEnd({ animated: true });
-        }}
-      >
-        {children}
-      </ScrollView>
+      <View style={{ flex: 1 }}>{children}</View>
     </View>
   );
 };

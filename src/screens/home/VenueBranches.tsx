@@ -27,25 +27,23 @@ export const VenueBranches = ({ navigation, route }: Props) => {
       searchBar
       backEnabled
     >
-      <View style={styles.wrapperView}>
-        <ScrollView style={styles.contentView}>
-          {branches?.map((branch, index: number) => {
-            return (
-              <BranchLocation
-                key={index}
-                type="branch"
-                isPressable
-                branch={{
-                  venueName,
-                  location: branch.location,
-                  courts: branch.courts,
-                  rating: branch.rating,
-                }}
-              />
-            );
-          })}
-        </ScrollView>
-      </View>
+      <ScrollView style={styles.wrapperView}>
+        {branches?.map((branch, index: number) => {
+          return (
+            <BranchLocation
+              key={index}
+              type="branch"
+              isPressable
+              branch={{
+                venueName,
+                location: branch.location,
+                courts: branch.courts,
+                rating: branch.rating,
+              }}
+            />
+          );
+        })}
+      </ScrollView>
     </AppHeader>
   );
 };
@@ -56,7 +54,8 @@ const makeStyles = (colors: MD3Colors) =>
       borderRadius: 10,
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 10,
+      marginVertical: 10,
+      marginHorizontal: "3%",
     },
     background: {
       position: "absolute",
@@ -104,9 +103,5 @@ const makeStyles = (colors: MD3Colors) =>
       color: "white",
       fontFamily: "Inter-Medium",
       fontSize: 10,
-    },
-    contentView: {
-      marginVertical: 10,
-      marginHorizontal: "3%",
     },
   });

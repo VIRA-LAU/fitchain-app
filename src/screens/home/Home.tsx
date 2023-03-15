@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView, RefreshControl } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
@@ -15,7 +15,7 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { UserContext } from "src/utils";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState, useCallback } from "react";
 import {
   useBranchesQuery,
   useGamesQuery,
@@ -32,6 +32,7 @@ import {
   Invitation,
   VenueBranch,
 } from "src/types";
+import { useQueryClient } from "react-query";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -52,18 +53,48 @@ export const Home = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const { userData } = useContext(UserContext);
 
-  const { data: branchesVenues } = useBranchesQuery();
-  const { data: games } = useGamesQuery({ type: "upcoming", limit: 5 });
-  const { data: bookings } = useBookingsQuery({ type: "upcoming" });
-  const { data: invitations } = useInvitationsQuery();
-  const { data: receivedRequests } = useReceivedRequestsQuery();
-  const { data: activities } = useActivitiesQuery();
+  const {
+    data: branchesVenues,
+    isFetching: branchesLoading,
+    refetch: refetchBranches,
+  } = useBranchesQuery();
+  const {
+    data: games,
+    isFetching: gamesLoading,
+    refetch: refetchGames,
+  } = useGamesQuery({
+    type: "upcoming",
+    limit: 5,
+  });
+  const {
+    data: bookings,
+    isFetching: bookingsLoading,
+    refetch: refetchBookings,
+  } = useBookingsQuery({
+    type: "upcoming",
+  });
+  const {
+    data: invitations,
+    isFetching: invitationsLoading,
+    refetch: refetchInvitations,
+  } = useInvitationsQuery();
+  const {
+    data: receivedRequests,
+    isFetching: requestsLoading,
+    refetch: refetchRequests,
+  } = useReceivedRequestsQuery();
+  const {
+    data: activities,
+    isFetching: activitiesLoading,
+    refetch: refetchActivities,
+  } = useActivitiesQuery();
 
   const [selectedSports, setSelectedSports] = useState({
     Basketball: true,
     Football: true,
     Tennis: true,
   });
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const invitationsRequests = useMemo(() => {
     let result: ((Invitation | GameRequest) & {
@@ -85,7 +116,7 @@ export const Home = ({ navigation, route }: Props) => {
     const sortedResult = result.sort(
       (a, b) => a.game.createdAt.getTime() - b.game.createdAt.getTime()
     );
-    const mappedResult = filtedResult.map(
+    const mappedResult = sortedResult.map(
       (
         invReq: (Invitation | GameRequest) & {
           type: "invitation" | "request";
@@ -93,6 +124,7 @@ export const Home = ({ navigation, route }: Props) => {
         index: number
       ) => (
         <InvitationCard
+          id={invReq.id}
           key={index}
           type={invReq.type}
           user={invReq.user?.firstName + " " + invReq.user?.lastName}
@@ -103,7 +135,41 @@ export const Home = ({ navigation, route }: Props) => {
       )
     );
     return mappedResult;
-  }, [JSON.stringify(invitations), JSON.stringify(receivedRequests)]);
+  }, [
+    JSON.stringify(invitations),
+    JSON.stringify(receivedRequests),
+    JSON.stringify(selectedSports),
+  ]);
+
+  useEffect(() => {
+    if (
+      !gamesLoading &&
+      !bookingsLoading &&
+      !branchesLoading &&
+      !requestsLoading &&
+      !invitationsLoading &&
+      !activitiesLoading
+    )
+      setRefreshing(false);
+  }, [
+    gamesLoading,
+    bookingsLoading,
+    branchesLoading,
+    requestsLoading,
+    invitationsLoading,
+    activitiesLoading,
+  ]);
+
+  const onRefresh = useCallback(() => {
+    console.log("??");
+    setRefreshing(true);
+    refetchGames();
+    refetchInvitations();
+    refetchRequests();
+    refetchBookings();
+    refetchBranches();
+    refetchActivities();
+  }, []);
 
   return (
     <AppHeader
@@ -119,7 +185,17 @@ export const Home = ({ navigation, route }: Props) => {
       }
       showLogo
     >
-      <View style={styles.wrapperView}>
+      <ScrollView
+        style={styles.wrapperView}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[colors.primary]}
+            progressBackgroundColor={colors.secondary}
+          />
+        }
+      >
         <Text variant="headlineSmall" style={{ color: "white" }}>
           Hi {userData?.firstName},
         </Text>
@@ -211,7 +287,7 @@ export const Home = ({ navigation, route }: Props) => {
               </Text>
             ))}
         </View>
-      </View>
+      </ScrollView>
     </AppHeader>
   );
 };

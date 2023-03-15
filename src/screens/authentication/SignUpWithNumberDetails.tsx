@@ -1,5 +1,12 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View, Image, TextInput, Modal } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  TextInput,
+  Modal,
+  ScrollView,
+} from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -75,7 +82,7 @@ export const SignUpWithNumberDetails = ({
 
   return (
     <AppHeader navigation={navigation} route={route} backEnabled autoScroll>
-      <View style={styles.wrapperView}>
+      <ScrollView contentContainerStyle={styles.wrapperView}>
         <Image
           source={require("assets/images/Logo-Icon.png")}
           style={styles.logo}
@@ -182,7 +189,7 @@ export const SignUpWithNumberDetails = ({
             Get Started
           </Button>
         </View>
-      </View>
+      </ScrollView>
     </AppHeader>
   );
 };
@@ -190,7 +197,7 @@ export const SignUpWithNumberDetails = ({
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      flex: 1,
+      flexGrow: 1,
       backgroundColor: colors.background,
       alignItems: "center",
       paddingBottom: 20,

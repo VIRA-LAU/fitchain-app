@@ -27,41 +27,39 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
       title={"Choose Venue"}
       backEnabled
     >
-      <View style={styles.wrapperView}>
-        <ScrollView style={styles.contentView}>
-          <View style={styles.infoView}>
-            <IonIcon name={"location-outline"} size={20} color={"white"} />
-            <Text variant="labelLarge" style={styles.information}>
-              {location}
-            </Text>
-          </View>
-          <View style={[styles.infoView, { marginBottom: 20 }]}>
-            <IonIcon name={"calendar-outline"} size={20} color={"white"} />
-            <Text variant="labelLarge" style={styles.information}>
-              {date.toLocaleDateString("en-US", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </Text>
-          </View>
-          {branches?.map((venuesBranch: VenueBranch, index: number) => (
-            <VenueCard
-              key={index}
-              type="horizontal"
-              venueBranch={venuesBranch}
-              promoted={false}
-              isPlayScreen
-              playScreenBookingDetails={{
-                date: dateStr,
-                duration,
-                gameType,
-              }}
-            />
-          ))}
-        </ScrollView>
-      </View>
+      <ScrollView contentContainerStyle={styles.wrapperView}>
+        <View style={styles.infoView}>
+          <IonIcon name={"location-outline"} size={20} color={"white"} />
+          <Text variant="labelLarge" style={styles.information}>
+            {location}
+          </Text>
+        </View>
+        <View style={[styles.infoView, { marginBottom: 20 }]}>
+          <IonIcon name={"calendar-outline"} size={20} color={"white"} />
+          <Text variant="labelLarge" style={styles.information}>
+            {date.toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </Text>
+        </View>
+        {branches?.map((venuesBranch: VenueBranch, index: number) => (
+          <VenueCard
+            key={index}
+            type="horizontal"
+            venueBranch={venuesBranch}
+            promoted={false}
+            isPlayScreen
+            playScreenBookingDetails={{
+              date: dateStr,
+              duration,
+              gameType,
+            }}
+          />
+        ))}
+      </ScrollView>
     </AppHeader>
   );
 };
@@ -77,10 +75,6 @@ const makeStyles = (colors: MD3Colors) =>
       color: "white",
     },
     wrapperView: {
-      flexDirection: "row",
-      alignItems: "center",
       margin: 20,
     },
-
-    contentView: {},
   });
