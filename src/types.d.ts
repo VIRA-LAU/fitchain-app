@@ -119,6 +119,8 @@ export interface TeamPlayer {
 
 export interface PlayerStatus {
   hasRequestedtoJoin: false | "APPROVED" | "REJECTED" | "PENDING";
-  hasBeenInvited: false | "ACCEPTED" | "REJECTED" | "PENDING";
+  hasBeenInvited: false | "APPROVED" | "REJECTED" | "PENDING";
+  requestId: number | false;
+  invitationId: number | false;
   isAdmin: false;
 }

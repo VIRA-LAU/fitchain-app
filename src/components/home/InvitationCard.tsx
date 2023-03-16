@@ -14,7 +14,10 @@ import {
 import { useTheme, Button } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import EntypoIcon from "react-native-vector-icons/Entypo";
-import { useEditJoinRequestMutation } from "src/api";
+import {
+  useEditJoinRequestMutation,
+  useRespondToInviteMutation,
+} from "src/api";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { Game } from "src/types";
 
@@ -54,6 +57,7 @@ export const InvitationCard = ({
     >();
 
   const { mutate: editJoinRequest } = useEditJoinRequestMutation();
+  const { mutate: respondToInvite } = useRespondToInviteMutation();
 
   return (
     <View
@@ -114,6 +118,12 @@ export const InvitationCard = ({
                   status: "APPROVED",
                   gameId: game.id,
                 });
+              else
+                respondToInvite({
+                  invitationId: id,
+                  gameId: game.id,
+                  status: "APPROVED",
+                });
             }}
           >
             Accept
@@ -129,6 +139,12 @@ export const InvitationCard = ({
                   requestId: id,
                   status: "REJECTED",
                   gameId: game.id,
+                });
+              else
+                respondToInvite({
+                  invitationId: id,
+                  gameId: game.id,
+                  status: "REJECTED",
                 });
             }}
           >

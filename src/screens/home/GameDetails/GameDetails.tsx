@@ -120,7 +120,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
               players={players.filter(
                 ({ team, status }) => team === "HOME" && status !== "REJECTED"
               )}
-              adminId={game.admin.id}
             />
           );
         case "Away":
@@ -131,7 +130,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
               players={players.filter(
                 ({ team, status }) => team === "AWAY" && status !== "REJECTED"
               )}
-              adminId={game.admin.id}
             />
           );
         default:
@@ -241,9 +239,11 @@ export const GameDetails = ({ navigation, route }: Props) => {
               <View style={styles.prompt}>
                 <Text style={styles.promptText}>
                   Are you sure you want to{" "}
-                  {playerStatus.hasRequestedtoJoin === "APPROVED"
+                  {playerStatus.hasRequestedtoJoin === "APPROVED" ||
+                  playerStatus.hasBeenInvited === "APPROVED"
                     ? "leave game"
                     : "cancel your game request"}
+                  ?
                 </Text>
                 <Button
                   buttonColor={colors.primary}
@@ -255,7 +255,20 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   }}
                   onPress={() => {
                     setJoinDisabled(true);
-                    cancelRequest({ gameId: game.id });
+                    if (
+                      playerStatus.hasRequestedtoJoin === "APPROVED" ||
+                      playerStatus.hasRequestedtoJoin === "PENDING"
+                    )
+                      cancelRequest({
+                        requestId: playerStatus.requestId as number,
+                        gameId: game.id,
+                      });
+                    else if (playerStatus.hasBeenInvited === "APPROVED")
+                      respondToInvite({
+                        gameId: game.id,
+                        invitationId: playerStatus.invitationId as number,
+                        status: "REJECTED",
+                      });
                     if (followedGames.some((game) => game.id === id)) {
                       setFollowDisabled(true);
                       unfollowGame({
@@ -287,10 +300,10 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     setJoinDisabled(true);
                     respondToInvite({
                       gameId: game.id,
-                      invitationId: 1,
+                      invitationId: playerStatus.invitationId as number,
                       status: "APPROVED",
                     });
-                    if (followedGames.some((game) => game.id === id)) {
+                    if (!followedGames.some((game) => game.id === id)) {
                       setFollowDisabled(true);
                       followGame({
                         gameId: game.id,
@@ -302,7 +315,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   Yes
                 </Button>
                 <Button
-                  buttonColor={colors.primary}
+                  buttonColor={colors.tertiary}
                   textColor={colors.background}
                   style={{
                     borderRadius: 5,
@@ -313,7 +326,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     setJoinDisabled(true);
                     respondToInvite({
                       gameId: game.id,
-                      invitationId: 1,
+                      invitationId: playerStatus.invitationId as number,
                       status: "REJECTED",
                     });
                     setPromptVisible(null);
@@ -393,7 +406,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                         ? undefined
                         : playerStatus.hasRequestedtoJoin === "APPROVED" ||
                           playerStatus.hasRequestedtoJoin === "PENDING" ||
-                          playerStatus.hasBeenInvited === "ACCEPTED"
+                          playerStatus.hasBeenInvited === "APPROVED"
                         ? () => {
                             setPromptVisible("cancel");
                           }
@@ -406,7 +419,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                           }
                     }
                   >
-                    {playerStatus.hasBeenInvited === "ACCEPTED" ||
+                    {playerStatus.hasBeenInvited === "APPROVED" ||
                     playerStatus.hasRequestedtoJoin === "APPROVED"
                       ? "Leave Game"
                       : playerStatus.hasBeenInvited === "PENDING"
@@ -455,7 +468,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                 </View>
               )}
               {(playerStatus.isAdmin ||
-                playerStatus.hasBeenInvited === "ACCEPTED" ||
+                playerStatus.hasBeenInvited === "APPROVED" ||
                 playerStatus.hasRequestedtoJoin === "APPROVED") && (
                 <Button
                   buttonColor={colors.primary}
