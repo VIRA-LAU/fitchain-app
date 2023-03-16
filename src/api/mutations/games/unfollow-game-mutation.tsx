@@ -7,32 +7,26 @@ type Request = {
   gameId: number;
 };
 
-type Response = {
-  id: number;
-  gameId: number;
-  userId: number;
-};
-
-const followGame = (userData: UserData) => async (data: Request) => {
+const unfollowGame = (userData: UserData) => async (data: Request) => {
   const header = getHeader(userData);
   return await client
-    .post("/games/followed", data, header)
+    .delete(`/games/followed?gameId=${data.gameId}`, header)
     .then((res) => res.data)
     .catch((e) => {
-      console.error("follow-game-mutation", e);
+      console.error("unfollow-game-mutation", e);
       throw new Error(e);
     });
 };
 
-export const useFollowGameMutation = (
+export const useUnfollowGameMutation = (
   setFollowDisabled: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
 
-  return useMutation<Response, unknown, Request>({
-    mutationFn: followGame(userData!),
-    onSuccess: () => {
+  return useMutation<unknown, unknown, Request>({
+    mutationFn: unfollowGame(userData!),
+    onSuccess: (data) => {
       queryClient.refetchQueries(["followed-games"]);
       setFollowDisabled(false);
     },

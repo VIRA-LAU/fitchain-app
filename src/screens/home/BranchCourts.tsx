@@ -23,27 +23,22 @@ export const BranchCourts = ({ navigation, route }: Props) => {
       title={"Select Court"}
       backEnabled
     >
-      <View style={styles.wrapperView}>
-        <ScrollView contentContainerStyle={{ flex: 1 }}>
-          <Text
-            variant="labelLarge"
-            style={[{ color: colors.tertiary }, styles.locationComponent]}
-          >
-            {venueName}, {branchLocation}
-          </Text>
-          {courts.map((court, index: number) => (
-            <CourtCard
-              key={index}
-              id={court.id}
-              venueName={venueName}
-              type={court.courtType}
-              price={court.price}
-              bookingDetails={bookingDetails}
-              // rating={court.rating}
-            />
-          ))}
-        </ScrollView>
-      </View>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <Text variant="labelLarge" style={styles.locationComponent}>
+          {venueName}, {branchLocation}
+        </Text>
+        {courts.map((court, index: number) => (
+          <CourtCard
+            key={index}
+            id={court.id}
+            venueName={venueName}
+            type={court.courtType}
+            price={court.price}
+            bookingDetails={bookingDetails}
+            // rating={court.rating}
+          />
+        ))}
+      </ScrollView>
     </AppHeader>
   );
 };
@@ -51,11 +46,7 @@ export const BranchCourts = ({ navigation, route }: Props) => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     locationComponent: {
+      color: colors.tertiary,
       margin: 20,
-    },
-    wrapperView: {
-      flexDirection: "row",
-      alignItems: "center",
-      flex: 1,
     },
   });

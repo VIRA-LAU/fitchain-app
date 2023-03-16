@@ -15,6 +15,7 @@ import {
   GameDetails,
   Games,
   Home,
+  InviteUsers,
   Play,
   Profile,
   VenueBookingDetails,
@@ -139,6 +140,9 @@ export type HomeStackParamList = {
     duration: number;
     gameType: GameType;
   };
+  InviteUsers: {
+    gameId: number;
+  };
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();
@@ -159,6 +163,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="VenueBranches" component={VenueBranches} />
         <Stack.Screen name="BranchCourts" component={BranchCourts} />
         <Stack.Screen name="ChooseVenue" component={ChooseVenue} />
+        <Stack.Screen name="InviteUsers" component={InviteUsers} />
       </Stack.Navigator>
     );
   else return <SignUpNavigator setSignedIn={setSignedIn} />;

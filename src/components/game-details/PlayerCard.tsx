@@ -1,4 +1,10 @@
-import { View, StyleSheet, Image, useWindowDimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  useWindowDimensions,
+  Pressable,
+} from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -7,22 +13,29 @@ import { TeamPlayer, User } from "src/types";
 export const PlayerCard = ({
   isActive = false,
   player: { firstName, lastName, status },
+  setActivePlayer,
+  index,
 }: {
   isActive?: boolean;
   player: TeamPlayer;
+  setActivePlayer: React.Dispatch<React.SetStateAction<number>>;
+  index: number;
 }) => {
   const { colors } = useTheme();
   const windowWidth = useWindowDimensions().width;
   const styles = makeStyles(colors, windowWidth);
   const displayedStatus = status === "APPROVED" ? "Confirmed" : "Pending";
   return (
-    <View
+    <Pressable
       style={[
         styles.wrapperView,
         isActive
           ? { elevation: 15, transform: [{ scale: 1.1 }], zIndex: 2 }
           : { elevation: 10, opacity: 0.6 },
       ]}
+      onPress={() => {
+        setActivePlayer(index);
+      }}
     >
       <Image
         source={require("assets/images/home/profile-background.png")}
@@ -51,7 +64,7 @@ export const PlayerCard = ({
           style={{ marginVertical: 5 }}
         />
       </View>
-    </View>
+    </Pressable>
   );
 };
 

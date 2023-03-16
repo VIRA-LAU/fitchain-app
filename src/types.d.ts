@@ -33,9 +33,11 @@ export interface Game {
     };
   };
   admin: User;
+  createdAt: Date;
 }
 
 export interface Invitation {
+  id: number;
   user?: {
     firstName: string;
     lastName: string;
@@ -47,6 +49,13 @@ export interface Invitation {
   game: Game;
 }
 
+export interface GameRequest {
+  id: number;
+  team: string;
+  status: "PENDING" | "APPROVED" | "REJECED";
+  user: User;
+  game: Game;
+}
 // Contained inside Venue
 export interface Branch {
   id: number;
@@ -110,6 +119,8 @@ export interface TeamPlayer {
 
 export interface PlayerStatus {
   hasRequestedtoJoin: false | "APPROVED" | "REJECTED" | "PENDING";
-  hasBeenInvited: false | "ACCEPTED" | "REJECTED" | "PENDING";
+  hasBeenInvited: false | "APPROVED" | "REJECTED" | "PENDING";
+  requestId: number | false;
+  invitationId: number | false;
   isAdmin: false;
 }

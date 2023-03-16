@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Pressable } from "react-native";
+import { View, StyleSheet, Image, Pressable, ScrollView } from "react-native";
 import { useTheme, Text } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { AppHeader } from "src/components";
@@ -26,7 +26,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
       navigation={navigation}
       backEnabled
     >
-      <View style={styles.wrapperView}>
+      <ScrollView contentContainerStyle={styles.wrapperView}>
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <Image
@@ -163,7 +163,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             Continue To Payment
           </Text>
         </Pressable>
-      </View>
+      </ScrollView>
     </AppHeader>
   );
 };
@@ -171,7 +171,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      flex: 1,
+      flexGrow: 1,
     },
     header: {
       marginBottom: 10,

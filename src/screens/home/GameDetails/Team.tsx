@@ -3,20 +3,22 @@ import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BranchLocation, PlayerCard, Update } from "components";
 import { Game, TeamPlayer } from "src/types";
+import { useState } from "react";
 
 export const Team = ({
   name,
   game,
-  adminId,
   players,
 }: {
   name: "Home" | "Away";
   game: Game;
-  adminId?: number;
   players?: TeamPlayer[];
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+
+  const [activePlayer, setActivePlayer] = useState<number>(0);
+
   return (
     <ScrollView style={{ backgroundColor: colors.background }}>
       <View>
@@ -33,7 +35,9 @@ export const Team = ({
               <PlayerCard
                 key={index}
                 player={player}
-                isActive={player.id === adminId}
+                isActive={index === activePlayer}
+                index={index}
+                setActivePlayer={setActivePlayer}
               />
             ))}
           </ScrollView>
