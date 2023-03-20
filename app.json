@@ -5,13 +5,14 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/Logo-Icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./src/assets/images/Logo.png",
       "resize": "native",
       "backgroundColor": "#000000"
     },
     "backgroundColor": "#2e2d36",
+    "themeColor": "#f29c1f",
     "updates": {
       "fallbackToCacheTimeout": 0
     },

@@ -14,6 +14,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { GameType } from "src/types";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 export const Play = ({
   visible,
@@ -25,12 +26,15 @@ export const Play = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [gameType, setGameType] = useState<GameType>("Basketball");
-  const [dateTimePickerVisible, setDateTimePickerVisible] =
-    useState<boolean>(false);
+  const [dateTimePickerVisible, setDateTimePickerVisible] = useState<
+    "date" | "time" | false
+  >(false);
+
   const [searchLocation, setSearchLocation] =
     useState<string>("Beirut, Lebanon");
   const [searchDate, setSearchDate] = useState<Date>(new Date());
   const [slotDuration, setSlotDuration] = useState<number>(60);
+  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(6);
 
   const navigation =
     useNavigation<
@@ -153,13 +157,30 @@ export const Play = ({
             <Text style={styles.labelText}>How many players?</Text>
           </View>
           <View style={styles.contentIconView}>
-            <Feather name="minus-circle" color={colors.primary} size={24} />
+            <Feather
+              name="minus-circle"
+              color={colors.primary}
+              size={24}
+              onPress={() => {
+                setNumberOfPlayers((oldNum) => oldNum - 1);
+              }}
+            />
             <Text
-              style={[styles.labelText, { fontSize: 18, marginHorizontal: 10 }]}
+              style={[
+                styles.labelText,
+                { fontSize: 18, width: 40, textAlign: "center" },
+              ]}
             >
-              6
+              {numberOfPlayers}
             </Text>
-            <Feather name="plus-circle" color={colors.primary} size={24} />
+            <Feather
+              name="plus-circle"
+              color={colors.primary}
+              size={24}
+              onPress={() => {
+                setNumberOfPlayers((oldNum) => oldNum + 1);
+              }}
+            />
           </View>
         </View>
         <View style={styles.dateTime}>
@@ -167,7 +188,7 @@ export const Play = ({
             <Text style={styles.labelText}>Date</Text>
             <Text
               style={styles.buttonText}
-              onPress={() => setDateTimePickerVisible(true)}
+              onPress={() => setDateTimePickerVisible("date")}
             >
               Select Date
             </Text>
@@ -176,12 +197,29 @@ export const Play = ({
             <Text style={styles.labelText}>Time slot</Text>
             <Text
               style={styles.buttonText}
-              onPress={() => setDateTimePickerVisible(true)}
+              onPress={() => setDateTimePickerVisible("time")}
             >
               Select Time
             </Text>
           </View>
         </View>
+
+        <DateTimePickerModal
+          isVisible={dateTimePickerVisible !== false}
+          mode={dateTimePickerVisible ? dateTimePickerVisible : "date"}
+          date={searchDate}
+          onConfirm={(date) => {
+            setDateTimePickerVisible(false);
+            console.log(date);
+            setSearchDate(date);
+          }}
+          onCancel={() => {
+            setDateTimePickerVisible(false);
+          }}
+          isDarkModeEnabled={true}
+          accentColor={colors.primary}
+        />
+
         <Button
           buttonColor={colors.primary}
           textColor={"black"}
@@ -199,10 +237,10 @@ export const Play = ({
           Find Venue
         </Button>
       </View>
-      <DateTimePickerView
+      {/* <DateTimePickerView
         visible={dateTimePickerVisible}
         setVisible={setDateTimePickerVisible}
-      />
+      /> */}
     </React.Fragment>
   );
 };
@@ -255,6 +293,7 @@ const makeStyles = (colors: MD3Colors) =>
     sportText: {
       fontFamily: "Inter-SemiBold",
       fontSize: 16,
+      lineHeight: 16,
       marginRight: 10,
       color: "white",
     },

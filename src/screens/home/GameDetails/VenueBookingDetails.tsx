@@ -144,7 +144,6 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
           style={styles.paymentView}
           onPress={() => {
             const bookingDate = new Date(JSON.parse(bookingDetails.date));
-            bookingDate.setDate(bookingDate.getDate() + 1);
             createGame({
               courtId: bookingDetails.courtId,
               duration: bookingDetails.duration,
