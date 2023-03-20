@@ -4,6 +4,8 @@ import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "src/types";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { SignUpStackParamList } from "src/navigation";
 
 type Request = {
   firstName: string;
@@ -23,11 +25,9 @@ const createUser = async (data: Request) => {
     });
 };
 
-export const useCreateUserMutation = (
-  setSignedIn: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+export const useCreateUserMutation = () => {
   const { setUserData } = useContext(UserContext);
-
+  const navigation = useNavigation<NavigationProp<SignUpStackParamList>>();
   return useMutation<User, unknown, Request>({
     mutationFn: createUser,
     onSuccess: async (data) => {
@@ -39,7 +39,7 @@ export const useCreateUserMutation = (
         token: data.access_token,
       };
       setUserData(fetchedInfo);
-      setSignedIn(true);
+      navigation.navigate("SignUpWithNumberExtraDetails");
     },
   });
 };

@@ -24,7 +24,7 @@ const createGame = (userData: UserData) => async (data: Request) => {
     .post("/games/bookings", data, header)
     .then((res) => res.data)
     .catch((e) => {
-      console.error("create-game-mutation", e.response.data);
+      console.error("create-game-mutation", e);
       throw new Error(e);
     });
 };

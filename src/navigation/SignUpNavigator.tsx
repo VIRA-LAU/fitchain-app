@@ -5,6 +5,7 @@ import {
   SignUpWithNumber,
   VerifySignUpWithNumber,
   SignUpWithNumberDetails,
+  SignUpWithNumberExtraDetails,
 } from "screens";
 
 export type SignUpStackParamList = {
@@ -12,6 +13,7 @@ export type SignUpStackParamList = {
   SignUpWithNumber: undefined;
   VerifySignUpWithNumber: { code: string; phoneNumber: string };
   SignUpWithNumberDetails: { phoneNumber: string };
+  SignUpWithNumberExtraDetails: undefined;
 };
 
 const Stack = createStackNavigator<SignUpStackParamList>();
@@ -33,9 +35,13 @@ export const SignUpNavigator = ({
       name="VerifySignUpWithNumber"
       component={VerifySignUpWithNumber}
     />
-    <Stack.Screen name="SignUpWithNumberDetails">
+    <Stack.Screen
+      name="SignUpWithNumberDetails"
+      component={SignUpWithNumberDetails}
+    />
+    <Stack.Screen name="SignUpWithNumberExtraDetails">
       {(props) => (
-        <SignUpWithNumberDetails {...props} setSignedIn={setSignedIn} />
+        <SignUpWithNumberExtraDetails {...props} setSignedIn={setSignedIn} />
       )}
     </Stack.Screen>
   </Stack.Navigator>
