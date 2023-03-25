@@ -8,13 +8,14 @@ import {
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { AppHeader, BranchLocation, SportTypeDropdown } from "src/components";
+import { AppHeader, BranchLocation } from "src/components";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
 import { useVenueByIdQuery } from "src/api";
 import { useState } from "react";
+import { Play } from "./Play";
 
 type Props = StackScreenProps<HomeStackParamList, "VenueDetails">;
 
@@ -22,16 +23,12 @@ export const VenueDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const styles = makeStyles(colors, windowWidth, windowHeight);
-  const { isPlayScreen } = route.params;
 
-  // const [selectedSports, setSelectedSports] = useState({
-  //   Basketball: true,
-  //   Football: true,
-  //   Tennis: true,
-  // });
-
-  const { id, playScreenBranch, playScreenBookingDetails } = route.params;
+  const { id, isPlayScreen, playScreenBranch, playScreenBookingDetails } =
+    route.params;
   const { data: venue } = useVenueByIdQuery(id);
+
+  const [playScreenVisible, setPlayScreenVisible] = useState<boolean>(false);
   const courtPrices: number[] = [];
   venue?.branches.forEach((branch) => {
     branch.courts.forEach((court) => courtPrices.push(court.price));
@@ -45,6 +42,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
             courtPrices!
           )}`
       : "";
+
   return (
     <AppHeader
       navigation={navigation}
@@ -64,16 +62,6 @@ export const VenueDetails = ({ navigation, route }: Props) => {
         )
       }
       title={venue?.name}
-      // left={
-      //   !isPlayScreen ? (
-      //     <SportTypeDropdown
-      //       selectedSports={selectedSports}
-      //       setSelectedSports={setSelectedSports}
-      //     />
-      //   ) : (
-      //     <View />
-      //   )
-      // }
       backEnabled
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -93,10 +81,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
                 <Pressable
                   style={styles.headerBookCourtPressable}
                   onPress={() => {
-                    navigation.push("VenueBranches", {
-                      id,
-                      venueName: venue!.name,
-                    });
+                    setPlayScreenVisible(true);
                   }}
                 >
                   <IonIcon
@@ -295,6 +280,11 @@ export const VenueDetails = ({ navigation, route }: Props) => {
           )}
         </View>
       </ScrollView>
+      <Play
+        visible={playScreenVisible}
+        setVisible={setPlayScreenVisible}
+        venueId={id}
+      />
     </AppHeader>
   );
 };

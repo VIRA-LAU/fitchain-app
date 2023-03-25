@@ -34,9 +34,11 @@ const timeFormatter = (date: Date, hourMode: "12" | "24" = "12") => {
 export const Play = ({
   visible,
   setVisible,
+  venueId = undefined,
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
+  venueId?: number | undefined;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -172,18 +174,20 @@ export const Play = ({
             />
           </Pressable>
         </ScrollView>
-        <View style={styles.contentView}>
-          <View style={styles.contentIconView}>
-            <IonIcon
-              name={"location-outline"}
-              size={20}
-              color={"white"}
-              style={{ marginRight: 10 }}
-            />
-            <Text style={styles.labelText}>Nearby: {searchLocation}</Text>
+        {!venueId && (
+          <View style={styles.contentView}>
+            <View style={styles.contentIconView}>
+              <IonIcon
+                name={"location-outline"}
+                size={20}
+                color={"white"}
+                style={{ marginRight: 10 }}
+              />
+              <Text style={styles.labelText}>Nearby: {searchLocation}</Text>
+            </View>
+            <Text style={styles.buttonText}>Change</Text>
           </View>
-          <Text style={styles.buttonText}>Change</Text>
-        </View>
+        )}
         <View style={styles.contentView}>
           <View style={styles.contentIconView}>
             <MatComIcon
@@ -301,15 +305,18 @@ export const Play = ({
         />
 
         <Button
-          buttonColor={searchDate ? colors.primary : colors.tertiary}
+          buttonColor={
+            searchDate && startTimeDate ? colors.primary : colors.tertiary
+          }
           textColor={"black"}
           style={{ borderRadius: 5, marginTop: "auto" }}
           onPress={
-            searchDate
+            searchDate && startTimeDate
               ? () => {
                   setVisible(false);
                   navigation.push("ChooseVenue", {
-                    location: searchLocation,
+                    location: !venueId ? searchLocation : undefined,
+                    venueId,
                     date: JSON.stringify(searchDate),
                     gameType,
                     startTime: startTimeDate
@@ -323,7 +330,7 @@ export const Play = ({
               : undefined
           }
         >
-          Find Venue
+          {venueId ? "Find a Branch" : "Find Venue"}
         </Button>
       </View>
     </React.Fragment>
