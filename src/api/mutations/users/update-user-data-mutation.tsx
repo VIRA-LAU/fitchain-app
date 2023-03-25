@@ -3,6 +3,7 @@ import { useMutation } from "react-query";
 import { UserContext, UserData } from "../../../utils/UserContext";
 import { User } from "src/types";
 import { useContext } from "react";
+import { storeData } from "src/utils/AsyncStorage";
 
 type Request = {
   description?: string;
@@ -29,6 +30,15 @@ export const useUpdateUserDataMutation = (
     mutationFn: updateUserData(userData!),
     onSuccess: (data) => {
       setSignedIn(true);
+      const keys = ["userId", "firstName", "lastName", "email", "token"];
+      const values = [
+        data.userId,
+        data.firstName,
+        data.lastName,
+        data.email,
+        data.access_token,
+      ];
+      storeData(keys, values);
     },
   });
 };

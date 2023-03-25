@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "src/utils";
 import { User } from "src/types";
+import { getData, storeData } from "src/utils/AsyncStorage";
 
 type Request = {
   email: string;
@@ -31,19 +32,15 @@ export const useLoginUserMutation = (
       };
       setUserData(fetchedInfo);
       setSignedIn(true);
-      //   client.interceptors.request.use(
-      //   async (config) => {
-      //     const { userData, setUserData } = useContext(UserContext) as any;
-      //     const token = userData?.token;
-      //     if (token) {
-      //       config.headers.Authorization = `Bearer ${token}`;
-      //     }
-      //     return config;
-      //   },
-      //   (error) => {
-      //     return Promise.reject(error);
-      //   }
-      // );
+      const keys = ["userId", "firstName", "lastName", "email", "token"];
+      const values = [
+        data.userId,
+        data.firstName,
+        data.lastName,
+        data.email,
+        data.access_token,
+      ];
+      storeData(keys, values);
     },
   });
 };
