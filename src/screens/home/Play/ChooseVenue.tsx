@@ -21,6 +21,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
     startTime,
     endTime,
     gameType,
+    venueId,
   } = route.params;
 
   const date = new Date(JSON.parse(dateStr));
@@ -34,6 +35,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
     gameType,
     startTime,
     endTime,
+    venueId,
   });
 
   return (
@@ -41,16 +43,18 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
       absolutePosition={false}
       navigation={navigation}
       route={route}
-      title={"Choose Venue"}
+      title={"Choose Venue Branch"}
       backEnabled
     >
       <ScrollView contentContainerStyle={styles.wrapperView}>
-        <View style={styles.infoView}>
-          <IonIcon name={"location-outline"} size={20} color={"white"} />
-          <Text variant="labelLarge" style={styles.information}>
-            {location}
-          </Text>
-        </View>
+        {!venueId && (
+          <View style={styles.infoView}>
+            <IonIcon name={"location-outline"} size={20} color={"white"} />
+            <Text variant="labelLarge" style={styles.information}>
+              {location}
+            </Text>
+          </View>
+        )}
         <View style={[styles.infoView, { marginBottom: 20 }]}>
           <IonIcon name={"calendar-outline"} size={20} color={"white"} />
           <Text variant="labelLarge" style={styles.information}>
@@ -80,7 +84,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
         {!branches ||
           (branches.length === 0 && (
             <Text style={styles.placeholderText}>
-              There are no venues that match your search.
+              There are no venue branches that match your search.
             </Text>
           ))}
       </ScrollView>

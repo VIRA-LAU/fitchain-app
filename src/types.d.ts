@@ -61,6 +61,12 @@ export interface GameRequest {
   game: Game;
 }
 
+export interface TimeSlot {
+  id: number;
+  startTime: string;
+  endTime: string;
+}
+
 export interface Court {
   id: number;
   courtType: string;
@@ -68,11 +74,7 @@ export interface Court {
   rating: number;
   branchId;
   hasTimeSlot: {
-    timeSlot: {
-      id: number;
-      startTime: string;
-      endTime: string;
-    };
+    timeSlot: TimeSlot;
   }[];
 }
 

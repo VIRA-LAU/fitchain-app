@@ -66,7 +66,7 @@ export const CourtCard = ({
             </Text>
             <View style={styles.rating}>
               <FeatherIcon name={`star`} color={"white"} size={14} />
-              <Text style={styles.title}>3.6</Text>
+              <Text style={styles.title}>{rating.toFixed(1)}</Text>
             </View>
           </View>
 

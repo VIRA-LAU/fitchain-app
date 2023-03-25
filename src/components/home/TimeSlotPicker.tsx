@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { Court } from "src/types";
+import { Court, TimeSlot } from "src/types";
 
 export const TimeSlotPicker = ({
   visible,
@@ -22,9 +22,9 @@ export const TimeSlotPicker = ({
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
   onPress: Function;
-  timeSlots?: Court["hasTimeSlot"];
-  selectedTimeSlot: number | undefined;
-  setSelectedTimeSlot: Dispatch<SetStateAction<number | undefined>>;
+  timeSlots?: { timeSlot: TimeSlot }[];
+  selectedTimeSlot: TimeSlot | undefined;
+  setSelectedTimeSlot: Dispatch<SetStateAction<TimeSlot | undefined>>;
 }) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
@@ -53,12 +53,12 @@ export const TimeSlotPicker = ({
                   : index === timeSlots.length - 1
                   ? { marginRight: 20 }
                   : {},
-                selectedTimeSlot === timeSlot.id
+                selectedTimeSlot?.id === timeSlot.id
                   ? { borderColor: colors.primary }
                   : {},
               ]}
               onPress={() => {
-                setSelectedTimeSlot(timeSlot.id);
+                setSelectedTimeSlot(timeSlot);
               }}
             >
               <Text style={styles.timeSlotText}>

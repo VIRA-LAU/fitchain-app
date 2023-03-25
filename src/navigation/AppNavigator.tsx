@@ -142,7 +142,8 @@ export type HomeStackParamList = {
     };
   };
   ChooseVenue: {
-    location: string;
+    location?: string;
+    venueId?: number;
     date: string;
     startTime?: string;
     endTime?: string;

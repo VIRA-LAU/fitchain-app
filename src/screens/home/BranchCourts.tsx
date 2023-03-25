@@ -7,7 +7,7 @@ import { AppHeader } from "src/components";
 import { ScrollView } from "react-native-gesture-handler";
 import { CourtCard, TimeSlotPicker } from "src/components";
 import { useEffect, useState } from "react";
-import { Court } from "src/types";
+import { Court, TimeSlot } from "src/types";
 
 type Props = StackScreenProps<HomeStackParamList, "BranchCourts">;
 
@@ -17,7 +17,7 @@ export const BranchCourts = ({ navigation, route }: Props) => {
 
   const { courts, venueName, branchLocation, bookingDetails } = route.params;
 
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<number>();
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot>();
   const [pressedCourt, setPressedCourt] = useState<Court | null>(null);
   const [timeSlotVisible, setTimeSlotVisible] = useState<boolean>(false);
 
@@ -47,7 +47,9 @@ export const BranchCourts = ({ navigation, route }: Props) => {
                 price: pressedCourt!.price,
                 bookingDetails: {
                   ...bookingDetails,
-                  timeSlotId: selectedTimeSlot,
+                  timeSlotId: selectedTimeSlot.id,
+                  startTime: selectedTimeSlot.startTime,
+                  endTime: selectedTimeSlot.endTime,
                   courtId: pressedCourt!.id,
                 },
               });

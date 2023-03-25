@@ -9,6 +9,7 @@ type Props = {
   gameType: GameType;
   startTime?: string;
   endTime?: string;
+  venueId?: number;
 };
 
 const queryBuilder = (params?: any) => {
