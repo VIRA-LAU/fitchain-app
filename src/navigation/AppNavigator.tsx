@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   useWindowDimensions,
   View,
@@ -30,6 +30,8 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { GameType, VenueBranch } from "src/types";
 import { BranchCourts } from "src/screens/home/BranchCourts";
 import { ChooseVenue } from "src/screens/home/Play/ChooseVenue";
+import { getData } from "src/utils/AsyncStorage";
+import { UserContext } from "src/utils";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -148,8 +150,29 @@ export type HomeStackParamList = {
 const Stack = createStackNavigator<HomeStackParamList>();
 
 export const AppNavigator = () => {
+  const { setUserData } = useContext(UserContext) as any;
   const [signedIn, setSignedIn] = useState<boolean>(false);
-
+  const getToken = async () => {
+    const firstName = await getData("firstName");
+    const lastName = await getData("lastName");
+    const email = await getData("email");
+    const userId = await getData("userId");
+    const token = await getData("token");
+    if (firstName && lastName && email && userId && token) {
+      let fetchedData = {
+        userId: userId,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        token: token,
+      };
+      setUserData(fetchedData);
+      setSignedIn(true);
+    }
+  };
+  useEffect(() => {
+    getToken();
+  }, []);
   if (signedIn)
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>

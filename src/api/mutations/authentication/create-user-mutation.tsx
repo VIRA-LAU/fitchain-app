@@ -4,6 +4,7 @@ import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "src/types";
+import { storeData } from "src/utils/AsyncStorage";
 
 type Request = {
   firstName: string;
@@ -40,6 +41,15 @@ export const useCreateUserMutation = (
       };
       setUserData(fetchedInfo);
       setSignedIn(true);
+      const keys = ["userId", "firstName", "lastName", "email", "token"];
+      const values = [
+        data.userId,
+        data.firstName,
+        data.lastName,
+        data.email,
+        data.access_token,
+      ];
+      storeData(keys, values);
     },
   });
 };

@@ -1,42 +1,41 @@
 {
-  "expo": {
-    "name": "Fitchain App",
-    "slug": "fitchain-app",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./src/assets/images/Logo-Icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./src/assets/images/Logo.png",
-      "resize": "native",
-      "backgroundColor": "#000000"
-    },
-    "backgroundColor": "#2e2d36",
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.fitchain.app"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/Logo-Icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.fitchain.app"
-    },
-    "web": {
-      "favicon": "./src/assets/images/Logo-Icon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "4396245c-91e4-4255-ab4c-236cd04253dc"
-      }
-    },
-    "owner": "khaledjalloul"
-  }
+    "expo": {
+        "name": "Fitchain App",
+        "slug": "fitchain-app",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./src/assets/images/Logo-Icon.png",
+        "userInterfaceStyle": "light",
+        "splash": {
+            "image": "./src/assets/images/Logo.png",
+            "resize": "native",
+            "backgroundColor": "#000000"
+        },
+        "backgroundColor": "#2e2d36",
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.fitchain.app"
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./src/assets/images/Logo-Icon.png",
+                "backgroundColor": "#FFFFFF"
+            },
+            "package": "com.fitchain.app"
+        },
+        "web": {
+            "favicon": "./src/assets/images/Logo-Icon.png"
+        },
+        "extra": {
+            "eas": {
+                "projectId": "4396245c-91e4-4255-ab4c-236cd04253dc"
+            }
+        }
+    }
 }
