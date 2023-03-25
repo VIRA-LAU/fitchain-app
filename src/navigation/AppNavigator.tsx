@@ -22,14 +22,14 @@ import {
   VenueBranches,
   VenueDetails,
   Venues,
+  BranchCourts,
+  ChooseVenue,
 } from "screens";
 import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { GameType, VenueBranch } from "src/types";
-import { BranchCourts } from "src/screens/home/BranchCourts";
-import { ChooseVenue } from "src/screens/home/Play/ChooseVenue";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 

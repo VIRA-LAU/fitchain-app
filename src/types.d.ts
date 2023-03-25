@@ -87,6 +87,11 @@ export interface Venue {
   branches: Branch[];
 }
 
+export interface Court {
+  id: number;
+  courtType: string;
+  price: number;
+}
 // Shown in Home page
 export interface VenueBranch {
   location: string;
@@ -95,11 +100,7 @@ export interface VenueBranch {
     id: number;
     name: string;
   };
-  courts: {
-    id: number;
-    courtType: string;
-    price: number;
-  }[];
+  courts: Court[];
 }
 
 export interface Activity {

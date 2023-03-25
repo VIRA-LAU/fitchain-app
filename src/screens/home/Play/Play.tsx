@@ -1,11 +1,10 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction, useMemo } from "react";
 import { StyleSheet, View, Image, ScrollView, Pressable } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
-import { DateTimePickerView } from "./DateTimePickerView";
 import {
   CompositeNavigationProp,
   useNavigation,
@@ -16,6 +15,15 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { GameType } from "src/types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
+const timeFormatter = (date: Date) => {
+  const hours =
+    date.getHours() % 12 === 0
+      ? "12"
+      : ("0" + (date.getHours() % 12)).slice(-2);
+  return `${hours}:${("0" + date.getMinutes()).slice(-2)} ${
+    date.getHours() >= 12 ? "PM" : "AM"
+  }`;
+};
 export const Play = ({
   visible,
   setVisible,
@@ -27,14 +35,34 @@ export const Play = ({
   const styles = makeStyles(colors);
   const [gameType, setGameType] = useState<GameType>("Basketball");
   const [dateTimePickerVisible, setDateTimePickerVisible] = useState<
-    "date" | "time" | false
+    "date" | "startTime" | "endTime" | false
   >(false);
 
   const [searchLocation, setSearchLocation] =
     useState<string>("Beirut, Lebanon");
-  const [searchDate, setSearchDate] = useState<Date>(new Date());
+  const [searchDate, setSearchDate] = useState<Date | null>(null);
+  const [searchEndDate, setSearchEndDate] = useState<Date | null>(null);
   const [slotDuration, setSlotDuration] = useState<number>(60);
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(6);
+
+  const [selectedDate, selectedStartTime, selectedEndTime] = useMemo(() => {
+    let [date, startTime, endTime]: (string | null)[] = [null, null, null];
+    if (searchDate) {
+      date = searchDate
+        .toLocaleDateString(undefined, {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })
+        .slice(0, -6);
+      startTime = timeFormatter(searchDate);
+    }
+    if (searchEndDate) {
+      endTime = timeFormatter(searchEndDate);
+    }
+    return [date, startTime, endTime];
+  }, [searchDate, searchEndDate]);
 
   const navigation =
     useNavigation<
@@ -190,28 +218,58 @@ export const Play = ({
               style={styles.buttonText}
               onPress={() => setDateTimePickerVisible("date")}
             >
-              Select Date
+              {selectedDate ? selectedDate : "Select Date"}
             </Text>
           </View>
           <View style={styles.dateTimeRow}>
-            <Text style={styles.labelText}>Time slot</Text>
+            <Text style={styles.labelText}>Start Time</Text>
             <Text
               style={styles.buttonText}
-              onPress={() => setDateTimePickerVisible("time")}
+              onPress={() => setDateTimePickerVisible("startTime")}
             >
-              Select Time
+              {selectedStartTime ? selectedStartTime : "Select Time"}
+            </Text>
+          </View>
+          <View style={styles.dateTimeRow}>
+            <Text style={styles.labelText}>End Time</Text>
+            <Text
+              style={styles.buttonText}
+              onPress={() => setDateTimePickerVisible("endTime")}
+            >
+              {selectedEndTime ? selectedEndTime : "Select Time"}
             </Text>
           </View>
         </View>
 
         <DateTimePickerModal
           isVisible={dateTimePickerVisible !== false}
-          mode={dateTimePickerVisible ? dateTimePickerVisible : "date"}
-          date={searchDate}
+          mode={
+            dateTimePickerVisible
+              ? dateTimePickerVisible === "date"
+                ? "date"
+                : "time"
+              : "date"
+          }
+          date={
+            (dateTimePickerVisible !== "endTime"
+              ? searchDate
+              : searchEndDate) || new Date()
+          }
           onConfirm={(date) => {
             setDateTimePickerVisible(false);
-            console.log(date);
-            setSearchDate(date);
+            if (
+              dateTimePickerVisible === "date" ||
+              dateTimePickerVisible === "startTime"
+            ) {
+              setSearchDate(date);
+              if (!searchEndDate || searchEndDate < date) {
+                let endDate = new Date(date);
+                endDate.setHours(endDate.getHours() + 1);
+                setSearchEndDate(endDate);
+              }
+            } else {
+              setSearchEndDate(date);
+            }
           }}
           onCancel={() => {
             setDateTimePickerVisible(false);
