@@ -1,4 +1,5 @@
-import { useContext } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Dispatch, SetStateAction, useContext } from "react";
 import { useQuery } from "react-query";
 import { User } from "src/types";
 import { UserContext, UserData } from "src/utils";
@@ -16,7 +17,19 @@ const getUserDetails = (userData: UserData) => async () => {
     });
 };
 
-export const useUserDetailsQuery = () => {
+export const useUserDetailsQuery = (
+  enabled = true,
+  setSignedIn?: Dispatch<SetStateAction<boolean>>
+) => {
   const { userData } = useContext(UserContext);
-  return useQuery<User>("user-details", getUserDetails(userData!));
+  return useQuery<User>("user-details", getUserDetails(userData!), {
+    enabled,
+    onSuccess: (data) => {
+      if (setSignedIn) setSignedIn(true);
+    },
+    onError: () => {
+      AsyncStorage.clear();
+      if (setSignedIn) setSignedIn(false);
+    },
+  });
 };

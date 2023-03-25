@@ -258,7 +258,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
                   branch={{
                     location: branch.location,
                     courts: branch.courts,
-                    rating: branch.rating,
+                    rating: 0,
                     venueName: venue.name,
                   }}
                 />

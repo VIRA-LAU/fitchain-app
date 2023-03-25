@@ -6,7 +6,7 @@ import { HomeStackParamList } from "navigation";
 import { AppHeader, VenueCard } from "src/components";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-gesture-handler";
-import { useBranchesQuery } from "src/api";
+import { useSearchBranchesQuery } from "src/api";
 import { VenueBranch } from "src/types";
 
 type Props = StackScreenProps<HomeStackParamList, "ChooseVenue">;
@@ -15,9 +15,26 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { location, date: dateStr, duration, gameType } = route.params;
-  const { data: branches } = useBranchesQuery();
+  const {
+    location,
+    date: dateStr,
+    startTime,
+    endTime,
+    gameType,
+  } = route.params;
+
   const date = new Date(JSON.parse(dateStr));
+  const searchDate = `${date.getFullYear()}-${(
+    "0" +
+    (date.getMonth() + 1)
+  ).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
+
+  const { data: branches } = useSearchBranchesQuery({
+    date: searchDate,
+    gameType,
+    startTime,
+    endTime,
+  });
 
   return (
     <AppHeader
@@ -54,11 +71,18 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
             isPlayScreen
             playScreenBookingDetails={{
               date: dateStr,
-              duration,
+              startTime,
+              endTime,
               gameType,
             }}
           />
         ))}
+        {!branches ||
+          (branches.length === 0 && (
+            <Text style={styles.placeholderText}>
+              There are no venues that match your search.
+            </Text>
+          ))}
       </ScrollView>
     </AppHeader>
   );
@@ -76,5 +100,12 @@ const makeStyles = (colors: MD3Colors) =>
     },
     wrapperView: {
       margin: 20,
+    },
+    placeholderText: {
+      height: 100,
+      fontFamily: "Inter-Medium",
+      color: colors.tertiary,
+      textAlign: "center",
+      textAlignVertical: "center",
     },
   });

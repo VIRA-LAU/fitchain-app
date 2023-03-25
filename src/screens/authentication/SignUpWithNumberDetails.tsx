@@ -1,18 +1,11 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import {
-  StyleSheet,
-  View,
-  Image,
-  TextInput,
-  Modal,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, View, Image, TextInput, ScrollView } from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Dispatch, SetStateAction, useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useState } from "react";
 import { useCreateUserMutation } from "src/api";
 type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumberDetails">;
@@ -20,13 +13,11 @@ type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumberDetails">;
 export const SignUpWithNumberDetails = ({
   navigation,
   route,
-  setSignedIn,
 }: {
   navigation: Props["navigation"];
   route: Props["route"];
-  setSignedIn: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { mutate: createUser } = useCreateUserMutation(setSignedIn);
+  const { mutate: createUser } = useCreateUserMutation();
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [password, setPassword] = useState("");
@@ -88,7 +79,7 @@ export const SignUpWithNumberDetails = ({
           style={styles.logo}
         />
         <Text variant="titleLarge" style={styles.titleText}>
-          You're almost there!
+          Account Details
         </Text>
         <View style={styles.inputView}>
           <Text variant="labelLarge" style={styles.h2}>

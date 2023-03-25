@@ -18,22 +18,13 @@ export const BookingCard = ({ booking }: { booking: Game }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const endTime = new Date(
-    booking.date.getTime() + booking.duration * 60 * 1000
-  );
   const dateFormatter = new Intl.DateTimeFormat("en", {
     weekday: "short",
     month: "short",
     day: "numeric",
   });
-  const durationTimeFormatter = new Intl.DateTimeFormat("en", {
-    hour: "numeric",
-    minute: "numeric",
-  });
   const dateString = dateFormatter.format(booking.date);
-  const startTimeString = durationTimeFormatter.format(booking.date);
-  const endTimeString = durationTimeFormatter.format(endTime);
-  const dateAndTime = `${dateString} - ${startTimeString} till ${endTimeString}`;
+  const dateAndTime = `${dateString} - ${booking.timeSlot.startTime} till ${booking.timeSlot.endTime}`;
 
   const navigation =
     useNavigation<

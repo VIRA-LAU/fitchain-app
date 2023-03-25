@@ -4,13 +4,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  Image,
-  StyleSheet,
-  View,
-  Pressable,
-  useWindowDimensions,
-} from "react-native";
+import { Image, StyleSheet, View, Pressable } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
@@ -23,21 +17,26 @@ export const CourtCard = ({
   type,
   // rating,
   price,
+  rating,
   bookingDetails,
+  onPress,
 }: {
   id: number;
   venueName: string;
   type: string;
   // rating: number;
   price: number;
+  rating: number;
   bookingDetails?: {
     date: string;
-    duration: number;
+    startTime?: string;
+    endTime?: string;
     gameType: GameType;
   };
+  onPress: Function;
 }) => {
   const { colors } = useTheme();
-  const styles = makeStyles(colors, useWindowDimensions().height);
+  const styles = makeStyles(colors);
 
   const navigation =
     useNavigation<
@@ -46,22 +45,9 @@ export const CourtCard = ({
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
+
   return (
-    <Pressable
-      style={styles.wrapperView}
-      onPress={() => {
-        if (bookingDetails)
-          navigation.push("VenueBookingDetails", {
-            venueName: venueName,
-            courtType: type,
-            price,
-            bookingDetails: {
-              ...bookingDetails,
-              courtId: id,
-            },
-          });
-      }}
-    >
+    <Pressable style={styles.wrapperView} onPress={() => onPress()}>
       <View style={styles.contentView}>
         <Image
           style={styles.courtImage}
@@ -99,7 +85,7 @@ export const CourtCard = ({
   );
 };
 
-const makeStyles = (colors: MD3Colors, windowHeight: number) =>
+const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
       alignItems: "center",

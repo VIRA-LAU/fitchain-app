@@ -1,11 +1,10 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction, useMemo } from "react";
 import { StyleSheet, View, Image, ScrollView, Pressable } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
-import { DateTimePickerView } from "./DateTimePickerView";
 import {
   CompositeNavigationProp,
   useNavigation,
@@ -14,6 +13,23 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { GameType } from "src/types";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
+const timeFormatter = (date: Date, hourMode: "12" | "24" = "12") => {
+  if (hourMode === "12") {
+    const hours =
+      date.getHours() % 12 === 0
+        ? "12"
+        : ("0" + (date.getHours() % 12)).slice(-2);
+    return `${hours}:${("0" + date.getMinutes()).slice(-2)} ${
+      date.getHours() >= 12 ? "PM" : "AM"
+    }`;
+  } else {
+    return `${("0" + date.getHours()).slice(-2)}:${(
+      "0" + date.getMinutes()
+    ).slice(-2)}`;
+  }
+};
 
 export const Play = ({
   visible,
@@ -25,12 +41,37 @@ export const Play = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [gameType, setGameType] = useState<GameType>("Basketball");
-  const [dateTimePickerVisible, setDateTimePickerVisible] =
-    useState<boolean>(false);
+  const [dateTimePickerVisible, setDateTimePickerVisible] = useState<
+    "date" | "startTime" | "endTime" | false
+  >(false);
+
   const [searchLocation, setSearchLocation] =
     useState<string>("Beirut, Lebanon");
-  const [searchDate, setSearchDate] = useState<Date>(new Date());
-  const [slotDuration, setSlotDuration] = useState<number>(60);
+  const [searchDate, setSearchDate] = useState<Date | null>(null);
+  const [startTimeDate, setStartTimeDate] = useState<Date | null>(null);
+  const [endTimeDate, setEndTimeDate] = useState<Date | null>(null);
+  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(6);
+
+  const [selectedDate, selectedStartTime, selectedEndTime] = useMemo(() => {
+    let [date, startTime, endTime]: (string | null)[] = [null, null, null];
+    if (searchDate) {
+      date = searchDate
+        .toLocaleDateString(undefined, {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })
+        .slice(0, -6);
+    }
+    if (startTimeDate) {
+      startTime = timeFormatter(startTimeDate);
+    }
+    if (endTimeDate) {
+      endTime = timeFormatter(endTimeDate);
+    }
+    return [date, startTime, endTime];
+  }, [searchDate, startTimeDate, endTimeDate]);
 
   const navigation =
     useNavigation<
@@ -39,6 +80,7 @@ export const Play = ({
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
+
   return (
     <React.Fragment>
       <Pressable
@@ -153,13 +195,30 @@ export const Play = ({
             <Text style={styles.labelText}>How many players?</Text>
           </View>
           <View style={styles.contentIconView}>
-            <Feather name="minus-circle" color={colors.primary} size={24} />
+            <Feather
+              name="minus-circle"
+              color={colors.primary}
+              size={24}
+              onPress={() => {
+                setNumberOfPlayers((oldNum) => oldNum - 1);
+              }}
+            />
             <Text
-              style={[styles.labelText, { fontSize: 18, marginHorizontal: 10 }]}
+              style={[
+                styles.labelText,
+                { fontSize: 18, width: 40, textAlign: "center" },
+              ]}
             >
-              6
+              {numberOfPlayers}
             </Text>
-            <Feather name="plus-circle" color={colors.primary} size={24} />
+            <Feather
+              name="plus-circle"
+              color={colors.primary}
+              size={24}
+              onPress={() => {
+                setNumberOfPlayers((oldNum) => oldNum + 1);
+              }}
+            />
           </View>
         </View>
         <View style={styles.dateTime}>
@@ -167,42 +226,106 @@ export const Play = ({
             <Text style={styles.labelText}>Date</Text>
             <Text
               style={styles.buttonText}
-              onPress={() => setDateTimePickerVisible(true)}
+              onPress={() => setDateTimePickerVisible("date")}
             >
-              Select Date
+              {selectedDate ? selectedDate : "Select Date"}
             </Text>
           </View>
           <View style={styles.dateTimeRow}>
-            <Text style={styles.labelText}>Time slot</Text>
+            <Text style={styles.labelText}>Start Time</Text>
             <Text
               style={styles.buttonText}
-              onPress={() => setDateTimePickerVisible(true)}
+              onPress={() => setDateTimePickerVisible("startTime")}
             >
-              Select Time
+              {selectedStartTime ? selectedStartTime : "Select Time"}
+            </Text>
+          </View>
+          <View style={styles.dateTimeRow}>
+            <Text style={styles.labelText}>End Time</Text>
+            <Text
+              style={[
+                styles.buttonText,
+                startTimeDate
+                  ? { color: colors.primary }
+                  : { color: colors.tertiary },
+              ]}
+              onPress={
+                startTimeDate
+                  ? () => setDateTimePickerVisible("endTime")
+                  : undefined
+              }
+            >
+              {selectedEndTime ? selectedEndTime : "Select Time"}
             </Text>
           </View>
         </View>
+
+        <DateTimePickerModal
+          isVisible={dateTimePickerVisible !== false}
+          mode={
+            dateTimePickerVisible
+              ? dateTimePickerVisible === "date"
+                ? "date"
+                : "time"
+              : "date"
+          }
+          date={
+            dateTimePickerVisible === "date" && searchDate
+              ? searchDate
+              : dateTimePickerVisible === "startTime" && startTimeDate
+              ? startTimeDate
+              : dateTimePickerVisible === "endTime" && endTimeDate
+              ? endTimeDate
+              : new Date()
+          }
+          onConfirm={(date) => {
+            setDateTimePickerVisible(false);
+            if (dateTimePickerVisible === "date") {
+              setSearchDate(date);
+            } else if (dateTimePickerVisible === "startTime") {
+              setStartTimeDate(date);
+              if (!endTimeDate || endTimeDate < date) {
+                let endDate = new Date(date);
+                endDate.setHours(endDate.getHours() + 1);
+                setEndTimeDate(endDate);
+              }
+            } else {
+              setEndTimeDate(date);
+            }
+          }}
+          onCancel={() => {
+            setDateTimePickerVisible(false);
+          }}
+          isDarkModeEnabled={true}
+          accentColor={colors.primary}
+        />
+
         <Button
-          buttonColor={colors.primary}
+          buttonColor={searchDate ? colors.primary : colors.tertiary}
           textColor={"black"}
           style={{ borderRadius: 5, marginTop: "auto" }}
-          onPress={() => {
-            setVisible(false);
-            navigation.push("ChooseVenue", {
-              location: searchLocation,
-              date: JSON.stringify(searchDate),
-              gameType,
-              duration: slotDuration,
-            });
-          }}
+          onPress={
+            searchDate
+              ? () => {
+                  setVisible(false);
+                  navigation.push("ChooseVenue", {
+                    location: searchLocation,
+                    date: JSON.stringify(searchDate),
+                    gameType,
+                    startTime: startTimeDate
+                      ? timeFormatter(startTimeDate, "24")
+                      : undefined,
+                    endTime: endTimeDate
+                      ? timeFormatter(endTimeDate, "24")
+                      : undefined,
+                  });
+                }
+              : undefined
+          }
         >
           Find Venue
         </Button>
       </View>
-      <DateTimePickerView
-        visible={dateTimePickerVisible}
-        setVisible={setDateTimePickerVisible}
-      />
     </React.Fragment>
   );
 };
@@ -255,6 +378,7 @@ const makeStyles = (colors: MD3Colors) =>
     sportText: {
       fontFamily: "Inter-SemiBold",
       fontSize: 16,
+      lineHeight: 16,
       marginRight: 10,
       color: "white",
     },

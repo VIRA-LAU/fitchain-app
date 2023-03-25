@@ -38,7 +38,7 @@ export const VenueBranches = ({ navigation, route }: Props) => {
                 venueName,
                 location: branch.location,
                 courts: branch.courts,
-                rating: branch.rating,
+                rating: 0,
               }}
             />
           );

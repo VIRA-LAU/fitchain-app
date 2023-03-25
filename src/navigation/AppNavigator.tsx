@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   useWindowDimensions,
   View,
@@ -22,14 +22,17 @@ import {
   VenueBranches,
   VenueDetails,
   Venues,
+  BranchCourts,
+  ChooseVenue,
 } from "screens";
 import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { GameType, VenueBranch } from "src/types";
-import { BranchCourts } from "src/screens/home/BranchCourts";
-import { ChooseVenue } from "src/screens/home/Play/ChooseVenue";
+import { getData } from "src/utils/AsyncStorage";
+import { UserContext } from "src/utils";
+import { useUserDetailsQuery } from "src/api";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -108,7 +111,8 @@ export type HomeStackParamList = {
     playScreenBranch: VenueBranch | null;
     playScreenBookingDetails?: {
       date: string;
-      duration: number;
+      startTime?: string;
+      endTime?: string;
       gameType: GameType;
     } | null;
   };
@@ -119,7 +123,9 @@ export type HomeStackParamList = {
     bookingDetails: {
       courtId: number;
       date: string;
-      duration: number;
+      timeSlotId: number;
+      startTime?: string;
+      endTime?: string;
       gameType: GameType;
     };
   };
@@ -130,14 +136,16 @@ export type HomeStackParamList = {
     branchLocation: string;
     bookingDetails?: {
       date: string;
-      duration: number;
+      startTime?: string;
+      endTime?: string;
       gameType: GameType;
     };
   };
   ChooseVenue: {
     location: string;
     date: string;
-    duration: number;
+    startTime?: string;
+    endTime?: string;
     gameType: GameType;
   };
   InviteUsers: {
@@ -148,7 +156,35 @@ export type HomeStackParamList = {
 const Stack = createStackNavigator<HomeStackParamList>();
 
 export const AppNavigator = () => {
+  const { userData, setUserData } = useContext(UserContext) as any;
   const [signedIn, setSignedIn] = useState<boolean>(false);
+  const { refetch: verifyToken } = useUserDetailsQuery(false, setSignedIn);
+
+  const getToken = async () => {
+    const firstName = await getData("firstName");
+    const lastName = await getData("lastName");
+    const email = await getData("email");
+    const userId = await getData("userId");
+    const token = await getData("token");
+    if (firstName && lastName && email && userId && token) {
+      let fetchedData = {
+        userId: userId,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        token: token,
+      };
+      setUserData(fetchedData);
+    }
+  };
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  useEffect(() => {
+    if (userData) verifyToken();
+  }, [JSON.stringify(userData)]);
 
   if (signedIn)
     return (

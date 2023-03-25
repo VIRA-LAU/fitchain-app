@@ -5,13 +5,14 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/Logo-Icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./src/assets/images/Logo.png",
       "resize": "native",
       "backgroundColor": "#000000"
     },
     "backgroundColor": "#2e2d36",
+    "themeColor": "#f29c1f",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -37,6 +38,5 @@
         "projectId": "4396245c-91e4-4255-ab4c-236cd04253dc"
       }
     },
-    "owner": "khaledjalloul"
   }
 }

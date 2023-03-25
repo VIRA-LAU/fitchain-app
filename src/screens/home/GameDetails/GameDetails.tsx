@@ -104,11 +104,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
   else {
     const date = new Date(game.date);
 
-    const endTime = new Date(date.getTime() + game.duration * 60 * 1000);
-
-    const startTimeString = durationTimeFormatter.format(date);
-    const endTimeString = durationTimeFormatter.format(endTime);
-
     const renderScene = () => {
       const route = routes[index];
       switch (route.key) {
@@ -380,7 +375,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   variant="labelLarge"
                   style={{ color: "white", marginTop: -5, marginBottom: 10 }}
                 >
-                  {startTimeString} - {endTimeString}
+                  {game.timeSlot.startTime} - {game.timeSlot.endTime}
                 </Text>
               </View>
               {!playerStatus.isAdmin && (

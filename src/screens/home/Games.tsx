@@ -11,12 +11,7 @@ import {
 } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import {
-  SceneRendererProps,
-  TabBar,
-  TabBarProps,
-  TabView,
-} from "react-native-tab-view";
+import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
 import {
   AppHeader,
   BookingCard,

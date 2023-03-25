@@ -14,7 +14,7 @@ import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 type Request = {
   courtId: number;
   date: Date;
-  duration: number;
+  timeSlotId: number;
   type: GameType;
 };
 
@@ -24,7 +24,7 @@ const createGame = (userData: UserData) => async (data: Request) => {
     .post("/games/bookings", data, header)
     .then((res) => res.data)
     .catch((e) => {
-      console.error("create-game-mutation", e.response.data);
+      console.error("create-game-mutation", e);
       throw new Error(e);
     });
 };
