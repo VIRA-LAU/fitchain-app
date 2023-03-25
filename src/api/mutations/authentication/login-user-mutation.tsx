@@ -1,10 +1,9 @@
 import client from "../../client";
 import { useContext } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
 import { User } from "src/types";
-import { getData, storeData } from "src/utils/AsyncStorage";
+import { storeData } from "src/utils/AsyncStorage";
 
 type Request = {
   email: string;
@@ -22,7 +21,6 @@ export const useLoginUserMutation = (
   return useMutation<User, unknown, Request>({
     mutationFn: LoginUser,
     onSuccess: async (data) => {
-      console.log(data);
       let fetchedInfo = {
         userId: data.userId!,
         firstName: data.firstName,

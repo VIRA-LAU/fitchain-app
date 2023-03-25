@@ -17,6 +17,7 @@ export const CourtCard = ({
   type,
   // rating,
   price,
+  rating,
   bookingDetails,
   onPress,
 }: {
@@ -25,9 +26,11 @@ export const CourtCard = ({
   type: string;
   // rating: number;
   price: number;
+  rating: number;
   bookingDetails?: {
     date: string;
-    duration: number;
+    startTime?: string;
+    endTime?: string;
     gameType: GameType;
   };
   onPress: Function;

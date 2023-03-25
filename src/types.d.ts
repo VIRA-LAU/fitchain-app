@@ -22,7 +22,11 @@ export type GameType = "Basketball" | "Football" | "Tennis";
 export interface Game {
   id;
   date: Date;
-  duration: number;
+  timeSlot: {
+    id: number;
+    startTime: string;
+    endTime: string;
+  };
   type: GameType;
   court: {
     branch: {
@@ -56,21 +60,29 @@ export interface GameRequest {
   user: User;
   game: Game;
 }
+
+export interface Court {
+  id: number;
+  courtType: string;
+  price: number;
+  rating: number;
+  branchId;
+  hasTimeSlot: {
+    timeSlot: {
+      id: number;
+      startTime: string;
+      endTime: string;
+    };
+  }[];
+}
+
 // Contained inside Venue
 export interface Branch {
   id: number;
   location: string;
   venueId: number;
   photoDirectoryURL: string;
-  rating: number;
-  courts: {
-    id: number;
-    createdAt: string;
-    courtType: string;
-    nbOfPlayers: number;
-    branchId: number;
-    price: number;
-  }[];
+  courts: Court[];
 }
 
 export interface Venue {
@@ -87,15 +99,9 @@ export interface Venue {
   branches: Branch[];
 }
 
-export interface Court {
-  id: number;
-  courtType: string;
-  price: number;
-}
 // Shown in Home page
 export interface VenueBranch {
   location: string;
-  rating: number;
   venue: {
     id: number;
     name: string;

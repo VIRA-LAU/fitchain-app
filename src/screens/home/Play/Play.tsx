@@ -15,15 +15,22 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { GameType } from "src/types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-const timeFormatter = (date: Date) => {
-  const hours =
-    date.getHours() % 12 === 0
-      ? "12"
-      : ("0" + (date.getHours() % 12)).slice(-2);
-  return `${hours}:${("0" + date.getMinutes()).slice(-2)} ${
-    date.getHours() >= 12 ? "PM" : "AM"
-  }`;
+const timeFormatter = (date: Date, hourMode: "12" | "24" = "12") => {
+  if (hourMode === "12") {
+    const hours =
+      date.getHours() % 12 === 0
+        ? "12"
+        : ("0" + (date.getHours() % 12)).slice(-2);
+    return `${hours}:${("0" + date.getMinutes()).slice(-2)} ${
+      date.getHours() >= 12 ? "PM" : "AM"
+    }`;
+  } else {
+    return `${("0" + date.getHours()).slice(-2)}:${(
+      "0" + date.getMinutes()
+    ).slice(-2)}`;
+  }
 };
+
 export const Play = ({
   visible,
   setVisible,
@@ -41,8 +48,8 @@ export const Play = ({
   const [searchLocation, setSearchLocation] =
     useState<string>("Beirut, Lebanon");
   const [searchDate, setSearchDate] = useState<Date | null>(null);
-  const [searchEndDate, setSearchEndDate] = useState<Date | null>(null);
-  const [slotDuration, setSlotDuration] = useState<number>(60);
+  const [startTimeDate, setStartTimeDate] = useState<Date | null>(null);
+  const [endTimeDate, setEndTimeDate] = useState<Date | null>(null);
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(6);
 
   const [selectedDate, selectedStartTime, selectedEndTime] = useMemo(() => {
@@ -56,13 +63,15 @@ export const Play = ({
           year: "numeric",
         })
         .slice(0, -6);
-      startTime = timeFormatter(searchDate);
     }
-    if (searchEndDate) {
-      endTime = timeFormatter(searchEndDate);
+    if (startTimeDate) {
+      startTime = timeFormatter(startTimeDate);
+    }
+    if (endTimeDate) {
+      endTime = timeFormatter(endTimeDate);
     }
     return [date, startTime, endTime];
-  }, [searchDate, searchEndDate]);
+  }, [searchDate, startTimeDate, endTimeDate]);
 
   const navigation =
     useNavigation<
@@ -71,6 +80,7 @@ export const Play = ({
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
+
   return (
     <React.Fragment>
       <Pressable
@@ -233,8 +243,17 @@ export const Play = ({
           <View style={styles.dateTimeRow}>
             <Text style={styles.labelText}>End Time</Text>
             <Text
-              style={styles.buttonText}
-              onPress={() => setDateTimePickerVisible("endTime")}
+              style={[
+                styles.buttonText,
+                startTimeDate
+                  ? { color: colors.primary }
+                  : { color: colors.tertiary },
+              ]}
+              onPress={
+                startTimeDate
+                  ? () => setDateTimePickerVisible("endTime")
+                  : undefined
+              }
             >
               {selectedEndTime ? selectedEndTime : "Select Time"}
             </Text>
@@ -251,24 +270,27 @@ export const Play = ({
               : "date"
           }
           date={
-            (dateTimePickerVisible !== "endTime"
+            dateTimePickerVisible === "date" && searchDate
               ? searchDate
-              : searchEndDate) || new Date()
+              : dateTimePickerVisible === "startTime" && startTimeDate
+              ? startTimeDate
+              : dateTimePickerVisible === "endTime" && endTimeDate
+              ? endTimeDate
+              : new Date()
           }
           onConfirm={(date) => {
             setDateTimePickerVisible(false);
-            if (
-              dateTimePickerVisible === "date" ||
-              dateTimePickerVisible === "startTime"
-            ) {
+            if (dateTimePickerVisible === "date") {
               setSearchDate(date);
-              if (!searchEndDate || searchEndDate < date) {
+            } else if (dateTimePickerVisible === "startTime") {
+              setStartTimeDate(date);
+              if (!endTimeDate || endTimeDate < date) {
                 let endDate = new Date(date);
                 endDate.setHours(endDate.getHours() + 1);
-                setSearchEndDate(endDate);
+                setEndTimeDate(endDate);
               }
             } else {
-              setSearchEndDate(date);
+              setEndTimeDate(date);
             }
           }}
           onCancel={() => {
@@ -279,26 +301,31 @@ export const Play = ({
         />
 
         <Button
-          buttonColor={colors.primary}
+          buttonColor={searchDate ? colors.primary : colors.tertiary}
           textColor={"black"}
           style={{ borderRadius: 5, marginTop: "auto" }}
-          onPress={() => {
-            setVisible(false);
-            navigation.push("ChooseVenue", {
-              location: searchLocation,
-              date: JSON.stringify(searchDate),
-              gameType,
-              duration: slotDuration,
-            });
-          }}
+          onPress={
+            searchDate
+              ? () => {
+                  setVisible(false);
+                  navigation.push("ChooseVenue", {
+                    location: searchLocation,
+                    date: JSON.stringify(searchDate),
+                    gameType,
+                    startTime: startTimeDate
+                      ? timeFormatter(startTimeDate, "24")
+                      : undefined,
+                    endTime: endTimeDate
+                      ? timeFormatter(endTimeDate, "24")
+                      : undefined,
+                  });
+                }
+              : undefined
+          }
         >
           Find Venue
         </Button>
       </View>
-      {/* <DateTimePickerView
-        visible={dateTimePickerVisible}
-        setVisible={setDateTimePickerVisible}
-      /> */}
     </React.Fragment>
   );
 };

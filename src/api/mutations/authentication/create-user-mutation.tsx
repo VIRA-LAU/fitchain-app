@@ -2,10 +2,10 @@ import client from "../../client";
 import { useContext } from "react";
 import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "src/types";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SignUpStackParamList } from "src/navigation";
+import { storeData } from "src/utils/AsyncStorage";
 
 type Request = {
   firstName: string;
@@ -39,6 +39,15 @@ export const useCreateUserMutation = () => {
         token: data.access_token,
       };
       setUserData(fetchedInfo);
+      const keys = ["userId", "firstName", "lastName", "email", "token"];
+      const values = [
+        data.userId,
+        data.firstName,
+        data.lastName,
+        data.email,
+        data.access_token,
+      ];
+      storeData(keys, values);
       navigation.navigate("SignUpWithNumberExtraDetails");
     },
   });

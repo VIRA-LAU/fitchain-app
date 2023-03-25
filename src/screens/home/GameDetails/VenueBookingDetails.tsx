@@ -95,7 +95,14 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             <Text style={styles.labelText}>Date</Text>
             <View style={styles.contentIconView}>
               <Text style={[styles.valueText, { marginRight: 10 }]}>
-                Wed, June 3, 2022
+                {new Date(JSON.parse(bookingDetails.date))
+                  .toLocaleDateString(undefined, {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })
+                  .slice(0, -6)}
               </Text>
               <Feather name="edit-3" color={"white"} size={16} />
             </View>
@@ -104,7 +111,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             <Text style={styles.labelText}>Time slot</Text>
             <View style={styles.contentIconView}>
               <Text style={[styles.valueText, { marginRight: 10 }]}>
-                10:00 AM till 11 AM
+                {bookingDetails.startTime} - {bookingDetails.endTime}
               </Text>
               <Feather name="edit-3" color={"white"} size={16} />
             </View>
@@ -146,7 +153,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             const bookingDate = new Date(JSON.parse(bookingDetails.date));
             createGame({
               courtId: bookingDetails.courtId,
-              duration: bookingDetails.duration,
+              timeSlotId: bookingDetails.timeSlotId,
               date: bookingDate,
               type: bookingDetails.gameType,
             });

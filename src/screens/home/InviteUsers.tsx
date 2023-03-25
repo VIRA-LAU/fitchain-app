@@ -12,7 +12,7 @@ import {
 } from "src/api";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Props = StackScreenProps<HomeStackParamList, "InviteUsers">;
 

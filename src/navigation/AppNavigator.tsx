@@ -32,6 +32,7 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { GameType, VenueBranch } from "src/types";
 import { getData } from "src/utils/AsyncStorage";
 import { UserContext } from "src/utils";
+import { useUserDetailsQuery } from "src/api";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -110,7 +111,8 @@ export type HomeStackParamList = {
     playScreenBranch: VenueBranch | null;
     playScreenBookingDetails?: {
       date: string;
-      duration: number;
+      startTime?: string;
+      endTime?: string;
       gameType: GameType;
     } | null;
   };
@@ -121,7 +123,9 @@ export type HomeStackParamList = {
     bookingDetails: {
       courtId: number;
       date: string;
-      duration: number;
+      timeSlotId: number;
+      startTime?: string;
+      endTime?: string;
       gameType: GameType;
     };
   };
@@ -132,14 +136,16 @@ export type HomeStackParamList = {
     branchLocation: string;
     bookingDetails?: {
       date: string;
-      duration: number;
+      startTime?: string;
+      endTime?: string;
       gameType: GameType;
     };
   };
   ChooseVenue: {
     location: string;
     date: string;
-    duration: number;
+    startTime?: string;
+    endTime?: string;
     gameType: GameType;
   };
   InviteUsers: {
@@ -150,8 +156,10 @@ export type HomeStackParamList = {
 const Stack = createStackNavigator<HomeStackParamList>();
 
 export const AppNavigator = () => {
-  const { setUserData } = useContext(UserContext) as any;
+  const { userData, setUserData } = useContext(UserContext) as any;
   const [signedIn, setSignedIn] = useState<boolean>(false);
+  const { refetch: verifyToken } = useUserDetailsQuery(false, setSignedIn);
+
   const getToken = async () => {
     const firstName = await getData("firstName");
     const lastName = await getData("lastName");
@@ -167,12 +175,17 @@ export const AppNavigator = () => {
         token: token,
       };
       setUserData(fetchedData);
-      setSignedIn(true);
     }
   };
+
   useEffect(() => {
     getToken();
   }, []);
+
+  useEffect(() => {
+    if (userData) verifyToken();
+  }, [JSON.stringify(userData)]);
+
   if (signedIn)
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>

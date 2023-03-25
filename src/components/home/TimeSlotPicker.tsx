@@ -8,17 +8,23 @@ import {
   ScrollView,
 } from "react-native";
 import { Button, useTheme } from "react-native-paper";
-import { DatePickerModal, DatePickerInput } from "react-native-paper-dates";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
+import { Court } from "src/types";
 
 export const TimeSlotPicker = ({
   visible,
   setVisible,
   onPress,
+  timeSlots,
+  selectedTimeSlot,
+  setSelectedTimeSlot,
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
   onPress: Function;
+  timeSlots?: Court["hasTimeSlot"];
+  selectedTimeSlot: number | undefined;
+  setSelectedTimeSlot: Dispatch<SetStateAction<number | undefined>>;
 }) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
@@ -37,18 +43,42 @@ export const TimeSlotPicker = ({
       >
         <Text style={styles.title}>Select Time Slot</Text>
         <ScrollView horizontal>
-          <View style={styles.timeSlotView}>
-            <Text style={styles.timeSlotText}>11:00 - 12:00</Text>
-          </View>
+          {timeSlots?.map(({ timeSlot }, index) => (
+            <Pressable
+              key={index}
+              style={[
+                styles.timeSlotView,
+                index === 0
+                  ? { marginLeft: 20 }
+                  : index === timeSlots.length - 1
+                  ? { marginRight: 20 }
+                  : {},
+                selectedTimeSlot === timeSlot.id
+                  ? { borderColor: colors.primary }
+                  : {},
+              ]}
+              onPress={() => {
+                setSelectedTimeSlot(timeSlot.id);
+              }}
+            >
+              <Text style={styles.timeSlotText}>
+                {timeSlot.startTime} - {timeSlot.endTime}
+              </Text>
+            </Pressable>
+          ))}
         </ScrollView>
         <Button
-          buttonColor={colors.primary}
+          buttonColor={selectedTimeSlot ? colors.primary : colors.tertiary}
           textColor={"black"}
           style={{ borderRadius: 5, margin: 25 }}
-          onPress={() => {
-            onPress();
-            setVisible(false);
-          }}
+          onPress={
+            selectedTimeSlot
+              ? () => {
+                  onPress();
+                  setVisible(false);
+                }
+              : undefined
+          }
         >
           Continue
         </Button>
@@ -89,6 +119,8 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
       paddingHorizontal: 15,
       paddingVertical: 10,
       marginHorizontal: 3,
+      borderWidth: 1,
+      borderColor: colors.secondary,
     },
     timeSlotText: {
       fontFamily: "Inter-Medium",

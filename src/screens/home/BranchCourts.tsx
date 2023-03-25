@@ -17,6 +17,7 @@ export const BranchCourts = ({ navigation, route }: Props) => {
 
   const { courts, venueName, branchLocation, bookingDetails } = route.params;
 
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<number>();
   const [pressedCourt, setPressedCourt] = useState<Court | null>(null);
   const [timeSlotVisible, setTimeSlotVisible] = useState<boolean>(false);
 
@@ -35,14 +36,18 @@ export const BranchCourts = ({ navigation, route }: Props) => {
         <TimeSlotPicker
           visible={timeSlotVisible}
           setVisible={setTimeSlotVisible}
+          timeSlots={pressedCourt?.hasTimeSlot}
+          selectedTimeSlot={selectedTimeSlot}
+          setSelectedTimeSlot={setSelectedTimeSlot}
           onPress={() => {
-            if (bookingDetails)
+            if (bookingDetails && selectedTimeSlot)
               navigation.push("VenueBookingDetails", {
                 venueName: venueName,
                 courtType: pressedCourt!.courtType,
                 price: pressedCourt!.price,
                 bookingDetails: {
                   ...bookingDetails,
+                  timeSlotId: selectedTimeSlot,
                   courtId: pressedCourt!.id,
                 },
               });
@@ -60,7 +65,7 @@ export const BranchCourts = ({ navigation, route }: Props) => {
               setPressedCourt(court);
               setTimeSlotVisible(true);
             }}
-            // rating={court.rating}
+            rating={court.rating}
           />
         ))}
       </ScrollView>
