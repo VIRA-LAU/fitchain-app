@@ -1,4 +1,5 @@
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView, RefreshControl } from "react-native";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
@@ -14,17 +15,25 @@ import { BottomTabParamList } from "src/navigation/tabScreenOptions";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { UserContext, UserData } from "src/utils";
-import { useContext, useState } from "react";
+import { UserContext } from "src/utils";
 import {
   useBranchesQuery,
   useGamesQuery,
   useBookingsQuery,
   useInvitationsQuery,
   useActivitiesQuery,
+  useReceivedRequestsQuery,
 } from "src/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Activity, Game, Invitation, VenueBranch } from "src/types";
+import {
+  Activity,
+  Game,
+  GameRequest,
+  Invitation,
+  VenueBranch,
+} from "src/types";
+import { useQueryClient } from "react-query";
+
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
 const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
@@ -44,17 +53,122 @@ export const Home = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const { userData } = useContext(UserContext);
 
-  const { data: branchesVenues } = useBranchesQuery();
-  const { data: games } = useGamesQuery({ type: "upcoming", limit: 5 });
-  const { data: bookings } = useBookingsQuery();
-  const { data: invitations } = useInvitationsQuery();
-  const { data: activities } = useActivitiesQuery();
+  const {
+    data: branchesVenues,
+    isFetching: branchesLoading,
+    refetch: refetchBranches,
+  } = useBranchesQuery();
+  const {
+    data: games,
+    isFetching: gamesLoading,
+    refetch: refetchGames,
+  } = useGamesQuery({
+    type: "upcoming",
+    limit: 5,
+  });
+  const {
+    data: bookings,
+    isFetching: bookingsLoading,
+    refetch: refetchBookings,
+  } = useBookingsQuery({
+    type: "upcoming",
+  });
+  const {
+    data: invitations,
+    isFetching: invitationsLoading,
+    refetch: refetchInvitations,
+  } = useInvitationsQuery();
+  const {
+    data: receivedRequests,
+    isFetching: requestsLoading,
+    refetch: refetchRequests,
+  } = useReceivedRequestsQuery();
+  const {
+    data: activities,
+    isFetching: activitiesLoading,
+    refetch: refetchActivities,
+  } = useActivitiesQuery();
 
   const [selectedSports, setSelectedSports] = useState({
     Basketball: true,
     Football: true,
     Tennis: true,
   });
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const invitationsRequests = useMemo(() => {
+    let result: ((Invitation | GameRequest) & {
+      type: "invitation" | "request";
+    })[] = [];
+    if (invitations)
+      result = result.concat(
+        invitations.map((invitation) => ({ type: "invitation", ...invitation }))
+      );
+    if (receivedRequests)
+      result = result.concat(
+        receivedRequests.map((request) => ({ type: "request", ...request }))
+      );
+
+    const filtedResult = result.filter(
+      ({ game }: Invitation) => selectedSports[game.type]
+    );
+
+    const sortedResult = result.sort(
+      (a, b) => a.game.createdAt.getTime() - b.game.createdAt.getTime()
+    );
+    const mappedResult = sortedResult.map(
+      (
+        invReq: (Invitation | GameRequest) & {
+          type: "invitation" | "request";
+        },
+        index: number
+      ) => (
+        <InvitationCard
+          id={invReq.id}
+          key={index}
+          type={invReq.type}
+          user={invReq.user?.firstName + " " + invReq.user?.lastName}
+          game={invReq.game}
+          isFirst={index === 0}
+          isLast={index === filtedResult.length - 1}
+        />
+      )
+    );
+    return mappedResult;
+  }, [
+    JSON.stringify(invitations),
+    JSON.stringify(receivedRequests),
+    JSON.stringify(selectedSports),
+  ]);
+
+  useEffect(() => {
+    if (
+      !gamesLoading &&
+      !bookingsLoading &&
+      !branchesLoading &&
+      !requestsLoading &&
+      !invitationsLoading &&
+      !activitiesLoading
+    )
+      setRefreshing(false);
+  }, [
+    gamesLoading,
+    bookingsLoading,
+    branchesLoading,
+    requestsLoading,
+    invitationsLoading,
+    activitiesLoading,
+  ]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    refetchGames();
+    refetchInvitations();
+    refetchRequests();
+    refetchBookings();
+    refetchBranches();
+    refetchActivities();
+  };
 
   return (
     <AppHeader
@@ -70,7 +184,17 @@ export const Home = ({ navigation, route }: Props) => {
       }
       showLogo
     >
-      <View style={styles.wrapperView}>
+      <ScrollView
+        contentContainerStyle={styles.wrapperView}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[colors.primary]}
+            progressBackgroundColor={colors.secondary}
+          />
+        }
+      >
         <Text variant="headlineSmall" style={{ color: "white" }}>
           Hi {userData?.firstName},
         </Text>
@@ -83,11 +207,13 @@ export const Home = ({ navigation, route }: Props) => {
             .map((game: Game, index: number) => (
               <UpcomingGameCard key={index} game={game} />
             ))}
-          {!games && (
-            <Text style={styles.placeholderText}>
-              You have no upcoming games.
-            </Text>
-          )}
+          {!games ||
+            (games.filter(({ type }: Game) => selectedSports[type]).length ===
+              0 && (
+              <Text style={styles.placeholderText}>
+                You have no upcoming games.
+              </Text>
+            ))}
         </View>
 
         <SectionTitle title="Invitations" styles={styles} />
@@ -95,23 +221,14 @@ export const Home = ({ navigation, route }: Props) => {
           <ScrollView
             style={{
               flexDirection: "row",
-              marginRight: -20,
+              marginHorizontal: -20,
             }}
+            contentContainerStyle={{ flexGrow: 1 }}
             horizontal
           >
-            {invitations
-              ?.filter(({ game }: Invitation) => selectedSports[game.type])
-              .map((invitation: Invitation, index: number) => (
-                <InvitationCard
-                  key={index}
-                  inviter={
-                    invitation.user?.firstName + " " + invitation.user?.lastName
-                  }
-                  game={invitation.game}
-                />
-              ))}
+            {invitationsRequests}
           </ScrollView>
-          {!invitations && (
+          {invitationsRequests.length === 0 && (
             <Text style={styles.placeholderText}>
               You have no pending invitations.
             </Text>
@@ -120,7 +237,7 @@ export const Home = ({ navigation, route }: Props) => {
         <SectionTitle title="Venues" styles={styles} />
         <View>
           <ScrollView
-            style={{ flexDirection: "row", marginRight: -20 }}
+            style={{ flexDirection: "row", marginHorizontal: -20 }}
             horizontal
           >
             {branchesVenues?.map((venuesBranch: VenueBranch, index: number) => (
@@ -128,41 +245,32 @@ export const Home = ({ navigation, route }: Props) => {
                 key={index}
                 type="vertical"
                 venueBranch={venuesBranch}
+                isFirst={index === 0}
+                isLast={index === branchesVenues.length - 1}
               />
             ))}
           </ScrollView>
-          {!branchesVenues && (
-            <Text style={styles.placeholderText}>
-              There are no nearby venues.
-            </Text>
-          )}
+          {!branchesVenues ||
+            (branchesVenues.length === 0 && (
+              <Text style={styles.placeholderText}>
+                There are no nearby venues.
+              </Text>
+            ))}
         </View>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
           {bookings
-            ?.filter(({ type, date }: Game) => {
-              const bookingDate = new Date(
-                date.toISOString().substring(0, date.toISOString().indexOf("T"))
-              );
-              const todayDate = new Date(
-                new Date()
-                  .toISOString()
-                  .substring(0, new Date().toISOString().indexOf("T"))
-              );
-              return (
-                (bookingDate.getTime() - todayDate.getTime()) /
-                  (1000 * 60 * 60 * 24) >=
-                  0 && selectedSports[type]
-              );
-            })
+            ?.filter(({ type }: Game) => selectedSports[type])
             .map((booking: Game, index: number) => (
               <BookingCard key={index} booking={booking} />
             ))}
-          {!bookings && (
-            <Text style={styles.placeholderText}>
-              There are no nearby bookings.
-            </Text>
-          )}
+          {!bookings ||
+            (bookings.filter(({ type }: Game) => selectedSports[type])
+              .length === 0 && (
+              <Text style={styles.placeholderText}>
+                There are no nearby bookings.
+              </Text>
+            ))}
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
@@ -171,13 +279,15 @@ export const Home = ({ navigation, route }: Props) => {
             .map((activity: Activity, index: number) => (
               <ActivityCard key={index} {...activity} />
             ))}
-          {!activities && (
-            <Text style={styles.placeholderText}>
-              You have no recent activities.
-            </Text>
-          )}
+          {!activities ||
+            (activities.filter(({ type }) => selectedSports[type]).length ===
+              0 && (
+              <Text style={styles.placeholderText}>
+                You have no recent activities.
+              </Text>
+            ))}
         </View>
-      </View>
+      </ScrollView>
     </AppHeader>
   );
 };
@@ -185,10 +295,10 @@ export const Home = ({ navigation, route }: Props) => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      flex: 1,
+      flexGrow: 1,
       backgroundColor: colors.background,
       padding: 20,
-      marginBottom: 30,
+      paddingBottom: 40,
     },
     headerSubtext: { color: colors.tertiary, marginTop: 10, marginBottom: 20 },
     sectionTitle: {

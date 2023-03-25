@@ -1,12 +1,13 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { NavigationProp } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
   useWindowDimensions,
   View,
   Pressable,
+  RefreshControl,
 } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -25,8 +26,13 @@ import {
 } from "components";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { useFollowedGamesQuery, useGamesQuery } from "src/api";
+import {
+  useBookingsQuery,
+  useFollowedGamesQuery,
+  useGamesQuery,
+} from "src/api";
 import { Game } from "src/types";
+import { QueryObserverResult } from "react-query";
 
 type NavigationProps = BottomTabScreenProps<BottomTabParamList>;
 type Props = {
@@ -48,13 +54,62 @@ const DayHeader = ({ day }: { day: string }) => {
 };
 
 const AllGames = (props: Props) => {
-  const { data: allGames } = useGamesQuery({ type: props.type });
-  return <GameList {...props} games={allGames} isFollowed={false} />;
+  const {
+    data: allGames,
+    refetch,
+    isFetching,
+  } = useBookingsQuery({ type: props.type });
+  return (
+    <GameList
+      {...props}
+      games={allGames}
+      isFollowed={false}
+      refetch={refetch}
+      isFetching={isFetching}
+    />
+  );
 };
 
 const FollowedGames = (props: Props) => {
-  const { data: followedGames } = useFollowedGamesQuery({ type: props.type });
-  return <GameList {...props} games={followedGames} isFollowed={true} />;
+  const {
+    data: followedGames,
+    refetch: refetchFollowedGames,
+    isFetching: followedGamesFetching,
+  } = useFollowedGamesQuery({ type: props.type });
+  const {
+    data: myGames,
+    refetch: refetchGames,
+    isFetching: gamesFetching,
+  } = useGamesQuery({ type: props.type });
+
+  const refetch = () => {
+    refetchGames();
+    refetchFollowedGames();
+  };
+
+  const games = useMemo(() => {
+    let games: Game[] = [];
+    if (followedGames) games = games.concat(followedGames);
+    if (myGames) games = games.concat(myGames);
+    games = games.filter((game, index) => {
+      return index === games.findIndex((otherGame) => otherGame.id === game.id);
+    });
+    return games.sort((a, b) =>
+      props.type === "upcoming"
+        ? a.date.getTime() - b.date.getTime()
+        : b.date.getTime() - a.date.getTime()
+    );
+  }, [JSON.stringify(followedGames), JSON.stringify(myGames)]);
+
+  return (
+    <GameList
+      {...props}
+      games={games}
+      isFollowed={true}
+      refetch={refetch}
+      isFetching={gamesFetching || followedGamesFetching}
+    />
+  );
 };
 
 const GameList = ({
@@ -62,7 +117,14 @@ const GameList = ({
   type,
   games,
   isFollowed,
-}: Props & { games?: Game[]; isFollowed: boolean }) => {
+  refetch,
+  isFetching,
+}: Props & {
+  games?: Game[];
+  isFollowed: boolean;
+  refetch: (() => Promise<QueryObserverResult<Game[], unknown>>) | (() => void);
+  isFetching: boolean;
+}) => {
   const { colors } = useTheme();
   const today = new Date();
   const gameCards: JSX.Element[] = [];
@@ -147,9 +209,28 @@ const GameList = ({
         gameCards.push(<BookingCard key={index} booking={game} />);
       });
 
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!isFetching) setRefreshing(false);
+  }, [isFetching]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    refetch();
+  };
+
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20 }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[colors.primary]}
+          progressBackgroundColor={colors.secondary}
+        />
+      }
     >
       <DayHeader day="Today" />
       <Text

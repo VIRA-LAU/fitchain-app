@@ -1,5 +1,5 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View, TextInput, Image } from "react-native";
+import { StyleSheet, View, TextInput, Image, ScrollView } from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -76,7 +76,7 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
   };
   return (
     <AppHeader navigation={navigation} route={route} backEnabled autoScroll>
-      <View style={styles.wrapperView}>
+      <ScrollView contentContainerStyle={styles.wrapperView}>
         <Image
           source={require("assets/images/Logo-Icon.png")}
           style={styles.logo}
@@ -113,8 +113,11 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
           >
             Continue
           </Button>
+          <Text style={styles.placeholderText}>
+            {route.params.code ? route.params.code : "Code will appear here."}
+          </Text>
         </View>
-      </View>
+      </ScrollView>
     </AppHeader>
   );
 };
@@ -122,7 +125,7 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      flex: 1,
+      flexGrow: 1,
       backgroundColor: colors.background,
       alignItems: "center",
       paddingBottom: 20,
@@ -164,5 +167,12 @@ const makeStyles = (colors: MD3Colors) =>
       marginTop: "5%",
       height: 50,
       justifyContent: "center",
+    },
+    placeholderText: {
+      height: 50,
+      fontFamily: "Inter-Medium",
+      color: colors.tertiary,
+      textAlign: "center",
+      textAlignVertical: "center",
     },
   });

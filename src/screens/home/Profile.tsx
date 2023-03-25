@@ -1,5 +1,11 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { StyleSheet, View, Image, useWindowDimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  useWindowDimensions,
+  ScrollView,
+} from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { ActivityCard, AppHeader } from "src/components";
@@ -44,7 +50,7 @@ export const Profile = ({
       title={`${firstName} ${lastName}`}
       backEnabled
     >
-      <View>
+      <ScrollView>
         <View style={styles.headerView}>
           <Image
             source={require("assets/images/home/profile-background.png")}
@@ -158,9 +164,15 @@ export const Profile = ({
             {activities?.map((activity: Activity, index: number) => (
               <ActivityCard key={index} {...activity} />
             ))}
+            {!activities ||
+              (activities.length === 0 && (
+                <Text style={styles.placeholderText}>
+                  You have no recent activities.
+                </Text>
+              ))}
           </View>
         </View>
-      </View>
+      </ScrollView>
     </AppHeader>
   );
 };
@@ -278,5 +290,13 @@ const makeStyles = (
     divider: {
       borderColor: colors.secondary,
       borderBottomWidth: 1,
+    },
+    placeholderText: {
+      height: 50,
+      fontFamily: "Inter-Medium",
+      color: colors.tertiary,
+      textAlign: "center",
+      textAlignVertical: "center",
+      marginBottom: -10,
     },
   });

@@ -1,4 +1,10 @@
-import { useWindowDimensions, View, Image, TextInput } from "react-native";
+import {
+  useWindowDimensions,
+  View,
+  Image,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import { StyleSheet } from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
 import type { StackScreenProps } from "@react-navigation/stack";
@@ -44,7 +50,7 @@ export const SignUp = ({
   };
   return (
     <AppHeader autoScroll>
-      <View style={styles.wrapperView}>
+      <ScrollView contentContainerStyle={styles.wrapperView}>
         <Image
           source={require("assets/images/signup/background.png")}
           style={styles.background}
@@ -135,7 +141,7 @@ export const SignUp = ({
             <Text style={styles.buttonText}>Sign up with Mobile Number</Text>
           </Button>
         </View>
-      </View>
+      </ScrollView>
     </AppHeader>
   );
 };
@@ -143,7 +149,7 @@ export const SignUp = ({
 const makeStyles = (fontScale: number, colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      flex: 1,
+      flexGrow: 1,
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: "black",

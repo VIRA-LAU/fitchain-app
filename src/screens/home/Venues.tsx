@@ -1,5 +1,5 @@
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { AppHeader, SportTypeDropdown, VenueCard } from "src/components";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
@@ -44,7 +44,7 @@ export const Venues = ({ navigation, route }: Props) => {
       searchBar
       setSearchBarText={setSearchBarText}
     >
-      <View style={styles.wrapperView}>
+      <ScrollView style={styles.wrapperView}>
         {filteredVenueBranches?.map(
           (venueBranch: VenueBranch, index: number) => (
             <VenueCard
@@ -61,7 +61,7 @@ export const Venues = ({ navigation, route }: Props) => {
             There are no nearby venues.
           </Text>
         )}
-      </View>
+      </ScrollView>
     </AppHeader>
   );
 };

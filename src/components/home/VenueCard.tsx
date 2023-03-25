@@ -19,6 +19,8 @@ export const VenueCard = ({
   venueBranch,
   isPlayScreen = false,
   playScreenBookingDetails,
+  isFirst,
+  isLast,
 }: {
   type: styleOptions;
   promoted?: boolean;
@@ -29,6 +31,8 @@ export const VenueCard = ({
     duration: number;
     gameType: GameType;
   };
+  isFirst?: boolean;
+  isLast?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, type === "horizontal", type === "focused");
@@ -42,7 +46,11 @@ export const VenueCard = ({
 
   return (
     <Pressable
-      style={styles.wrapper}
+      style={[
+        styles.wrapper,
+        isFirst ? { marginLeft: 20 } : {},
+        isLast ? { marginRight: 20 } : {},
+      ]}
       onPress={() => {
         navigation.push("VenueDetails", {
           id: venueBranch.venue.id,
