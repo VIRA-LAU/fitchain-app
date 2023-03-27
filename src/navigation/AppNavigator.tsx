@@ -158,7 +158,9 @@ const Stack = createStackNavigator<HomeStackParamList>();
 
 export const AppNavigator = () => {
   const { userData, setUserData } = useContext(UserContext) as any;
+
   const [signedIn, setSignedIn] = useState<boolean>(false);
+  const [tokenFoundOnOpen, setTokenFoundOnFound] = useState<boolean>(false);
   const { refetch: verifyToken } = useUserDetailsQuery(false, setSignedIn);
 
   const getToken = async () => {
@@ -176,6 +178,7 @@ export const AppNavigator = () => {
         token: token,
       };
       setUserData(fetchedData);
+      setTokenFoundOnFound(true);
     }
   };
 
@@ -184,8 +187,8 @@ export const AppNavigator = () => {
   }, []);
 
   useEffect(() => {
-    if (userData) verifyToken();
-  }, [JSON.stringify(userData)]);
+    if (userData && tokenFoundOnOpen) verifyToken();
+  }, [JSON.stringify(userData), tokenFoundOnOpen]);
 
   if (signedIn)
     return (
