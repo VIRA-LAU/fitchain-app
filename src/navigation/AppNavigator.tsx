@@ -1,6 +1,11 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   useWindowDimensions,
   View,
@@ -36,7 +41,11 @@ import { useUserDetailsQuery } from "src/api";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({
+  setSignedIn,
+}: {
+  setSignedIn: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, useWindowDimensions().width);
   const [playScreenVisible, setPlayScreenVisible] = useState<boolean>(false);
@@ -74,7 +83,13 @@ const BottomTabNavigator = () => {
         <Tab.Screen name="Venues" component={Venues} />
         <Tab.Screen
           name="Profile"
-          children={(props) => <Profile isUserProfile={true} {...props} />}
+          children={(props) => (
+            <Profile
+              isUserProfile={true}
+              setSignedIn={setSignedIn}
+              {...props}
+            />
+          )}
         />
       </Tab.Navigator>
       <View
@@ -193,7 +208,11 @@ export const AppNavigator = () => {
   if (signedIn)
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="BottomBar" component={BottomTabNavigator} />
+        <Stack.Screen name="BottomBar">
+          {(props) => (
+            <BottomTabNavigator {...props} setSignedIn={setSignedIn} />
+          )}
+        </Stack.Screen>
         <Stack.Screen
           name="VenueBookingDetails"
           component={VenueBookingDetails}
