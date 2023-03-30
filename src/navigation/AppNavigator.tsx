@@ -139,7 +139,7 @@ export type HomeStackParamList = {
     bookingDetails: {
       courtId: number;
       date: string;
-      timeSlotId: number;
+      timeSlotIds: number[];
       startTime?: string;
       endTime?: string;
       gameType: GameType;

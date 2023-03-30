@@ -17,7 +17,7 @@ export const BranchCourts = ({ navigation, route }: Props) => {
 
   const { courts, venueName, branchLocation, bookingDetails } = route.params;
 
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot>();
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<TimeSlot[]>([]);
   const [pressedCourt, setPressedCourt] = useState<Court | null>(null);
   const [timeSlotVisible, setTimeSlotVisible] = useState<boolean>(false);
 
@@ -37,19 +37,20 @@ export const BranchCourts = ({ navigation, route }: Props) => {
           visible={timeSlotVisible}
           setVisible={setTimeSlotVisible}
           timeSlots={pressedCourt?.hasTimeSlot}
-          selectedTimeSlot={selectedTimeSlot}
-          setSelectedTimeSlot={setSelectedTimeSlot}
+          selectedTimeSlots={selectedTimeSlots}
+          setSelectedTimeSlots={setSelectedTimeSlots}
           onPress={() => {
-            if (bookingDetails && selectedTimeSlot)
+            if (bookingDetails && selectedTimeSlots)
               navigation.push("VenueBookingDetails", {
                 venueName: venueName,
                 courtType: pressedCourt!.courtType,
                 price: pressedCourt!.price,
                 bookingDetails: {
                   ...bookingDetails,
-                  timeSlotId: selectedTimeSlot.id,
-                  startTime: selectedTimeSlot.startTime,
-                  endTime: selectedTimeSlot.endTime,
+                  timeSlotIds: selectedTimeSlots.map((slot) => slot.id),
+                  startTime: selectedTimeSlots[0].startTime,
+                  endTime:
+                    selectedTimeSlots[selectedTimeSlots.length - 1].endTime,
                   courtId: pressedCourt!.id,
                 },
               });

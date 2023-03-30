@@ -378,7 +378,9 @@ export const Play = ({
               setEndTimeDate(endDate);
             }
           } else {
-            setEndTimeDate(date);
+            if (startTimeDate && date < startTimeDate) {
+              setEndTimeDate(startTimeDate);
+            } else setEndTimeDate(date);
           }
         }}
         onCancel={() => {

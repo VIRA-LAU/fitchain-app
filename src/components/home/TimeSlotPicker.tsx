@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   View,
   StyleSheet,
@@ -9,22 +9,22 @@ import {
 } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { Court, TimeSlot } from "src/types";
+import { TimeSlot } from "src/types";
 
 export const TimeSlotPicker = ({
   visible,
   setVisible,
   onPress,
   timeSlots,
-  selectedTimeSlot,
-  setSelectedTimeSlot,
+  selectedTimeSlots,
+  setSelectedTimeSlots,
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
   onPress: Function;
   timeSlots?: { timeSlot: TimeSlot }[];
-  selectedTimeSlot: TimeSlot | undefined;
-  setSelectedTimeSlot: Dispatch<SetStateAction<TimeSlot | undefined>>;
+  selectedTimeSlots: TimeSlot[];
+  setSelectedTimeSlots: Dispatch<SetStateAction<TimeSlot[]>>;
 }) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
@@ -53,12 +53,23 @@ export const TimeSlotPicker = ({
                   : index === timeSlots.length - 1
                   ? { marginRight: 20 }
                   : {},
-                selectedTimeSlot?.id === timeSlot.id
+                selectedTimeSlots.findIndex(
+                  (slot) => slot.id === timeSlot.id
+                ) !== -1
                   ? { borderColor: colors.primary }
                   : {},
               ]}
               onPress={() => {
-                setSelectedTimeSlot(timeSlot);
+                if (
+                  selectedTimeSlots.findIndex(
+                    (slot) => slot.id === timeSlot.id
+                  ) === -1
+                )
+                  setSelectedTimeSlots([...selectedTimeSlots, timeSlot]);
+                else
+                  setSelectedTimeSlots(
+                    selectedTimeSlots.filter((slot) => slot.id !== timeSlot.id)
+                  );
               }}
             >
               <Text style={styles.timeSlotText}>
@@ -68,11 +79,13 @@ export const TimeSlotPicker = ({
           ))}
         </ScrollView>
         <Button
-          buttonColor={selectedTimeSlot ? colors.primary : colors.tertiary}
+          buttonColor={
+            selectedTimeSlots.length > 0 ? colors.primary : colors.tertiary
+          }
           textColor={"black"}
           style={{ borderRadius: 5, margin: 25 }}
           onPress={
-            selectedTimeSlot
+            selectedTimeSlots.length > 0
               ? () => {
                   onPress();
                   setVisible(false);

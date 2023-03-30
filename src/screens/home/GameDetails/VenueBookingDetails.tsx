@@ -153,7 +153,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             const bookingDate = new Date(JSON.parse(bookingDetails.date));
             createGame({
               courtId: bookingDetails.courtId,
-              timeSlotId: bookingDetails.timeSlotId,
+              timeSlotIds: bookingDetails.timeSlotIds,
               date: bookingDate,
               type: bookingDetails.gameType,
             });
