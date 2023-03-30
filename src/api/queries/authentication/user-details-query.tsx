@@ -12,7 +12,7 @@ const getUserDetails = (userData: UserData) => async () => {
     .get(`/users/me`, header)
     .then((res) => res.data)
     .catch((e) => {
-      console.error("user-details-query", e);
+      // console.error("user-details-query", e);
       throw new Error(e);
     });
 };

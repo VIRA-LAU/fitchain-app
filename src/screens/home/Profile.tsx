@@ -12,7 +12,7 @@ import { ActivityCard, AppHeader } from "src/components";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Activity } from "src/types";
-import { useContext } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import { UserContext } from "src/utils";
 import {
   useActivitiesQuery,
@@ -20,6 +20,7 @@ import {
   useUserDetailsQuery,
 } from "src/api";
 import FeatherIcon from "react-native-vector-icons/Feather";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -27,7 +28,11 @@ export const Profile = ({
   navigation,
   route,
   isUserProfile,
-}: Props & { isUserProfile: boolean }) => {
+  setSignedIn,
+}: Props & {
+  isUserProfile: boolean;
+  setSignedIn: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(
     colors,
@@ -35,7 +40,7 @@ export const Profile = ({
     useWindowDimensions().height
   );
 
-  const { userData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
   const { firstName, lastName } = userData!;
 
   const { data: games } = useGamesQuery();
@@ -46,7 +51,18 @@ export const Profile = ({
     <AppHeader
       navigation={navigation}
       route={route}
-      right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
+      right={
+        <IonIcon
+          name="ellipsis-horizontal"
+          color="white"
+          size={24}
+          onPress={() => {
+            AsyncStorage.clear();
+            setSignedIn(false);
+            setUserData(null);
+          }}
+        />
+      }
       title={`${firstName} ${lastName}`}
       backEnabled
     >

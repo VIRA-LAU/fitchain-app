@@ -1,6 +1,11 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   useWindowDimensions,
   View,
@@ -36,7 +41,11 @@ import { useUserDetailsQuery } from "src/api";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({
+  setSignedIn,
+}: {
+  setSignedIn: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, useWindowDimensions().width);
   const [playScreenVisible, setPlayScreenVisible] = useState<boolean>(false);
@@ -74,7 +83,13 @@ const BottomTabNavigator = () => {
         <Tab.Screen name="Venues" component={Venues} />
         <Tab.Screen
           name="Profile"
-          children={(props) => <Profile isUserProfile={true} {...props} />}
+          children={(props) => (
+            <Profile
+              isUserProfile={true}
+              setSignedIn={setSignedIn}
+              {...props}
+            />
+          )}
         />
       </Tab.Navigator>
       <View
@@ -158,7 +173,9 @@ const Stack = createStackNavigator<HomeStackParamList>();
 
 export const AppNavigator = () => {
   const { userData, setUserData } = useContext(UserContext) as any;
+
   const [signedIn, setSignedIn] = useState<boolean>(false);
+  const [tokenFoundOnOpen, setTokenFoundOnFound] = useState<boolean>(false);
   const { refetch: verifyToken } = useUserDetailsQuery(false, setSignedIn);
 
   const getToken = async () => {
@@ -176,6 +193,7 @@ export const AppNavigator = () => {
         token: token,
       };
       setUserData(fetchedData);
+      setTokenFoundOnFound(true);
     }
   };
 
@@ -184,13 +202,17 @@ export const AppNavigator = () => {
   }, []);
 
   useEffect(() => {
-    if (userData) verifyToken();
-  }, [JSON.stringify(userData)]);
+    if (userData && tokenFoundOnOpen) verifyToken();
+  }, [JSON.stringify(userData), tokenFoundOnOpen]);
 
   if (signedIn)
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="BottomBar" component={BottomTabNavigator} />
+        <Stack.Screen name="BottomBar">
+          {(props) => (
+            <BottomTabNavigator {...props} setSignedIn={setSignedIn} />
+          )}
+        </Stack.Screen>
         <Stack.Screen
           name="VenueBookingDetails"
           component={VenueBookingDetails}
