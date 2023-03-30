@@ -148,7 +148,10 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
           </View>
         </View>
         <Pressable
-          style={styles.paymentView}
+          style={({ pressed }) => [
+            styles.paymentView,
+            pressed ? { backgroundColor: colors.secondary } : {},
+          ]}
           onPress={() => {
             const bookingDate = new Date(JSON.parse(bookingDetails.date));
             createGame({

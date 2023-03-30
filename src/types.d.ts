@@ -19,14 +19,18 @@ export interface User {
 
 export type GameType = "Basketball" | "Football" | "Tennis";
 
+export interface TimeSlot {
+  id: number;
+  startTime: string;
+  endTime: string;
+}
+
 export interface Game {
   id;
   date: Date;
-  timeSlot: {
-    id: number;
-    startTime: string;
-    endTime: string;
-  };
+  gameTimeSlots: {
+    timeSlot: TimeSlot;
+  }[];
   type: GameType;
   court: {
     branch: {
@@ -61,19 +65,13 @@ export interface GameRequest {
   game: Game;
 }
 
-export interface TimeSlot {
-  id: number;
-  startTime: string;
-  endTime: string;
-}
-
 export interface Court {
   id: number;
   courtType: string;
   price: number;
   rating: number;
   branchId;
-  hasTimeSlot: {
+  courtTimeSlots: {
     timeSlot: TimeSlot;
   }[];
 }

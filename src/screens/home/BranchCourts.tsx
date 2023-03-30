@@ -36,7 +36,7 @@ export const BranchCourts = ({ navigation, route }: Props) => {
         <TimeSlotPicker
           visible={timeSlotVisible}
           setVisible={setTimeSlotVisible}
-          timeSlots={pressedCourt?.hasTimeSlot}
+          timeSlots={pressedCourt?.courtTimeSlots}
           selectedTimeSlots={selectedTimeSlots}
           setSelectedTimeSlots={setSelectedTimeSlots}
           onPress={() => {
