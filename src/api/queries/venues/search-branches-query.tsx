@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { useQuery } from "react-query";
+import queryBuilder from "src/api/queryBuilder";
 import { GameType, VenueBranch } from "src/types";
 import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
@@ -10,22 +11,6 @@ type Props = {
   startTime?: string;
   endTime?: string;
   venueId?: number;
-};
-
-const queryBuilder = (params?: any) => {
-  if (!params) return "";
-  const keys = Object.keys(params);
-  if (keys.length === 1) return `?${keys[0]}=${params[keys[0]]}`;
-  else {
-    let output = "?";
-    Object.keys(params).forEach((key, index: number) => {
-      if (params[key]) {
-        output = output + key + "=" + params[key];
-        if (index + 1 !== keys.length) output = output + "&";
-      }
-    });
-    return output;
-  }
 };
 
 const searchBranches = (userData: UserData, params: Props) => async () => {

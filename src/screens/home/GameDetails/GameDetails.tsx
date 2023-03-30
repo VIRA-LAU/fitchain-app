@@ -375,7 +375,11 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   variant="labelLarge"
                   style={{ color: "white", marginTop: -5, marginBottom: 10 }}
                 >
-                  {game.timeSlot.startTime} - {game.timeSlot.endTime}
+                  {game.gameTimeSlots[0].timeSlot.startTime} -{" "}
+                  {
+                    game.gameTimeSlots[game.gameTimeSlots.length - 1].timeSlot
+                      .endTime
+                  }
                 </Text>
               </View>
               {!playerStatus.isAdmin && (

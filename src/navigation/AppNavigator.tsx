@@ -29,6 +29,7 @@ import {
   Venues,
   BranchCourts,
   ChooseVenue,
+  ChooseGame,
 } from "screens";
 import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
@@ -138,7 +139,7 @@ export type HomeStackParamList = {
     bookingDetails: {
       courtId: number;
       date: string;
-      timeSlotId: number;
+      timeSlotIds: number[];
       startTime?: string;
       endTime?: string;
       gameType: GameType;
@@ -157,12 +158,19 @@ export type HomeStackParamList = {
     };
   };
   ChooseVenue: {
+    gameType: GameType;
+    date: string;
     location?: string;
     venueId?: number;
-    date: string;
     startTime?: string;
     endTime?: string;
+  };
+  ChooseGame: {
     gameType: GameType;
+    date?: string;
+    location?: string;
+    startTime?: string;
+    endTime?: string;
   };
   InviteUsers: {
     gameId: number;
@@ -222,6 +230,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="VenueBranches" component={VenueBranches} />
         <Stack.Screen name="BranchCourts" component={BranchCourts} />
         <Stack.Screen name="ChooseVenue" component={ChooseVenue} />
+        <Stack.Screen name="ChooseGame" component={ChooseGame} />
         <Stack.Screen name="InviteUsers" component={InviteUsers} />
       </Stack.Navigator>
     );

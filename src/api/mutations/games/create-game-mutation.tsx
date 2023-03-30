@@ -14,7 +14,7 @@ import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 type Request = {
   courtId: number;
   date: Date;
-  timeSlotId: number;
+  timeSlotIds: number[];
   type: GameType;
 };
 

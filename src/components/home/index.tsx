@@ -4,5 +4,4 @@ export * from "./InvitationCard";
 export * from "./UpcomingGameCard";
 export * from "./VenueCard";
 export * from "./TimeSlotPicker";
-
 export * from "./SportTypeDropdown";

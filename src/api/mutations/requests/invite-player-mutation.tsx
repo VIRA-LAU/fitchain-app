@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 
 type Request = {
   gameId: number;
-  friendId: number[];
+  friendId: number;
   team: "HOME" | "AWAY";
 };
 
@@ -34,11 +34,10 @@ export const useInvitePlayerMutation = () => {
   const queryClient = useQueryClient();
   const navigation = useNavigation();
 
-  return useMutation<Response[], unknown, Request>({
+  return useMutation<Response, unknown, Request>({
     mutationFn: invitePlayer(userData!),
     onSuccess: (data, variables) => {
       queryClient.refetchQueries(["game-players", variables.gameId]);
-      navigation.goBack();
     },
   });
 };

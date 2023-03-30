@@ -24,7 +24,11 @@ export const BookingCard = ({ booking }: { booking: Game }) => {
     day: "numeric",
   });
   const dateString = dateFormatter.format(booking.date);
-  const dateAndTime = `${dateString} - ${booking.timeSlot.startTime} till ${booking.timeSlot.endTime}`;
+  const dateAndTime = `${dateString} - ${
+    booking.gameTimeSlots[0].timeSlot.startTime
+  } till ${
+    booking.gameTimeSlots[booking.gameTimeSlots.length - 1].timeSlot.endTime
+  }`;
 
   const navigation =
     useNavigation<

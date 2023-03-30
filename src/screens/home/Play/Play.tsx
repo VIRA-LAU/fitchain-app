@@ -228,6 +228,18 @@ export const Play = ({
         <View style={styles.dateTime}>
           <View style={styles.dateTimeRow}>
             <Text style={styles.labelText}>Date</Text>
+            {searchDate && (
+              <Text
+                style={styles.reset}
+                onPress={() => {
+                  setSearchDate(null);
+                  setStartTimeDate(null);
+                  setEndTimeDate(null);
+                }}
+              >
+                Reset
+              </Text>
+            )}
             <Text
               style={styles.buttonText}
               onPress={() => setDateTimePickerVisible("date")}
@@ -237,9 +249,29 @@ export const Play = ({
           </View>
           <View style={styles.dateTimeRow}>
             <Text style={styles.labelText}>Start Time</Text>
+            {startTimeDate && (
+              <Text
+                style={styles.reset}
+                onPress={() => {
+                  setStartTimeDate(null);
+                  setEndTimeDate(null);
+                }}
+              >
+                Reset
+              </Text>
+            )}
             <Text
-              style={styles.buttonText}
-              onPress={() => setDateTimePickerVisible("startTime")}
+              style={[
+                styles.buttonText,
+                searchDate
+                  ? { color: colors.primary }
+                  : { color: colors.tertiary },
+              ]}
+              onPress={
+                searchDate
+                  ? () => setDateTimePickerVisible("startTime")
+                  : undefined
+              }
             >
               {selectedStartTime ? selectedStartTime : "Select Time"}
             </Text>
@@ -263,76 +295,100 @@ export const Play = ({
             </Text>
           </View>
         </View>
-
-        <DateTimePickerModal
-          isVisible={dateTimePickerVisible !== false}
-          mode={
-            dateTimePickerVisible
-              ? dateTimePickerVisible === "date"
-                ? "date"
-                : "time"
-              : "date"
-          }
-          date={
-            dateTimePickerVisible === "date" && searchDate
-              ? searchDate
-              : dateTimePickerVisible === "startTime" && startTimeDate
-              ? startTimeDate
-              : dateTimePickerVisible === "endTime" && endTimeDate
-              ? endTimeDate
-              : new Date()
-          }
-          onConfirm={(date) => {
-            setDateTimePickerVisible(false);
-            if (dateTimePickerVisible === "date") {
-              setSearchDate(date);
-            } else if (dateTimePickerVisible === "startTime") {
-              setStartTimeDate(date);
-              if (!endTimeDate || endTimeDate < date) {
-                let endDate = new Date(date);
-                endDate.setHours(endDate.getHours() + 1);
-                setEndTimeDate(endDate);
-              }
-            } else {
-              setEndTimeDate(date);
+        <View style={styles.buttonView}>
+          <Button
+            buttonColor={searchDate ? colors.primary : colors.tertiary}
+            textColor={"black"}
+            style={{ borderRadius: 5, width: !venueId ? "49%" : "100%" }}
+            onPress={
+              searchDate
+                ? () => {
+                    setVisible(false);
+                    navigation.push("ChooseVenue", {
+                      location: !venueId ? searchLocation : undefined,
+                      venueId,
+                      date: JSON.stringify(searchDate),
+                      gameType,
+                      startTime: startTimeDate
+                        ? timeFormatter(startTimeDate, "24")
+                        : undefined,
+                      endTime: endTimeDate
+                        ? timeFormatter(endTimeDate, "24")
+                        : undefined,
+                    });
+                  }
+                : undefined
             }
-          }}
-          onCancel={() => {
-            setDateTimePickerVisible(false);
-          }}
-          isDarkModeEnabled={true}
-          accentColor={colors.primary}
-        />
-
-        <Button
-          buttonColor={
-            searchDate && startTimeDate ? colors.primary : colors.tertiary
-          }
-          textColor={"black"}
-          style={{ borderRadius: 5, marginTop: "auto" }}
-          onPress={
-            searchDate && startTimeDate
-              ? () => {
-                  setVisible(false);
-                  navigation.push("ChooseVenue", {
-                    location: !venueId ? searchLocation : undefined,
-                    venueId,
-                    date: JSON.stringify(searchDate),
-                    gameType,
-                    startTime: startTimeDate
-                      ? timeFormatter(startTimeDate, "24")
-                      : undefined,
-                    endTime: endTimeDate
-                      ? timeFormatter(endTimeDate, "24")
-                      : undefined,
-                  });
-                }
-              : undefined
-          }
-        >
-          {venueId ? "Find a Branch" : "Find Venue"}
-        </Button>
+          >
+            {venueId ? "Find a Branch" : "Find Venue"}
+          </Button>
+          {!venueId && (
+            <Button
+              buttonColor={colors.primary}
+              textColor={"black"}
+              style={{ borderRadius: 5, width: "49%", marginLeft: "2%" }}
+              onPress={() => {
+                setVisible(false);
+                navigation.push("ChooseGame", {
+                  location: !venueId ? searchLocation : undefined,
+                  date: searchDate ? JSON.stringify(searchDate) : undefined,
+                  gameType,
+                  startTime: startTimeDate
+                    ? timeFormatter(startTimeDate, "24")
+                    : undefined,
+                  endTime: endTimeDate
+                    ? timeFormatter(endTimeDate, "24")
+                    : undefined,
+                });
+              }}
+            >
+              Find Game
+            </Button>
+          )}
+        </View>
       </View>
+
+      <DateTimePickerModal
+        isVisible={dateTimePickerVisible !== false}
+        mode={
+          dateTimePickerVisible
+            ? dateTimePickerVisible === "date"
+              ? "date"
+              : "time"
+            : "date"
+        }
+        date={
+          dateTimePickerVisible === "date" && searchDate
+            ? searchDate
+            : dateTimePickerVisible === "startTime" && startTimeDate
+            ? startTimeDate
+            : dateTimePickerVisible === "endTime" && endTimeDate
+            ? endTimeDate
+            : new Date()
+        }
+        onConfirm={(date) => {
+          setDateTimePickerVisible(false);
+          if (dateTimePickerVisible === "date") {
+            setSearchDate(date);
+          } else if (dateTimePickerVisible === "startTime") {
+            setStartTimeDate(date);
+            if (!endTimeDate || endTimeDate < date) {
+              let endDate = new Date(date);
+              endDate.setHours(endDate.getHours() + 1);
+              setEndTimeDate(endDate);
+            }
+          } else {
+            if (startTimeDate && date < startTimeDate) {
+              setEndTimeDate(startTimeDate);
+            } else setEndTimeDate(date);
+          }
+        }}
+        onCancel={() => {
+          setDateTimePickerVisible(false);
+        }}
+        isDarkModeEnabled={true}
+        accentColor={colors.primary}
+      />
     </React.Fragment>
   );
 };
@@ -423,5 +479,15 @@ const makeStyles = (colors: MD3Colors) =>
       flexDirection: "row",
       justifyContent: "space-between",
       marginVertical: 10,
+    },
+    buttonView: {
+      flexDirection: "row",
+      marginTop: "auto",
+    },
+    reset: {
+      marginLeft: "auto",
+      marginRight: 15,
+      fontFamily: "Inter-Medium",
+      color: colors.tertiary,
     },
   });
