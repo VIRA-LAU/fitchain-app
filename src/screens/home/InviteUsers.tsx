@@ -12,7 +12,7 @@ import {
 } from "src/api";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
-import { useState } from "react";
+import React, { useState } from "react";
 
 type Props = StackScreenProps<HomeStackParamList, "InviteUsers">;
 
@@ -28,7 +28,6 @@ export const InviteUsers = ({ navigation, route }: Props) => {
   const { mutate: invitePlayer } = useInvitePlayerMutation();
 
   const [selectedTeam, setSelectedTeam] = useState<"Home" | "Away">("Home");
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
 
   if (!existingPlayers || !users) return <View />;
   return (
@@ -75,90 +74,76 @@ export const InviteUsers = ({ navigation, route }: Props) => {
           </Button>
         </View>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          {users
-            ?.filter(
-              ({ id }) =>
-                existingPlayers.findIndex((player) => player.id === id) === -1
-            )
-            .map((user, index) => (
-              <Pressable
-                key={index}
-                style={[
-                  styles.user,
-                  selectedUsers.includes(user.id) ? { borderWidth: 1 } : {},
-                ]}
-                onPress={() => {
-                  if (!selectedUsers.includes(user.id)) {
-                    setSelectedUsers([...selectedUsers, user.id]);
-                  } else {
-                    setSelectedUsers(
-                      selectedUsers.filter(
-                        (selectedUser) => selectedUser !== user.id
-                      )
-                    );
-                  }
-                }}
-              >
-                <Image
-                  source={require("assets/images/home/profile-picture.png")}
-                  style={{ height: 50, width: 50, marginRight: 20 }}
-                  resizeMode="contain"
-                />
-                <View>
-                  <Text style={styles.name}>
-                    {user.firstName} {user.lastName}
-                  </Text>
+          {users.map((user, index) => (
+            <View key={index} style={styles.user}>
+              <Image
+                source={require("assets/images/home/profile-picture.png")}
+                style={{ height: 45, width: 45, marginRight: 20 }}
+                resizeMode="contain"
+              />
+              <View>
+                <Text style={styles.name}>
+                  {user.firstName} {user.lastName}
+                </Text>
 
-                  <View
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: 5,
+                  }}
+                >
+                  <IonIcon name={"star-outline"} color={"white"} size={14} />
+                  <Text style={[styles.name, { fontSize: 14, marginLeft: 10 }]}>
+                    {user.rating ? user.rating : 0}
+                  </Text>
+                </View>
+              </View>
+              {existingPlayers.findIndex((player) => player.id === user.id) ===
+              -1 ? (
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.inviteView,
+                    pressed ? { borderColor: colors.primary } : {},
+                  ]}
+                  onPress={() => {
+                    invitePlayer({
+                      gameId,
+                      friendId: user.id,
+                      team: selectedTeam.toUpperCase() as "HOME" | "AWAY",
+                    });
+                  }}
+                >
+                  <Text
                     style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginTop: 5,
+                      fontFamily: "Inter-Medium",
+                      color: "white",
                     }}
                   >
-                    <IonIcon name={"star-outline"} color={"white"} size={14} />
-                    <Text
-                      style={[styles.name, { fontSize: 14, marginLeft: 10 }]}
-                    >
-                      {user.rating ? user.rating : 0}
-                    </Text>
-                  </View>
-                </View>
-                {selectedUsers.includes(user.id) && (
+                    Invite
+                  </Text>
+                </Pressable>
+              ) : (
+                <View style={styles.invitedView}>
                   <Feather
-                    name="check"
-                    size={25}
-                    color={colors.primary}
-                    style={{ marginLeft: "auto", marginRight: 10 }}
+                    name="user-check"
+                    size={18}
+                    color={colors.tertiary}
                   />
-                )}
-              </Pressable>
-            ))}
+                  <Text
+                    style={{
+                      fontFamily: "Inter-Medium",
+                      color: colors.tertiary,
+                      marginLeft: 10,
+                    }}
+                  >
+                    Invited
+                  </Text>
+                </View>
+              )}
+            </View>
+          ))}
         </ScrollView>
-
-        <Button
-          buttonColor={
-            selectedUsers.length > 0 ? colors.primary : colors.tertiary
-          }
-          textColor={colors.secondary}
-          style={{ borderRadius: 5 }}
-          icon={({ size, color }) => (
-            <Feather name="user-plus" size={size} color={color} />
-          )}
-          onPress={
-            selectedUsers.length > 0
-              ? () => {
-                  invitePlayer({
-                    gameId,
-                    friendId: selectedUsers,
-                    team: selectedTeam.toUpperCase() as "HOME" | "AWAY",
-                  });
-                }
-              : undefined
-          }
-        >
-          Invite Players
-        </Button>
       </View>
     </AppHeader>
   );
@@ -175,14 +160,12 @@ const makeStyles = (colors: MD3Colors) =>
       margin: 20,
     },
     user: {
-      backgroundColor: colors.secondary,
       flexDirection: "row",
       alignItems: "center",
       height: 80,
-      borderRadius: 10,
-      marginVertical: 10,
-      paddingHorizontal: 20,
-      borderColor: colors.primary,
+      marginVertical: 3,
+      borderBottomColor: colors.tertiary,
+      borderBottomWidth: 0.5,
     },
     name: {
       fontFamily: "Inter-SemiBold",
@@ -192,5 +175,20 @@ const makeStyles = (colors: MD3Colors) =>
     teams: {
       flexDirection: "row",
       marginBottom: 10,
+    },
+    inviteView: {
+      marginLeft: "auto",
+      marginRight: 10,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: "white",
+      padding: 10,
+      paddingHorizontal: 20,
+    },
+    invitedView: {
+      marginLeft: "auto",
+      marginRight: 10,
+      flexDirection: "row",
+      alignItems: "center",
     },
   });

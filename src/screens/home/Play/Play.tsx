@@ -228,6 +228,18 @@ export const Play = ({
         <View style={styles.dateTime}>
           <View style={styles.dateTimeRow}>
             <Text style={styles.labelText}>Date</Text>
+            {searchDate && (
+              <Text
+                style={styles.reset}
+                onPress={() => {
+                  setSearchDate(null);
+                  setStartTimeDate(null);
+                  setEndTimeDate(null);
+                }}
+              >
+                Reset
+              </Text>
+            )}
             <Text
               style={styles.buttonText}
               onPress={() => setDateTimePickerVisible("date")}
@@ -237,6 +249,17 @@ export const Play = ({
           </View>
           <View style={styles.dateTimeRow}>
             <Text style={styles.labelText}>Start Time</Text>
+            {startTimeDate && (
+              <Text
+                style={styles.reset}
+                onPress={() => {
+                  setStartTimeDate(null);
+                  setEndTimeDate(null);
+                }}
+              >
+                Reset
+              </Text>
+            )}
             <Text
               style={[
                 styles.buttonText,
@@ -458,5 +481,11 @@ const makeStyles = (colors: MD3Colors) =>
     buttonView: {
       flexDirection: "row",
       marginTop: "auto",
+    },
+    reset: {
+      marginLeft: "auto",
+      marginRight: 15,
+      fontFamily: "Inter-Medium",
+      color: colors.tertiary,
     },
   });
