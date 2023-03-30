@@ -36,7 +36,7 @@ type Props = {
   isFollowedGames: boolean;
 };
 
-const DayHeader = ({ day }: { day: string }) => {
+export const DayHeader = ({ day }: { day: string }) => {
   const { colors } = useTheme();
   return (
     <Text
