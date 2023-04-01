@@ -60,11 +60,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const { mutate: cancelRequest } =
     useDeleteJoinRequestMutation(setJoinDisabled);
 
-  const durationTimeFormatter = new Intl.DateTimeFormat("en", {
-    hour: "numeric",
-    minute: "numeric",
-  });
-
   const dateHeader = useMemo(() => {
     if (game?.date) {
       let date = new Date(game.date);

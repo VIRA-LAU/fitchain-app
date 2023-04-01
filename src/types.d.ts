@@ -60,7 +60,7 @@ export interface Invitation {
 export interface GameRequest {
   id: number;
   team: string;
-  status: "PENDING" | "APPROVED" | "REJECED";
+  status: "PENDING" | "APPROVED" | "REJECTED";
   user: User;
   game: Game;
 }
@@ -116,6 +116,41 @@ export interface Activity {
   isWinner: boolean;
 }
 
+export interface GameUpdate {
+  admin: {
+    firstName: string;
+    lastName: string;
+  };
+  createdAt: Date;
+  winnerTeam: "HOME" | "AWAY";
+  status: string;
+  gameInvitation: [
+    {
+      createdAt: Date;
+      status: "PENDING" | "APPROVED" | "REJECTED";
+      user: {
+        firstName: string;
+        lastName: string;
+      };
+      friend: {
+        firstName: string;
+        lastName: string;
+      };
+    }
+  ];
+  gameRequests: [
+    {
+      id: number;
+      createdAt: Date;
+      status: "PENDING" | "APPROVED" | "REJECTED";
+      user: {
+        firstName: string;
+        lastName: string;
+      };
+    }
+  ];
+}
+
 export interface TeamPlayer {
   id: number;
   team: "HOME" | "AWAY";
@@ -129,5 +164,5 @@ export interface PlayerStatus {
   hasBeenInvited: false | "APPROVED" | "REJECTED" | "PENDING";
   requestId: number | false;
   invitationId: number | false;
-  isAdmin: false;
+  isAdmin: boolean;
 }

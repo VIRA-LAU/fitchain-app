@@ -38,6 +38,7 @@ export const useInvitePlayerMutation = () => {
     mutationFn: invitePlayer(userData!),
     onSuccess: (data, variables) => {
       queryClient.refetchQueries(["game-players", variables.gameId]);
+      queryClient.refetchQueries(["updates", variables.gameId]);
     },
   });
 };
