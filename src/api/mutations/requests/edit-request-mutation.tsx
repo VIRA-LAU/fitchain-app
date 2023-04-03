@@ -30,6 +30,7 @@ export const useEditJoinRequestMutation = () => {
     onSuccess: (data, variables) => {
       queryClient.refetchQueries("received-requests");
       queryClient.refetchQueries(["game-players", variables.gameId]);
+      queryClient.refetchQueries(["updates", variables.gameId]);
     },
   });
 };

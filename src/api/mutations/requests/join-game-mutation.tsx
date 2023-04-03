@@ -42,6 +42,7 @@ export const useJoinGameMutation = (
       queryClient.refetchQueries(["playerStatus", data.gameId]);
       queryClient.refetchQueries(["games"]);
       queryClient.refetchQueries(["game-players", data.gameId]);
+      queryClient.refetchQueries(["updates", data.gameId]);
       setJoinDisabled(false);
     },
     onError: (e) => {

@@ -34,6 +34,7 @@ export const useRespondToInviteMutation = (
       queryClient.refetchQueries("invitations");
       queryClient.refetchQueries(["playerStatus", variables.gameId]);
       queryClient.refetchQueries(["game-players", variables.gameId]);
+      queryClient.refetchQueries(["updates", variables.gameId]);
     },
     onError: () => {
       if (setJoinDisabled) setJoinDisabled(false);

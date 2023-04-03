@@ -31,6 +31,7 @@ export const useDeleteJoinRequestMutation = (
       queryClient.refetchQueries(["playerStatus", variables.gameId]);
       queryClient.refetchQueries(["games"]);
       queryClient.refetchQueries(["game-players", variables.gameId]);
+      queryClient.refetchQueries(["updates", variables.gameId]);
       setJoinDisabled(false);
     },
     onError: (e) => {

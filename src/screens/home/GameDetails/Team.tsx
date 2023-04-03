@@ -3,7 +3,8 @@ import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BranchLocation, PlayerCard, Update } from "components";
 import { Game, TeamPlayer } from "src/types";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
+import { useUpdatesQuery } from "src/api";
 
 export const Team = ({
   name,
@@ -17,8 +18,65 @@ export const Team = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
+  const { data: gameUpdates } = useUpdatesQuery(game.id);
+
   const [activePlayer, setActivePlayer] = useState<number>(0);
 
+  let updateCards: { card: ReactNode; date: Date }[] = [];
+
+  if (gameUpdates) {
+    updateCards.push({
+      card: (
+        <Update
+          key="created"
+          type="create"
+          name={`${gameUpdates.admin.firstName} ${gameUpdates.admin.lastName}`}
+          date={new Date(gameUpdates.createdAt)}
+          gameId={game.id}
+        />
+      ),
+      date: new Date(gameUpdates.createdAt),
+    });
+    gameUpdates.gameInvitation.forEach((invitation, index) => {
+      if (invitation.status !== "REJECTED")
+        updateCards.push({
+          card: (
+            <Update
+              key={`invitation-${index}`}
+              type={invitation.status === "APPROVED" ? "join" : "invitation"}
+              name={
+                invitation.status === "APPROVED"
+                  ? `${invitation.friend.firstName} ${invitation.friend.lastName}`
+                  : `${invitation.user.firstName} ${invitation.user.lastName}`
+              }
+              friendName={`${invitation.friend.firstName} ${invitation.friend.lastName}`}
+              date={new Date(invitation.createdAt)}
+              gameId={game.id}
+            />
+          ),
+          date: new Date(invitation.createdAt),
+        });
+    });
+    gameUpdates.gameRequests.forEach((request, index) => {
+      if (request.status !== "REJECTED")
+        updateCards.push({
+          card: (
+            <Update
+              key={`request-${index}`}
+              type={request.status === "APPROVED" ? "join" : "join-request"}
+              name={`${request.user.firstName} ${request.user.lastName}`}
+              date={new Date(request.createdAt)}
+              requestId={request.id}
+              gameId={game.id}
+            />
+          ),
+          date: new Date(request.createdAt),
+        });
+    });
+    updateCards = updateCards.sort(
+      (a, b) => b.date.getTime() - a.date.getTime()
+    );
+  }
   return (
     <ScrollView style={{ backgroundColor: colors.background }}>
       <View>
@@ -62,9 +120,7 @@ export const Team = ({
         Updates
       </Text>
       <View style={styles.updatesView}>
-        <Update type="join-request" />
-        <Update type="join" />
-        <Update type="photo-upload" />
+        {updateCards.map(({ card }) => card)}
       </View>
     </ScrollView>
   );
