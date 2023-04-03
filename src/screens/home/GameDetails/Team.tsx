@@ -3,8 +3,9 @@ import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BranchLocation, PlayerCard, Update } from "components";
 import { Game, TeamPlayer } from "src/types";
-import { ReactNode, useState } from "react";
 import { useUpdatesQuery } from "src/api";
+import { ReactNode, useEffect, useState } from "react";
+import { ResultCard } from "src/components/game-details/ResultCard";
 
 export const Team = ({
   name,
@@ -20,6 +21,7 @@ export const Team = ({
 
   const { data: gameUpdates } = useUpdatesQuery(game.id);
 
+  const [upcomingGame, setUpcomingGame] = useState<boolean>();
   const [activePlayer, setActivePlayer] = useState<number>(0);
 
   let updateCards: { card: ReactNode; date: Date }[] = [];
@@ -77,9 +79,25 @@ export const Team = ({
       (a, b) => b.date.getTime() - a.date.getTime()
     );
   }
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const gameDate = new Date(game.date);
+    if (gameDate < currentDate) {
+      setUpcomingGame(false);
+    } else setUpcomingGame(true);
+  }, [game.date]);
+
+  if (typeof upcomingGame === "undefined") return <View />;
   return (
     <ScrollView style={{ backgroundColor: colors.background }}>
       <View>
+        {!upcomingGame && (
+          <View>
+            <ResultCard game={game}></ResultCard>
+            <View style={styles.divider} />
+          </View>
+        )}
         {players && players.length > 0 && (
           <ScrollView
             style={styles.playerCardView}
@@ -96,6 +114,8 @@ export const Team = ({
                 isActive={index === activePlayer}
                 index={index}
                 setActivePlayer={setActivePlayer}
+                upcoming={upcomingGame}
+                gameId={game.id}
               />
             ))}
           </ScrollView>

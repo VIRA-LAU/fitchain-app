@@ -40,8 +40,11 @@ export interface Game {
       };
     };
   };
+  winnerTeam: string;
   admin: User;
   createdAt: Date;
+  homeScore: number;
+  awayScore: number;
 }
 
 export interface Invitation {
@@ -157,6 +160,7 @@ export interface TeamPlayer {
   status: "PENDING" | "APPROVED" | "REJECTED";
   firstName: string;
   lastName: string;
+  rated: boolean;
 }
 
 export interface PlayerStatus {

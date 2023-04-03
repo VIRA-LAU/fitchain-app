@@ -1,3 +1,9 @@
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import {
   View,
   StyleSheet,
@@ -8,23 +14,39 @@ import {
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { TeamPlayer, User } from "src/types";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { TeamPlayer } from "src/types";
 
 export const PlayerCard = ({
   isActive = false,
-  player: { firstName, lastName, status },
+  player: { firstName, lastName, status, id, rated },
   setActivePlayer,
   index,
+  upcoming,
+  gameId,
 }: {
   isActive?: boolean;
   player: TeamPlayer;
   setActivePlayer: React.Dispatch<React.SetStateAction<number>>;
   index: number;
+  upcoming: boolean;
+  gameId: number;
 }) => {
   const { colors } = useTheme();
   const windowWidth = useWindowDimensions().width;
   const styles = makeStyles(colors, windowWidth);
-  const displayedStatus = status === "APPROVED" ? "Confirmed" : "Pending";
+  const displayedStatus = upcoming
+    ? status === "APPROVED"
+      ? "Confirmed"
+      : "Pending"
+    : "Rate";
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<HomeStackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
   return (
     <Pressable
       style={[
@@ -54,8 +76,39 @@ export const PlayerCard = ({
           <IonIcon name={"star"} color={"white"} />
           <Text style={styles.ratingText}>3.6</Text>
         </View>
-        <View style={styles.statusView}>
-          <Text style={styles.statusText}>{displayedStatus}</Text>
+        <View
+          style={[
+            styles.statusView,
+            {
+              backgroundColor: rated ? colors.primary : colors.background,
+              borderWidth: rated ? 0 : 1,
+            },
+          ]}
+        >
+          {!upcoming ? (
+            <Pressable
+              disabled={rated}
+              onPress={() =>
+                navigation.push("RatePlayer", {
+                  playerId: id,
+                  firstName,
+                  lastName,
+                  gameId: gameId,
+                })
+              }
+            >
+              <Text
+                style={[
+                  styles.statusText,
+                  { color: rated ? colors.background : colors.tertiary },
+                ]}
+              >
+                {rated ? "Rated" : "Rate"}
+              </Text>
+            </Pressable>
+          ) : (
+            <Text style={[styles.statusText]}>{displayedStatus}</Text>
+          )}
         </View>
         <IonIcon
           name="ellipsis-horizontal"

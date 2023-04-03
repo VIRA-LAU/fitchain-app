@@ -8,3 +8,4 @@ export * from "./game-players-query";
 export * from "./followed-games-query";
 export * from "./search-games-query";
 export * from "./updates-query";
+export * from "./get-player-team";

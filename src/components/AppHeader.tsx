@@ -1,9 +1,8 @@
-import { useRef } from "react";
 import {
+  Platform,
   StyleSheet,
   View,
   StatusBar,
-  ScrollView,
   Text,
   Image,
   TextInput,
@@ -53,7 +52,6 @@ export const AppHeader = ({
   backgroundImage?: "Basketball" | "Football" | "Tennis";
 }) => {
   const { colors } = useTheme();
-  const scrollViewRef: React.MutableRefObject<ScrollView | null> = useRef(null);
 
   const styles = makeStyles(
     colors,
@@ -62,7 +60,16 @@ export const AppHeader = ({
   );
 
   return (
-    <View style={styles.wrapperView}>
+    <View
+      style={[
+        styles.wrapperView,
+        Platform.OS === "ios"
+          ? {
+              paddingTop: 10,
+            }
+          : {},
+      ]}
+    >
       <View style={absolutePosition ? styles.headerAbsolute : styles.header}>
         <View style={styles.headerContent}>
           {backgroundImage && (

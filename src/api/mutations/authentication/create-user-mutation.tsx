@@ -21,6 +21,7 @@ const createUser = async (data: Request) => {
     .then((res) => res.data)
     .catch((error) => {
       console.error("signup-mutation", error);
+      console.log(error.response?.data);
       throw error;
     });
 };
