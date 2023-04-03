@@ -9,7 +9,10 @@ const getGameById = (userData: UserData, id: number) => async () => {
 
   return await client
     .get(`/games/${id}`, header)
-    .then((res) => res.data)
+    .then((res) => {
+      console.log("get games" + id);
+      return res.data;
+    })
     .catch((e) => {
       console.error("game-by-id-query", e);
       throw new Error(e);

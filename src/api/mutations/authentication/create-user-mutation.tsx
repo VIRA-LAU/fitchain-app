@@ -16,11 +16,13 @@ type Request = {
 };
 
 const createUser = async (data: Request) => {
+  console.log("creating user");
   return await client
     .post("/auth/signup", data)
     .then((res) => res.data)
     .catch((error) => {
       console.error("signup-mutation", error);
+      console.log(error.response?.data);
       throw error;
     });
 };

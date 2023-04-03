@@ -40,6 +40,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
   >(null);
   const [joinDisabled, setJoinDisabled] = useState<boolean>(false);
   const [followDisabled, setFollowDisabled] = useState<boolean>(false);
+  const [upcomingGame, setUpcomingGame] = useState<boolean>(true);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "Home", title: "Home" },
@@ -64,7 +65,11 @@ export const GameDetails = ({ navigation, route }: Props) => {
     hour: "numeric",
     minute: "numeric",
   });
-
+  const currentDate = new Date();
+  if (game?.date && currentDate > game.date) {
+    setJoinDisabled(true);
+    setUpcomingGame(false);
+  }
   const dateHeader = useMemo(() => {
     if (game?.date) {
       let date = new Date(game.date);
@@ -103,7 +108,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
   if (!game || !players || !playerStatus || !followedGames) return <View />;
   else {
     const date = new Date(game.date);
-
     const renderScene = () => {
       const route = routes[index];
       switch (route.key) {

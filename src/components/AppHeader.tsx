@@ -122,6 +122,7 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
     wrapperView: {
       position: "relative",
       flex: 1,
+      paddingTop: 10,
       backgroundColor: colors.background,
     },
     header: {

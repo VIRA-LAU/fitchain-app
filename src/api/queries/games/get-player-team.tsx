@@ -4,24 +4,22 @@ import client, { getHeader } from "../../client";
 import { TeamPlayer } from "src/types";
 import { useContext } from "react";
 
-const getGamePlayers = (userData: UserData, id: number) => async () => {
+const getPlayerTeamQuery = (userData: UserData, gameId: number) => async () => {
   const header = getHeader(userData);
 
   return await client
-    .get(`/games/players/${id}`, header)
-    .then((res) => {
-      return res.data;
-    })
+    .get(`/games/getTeam?gameId=${gameId}`, header)
+    .then((res) => res.data)
     .catch((e) => {
-      console.error("game-players-query", e);
+      console.error("player-team-query", e);
       throw new Error(e);
     });
 };
 
-export const useGamePlayersQuery = (id: number) => {
+export const useGetPlayerTeamQuery = (id: number) => {
   const { userData } = useContext(UserContext);
   return useQuery<TeamPlayer[]>(
-    ["game-players", id],
-    getGamePlayers(userData!, id)
+    ["player-team", id],
+    getPlayerTeamQuery(userData!, id)
   );
 };

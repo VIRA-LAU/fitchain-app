@@ -39,6 +39,7 @@ import { GameType, VenueBranch } from "src/types";
 import { getData } from "src/utils/AsyncStorage";
 import { UserContext } from "src/utils";
 import { useUserDetailsQuery } from "src/api";
+import { RatePlayer } from "src/screens/home/GameDetails/RatePlayer";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
@@ -98,7 +99,8 @@ const BottomTabNavigator = ({
           position: "absolute",
           bottom: 0,
           alignItems: "center",
-          width: "100%",
+          width: "20%",
+          alignSelf: "center",
         }}
       >
         <Pressable
@@ -175,6 +177,12 @@ export type HomeStackParamList = {
   InviteUsers: {
     gameId: number;
   };
+  RatePlayer: {
+    playerId: number;
+    firstName: string;
+    lastName: string;
+    gameId: number;
+  };
 };
 
 const Stack = createStackNavigator<HomeStackParamList>();
@@ -232,6 +240,7 @@ export const AppNavigator = () => {
         <Stack.Screen name="ChooseVenue" component={ChooseVenue} />
         <Stack.Screen name="ChooseGame" component={ChooseGame} />
         <Stack.Screen name="InviteUsers" component={InviteUsers} />
+        <Stack.Screen name="RatePlayer" component={RatePlayer} />
       </Stack.Navigator>
     );
   else return <SignUpNavigator setSignedIn={setSignedIn} />;
