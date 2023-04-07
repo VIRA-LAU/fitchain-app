@@ -5,3 +5,4 @@ export * from "./UpcomingGameCard";
 export * from "./VenueCard";
 export * from "./TimeSlotPicker";
 export * from "./SportTypeDropdown";
+export * from "./MapComponent";

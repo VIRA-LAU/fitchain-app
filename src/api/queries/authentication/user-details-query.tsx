@@ -19,7 +19,8 @@ const getUserDetails = (userData: UserData) => async () => {
 
 export const useUserDetailsQuery = (
   enabled = true,
-  setSignedIn?: Dispatch<SetStateAction<boolean>>
+  setSignedIn?: Dispatch<SetStateAction<boolean>>,
+  setTokenFoundOnOpen?: Dispatch<SetStateAction<boolean>>
 ) => {
   const { userData } = useContext(UserContext);
   return useQuery<User>("user-details", getUserDetails(userData!), {
@@ -30,6 +31,7 @@ export const useUserDetailsQuery = (
     onError: () => {
       AsyncStorage.clear();
       if (setSignedIn) setSignedIn(false);
+      if (setTokenFoundOnOpen) setTokenFoundOnOpen(false);
     },
   });
 };

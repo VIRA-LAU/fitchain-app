@@ -83,6 +83,8 @@ export interface Court {
 export interface Branch {
   id: number;
   location: string;
+  latitude: number;
+  longitude: number;
   venueId: number;
   photoDirectoryURL: string;
   courts: Court[];
