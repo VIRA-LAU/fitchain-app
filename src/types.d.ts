@@ -107,6 +107,8 @@ export interface Venue {
 // Shown in Home page
 export interface VenueBranch {
   location: string;
+  latitude: number;
+  longitude: number;
   venue: {
     id: number;
     name: string;

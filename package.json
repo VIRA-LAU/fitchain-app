@@ -10,6 +10,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.3.28",
     "@react-native-async-storage/async-storage": "^1.17.12",
     "@react-native-community/datetimepicker": "6.5.2",
     "@react-native-community/masked-view": "^0.1.11",

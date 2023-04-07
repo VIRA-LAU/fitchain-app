@@ -7,6 +7,7 @@ import { getData } from "src/utils/AsyncStorage";
 import { UserContext } from "src/utils";
 import { useUserDetailsQuery } from "src/api";
 import { HomeNavigator } from "./HomeNavigator";
+import { LatLng } from "react-native-maps";
 
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
@@ -50,7 +51,7 @@ export type HomeStackParamList = {
   ChooseVenue: {
     gameType: GameType;
     date: string;
-    location?: string;
+    location: LatLng;
     venueId?: number;
     startTime?: string;
     endTime?: string;

@@ -6,8 +6,9 @@ import { HomeStackParamList } from "navigation";
 import { AppHeader, VenueCard } from "src/components";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-gesture-handler";
-import { useSearchBranchesQuery } from "src/api";
+import { sortBranchesByLocation, useSearchBranchesQuery } from "src/api";
 import { VenueBranch } from "src/types";
+import { useEffect, useState } from "react";
 
 type Props = StackScreenProps<HomeStackParamList, "ChooseVenue">;
 
@@ -38,6 +39,20 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
     venueId,
   });
 
+  const [sortedBranches, setSortedBranches] = useState<
+    VenueBranch[] | undefined
+  >(branches);
+
+  useEffect(() => {
+    if (branches) {
+      const sortBranches = async () => {
+        const sorted = await sortBranchesByLocation(branches, location);
+        setSortedBranches(sorted);
+      };
+      sortBranches();
+    }
+  }, [JSON.stringify(branches)]);
+
   return (
     <AppHeader
       absolutePosition={false}
@@ -51,7 +66,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
           <View style={styles.infoView}>
             <IonIcon name={"location-outline"} size={20} color={"white"} />
             <Text variant="labelLarge" style={styles.information}>
-              {location}
+              location string
             </Text>
           </View>
         )}
@@ -66,7 +81,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
             })}
           </Text>
         </View>
-        {branches?.map((venuesBranch: VenueBranch, index: number) => (
+        {sortedBranches?.map((venuesBranch: VenueBranch, index: number) => (
           <VenueCard
             key={index}
             type="horizontal"
@@ -81,8 +96,8 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
             }}
           />
         ))}
-        {!branches ||
-          (branches.length === 0 && (
+        {!sortedBranches ||
+          (sortedBranches.length === 0 && (
             <Text style={styles.placeholderText}>
               There are no venue branches that match your search.
             </Text>

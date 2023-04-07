@@ -110,6 +110,7 @@ export const Play = ({
       >
     >();
 
+  if (!locationMarker) return <View></View>;
   return (
     <React.Fragment>
       <Pressable
@@ -358,7 +359,6 @@ export const Play = ({
                     ? () => {
                         setVisible(false);
                         navigation.push("ChooseVenue", {
-                          location: !venueId ? searchLocation : undefined,
                           venueId,
                           date: JSON.stringify(searchDate),
                           gameType,
@@ -368,6 +368,7 @@ export const Play = ({
                           endTime: endTimeDate
                             ? timeFormatter(endTimeDate, "24")
                             : undefined,
+                          location: locationMarker,
                         });
                       }
                     : undefined
