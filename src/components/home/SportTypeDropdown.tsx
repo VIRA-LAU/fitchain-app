@@ -116,7 +116,7 @@ export const SportTypeDropdown = ({
           style={{ marginLeft: 32.5, width: 25 }}
         />
       </Pressable>
-      <Modal animationType="none" transparent={true} visible={modalVisible}>
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <TouchableOpacity
           style={styles.transparentView}
           onPress={() => {
