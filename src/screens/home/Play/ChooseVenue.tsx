@@ -18,6 +18,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
 
   const {
     location,
+    locationName,
     date: dateStr,
     startTime,
     endTime,
@@ -66,7 +67,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
           <View style={styles.infoView}>
             <IonIcon name={"location-outline"} size={20} color={"white"} />
             <Text variant="labelLarge" style={styles.information}>
-              location string
+              {locationName}
             </Text>
           </View>
         )}

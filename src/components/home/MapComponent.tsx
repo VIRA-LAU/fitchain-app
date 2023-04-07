@@ -2,16 +2,19 @@ import React, { useState, Dispatch, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import MapView, { LatLng, Marker, Region } from "react-native-maps";
 import { Button, useTheme } from "react-native-paper";
+import { getLocationName } from "src/api";
 
 export const MapComponent = ({
   locationMarker,
   setLocationMarker,
+  setLocationName,
   region,
   setRegion,
   setMapDisplayed,
 }: {
   locationMarker: LatLng | undefined;
   setLocationMarker: Dispatch<React.SetStateAction<LatLng | undefined>>;
+  setLocationName: Dispatch<React.SetStateAction<string | undefined>>;
   region: Region;
   setRegion: Dispatch<React.SetStateAction<Region>>;
   setMapDisplayed: Dispatch<React.SetStateAction<boolean>>;
@@ -33,12 +36,14 @@ export const MapComponent = ({
         showsUserLocation
         toolbarEnabled={false}
         userInterfaceStyle="dark"
-        onPress={(e) => {
+        onPress={async (e) => {
           setTempLocationMarker(e.nativeEvent.coordinate);
+          const locationName = await getLocationName(e.nativeEvent.coordinate);
+          setLocationName(locationName);
         }}
       >
         {tempLocationMarker && (
-          <Marker title="Location" coordinate={tempLocationMarker} />
+          <Marker coordinate={tempLocationMarker} tappable={false} />
         )}
       </MapView>
       {locationMarker &&
@@ -84,7 +89,7 @@ export const MiniMapComponent = ({
           longitude: locationMarker.longitude - 0.011,
         }}
       >
-        <Marker title="Location" coordinate={locationMarker} tappable={false} />
+        <Marker coordinate={locationMarker} tappable={false} />
       </MapView>
     </View>
   );

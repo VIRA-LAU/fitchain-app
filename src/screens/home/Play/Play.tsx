@@ -24,6 +24,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { MapComponent } from "src/components";
 import { LatLng, Region } from "react-native-maps";
 import * as Location from "expo-location";
+import { getLocationName } from "src/api";
 
 const timeFormatter = (date: Date, hourMode: "12" | "24" = "12") => {
   if (hourMode === "12") {
@@ -63,9 +64,8 @@ export const Play = ({
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(6);
 
   const [mapDisplayed, setMapDisplayed] = useState<boolean>(false);
-  const [searchLocation, setSearchLocation] =
-    useState<string>("Beirut, Lebanon");
-  const [locationMarker, setLocationMarker] = useState<LatLng>();
+  const [searchLocationName, setSearchLocationName] = useState<string>();
+  const [searchLocationMarker, setSearchLocationMarker] = useState<LatLng>();
   const [initialMapRegion, setInitialMapRegion] = useState<Region>({
     latitude: 33.8938,
     longitude: 35.5018,
@@ -76,7 +76,9 @@ export const Play = ({
   useEffect(() => {
     const getUserLocation = async () => {
       let location = await Location.getCurrentPositionAsync();
-      setLocationMarker(location.coords);
+      setSearchLocationMarker(location.coords);
+      const locationName = await getLocationName(location.coords);
+      setSearchLocationName(locationName);
     };
     getUserLocation();
   }, []);
@@ -110,7 +112,7 @@ export const Play = ({
       >
     >();
 
-  if (!locationMarker) return <View></View>;
+  if (!searchLocationMarker || !searchLocationName) return <View></View>;
   return (
     <React.Fragment>
       <Pressable
@@ -232,7 +234,17 @@ export const Play = ({
                     color={"white"}
                     style={{ marginRight: 10 }}
                   />
-                  <Text style={styles.labelText}>Nearby: {searchLocation}</Text>
+                  <Text
+                    style={[
+                      styles.labelText,
+                      {
+                        minWidth: "75%",
+                        maxWidth: "75%",
+                      },
+                    ]}
+                  >
+                    Nearby: {searchLocationName}
+                  </Text>
                 </View>
                 <Text
                   style={styles.buttonText}
@@ -362,13 +374,14 @@ export const Play = ({
                           venueId,
                           date: JSON.stringify(searchDate),
                           gameType,
+                          location: searchLocationMarker,
+                          locationName: searchLocationName,
                           startTime: startTimeDate
                             ? timeFormatter(startTimeDate, "24")
                             : undefined,
                           endTime: endTimeDate
                             ? timeFormatter(endTimeDate, "24")
                             : undefined,
-                          location: locationMarker,
                         });
                       }
                     : undefined
@@ -383,17 +396,21 @@ export const Play = ({
                   style={{ borderRadius: 5, width: "49%", marginLeft: "2%" }}
                   onPress={() => {
                     setVisible(false);
-                    navigation.push("ChooseGame", {
-                      location: !venueId ? searchLocation : undefined,
-                      date: searchDate ? JSON.stringify(searchDate) : undefined,
-                      gameType,
-                      startTime: startTimeDate
-                        ? timeFormatter(startTimeDate, "24")
-                        : undefined,
-                      endTime: endTimeDate
-                        ? timeFormatter(endTimeDate, "24")
-                        : undefined,
-                    });
+                    if (!venueId)
+                      navigation.push("ChooseGame", {
+                        date: searchDate
+                          ? JSON.stringify(searchDate)
+                          : undefined,
+                        gameType,
+                        location: searchLocationMarker,
+                        locationName: searchLocationName,
+                        startTime: startTimeDate
+                          ? timeFormatter(startTimeDate, "24")
+                          : undefined,
+                        endTime: endTimeDate
+                          ? timeFormatter(endTimeDate, "24")
+                          : undefined,
+                      });
                   }}
                 >
                   Find Game
@@ -403,8 +420,9 @@ export const Play = ({
           </View>
         ) : (
           <MapComponent
-            locationMarker={locationMarker}
-            setLocationMarker={setLocationMarker}
+            locationMarker={searchLocationMarker}
+            setLocationMarker={setSearchLocationMarker}
+            setLocationName={setSearchLocationName}
             setMapDisplayed={setMapDisplayed}
             region={initialMapRegion}
             setRegion={setInitialMapRegion}
@@ -530,6 +548,7 @@ const makeStyles = (colors: MD3Colors) =>
     buttonText: {
       fontFamily: "Inter-Medium",
       color: colors.primary,
+      textAlignVertical: "center",
     },
     dateTime: {
       backgroundColor: colors.secondary,
