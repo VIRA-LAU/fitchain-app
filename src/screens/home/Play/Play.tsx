@@ -61,7 +61,7 @@ export const Play = ({
   const [searchDate, setSearchDate] = useState<Date | null>(null);
   const [startTimeDate, setStartTimeDate] = useState<Date | null>(null);
   const [endTimeDate, setEndTimeDate] = useState<Date | null>(null);
-  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(6);
+  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(1);
 
   const [mapDisplayed, setMapDisplayed] = useState<boolean>(false);
   const [searchLocationName, setSearchLocationName] = useState<string>();
@@ -151,7 +151,11 @@ export const Play = ({
         </View>
         {!mapDisplayed ? (
           <View style={styles.createView}>
-            <ScrollView style={styles.typePicker} horizontal>
+            <ScrollView
+              style={styles.typePicker}
+              showsHorizontalScrollIndicator={false}
+              horizontal
+            >
               <Pressable
                 onPress={() => {
                   setGameType("Basketball");
@@ -270,7 +274,8 @@ export const Play = ({
                   color={colors.primary}
                   size={24}
                   onPress={() => {
-                    setNumberOfPlayers((oldNum) => oldNum - 1);
+                    if (numberOfPlayers > 1)
+                      setNumberOfPlayers((oldNum) => oldNum - 1);
                   }}
                 />
                 <Text
@@ -286,7 +291,8 @@ export const Play = ({
                   color={colors.primary}
                   size={24}
                   onPress={() => {
-                    setNumberOfPlayers((oldNum) => oldNum + 1);
+                    if (numberOfPlayers < 12)
+                      setNumberOfPlayers((oldNum) => oldNum + 1);
                   }}
                 />
               </View>

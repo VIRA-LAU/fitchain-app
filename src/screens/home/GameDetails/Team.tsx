@@ -105,6 +105,7 @@ export const Team = ({
               alignItems: "center",
               paddingHorizontal: 20,
             }}
+            showsHorizontalScrollIndicator={false}
             horizontal
           >
             {players?.map((player: TeamPlayer, index: number) => (

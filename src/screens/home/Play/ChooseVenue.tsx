@@ -45,7 +45,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
   >(branches);
 
   useEffect(() => {
-    if (branches) {
+    if (branches && branches.length > 0) {
       const sortBranches = async () => {
         const sorted = await sortBranchesByLocation(branches, location);
         setSortedBranches(sorted);

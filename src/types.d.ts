@@ -35,6 +35,8 @@ export interface Game {
   court: {
     branch: {
       location: string;
+      latitude: number;
+      longitude: number;
       venue: {
         name: string;
       };

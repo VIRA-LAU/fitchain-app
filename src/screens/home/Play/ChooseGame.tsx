@@ -1,11 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { ScrollView } from "react-native";
 import { Text, useTheme } from "react-native-paper";
-import { useSearchGamesQuery } from "src/api";
+import { sortGamesByLocation, useSearchGamesQuery } from "src/api";
 import { AppHeader, BookingCard } from "src/components";
 import { HomeStackParamList } from "src/navigation";
 import { Game } from "src/types";
 import { DayHeader } from "../Games";
+import { useEffect, useState } from "react";
 
 type Props = StackScreenProps<HomeStackParamList, "ChooseGame">;
 
@@ -37,7 +38,19 @@ export const ChooseGame = ({ navigation, route }: Props) => {
     endTime,
   });
 
-  games?.forEach((game: Game, index: number) => {
+  const [sortedGames, setSortedGames] = useState<Game[] | undefined>(games);
+
+  useEffect(() => {
+    if (games && games.length > 0) {
+      const sortGames = async () => {
+        const sorted = await sortGamesByLocation(games, location);
+        setSortedGames(sorted);
+      };
+      sortGames();
+    }
+  }, [JSON.stringify(games)]);
+
+  sortedGames?.forEach((game: Game, index: number) => {
     const gameDate = new Date(
       game.date.toISOString().substring(0, game.date.toISOString().indexOf("T"))
     );
