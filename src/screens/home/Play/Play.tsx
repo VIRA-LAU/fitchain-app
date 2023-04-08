@@ -66,12 +66,7 @@ export const Play = ({
   const [mapDisplayed, setMapDisplayed] = useState<boolean>(false);
   const [searchLocationName, setSearchLocationName] = useState<string>();
   const [searchLocationMarker, setSearchLocationMarker] = useState<LatLng>();
-  const [initialMapRegion, setInitialMapRegion] = useState<Region>({
-    latitude: 33.8938,
-    longitude: 35.5018,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
+  const [initialMapRegion, setInitialMapRegion] = useState<Region>();
 
   useEffect(() => {
     const getUserLocation = async () => {
@@ -79,6 +74,12 @@ export const Play = ({
       setSearchLocationMarker(location.coords);
       const locationName = await getLocationName(location.coords);
       setSearchLocationName(locationName);
+      setInitialMapRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
     };
     getUserLocation();
   }, []);
@@ -112,7 +113,8 @@ export const Play = ({
       >
     >();
 
-  if (!searchLocationMarker || !searchLocationName) return <View></View>;
+  if (!searchLocationMarker || !searchLocationName || !initialMapRegion)
+    return <View></View>;
   return (
     <React.Fragment>
       <Pressable

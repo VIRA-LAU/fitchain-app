@@ -7,9 +7,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { Image, StyleSheet, View, Pressable } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
-import { Court, Game, VenueBranch } from "src/types";
+import { Court, Game } from "src/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { MiniMapComponent } from "../home";
 
@@ -74,6 +73,14 @@ export const BranchLocation = ({
             locationMarker={{
               latitude: branch.latitude,
               longitude: branch.longitude,
+            }}
+          />
+        )}
+        {court && (
+          <MiniMapComponent
+            locationMarker={{
+              latitude: court.branch.latitude,
+              longitude: court.branch.longitude,
             }}
           />
         )}

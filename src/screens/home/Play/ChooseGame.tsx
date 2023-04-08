@@ -44,7 +44,7 @@ export const ChooseGame = ({ navigation, route }: Props) => {
   });
 
   const [sortedGames, setSortedGames] = useState<Game[] | undefined>(games);
-  const [modalVisible, setModalVisible] = useState<boolean>(true);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [sortOption, setSortOption] = useState<"date" | "location">("date");
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export const ChooseGame = ({ navigation, route }: Props) => {
         );
       }
     }
-  }, [sortOption]);
+  }, [sortOption, JSON.stringify(games)]);
 
   sortedGames?.forEach((game: Game, index: number) => {
     const gameDate = new Date(
