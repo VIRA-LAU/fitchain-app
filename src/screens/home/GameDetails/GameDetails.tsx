@@ -342,143 +342,147 @@ export const GameDetails = ({ navigation, route }: Props) => {
           darkMode
         >
           <View style={styles.wrapperView}>
-            <View style={styles.headerView}>
-              <Text variant="labelLarge" style={styles.greyFont}>
-                {dateHeader}
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  variant="headlineSmall"
-                  style={{ color: "white", marginTop: -5, marginBottom: 10 }}
-                >
-                  {date
-                    .toLocaleDateString(undefined, {
-                      weekday: "long",
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                    .slice(0, -6)}
+            {new Date(game.date) > new Date() ? (
+              <View style={styles.headerView}>
+                <Text variant="labelLarge" style={styles.greyFont}>
+                  {dateHeader}
                 </Text>
-                <Text
-                  variant="labelLarge"
-                  style={{ color: "white", marginTop: -5, marginBottom: 10 }}
-                >
-                  {game.gameTimeSlots[0].timeSlot.startTime} -{" "}
-                  {
-                    game.gameTimeSlots[game.gameTimeSlots.length - 1].timeSlot
-                      .endTime
-                  }
-                </Text>
-              </View>
-              {!playerStatus.isAdmin && (
-                <View style={styles.buttonsView}>
-                  <Button
-                    icon={() => (
-                      <IonIcon
-                        name={"basketball-outline"}
-                        size={26}
-                        color={colors.secondary}
-                      />
-                    )}
-                    style={{
-                      borderRadius: 5,
-                      flex: 1,
-                      backgroundColor: joinDisabled
-                        ? colors.tertiary
-                        : colors.primary,
-                    }}
-                    textColor={colors.secondary}
-                    onPress={
-                      joinDisabled
-                        ? undefined
-                        : playerStatus.hasRequestedtoJoin === "APPROVED" ||
-                          playerStatus.hasRequestedtoJoin === "PENDING" ||
-                          playerStatus.hasBeenInvited === "APPROVED"
-                        ? () => {
-                            setPromptVisible("cancel");
-                          }
-                        : playerStatus.hasBeenInvited === "PENDING"
-                        ? () => {
-                            setPromptVisible("handleInvite");
-                          }
-                        : () => {
-                            setPromptVisible("join");
-                          }
-                    }
-                  >
-                    {playerStatus.hasBeenInvited === "APPROVED" ||
-                    playerStatus.hasRequestedtoJoin === "APPROVED"
-                      ? "Leave Game"
-                      : playerStatus.hasBeenInvited === "PENDING"
-                      ? "Invited to Game"
-                      : playerStatus.hasRequestedtoJoin === "PENDING"
-                      ? "Cancel Request"
-                      : "Join Game"}
-                  </Button>
-                  <Button
-                    icon={() => (
-                      <FontAwesomeIcon
-                        name={
-                          followedGames.some((game) => game.id === id)
-                            ? "thumbs-up"
-                            : "thumbs-o-up"
-                        }
-                        size={22}
-                        color={"white"}
-                      />
-                    )}
-                    style={{ borderRadius: 5, flex: 1 }}
-                    textColor={"white"}
-                    buttonColor={"transparent"}
-                    onPress={
-                      followDisabled
-                        ? undefined
-                        : followedGames.some((game) => game.id === id)
-                        ? () => {
-                            setFollowDisabled(true);
-                            unfollowGame({
-                              gameId: game.id,
-                            });
-                          }
-                        : () => {
-                            setFollowDisabled(true);
-                            followGame({
-                              gameId: game.id,
-                            });
-                          }
-                    }
-                  >
-                    {followedGames.some((game) => game.id === id)
-                      ? "Unfollow Game"
-                      : "Follow Game"}
-                  </Button>
-                </View>
-              )}
-              {(playerStatus.isAdmin ||
-                playerStatus.hasBeenInvited === "APPROVED" ||
-                playerStatus.hasRequestedtoJoin === "APPROVED") && (
-                <Button
-                  buttonColor={colors.primary}
-                  textColor={colors.secondary}
-                  style={{ borderRadius: 5, marginTop: 10 }}
-                  icon={({ size, color }) => (
-                    <Feather name="user-plus" size={size} color={color} />
-                  )}
-                  onPress={() => {
-                    navigation.push("InviteUsers", { gameId: game.id });
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  Invite Players
-                </Button>
-              )}
-            </View>
+                  <Text
+                    variant="headlineSmall"
+                    style={{ color: "white", marginTop: -5, marginBottom: 10 }}
+                  >
+                    {date
+                      .toLocaleDateString(undefined, {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                      .slice(0, -6)}
+                  </Text>
+                  <Text
+                    variant="labelLarge"
+                    style={{ color: "white", marginTop: -5, marginBottom: 10 }}
+                  >
+                    {game.gameTimeSlots[0].timeSlot.startTime} -{" "}
+                    {
+                      game.gameTimeSlots[game.gameTimeSlots.length - 1].timeSlot
+                        .endTime
+                    }
+                  </Text>
+                </View>
+                {!playerStatus.isAdmin && (
+                  <View style={styles.buttonsView}>
+                    <Button
+                      icon={() => (
+                        <IonIcon
+                          name={"basketball-outline"}
+                          size={26}
+                          color={colors.secondary}
+                        />
+                      )}
+                      style={{
+                        borderRadius: 5,
+                        flex: 1,
+                        backgroundColor: joinDisabled
+                          ? colors.tertiary
+                          : colors.primary,
+                      }}
+                      textColor={colors.secondary}
+                      onPress={
+                        joinDisabled
+                          ? undefined
+                          : playerStatus.hasRequestedtoJoin === "APPROVED" ||
+                            playerStatus.hasRequestedtoJoin === "PENDING" ||
+                            playerStatus.hasBeenInvited === "APPROVED"
+                          ? () => {
+                              setPromptVisible("cancel");
+                            }
+                          : playerStatus.hasBeenInvited === "PENDING"
+                          ? () => {
+                              setPromptVisible("handleInvite");
+                            }
+                          : () => {
+                              setPromptVisible("join");
+                            }
+                      }
+                    >
+                      {playerStatus.hasBeenInvited === "APPROVED" ||
+                      playerStatus.hasRequestedtoJoin === "APPROVED"
+                        ? "Leave Game"
+                        : playerStatus.hasBeenInvited === "PENDING"
+                        ? "Invited to Game"
+                        : playerStatus.hasRequestedtoJoin === "PENDING"
+                        ? "Cancel Request"
+                        : "Join Game"}
+                    </Button>
+                    <Button
+                      icon={() => (
+                        <FontAwesomeIcon
+                          name={
+                            followedGames.some((game) => game.id === id)
+                              ? "thumbs-up"
+                              : "thumbs-o-up"
+                          }
+                          size={22}
+                          color={"white"}
+                        />
+                      )}
+                      style={{ borderRadius: 5, flex: 1 }}
+                      textColor={"white"}
+                      buttonColor={"transparent"}
+                      onPress={
+                        followDisabled
+                          ? undefined
+                          : followedGames.some((game) => game.id === id)
+                          ? () => {
+                              setFollowDisabled(true);
+                              unfollowGame({
+                                gameId: game.id,
+                              });
+                            }
+                          : () => {
+                              setFollowDisabled(true);
+                              followGame({
+                                gameId: game.id,
+                              });
+                            }
+                      }
+                    >
+                      {followedGames.some((game) => game.id === id)
+                        ? "Unfollow Game"
+                        : "Follow Game"}
+                    </Button>
+                  </View>
+                )}
+                {(playerStatus.isAdmin ||
+                  playerStatus.hasBeenInvited === "APPROVED" ||
+                  playerStatus.hasRequestedtoJoin === "APPROVED") && (
+                  <Button
+                    buttonColor={colors.primary}
+                    textColor={colors.secondary}
+                    style={{ borderRadius: 5, marginTop: 10 }}
+                    icon={({ size, color }) => (
+                      <Feather name="user-plus" size={size} color={color} />
+                    )}
+                    onPress={() => {
+                      navigation.push("InviteUsers", { gameId: game.id });
+                    }}
+                  >
+                    Invite Players
+                  </Button>
+                )}
+              </View>
+            ) : (
+              <View />
+            )}
 
             <View style={styles.contentView}>
               <TabView

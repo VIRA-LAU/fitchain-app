@@ -7,10 +7,10 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { Image, StyleSheet, View, Pressable } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import OctIcon from "react-native-vector-icons/Octicons";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
-import { Court, Game, VenueBranch } from "src/types";
+import { Court, Game } from "src/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
+import { MiniMapComponent } from "../home";
 
 export const BranchLocation = ({
   type,
@@ -26,6 +26,8 @@ export const BranchLocation = ({
     location: string;
     courts: Court[];
     rating: number;
+    latitude: number;
+    longitude: number;
   };
   team?: "Home" | "Away";
   isPressable?: boolean;
@@ -65,10 +67,24 @@ export const BranchLocation = ({
           });
       }}
     >
-      <Image
-        style={styles.background}
-        source={require("assets/images/home/hoops-location.png")}
-      />
+      <View style={styles.background}>
+        {branch && (
+          <MiniMapComponent
+            locationMarker={{
+              latitude: branch.latitude,
+              longitude: branch.longitude,
+            }}
+          />
+        )}
+        {court && (
+          <MiniMapComponent
+            locationMarker={{
+              latitude: court.branch.latitude,
+              longitude: court.branch.longitude,
+            }}
+          />
+        )}
+      </View>
       <View style={styles.dataView}>
         <View style={styles.headerView}>
           <Image
@@ -130,9 +146,9 @@ export const BranchLocation = ({
           </View>
         )}
       </View>
-      <View style={styles.icon}>
+      {/* <View style={styles.icon}>
         <OctIcon name="location" color="white" size={24} />
-      </View>
+      </View> */}
     </Pressable>
   );
 };

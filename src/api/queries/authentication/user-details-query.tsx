@@ -12,14 +12,14 @@ const getUserDetails = (userData: UserData) => async () => {
     .get(`/users/me`, header)
     .then((res) => res.data)
     .catch((e) => {
-      // console.error("user-details-query", e);
       throw new Error(e);
     });
 };
 
 export const useUserDetailsQuery = (
   enabled = true,
-  setSignedIn?: Dispatch<SetStateAction<boolean>>
+  setSignedIn?: Dispatch<SetStateAction<boolean>>,
+  setTokenFoundOnOpen?: Dispatch<SetStateAction<boolean>>
 ) => {
   const { userData } = useContext(UserContext);
   return useQuery<User>("user-details", getUserDetails(userData!), {
@@ -30,6 +30,7 @@ export const useUserDetailsQuery = (
     onError: () => {
       AsyncStorage.clear();
       if (setSignedIn) setSignedIn(false);
+      if (setTokenFoundOnOpen) setTokenFoundOnOpen(false);
     },
   });
 };

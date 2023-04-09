@@ -6,6 +6,7 @@ import { Game, TeamPlayer } from "src/types";
 import { useUpdatesQuery } from "src/api";
 import { ReactNode, useEffect, useState } from "react";
 import { ResultCard } from "src/components/game-details/ResultCard";
+import { TopPlayersCard } from "src/components/game-details/TopPlayersCard";
 
 export const Team = ({
   name,
@@ -96,6 +97,44 @@ export const Team = ({
           <View>
             <ResultCard game={game}></ResultCard>
             <View style={styles.divider} />
+            <Text
+              variant="labelLarge"
+              style={{ color: colors.tertiary, marginTop: 20, marginLeft: 20 }}
+            >
+              Top Players
+            </Text>
+            <ScrollView
+              horizontal={true}
+              style={{ flex: 1 }}
+              contentContainerStyle={{ minWidth: 480 }}
+            >
+              <View
+                style={{
+                  width: 120,
+                  height: 120,
+                  flexDirection: "row",
+                  marginBottom: 20,
+                }}
+              >
+                <TopPlayersCard
+                  playerName={null}
+                  achievement="MVP"
+                ></TopPlayersCard>
+                <TopPlayersCard
+                  playerName={null}
+                  achievement="Top Scorer"
+                ></TopPlayersCard>
+                <TopPlayersCard
+                  playerName={null}
+                  achievement="Team Player"
+                ></TopPlayersCard>
+                <TopPlayersCard
+                  playerName={null}
+                  achievement="3-Points"
+                ></TopPlayersCard>
+              </View>
+            </ScrollView>
+            <View style={styles.divider} />
           </View>
         )}
         {players && players.length > 0 && (
@@ -105,6 +144,7 @@ export const Team = ({
               alignItems: "center",
               paddingHorizontal: 20,
             }}
+            showsHorizontalScrollIndicator={false}
             horizontal
           >
             {players?.map((player: TeamPlayer, index: number) => (
@@ -114,7 +154,7 @@ export const Team = ({
                 isActive={index === activePlayer}
                 index={index}
                 setActivePlayer={setActivePlayer}
-                upcoming={upcomingGame}
+                upcoming={upcomingGame ? upcomingGame : false}
                 gameId={game.id}
               />
             ))}

@@ -1,10 +1,17 @@
-import React, { useState, Dispatch, SetStateAction, useMemo } from "react";
+import React, {
+  useState,
+  Dispatch,
+  SetStateAction,
+  useMemo,
+  useEffect,
+} from "react";
 import { StyleSheet, View, Image, ScrollView, Pressable } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import {
   CompositeNavigationProp,
   useNavigation,
@@ -14,6 +21,10 @@ import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { GameType } from "src/types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { MapComponent } from "src/components";
+import { LatLng, Region } from "react-native-maps";
+import * as Location from "expo-location";
+import { getLocationName } from "src/api";
 
 const timeFormatter = (date: Date, hourMode: "12" | "24" = "12") => {
   if (hourMode === "12") {
@@ -47,12 +58,31 @@ export const Play = ({
     "date" | "startTime" | "endTime" | false
   >(false);
 
-  const [searchLocation, setSearchLocation] =
-    useState<string>("Beirut, Lebanon");
   const [searchDate, setSearchDate] = useState<Date | null>(null);
   const [startTimeDate, setStartTimeDate] = useState<Date | null>(null);
   const [endTimeDate, setEndTimeDate] = useState<Date | null>(null);
-  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(6);
+  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(1);
+
+  const [mapDisplayed, setMapDisplayed] = useState<boolean>(false);
+  const [searchLocationName, setSearchLocationName] = useState<string>();
+  const [searchLocationMarker, setSearchLocationMarker] = useState<LatLng>();
+  const [initialMapRegion, setInitialMapRegion] = useState<Region>();
+
+  useEffect(() => {
+    const getUserLocation = async () => {
+      let location = await Location.getCurrentPositionAsync();
+      setSearchLocationMarker(location.coords);
+      const locationName = await getLocationName(location.coords);
+      setSearchLocationName(locationName);
+      setInitialMapRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    };
+    getUserLocation();
+  }, []);
 
   const [selectedDate, selectedStartTime, selectedEndTime] = useMemo(() => {
     let [date, startTime, endTime]: (string | null)[] = [null, null, null];
@@ -83,269 +113,329 @@ export const Play = ({
       >
     >();
 
+  if (!searchLocationMarker || !searchLocationName || !initialMapRegion)
+    return <View></View>;
   return (
     <React.Fragment>
       <Pressable
         style={[styles.backgroundView, { display: visible ? "flex" : "none" }]}
         onPress={() => {
           setVisible(false);
+          setMapDisplayed(false);
         }}
       />
       <View
         style={[styles.wrapperView, { display: visible ? "flex" : "none" }]}
       >
         <View style={styles.header}>
+          {mapDisplayed && (
+            <MaterialIcon
+              name="arrow-back"
+              color={"white"}
+              size={24}
+              style={{ position: "absolute", left: 0 }}
+              onPress={() => {
+                setMapDisplayed(false);
+              }}
+            />
+          )}
           <Text style={styles.title}>Create a Game</Text>
           <Feather
             name="x"
             size={24}
             color={"white"}
             style={{ position: "absolute", right: 0 }}
-            onPress={() => setVisible(false)}
+            onPress={() => {
+              setVisible(false);
+              setMapDisplayed(false);
+            }}
           />
         </View>
-        <ScrollView style={styles.typePicker} horizontal>
-          <Pressable
-            onPress={() => {
-              setGameType("Basketball");
-            }}
-            style={[
-              styles.sportType,
-              { marginLeft: 20 },
-              gameType === "Basketball" ? { borderColor: colors.primary } : {},
-            ]}
-          >
-            <Text
-              style={[
-                styles.sportText,
-                gameType === "Basketball" ? { color: colors.primary } : {},
-              ]}
+        {!mapDisplayed ? (
+          <View style={styles.createView}>
+            <ScrollView
+              style={styles.typePicker}
+              showsHorizontalScrollIndicator={false}
+              horizontal
             >
-              Basketball
-            </Text>
-            <Image
-              source={require("assets/images/home/basketball.png")}
-              style={{ width: 30, height: 30 }}
-            />
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setGameType("Football");
-            }}
-            style={[
-              styles.sportType,
-              gameType === "Football" ? { borderColor: colors.primary } : {},
-            ]}
-          >
-            <Text
-              style={[
-                styles.sportText,
-                gameType === "Football" ? { color: colors.primary } : {},
-              ]}
-            >
-              Football
-            </Text>
-            <Image
-              source={require("assets/images/home/football.png")}
-              style={{ width: 30, height: 30 }}
-            />
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setGameType("Tennis");
-            }}
-            style={[
-              styles.sportType,
-              { marginRight: 20 },
-              gameType === "Tennis" ? { borderColor: colors.primary } : {},
-            ]}
-          >
-            <Text
-              style={[
-                styles.sportText,
-                gameType === "Tennis" ? { color: colors.primary } : {},
-              ]}
-            >
-              Tennis
-            </Text>
-            <Image
-              source={require("assets/images/home/tennis.png")}
-              style={{ width: 30, height: 30 }}
-            />
-          </Pressable>
-        </ScrollView>
-        {!venueId && (
-          <View style={styles.contentView}>
-            <View style={styles.contentIconView}>
-              <IonIcon
-                name={"location-outline"}
-                size={20}
-                color={"white"}
-                style={{ marginRight: 10 }}
-              />
-              <Text style={styles.labelText}>Nearby: {searchLocation}</Text>
+              <Pressable
+                onPress={() => {
+                  setGameType("Basketball");
+                }}
+                style={[
+                  styles.sportType,
+                  { marginLeft: 20 },
+                  gameType === "Basketball"
+                    ? { borderColor: colors.primary }
+                    : {},
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.sportText,
+                    gameType === "Basketball" ? { color: colors.primary } : {},
+                  ]}
+                >
+                  Basketball
+                </Text>
+                <Image
+                  source={require("assets/images/home/basketball.png")}
+                  style={{ width: 30, height: 30 }}
+                />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setGameType("Football");
+                }}
+                style={[
+                  styles.sportType,
+                  gameType === "Football"
+                    ? { borderColor: colors.primary }
+                    : {},
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.sportText,
+                    gameType === "Football" ? { color: colors.primary } : {},
+                  ]}
+                >
+                  Football
+                </Text>
+                <Image
+                  source={require("assets/images/home/football.png")}
+                  style={{ width: 30, height: 30 }}
+                />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setGameType("Tennis");
+                }}
+                style={[
+                  styles.sportType,
+                  { marginRight: 20 },
+                  gameType === "Tennis" ? { borderColor: colors.primary } : {},
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.sportText,
+                    gameType === "Tennis" ? { color: colors.primary } : {},
+                  ]}
+                >
+                  Tennis
+                </Text>
+                <Image
+                  source={require("assets/images/home/tennis.png")}
+                  style={{ width: 30, height: 30 }}
+                />
+              </Pressable>
+            </ScrollView>
+            {!venueId && (
+              <View style={styles.contentView}>
+                <View style={styles.contentIconView}>
+                  <IonIcon
+                    name={"location-outline"}
+                    size={20}
+                    color={"white"}
+                    style={{ marginRight: 10 }}
+                  />
+                  <Text
+                    style={[
+                      styles.labelText,
+                      {
+                        minWidth: "75%",
+                        maxWidth: "75%",
+                      },
+                    ]}
+                  >
+                    Nearby: {searchLocationName}
+                  </Text>
+                </View>
+                <Text
+                  style={styles.buttonText}
+                  onPress={() => setMapDisplayed(true)}
+                >
+                  Change
+                </Text>
+              </View>
+            )}
+            <View style={styles.contentView}>
+              <View style={styles.contentIconView}>
+                <MatComIcon
+                  name={"account-outline"}
+                  size={20}
+                  color={"white"}
+                  style={{ marginRight: 10 }}
+                />
+                <Text style={styles.labelText}>How many players?</Text>
+              </View>
+              <View style={styles.contentIconView}>
+                <Feather
+                  name="minus-circle"
+                  color={colors.primary}
+                  size={24}
+                  onPress={() => {
+                    if (numberOfPlayers > 1)
+                      setNumberOfPlayers((oldNum) => oldNum - 1);
+                  }}
+                />
+                <Text
+                  style={[
+                    styles.labelText,
+                    { fontSize: 18, width: 40, textAlign: "center" },
+                  ]}
+                >
+                  {numberOfPlayers}
+                </Text>
+                <Feather
+                  name="plus-circle"
+                  color={colors.primary}
+                  size={24}
+                  onPress={() => {
+                    if (numberOfPlayers < 12)
+                      setNumberOfPlayers((oldNum) => oldNum + 1);
+                  }}
+                />
+              </View>
             </View>
-            <Text style={styles.buttonText}>Change</Text>
-          </View>
-        )}
-        <View style={styles.contentView}>
-          <View style={styles.contentIconView}>
-            <MatComIcon
-              name={"account-outline"}
-              size={20}
-              color={"white"}
-              style={{ marginRight: 10 }}
-            />
-            <Text style={styles.labelText}>How many players?</Text>
-          </View>
-          <View style={styles.contentIconView}>
-            <Feather
-              name="minus-circle"
-              color={colors.primary}
-              size={24}
-              onPress={() => {
-                setNumberOfPlayers((oldNum) => oldNum - 1);
-              }}
-            />
-            <Text
-              style={[
-                styles.labelText,
-                { fontSize: 18, width: 40, textAlign: "center" },
-              ]}
-            >
-              {numberOfPlayers}
-            </Text>
-            <Feather
-              name="plus-circle"
-              color={colors.primary}
-              size={24}
-              onPress={() => {
-                setNumberOfPlayers((oldNum) => oldNum + 1);
-              }}
-            />
-          </View>
-        </View>
-        <View style={styles.dateTime}>
-          <View style={styles.dateTimeRow}>
-            <Text style={styles.labelText}>Date</Text>
-            {searchDate && (
-              <Text
-                style={styles.reset}
-                onPress={() => {
-                  setSearchDate(null);
-                  setStartTimeDate(null);
-                  setEndTimeDate(null);
-                }}
-              >
-                Reset
-              </Text>
-            )}
-            <Text
-              style={styles.buttonText}
-              onPress={() => setDateTimePickerVisible("date")}
-            >
-              {selectedDate ? selectedDate : "Select Date"}
-            </Text>
-          </View>
-          <View style={styles.dateTimeRow}>
-            <Text style={styles.labelText}>Start Time</Text>
-            {startTimeDate && (
-              <Text
-                style={styles.reset}
-                onPress={() => {
-                  setStartTimeDate(null);
-                  setEndTimeDate(null);
-                }}
-              >
-                Reset
-              </Text>
-            )}
-            <Text
-              style={[
-                styles.buttonText,
-                searchDate
-                  ? { color: colors.primary }
-                  : { color: colors.tertiary },
-              ]}
-              onPress={
-                searchDate
-                  ? () => setDateTimePickerVisible("startTime")
-                  : undefined
-              }
-            >
-              {selectedStartTime ? selectedStartTime : "Select Time"}
-            </Text>
-          </View>
-          <View style={styles.dateTimeRow}>
-            <Text style={styles.labelText}>End Time</Text>
-            <Text
-              style={[
-                styles.buttonText,
-                startTimeDate
-                  ? { color: colors.primary }
-                  : { color: colors.tertiary },
-              ]}
-              onPress={
-                startTimeDate
-                  ? () => setDateTimePickerVisible("endTime")
-                  : undefined
-              }
-            >
-              {selectedEndTime ? selectedEndTime : "Select Time"}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.buttonView}>
-          <Button
-            buttonColor={searchDate ? colors.primary : colors.tertiary}
-            textColor={"black"}
-            style={{ borderRadius: 5, width: !venueId ? "49%" : "100%" }}
-            onPress={
-              searchDate
-                ? () => {
-                    setVisible(false);
-                    navigation.push("ChooseVenue", {
-                      location: !venueId ? searchLocation : undefined,
-                      venueId,
-                      date: JSON.stringify(searchDate),
-                      gameType,
-                      startTime: startTimeDate
-                        ? timeFormatter(startTimeDate, "24")
-                        : undefined,
-                      endTime: endTimeDate
-                        ? timeFormatter(endTimeDate, "24")
-                        : undefined,
-                    });
+            <View style={styles.dateTime}>
+              <View style={styles.dateTimeRow}>
+                <Text style={styles.labelText}>Date</Text>
+                {searchDate && (
+                  <Text
+                    style={styles.reset}
+                    onPress={() => {
+                      setSearchDate(null);
+                      setStartTimeDate(null);
+                      setEndTimeDate(null);
+                    }}
+                  >
+                    Reset
+                  </Text>
+                )}
+                <Text
+                  style={styles.buttonText}
+                  onPress={() => setDateTimePickerVisible("date")}
+                >
+                  {selectedDate ? selectedDate : "Select Date"}
+                </Text>
+              </View>
+              <View style={styles.dateTimeRow}>
+                <Text style={styles.labelText}>Start Time</Text>
+                {startTimeDate && (
+                  <Text
+                    style={styles.reset}
+                    onPress={() => {
+                      setStartTimeDate(null);
+                      setEndTimeDate(null);
+                    }}
+                  >
+                    Reset
+                  </Text>
+                )}
+                <Text
+                  style={[
+                    styles.buttonText,
+                    searchDate
+                      ? { color: colors.primary }
+                      : { color: colors.tertiary },
+                  ]}
+                  onPress={
+                    searchDate
+                      ? () => setDateTimePickerVisible("startTime")
+                      : undefined
                   }
-                : undefined
-            }
-          >
-            {venueId ? "Find a Branch" : "Find Venue"}
-          </Button>
-          {!venueId && (
-            <Button
-              buttonColor={colors.primary}
-              textColor={"black"}
-              style={{ borderRadius: 5, width: "49%", marginLeft: "2%" }}
-              onPress={() => {
-                setVisible(false);
-                navigation.push("ChooseGame", {
-                  location: !venueId ? searchLocation : undefined,
-                  date: searchDate ? JSON.stringify(searchDate) : undefined,
-                  gameType,
-                  startTime: startTimeDate
-                    ? timeFormatter(startTimeDate, "24")
-                    : undefined,
-                  endTime: endTimeDate
-                    ? timeFormatter(endTimeDate, "24")
-                    : undefined,
-                });
-              }}
-            >
-              Find Game
-            </Button>
-          )}
-        </View>
+                >
+                  {selectedStartTime ? selectedStartTime : "Select Time"}
+                </Text>
+              </View>
+              <View style={styles.dateTimeRow}>
+                <Text style={styles.labelText}>End Time</Text>
+                <Text
+                  style={[
+                    styles.buttonText,
+                    startTimeDate
+                      ? { color: colors.primary }
+                      : { color: colors.tertiary },
+                  ]}
+                  onPress={
+                    startTimeDate
+                      ? () => setDateTimePickerVisible("endTime")
+                      : undefined
+                  }
+                >
+                  {selectedEndTime ? selectedEndTime : "Select Time"}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.buttonView}>
+              <Button
+                buttonColor={searchDate ? colors.primary : colors.tertiary}
+                textColor={"black"}
+                style={{ borderRadius: 5, width: !venueId ? "49%" : "100%" }}
+                onPress={
+                  searchDate
+                    ? () => {
+                        setVisible(false);
+                        navigation.push("ChooseVenue", {
+                          venueId,
+                          date: JSON.stringify(searchDate),
+                          gameType,
+                          location: searchLocationMarker,
+                          locationName: searchLocationName,
+                          startTime: startTimeDate
+                            ? timeFormatter(startTimeDate, "24")
+                            : undefined,
+                          endTime: endTimeDate
+                            ? timeFormatter(endTimeDate, "24")
+                            : undefined,
+                        });
+                      }
+                    : undefined
+                }
+              >
+                {venueId ? "Find a Branch" : "Find Venue"}
+              </Button>
+              {!venueId && (
+                <Button
+                  buttonColor={colors.primary}
+                  textColor={"black"}
+                  style={{ borderRadius: 5, width: "49%", marginLeft: "2%" }}
+                  onPress={() => {
+                    setVisible(false);
+                    if (!venueId)
+                      navigation.push("ChooseGame", {
+                        date: searchDate
+                          ? JSON.stringify(searchDate)
+                          : undefined,
+                        gameType,
+                        location: searchLocationMarker,
+                        locationName: searchLocationName,
+                        startTime: startTimeDate
+                          ? timeFormatter(startTimeDate, "24")
+                          : undefined,
+                        endTime: endTimeDate
+                          ? timeFormatter(endTimeDate, "24")
+                          : undefined,
+                      });
+                  }}
+                >
+                  Find Game
+                </Button>
+              )}
+            </View>
+          </View>
+        ) : (
+          <MapComponent
+            locationMarker={searchLocationMarker}
+            setLocationMarker={setSearchLocationMarker}
+            setLocationName={setSearchLocationName}
+            setMapDisplayed={setMapDisplayed}
+            region={initialMapRegion}
+            setRegion={setInitialMapRegion}
+          />
+        )}
       </View>
 
       <DateTimePickerModal
@@ -410,8 +500,7 @@ const makeStyles = (colors: MD3Colors) =>
       backgroundColor: colors.background,
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,
-      padding: 20,
-      paddingBottom: 30,
+      paddingTop: 20,
     },
     header: {
       margin: 20,
@@ -445,6 +534,7 @@ const makeStyles = (colors: MD3Colors) =>
       marginRight: 10,
       color: "white",
     },
+    createView: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 30 },
     contentView: {
       backgroundColor: colors.secondary,
       marginTop: 15,
@@ -466,6 +556,7 @@ const makeStyles = (colors: MD3Colors) =>
     buttonText: {
       fontFamily: "Inter-Medium",
       color: colors.primary,
+      textAlignVertical: "center",
     },
     dateTime: {
       backgroundColor: colors.secondary,
@@ -481,8 +572,9 @@ const makeStyles = (colors: MD3Colors) =>
       marginVertical: 10,
     },
     buttonView: {
-      flexDirection: "row",
-      marginTop: "auto",
+      // flexDirection: 'row',
+      marginTop: 20,
+      flex: 1,
     },
     reset: {
       marginLeft: "auto",

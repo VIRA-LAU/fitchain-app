@@ -224,6 +224,7 @@ export const Home = ({ navigation, route }: Props) => {
               marginHorizontal: -20,
             }}
             contentContainerStyle={{ flexGrow: 1 }}
+            showsHorizontalScrollIndicator={false}
             horizontal
           >
             {invitationsRequests}
@@ -238,6 +239,7 @@ export const Home = ({ navigation, route }: Props) => {
         <View>
           <ScrollView
             style={{ flexDirection: "row", marginHorizontal: -20 }}
+            showsHorizontalScrollIndicator={false}
             horizontal
           >
             {branchesVenues?.map((venuesBranch: VenueBranch, index: number) => (

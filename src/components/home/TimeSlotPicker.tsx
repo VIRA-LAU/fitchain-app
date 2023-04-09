@@ -42,7 +42,7 @@ export const TimeSlotPicker = ({
         style={[styles.wrapperView, { display: visible ? "flex" : "none" }]}
       >
         <Text style={styles.title}>Select Time Slot</Text>
-        <ScrollView horizontal>
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal>
           {timeSlots?.map(({ timeSlot }, index) => (
             <Pressable
               key={index}

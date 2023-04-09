@@ -15,6 +15,10 @@ export interface User {
   nationality: string;
   position: string;
   rating: number;
+  performance: number;
+  teamPlayer: number;
+  punctuality: number;
+  fairplay: number;
 }
 
 export type GameType = "Basketball" | "Football" | "Tennis";
@@ -35,6 +39,8 @@ export interface Game {
   court: {
     branch: {
       location: string;
+      latitude: number;
+      longitude: number;
       venue: {
         name: string;
       };
@@ -83,6 +89,8 @@ export interface Court {
 export interface Branch {
   id: number;
   location: string;
+  latitude: number;
+  longitude: number;
   venueId: number;
   photoDirectoryURL: string;
   courts: Court[];
@@ -105,6 +113,8 @@ export interface Venue {
 // Shown in Home page
 export interface VenueBranch {
   location: string;
+  latitude: number;
+  longitude: number;
   venue: {
     id: number;
     name: string;
@@ -161,6 +171,7 @@ export interface TeamPlayer {
   firstName: string;
   lastName: string;
   rated: boolean;
+  rating: number;
 }
 
 export interface PlayerStatus {

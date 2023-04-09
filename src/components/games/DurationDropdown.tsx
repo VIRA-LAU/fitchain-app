@@ -38,7 +38,7 @@ export const DurationDropdown = ({
           style={{ marginLeft: 5 }}
         />
       </Pressable>
-      <Modal animationType="none" transparent={true} visible={modalVisible}>
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <TouchableOpacity
           style={styles.transparentView}
           onPress={() => {
