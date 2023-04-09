@@ -572,8 +572,9 @@ const makeStyles = (colors: MD3Colors) =>
       marginVertical: 10,
     },
     buttonView: {
-      flexDirection: "row",
-      marginTop: "auto",
+      // flexDirection: 'row',
+      marginTop: 20,
+      flex: 1,
     },
     reset: {
       marginLeft: "auto",

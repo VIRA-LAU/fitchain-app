@@ -17,7 +17,6 @@ const sportBackground = {
   Football: <Image source={require("assets/images/home/football.png")} />,
   Tennis: <Image source={require("assets/images/home/tennis.png")} />,
 };
-
 export const AppHeader = ({
   children,
   absolutePosition = true,
@@ -56,7 +55,8 @@ export const AppHeader = ({
   const styles = makeStyles(
     colors,
     darkMode,
-    StatusBar.currentHeight as number
+    StatusBar.currentHeight as number,
+    Platform
   );
 
   return (
@@ -77,7 +77,13 @@ export const AppHeader = ({
               {sportBackground[backgroundImage]}
             </View>
           )}
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingTop: 20,
+            }}
+          >
             {backEnabled && (
               <MaterialIcon
                 name="arrow-back"
@@ -104,7 +110,13 @@ export const AppHeader = ({
             )}
             {middle}
           </View>
-          {right ? right : <View />}
+          {right ? (
+            <View style={{ paddingTop: Platform.OS == "ios" ? 20 : 0 }}>
+              {right}
+            </View>
+          ) : (
+            <View />
+          )}
         </View>
         {searchBar && (
           <View style={styles.searchBarView}>
@@ -124,7 +136,12 @@ export const AppHeader = ({
   );
 };
 
-const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
+const makeStyles = (
+  colors: MD3Colors,
+  darkMode: boolean,
+  SBHeight: number,
+  platform: Object
+) =>
   StyleSheet.create({
     wrapperView: {
       position: "relative",
@@ -147,12 +164,13 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
     },
     headerContent: {
       flexGrow: 1,
-      paddingTop: SBHeight,
+      paddingTop: Platform.OS == "ios" ? 20 + SBHeight : SBHeight,
       minHeight: 65 + SBHeight,
       paddingHorizontal: 20,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
+      paddingBottom: Platform.OS == "ios" ? 10 + SBHeight : SBHeight,
     },
     searchBarView: {
       borderWidth: 1,
@@ -181,6 +199,7 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
       top: SBHeight,
       alignItems: "center",
       justifyContent: "center",
+      paddingTop: Platform.OS == "ios" ? 20 : 0,
     },
     title: {
       color: darkMode ? "black" : "white",
@@ -190,7 +209,7 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
     },
     background: {
       position: "absolute",
-      height: 65 + SBHeight,
+      height: 80 + SBHeight,
       overflow: "hidden",
       justifyContent: "center",
       alignItems: "center",

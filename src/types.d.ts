@@ -15,6 +15,10 @@ export interface User {
   nationality: string;
   position: string;
   rating: number;
+  performance: number;
+  teamPlayer: number;
+  punctuality: number;
+  fairplay: number;
 }
 
 export type GameType = "Basketball" | "Football" | "Tennis";
@@ -167,6 +171,7 @@ export interface TeamPlayer {
   firstName: string;
   lastName: string;
   rated: boolean;
+  rating: number;
 }
 
 export interface PlayerStatus {
