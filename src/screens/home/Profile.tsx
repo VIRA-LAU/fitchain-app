@@ -46,7 +46,6 @@ export const Profile = ({
   const { data: games } = useGamesQuery();
   const { data: userDetails } = useUserDetailsQuery();
   const { data: activities } = useActivitiesQuery();
-
   return (
     <AppHeader
       navigation={navigation}
@@ -114,7 +113,7 @@ export const Profile = ({
             Teams
           </Text>
           <View style={styles.teamsView}>
-            <Text style={styles.rating}>3.6</Text>
+            <Text style={styles.rating}>{userDetails?.rating.toFixed(1)}</Text>
             <View style={styles.ratingLabelsView}>
               <Text style={styles.ratingLabel}>PERFORMANCE</Text>
               <Text style={styles.ratingLabel}>PUNCTUALITY</Text>
@@ -123,16 +122,56 @@ export const Profile = ({
             </View>
             <View style={styles.ratingLinesView}>
               <View style={styles.ratingLineOuter}>
-                <View style={[styles.ratingLineInner, { width: "90%" }]} />
+                <View
+                  style={[
+                    styles.ratingLineInner,
+                    {
+                      width: `${(userDetails?.performance
+                        ? userDetails.performance * 20
+                        : 0
+                      ).toFixed(1)}%`,
+                    },
+                  ]}
+                />
               </View>
               <View style={styles.ratingLineOuter}>
-                <View style={[styles.ratingLineInner, { width: "60%" }]} />
+                <View
+                  style={[
+                    styles.ratingLineInner,
+                    {
+                      width: `${(userDetails?.punctuality
+                        ? userDetails.punctuality * 20
+                        : 0
+                      ).toFixed(1)}%`,
+                    },
+                  ]}
+                />
               </View>
               <View style={styles.ratingLineOuter}>
-                <View style={[styles.ratingLineInner, { width: "80%" }]} />
+                <View
+                  style={[
+                    styles.ratingLineInner,
+                    {
+                      width: `${(userDetails?.teamPlayer
+                        ? userDetails.teamPlayer * 20
+                        : 0
+                      ).toFixed(1)}%`,
+                    },
+                  ]}
+                />
               </View>
               <View style={styles.ratingLineOuter}>
-                <View style={[styles.ratingLineInner, { width: "100%" }]} />
+                <View
+                  style={[
+                    styles.ratingLineInner,
+                    {
+                      width: `${(userDetails?.fairplay
+                        ? userDetails.fairplay * 20
+                        : 0
+                      ).toFixed(1)}%`,
+                    },
+                  ]}
+                />
               </View>
             </View>
           </View>

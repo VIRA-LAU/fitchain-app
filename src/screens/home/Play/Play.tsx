@@ -299,7 +299,7 @@ export const Play = ({
           <Button
             buttonColor={searchDate ? colors.primary : colors.tertiary}
             textColor={"black"}
-            style={{ borderRadius: 5, width: !venueId ? "49%" : "100%" }}
+            style={{ borderRadius: 5, width: "100%" }}
             onPress={
               searchDate
                 ? () => {
@@ -326,7 +326,7 @@ export const Play = ({
             <Button
               buttonColor={colors.primary}
               textColor={"black"}
-              style={{ borderRadius: 5, width: "49%", marginLeft: "2%" }}
+              style={{ borderRadius: 5, marginTop: 10 }}
               onPress={() => {
                 setVisible(false);
                 navigation.push("ChooseGame", {
@@ -481,8 +481,9 @@ const makeStyles = (colors: MD3Colors) =>
       marginVertical: 10,
     },
     buttonView: {
-      flexDirection: "row",
-      marginTop: "auto",
+      // flexDirection: 'row',
+      marginTop: 20,
+      flex: 1,
     },
     reset: {
       marginLeft: "auto",

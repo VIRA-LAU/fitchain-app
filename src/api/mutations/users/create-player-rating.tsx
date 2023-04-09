@@ -38,6 +38,7 @@ export const useCreateRatingMutation = (gameId: number) => {
   return useMutation<unknown, unknown, Object>({
     mutationFn: createRating(userData!),
     onSuccess: () => {
+      queryClient.refetchQueries(["game-players", gameId]);
       navigation.navigate("GameDetails", { id: gameId });
     },
   });

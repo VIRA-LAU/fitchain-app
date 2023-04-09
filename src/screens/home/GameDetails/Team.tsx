@@ -6,6 +6,7 @@ import { Game, TeamPlayer } from "src/types";
 import { useEffect, useState } from "react";
 import { useGetPlayerTeamQuery } from "src/api";
 import { ResultCard } from "src/components/game-details/ResultCard";
+import { TopPlayersCard } from "src/components/game-details/TopPlayersCard";
 
 export const Team = ({
   name,
@@ -34,6 +35,52 @@ export const Team = ({
           <View>
             <ResultCard game={game} upcomingGame={upcomingGame}></ResultCard>
             <View style={styles.divider} />
+            <Text
+              variant="labelLarge"
+              style={{ color: colors.tertiary, marginTop: 20, marginLeft: 20 }}
+            >
+              Top Players
+            </Text>
+            <ScrollView
+              horizontal={true}
+              style={{ flex: 1 }}
+              contentContainerStyle={{ minWidth: 480 }}
+            >
+              <View
+                style={{
+                  width: 120,
+                  height: 120,
+                  flexDirection: "row",
+                  marginBottom: 20,
+                }}
+              >
+                <TopPlayersCard
+                  playerName={null}
+                  achievement="MVP"
+                  game={game}
+                  upcomingGame={upcomingGame}
+                ></TopPlayersCard>
+                <TopPlayersCard
+                  playerName={null}
+                  achievement="Top Scorer"
+                  game={game}
+                  upcomingGame={upcomingGame}
+                ></TopPlayersCard>
+                <TopPlayersCard
+                  playerName={null}
+                  achievement="Team Player"
+                  game={game}
+                  upcomingGame={upcomingGame}
+                ></TopPlayersCard>
+                <TopPlayersCard
+                  playerName={null}
+                  achievement="3-Points"
+                  game={game}
+                  upcomingGame={upcomingGame}
+                ></TopPlayersCard>
+              </View>
+            </ScrollView>
+            <View style={styles.divider} />
           </View>
         )}
         {players && players.length > 0 && (
@@ -52,7 +99,7 @@ export const Team = ({
                 isActive={index === activePlayer}
                 index={index}
                 setActivePlayer={setActivePlayer}
-                upcoming={upcomingGame}
+                upcoming={upcomingGame ? upcomingGame : false}
                 gameId={game.id}
               />
             ))}

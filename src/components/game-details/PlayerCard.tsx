@@ -4,6 +4,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -16,10 +17,11 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { TeamPlayer, User } from "src/types";
+import { UserContext } from "src/utils";
 
 export const PlayerCard = ({
   isActive = false,
-  player: { firstName, lastName, status, id, rated },
+  player: { firstName, lastName, status, id, rated, rating },
   setActivePlayer,
   index,
   upcoming,
@@ -47,6 +49,8 @@ export const PlayerCard = ({
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
+  const { userData } = useContext(UserContext);
+
   return (
     <Pressable
       style={[
@@ -74,20 +78,23 @@ export const PlayerCard = ({
         </Text>
         <View style={styles.ratingView}>
           <IonIcon name={"star"} color={"white"} />
-          <Text style={styles.ratingText}>3.6</Text>
+          <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
         </View>
         <View
           style={[
             styles.statusView,
             {
-              backgroundColor: rated ? colors.primary : colors.background,
-              borderWidth: rated ? 0 : 1,
+              backgroundColor:
+                rated || userData?.userId == id
+                  ? colors.primary
+                  : colors.background,
+              borderWidth: rated || userData?.userId == id ? 0 : 1,
             },
           ]}
         >
           {!upcoming ? (
             <Pressable
-              disabled={rated}
+              disabled={rated || id == userData?.userId}
               onPress={() =>
                 navigation.push("RatePlayer", {
                   playerId: id,
@@ -100,10 +107,15 @@ export const PlayerCard = ({
               <Text
                 style={[
                   styles.statusText,
-                  { color: rated ? colors.background : colors.tertiary },
+                  {
+                    color:
+                      rated || userData?.userId == id
+                        ? colors.background
+                        : colors.tertiary,
+                  },
                 ]}
               >
-                {rated ? "Rated" : "Rate"}
+                {id == userData?.userId ? "You" : rated ? "Rated" : "Rate"}
               </Text>
             </Pressable>
           ) : (
