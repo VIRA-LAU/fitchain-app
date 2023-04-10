@@ -256,7 +256,8 @@ export const VenueDetails = ({ navigation, route }: Props) => {
             </View>
           )}
           {isPlayScreen && (
-            <Pressable
+            <TouchableOpacity
+              activeOpacity={0.6}
               style={styles.bookCourtPressable}
               onPress={() => {
                 navigation.push("BranchCourts", {
@@ -280,7 +281,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
                   USD {pricesStr}/hr
                 </Text>
               </View>
-            </Pressable>
+            </TouchableOpacity>
           )}
         </View>
       </ScrollView>

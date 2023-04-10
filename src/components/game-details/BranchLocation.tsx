@@ -160,6 +160,7 @@ const makeStyles = (colors: MD3Colors) =>
       flexDirection: "row",
       alignItems: "center",
       marginBottom: 10,
+      width: "100%",
     },
     background: {
       position: "absolute",

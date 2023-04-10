@@ -6,6 +6,7 @@ import {
   Text,
   useWindowDimensions,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -44,7 +45,8 @@ export const TimeSlotPicker = ({
         <Text style={styles.title}>Select Time Slot</Text>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal>
           {timeSlots?.map(({ timeSlot }, index) => (
-            <Pressable
+            <TouchableOpacity
+              activeOpacity={0.6}
               key={index}
               style={[
                 styles.timeSlotView,
@@ -75,7 +77,7 @@ export const TimeSlotPicker = ({
               <Text style={styles.timeSlotText}>
                 {timeSlot.startTime} - {timeSlot.endTime}
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           ))}
         </ScrollView>
         <Button

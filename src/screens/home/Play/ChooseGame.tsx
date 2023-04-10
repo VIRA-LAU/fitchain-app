@@ -108,14 +108,13 @@ export const ChooseGame = ({ navigation, route }: Props) => {
       route={route}
       title={"Choose Game"}
       right={
-        <MaterialIcon
-          name="sort"
-          color={"white"}
-          size={24}
+        <TouchableOpacity
           onPress={() => {
             setModalVisible(true);
           }}
-        />
+        >
+          <MaterialIcon name="sort" color={"white"} size={24} />
+        </TouchableOpacity>
       }
       backEnabled
     >
@@ -128,7 +127,7 @@ export const ChooseGame = ({ navigation, route }: Props) => {
         />
         <View style={styles.modalView}>
           <Text style={styles.modalTitle}>Sort By</Text>
-          <Pressable
+          <TouchableOpacity
             onPress={() => {
               setSortOption("date");
             }}
@@ -151,8 +150,8 @@ export const ChooseGame = ({ navigation, route }: Props) => {
                 />
               )}
             </View>
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => {
               setSortOption("location");
             }}
@@ -175,7 +174,7 @@ export const ChooseGame = ({ navigation, route }: Props) => {
                 />
               )}
             </View>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </Modal>
       <ScrollView

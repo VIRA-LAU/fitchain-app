@@ -36,7 +36,16 @@ export type HomeStackParamList = {
       gameType: GameType;
     };
   };
-  VenueBranches: { id: number; venueName: string };
+  VenueBranches: {
+    id: number;
+    venueName: string;
+    gameType: GameType;
+    date: string;
+    location: LatLng;
+    locationName: string;
+    startTime?: string;
+    endTime?: string;
+  };
   BranchCourts: {
     venueName: string;
     courts: VenueBranch["courts"];

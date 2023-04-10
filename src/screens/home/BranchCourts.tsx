@@ -63,7 +63,6 @@ export const BranchCourts = ({ navigation, route }: Props) => {
             venueName={venueName}
             type={court.courtType}
             price={court.price}
-            bookingDetails={bookingDetails}
             onPress={() => {
               setPressedCourt(court);
               setTimeSlotVisible(true);

@@ -335,16 +335,16 @@ export const Play = ({
               <View style={styles.dateTimeRow}>
                 <Text style={styles.labelText}>Date</Text>
                 {searchDate && (
-                  <Text
-                    style={styles.reset}
+                  <TouchableOpacity
+                    style={styles.resetView}
                     onPress={() => {
                       setSearchDate(null);
                       setStartTimeDate(null);
                       setEndTimeDate(null);
                     }}
                   >
-                    Reset
-                  </Text>
+                    <Text style={styles.reset}>Reset</Text>
+                  </TouchableOpacity>
                 )}
                 <TouchableOpacity
                   onPress={() => setDateTimePickerVisible("date")}
@@ -357,15 +357,15 @@ export const Play = ({
               <View style={styles.dateTimeRow}>
                 <Text style={styles.labelText}>Start Time</Text>
                 {startTimeDate && (
-                  <Text
-                    style={styles.reset}
+                  <TouchableOpacity
+                    style={styles.resetView}
                     onPress={() => {
                       setStartTimeDate(null);
                       setEndTimeDate(null);
                     }}
                   >
-                    Reset
-                  </Text>
+                    <Text style={styles.reset}>Reset</Text>
+                  </TouchableOpacity>
                 )}
                 <TouchableOpacity
                   onPress={
@@ -617,9 +617,11 @@ const makeStyles = (colors: MD3Colors) =>
       paddingTop: 20,
       width: "100%",
     },
-    reset: {
+    resetView: {
       marginLeft: "auto",
       marginRight: 15,
+    },
+    reset: {
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
     },

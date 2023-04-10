@@ -1,24 +1,13 @@
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import {
-  CompositeNavigationProp,
-  useNavigation,
-} from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { Image, StyleSheet, View, Pressable } from "react-native";
+import { Image, StyleSheet, View, TouchableOpacity } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { BottomTabParamList, HomeStackParamList } from "navigation";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import { GameType } from "src/types";
 
 export const CourtCard = ({
-  id,
-  venueName,
   type,
   // rating,
   price,
   rating,
-  bookingDetails,
   onPress,
 }: {
   id: number;
@@ -27,27 +16,17 @@ export const CourtCard = ({
   // rating: number;
   price: number;
   rating: number;
-  bookingDetails?: {
-    date: string;
-    startTime?: string;
-    endTime?: string;
-    gameType: GameType;
-  };
   onPress: Function;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const navigation =
-    useNavigation<
-      CompositeNavigationProp<
-        StackNavigationProp<HomeStackParamList>,
-        BottomTabNavigationProp<BottomTabParamList>
-      >
-    >();
-
   return (
-    <Pressable style={styles.wrapperView} onPress={() => onPress()}>
+    <TouchableOpacity
+      activeOpacity={0.6}
+      style={styles.wrapperView}
+      onPress={() => onPress()}
+    >
       <View style={styles.contentView}>
         <Image
           style={styles.courtImage}
@@ -81,7 +60,7 @@ export const CourtCard = ({
         </View>
       </View>
       <View style={styles.lineStyle} />
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

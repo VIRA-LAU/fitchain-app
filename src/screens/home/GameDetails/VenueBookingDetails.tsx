@@ -1,4 +1,11 @@
-import { View, StyleSheet, Image, Pressable, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Pressable,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { useTheme, Text } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { AppHeader } from "src/components";
@@ -147,11 +154,9 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             </Text>
           </View>
         </View>
-        <Pressable
-          style={({ pressed }) => [
-            styles.paymentView,
-            pressed ? { backgroundColor: colors.secondary } : {},
-          ]}
+        <TouchableOpacity
+          activeOpacity={0.6}
+          style={styles.paymentView}
           onPress={() => {
             const bookingDate = new Date(JSON.parse(bookingDetails.date));
             createGame({
@@ -171,7 +176,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
           <Text style={{ fontFamily: "Inter-SemiBold" }}>
             Continue To Payment
           </Text>
-        </Pressable>
+        </TouchableOpacity>
       </ScrollView>
     </AppHeader>
   );
