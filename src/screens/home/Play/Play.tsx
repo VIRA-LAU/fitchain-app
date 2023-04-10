@@ -31,7 +31,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { MapComponent } from "src/components";
 import { LatLng, Region } from "react-native-maps";
 import * as Location from "expo-location";
-import { getLocationName } from "src/api";
+import { useLocationNameQuery } from "src/api";
 
 const timeFormatter = (date: Date, hourMode: "12" | "24" = "12") => {
   if (hourMode === "12") {
@@ -71,16 +71,16 @@ export const Play = ({
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(1);
 
   const [mapDisplayed, setMapDisplayed] = useState<boolean>(false);
-  const [searchLocationName, setSearchLocationName] = useState<string>();
   const [searchLocationMarker, setSearchLocationMarker] = useState<LatLng>();
   const [initialMapRegion, setInitialMapRegion] = useState<Region>();
+
+  const { data: searchLocationName, refetch: getLocationName } =
+    useLocationNameQuery(searchLocationMarker);
 
   useEffect(() => {
     const getUserLocation = async () => {
       let location = await Location.getCurrentPositionAsync();
       setSearchLocationMarker(location.coords);
-      const locationName = await getLocationName(location.coords);
-      setSearchLocationName(locationName);
       setInitialMapRegion({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -90,6 +90,10 @@ export const Play = ({
     };
     getUserLocation();
   }, []);
+
+  useEffect(() => {
+    if (searchLocationMarker) getLocationName();
+  }, [JSON.stringify(searchLocationMarker)]);
 
   const [selectedDate, selectedStartTime, selectedEndTime] = useMemo(() => {
     let [date, startTime, endTime]: (string | null)[] = [null, null, null];
@@ -270,6 +274,7 @@ export const Play = ({
                     !searchLocationName ||
                     !initialMapRegion
                   }
+                  style={{ justifyContent: "center" }}
                 >
                   <Text
                     style={[
@@ -471,7 +476,6 @@ export const Play = ({
           <MapComponent
             locationMarker={searchLocationMarker}
             setLocationMarker={setSearchLocationMarker}
-            setLocationName={setSearchLocationName}
             setMapDisplayed={setMapDisplayed}
             region={initialMapRegion!}
             setRegion={setInitialMapRegion}

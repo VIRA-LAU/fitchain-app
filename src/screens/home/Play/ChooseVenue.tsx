@@ -6,9 +6,11 @@ import { HomeStackParamList } from "navigation";
 import { AppHeader, VenueCard } from "src/components";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-gesture-handler";
-import { sortBranchesByLocation, useSearchBranchesQuery } from "src/api";
+import {
+  useSortBranchesByLocationQuery,
+  useSearchBranchesQuery,
+} from "src/api";
 import { VenueBranch } from "src/types";
-import { useEffect, useState } from "react";
 
 type Props = StackScreenProps<HomeStackParamList, "ChooseVenue">;
 
@@ -40,19 +42,10 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
     venueId,
   });
 
-  const [sortedBranches, setSortedBranches] = useState<
-    VenueBranch[] | undefined
-  >(branches);
-
-  useEffect(() => {
-    if (branches && branches.length > 0) {
-      const sortBranches = async () => {
-        const sorted = await sortBranchesByLocation(branches, location);
-        setSortedBranches(sorted);
-      };
-      sortBranches();
-    }
-  }, [JSON.stringify(branches)]);
+  const { data: sortedBranches } = useSortBranchesByLocationQuery(
+    branches,
+    location
+  );
 
   return (
     <AppHeader

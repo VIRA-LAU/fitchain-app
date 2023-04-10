@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Modal, ScrollView, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
-import { sortGamesByLocation, useSearchGamesQuery } from "src/api";
+import { useSortGamesByLocationQuery, useSearchGamesQuery } from "src/api";
 import { AppHeader, BookingCard } from "src/components";
 import { HomeStackParamList } from "src/navigation";
 import { Game } from "src/types";
@@ -43,28 +43,31 @@ export const ChooseGame = ({ navigation, route }: Props) => {
     endTime,
   });
 
+  const { data: sortedGamesByLocation, refetch: sortGamesByLocation } =
+    useSortGamesByLocationQuery(games, location);
+
   const [sortedGames, setSortedGames] = useState<Game[] | undefined>(games);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [sortOption, setSortOption] = useState<"date" | "location">("date");
 
   useEffect(() => {
-    setTimeout(() => {
-      setModalVisible(false);
-    }, 10);
     if (games && games.length > 0) {
       if (sortOption === "location") {
-        const sortGames = async () => {
-          const sorted = await sortGamesByLocation(games, location);
-          setSortedGames(sorted);
-        };
-        sortGames();
+        sortGamesByLocation();
       } else {
         setSortedGames(
           games.sort((a, b) => a.date.getTime() - b.date.getTime())
         );
       }
     }
+    setModalVisible(false);
   }, [sortOption, JSON.stringify(games)]);
+
+  useEffect(() => {
+    if (sortOption === "location" && sortedGamesByLocation) {
+      setSortedGames(sortedGamesByLocation);
+    }
+  }, [sortOption, JSON.stringify(sortedGamesByLocation)]);
 
   sortedGames?.forEach((game: Game, index: number) => {
     const gameDate = new Date(
