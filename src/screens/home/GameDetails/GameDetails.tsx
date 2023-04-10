@@ -140,7 +140,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
           let isActive = route.key === props.navigationState.routes[index].key;
           return (
             <Pressable
-              style={[
+              style={({ pressed }) => [
                 styles.tabViewItem,
                 {
                   width: 0.5 * (windowWidth - 40 - 20),
@@ -148,6 +148,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     ? colors.background
                     : colors.secondary,
                 },
+                pressed && { backgroundColor: colors.background },
               ]}
               onPress={() => {
                 setIndex(routes.findIndex(({ key }) => route.key === key));
@@ -506,7 +507,7 @@ const makeStyles = (colors: MD3Colors) =>
       flex: 1,
     },
     headerView: {
-      paddingTop: 10,
+      paddingVertical: 10,
       paddingHorizontal: 20,
       borderRadius: 10,
       backgroundColor: colors.secondary,

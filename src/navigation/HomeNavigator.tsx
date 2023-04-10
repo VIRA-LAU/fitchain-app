@@ -6,6 +6,7 @@ import {
   Pressable,
   StyleSheet,
   BackHandler,
+  TouchableOpacity,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { Text, useTheme } from "react-native-paper";
@@ -104,7 +105,8 @@ const BottomTabNavigator = ({
           alignSelf: "center",
         }}
       >
-        <Pressable
+        <TouchableOpacity
+          activeOpacity={0.6}
           style={styles.playIconView}
           onPress={() => {
             setPlayScreenVisible(true);
@@ -114,7 +116,7 @@ const BottomTabNavigator = ({
             <IonIcon name={"basketball-outline"} size={35} color={"white"} />
           </View>
           <Text style={styles.playText}>Play</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
       <Play visible={playScreenVisible} setVisible={setPlayScreenVisible} />
     </View>

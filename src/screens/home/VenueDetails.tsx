@@ -5,6 +5,7 @@ import {
   useWindowDimensions,
   ScrollView,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -78,7 +79,8 @@ export const VenueDetails = ({ navigation, route }: Props) => {
             <Text style={styles.headerText}>{venue?.description}</Text>
             {!isPlayScreen && (
               <View style={styles.buttonsView}>
-                <Pressable
+                <TouchableOpacity
+                  activeOpacity={0.6}
                   style={styles.headerBookCourtPressable}
                   onPress={() => {
                     setPlayScreenVisible(true);
@@ -100,7 +102,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
                       USD {pricesStr}/hr
                     </Text>
                   </View>
-                </Pressable>
+                </TouchableOpacity>
 
                 <Button
                   icon={() => (

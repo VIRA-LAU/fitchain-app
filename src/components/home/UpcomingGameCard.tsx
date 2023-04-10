@@ -1,6 +1,13 @@
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList, BottomTabParamList } from "src/navigation";
@@ -53,7 +60,8 @@ export const UpcomingGameCard = ({ game }: { game: Game }) => {
   }, []);
 
   return (
-    <Pressable
+    <TouchableOpacity
+      activeOpacity={0.6}
       style={styles.wrapper}
       onPress={() => navigation.push("GameDetails", { id: game.id })}
     >
@@ -75,7 +83,7 @@ export const UpcomingGameCard = ({ game }: { game: Game }) => {
         }
         style={styles.gameIcon}
       />
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

@@ -6,6 +6,7 @@ import {
   Text,
   Image,
   TextInput,
+  TouchableOpacity,
 } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -85,15 +86,18 @@ export const AppHeader = ({
             }}
           >
             {backEnabled && (
-              <MaterialIcon
-                name="arrow-back"
-                color={darkMode ? "black" : "white"}
-                size={25}
+              <TouchableOpacity
                 onPress={() => {
                   navigation.goBack();
                 }}
-                style={{ marginRight: 20 }}
-              />
+              >
+                <MaterialIcon
+                  name="arrow-back"
+                  color={darkMode ? "black" : "white"}
+                  size={25}
+                  style={{ marginRight: 20 }}
+                />
+              </TouchableOpacity>
             )}
             {left}
           </View>

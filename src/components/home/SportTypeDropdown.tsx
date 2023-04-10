@@ -104,7 +104,8 @@ export const SportTypeDropdown = ({
 
   return (
     <View>
-      <Pressable
+      <TouchableOpacity
+        activeOpacity={0.6}
         style={styles.dropDownButton}
         onPress={() => setModalVisible(true)}
       >
@@ -115,7 +116,7 @@ export const SportTypeDropdown = ({
           size={24}
           style={{ marginLeft: 32.5, width: 25 }}
         />
-      </Pressable>
+      </TouchableOpacity>
       <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <TouchableOpacity
           style={styles.transparentView}
@@ -126,7 +127,7 @@ export const SportTypeDropdown = ({
         <View style={styles.modalView}>
           {sports().map((sport, index) => {
             return (
-              <Pressable
+              <TouchableOpacity
                 key={index}
                 onPress={() => updateSelectedSports(sport.type)}
               >
@@ -149,7 +150,7 @@ export const SportTypeDropdown = ({
                     />
                   )}
                 </View>
-              </Pressable>
+              </TouchableOpacity>
             );
           })}
         </View>

@@ -4,7 +4,14 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -46,7 +53,8 @@ export const VenueCard = ({
     >();
 
   return (
-    <Pressable
+    <TouchableOpacity
+      activeOpacity={0.6}
       style={[
         styles.wrapper,
         isFirst ? { marginLeft: 20 } : {},
@@ -91,7 +99,7 @@ export const VenueCard = ({
           </View>
         </View>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

@@ -4,7 +4,14 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
@@ -39,7 +46,8 @@ export const BookingCard = ({ booking }: { booking: Game }) => {
     >();
 
   return (
-    <Pressable
+    <TouchableOpacity
+      activeOpacity={0.6}
       style={styles.wrapper}
       onPress={() => navigation.push("GameDetails", { id: booking.id })}
     >
@@ -81,7 +89,7 @@ export const BookingCard = ({ booking }: { booking: Game }) => {
           <Text style={styles.greyText}>{dateAndTime}</Text>
         </View>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

@@ -5,7 +5,14 @@ import React, {
   useMemo,
   useEffect,
 } from "react";
-import { StyleSheet, View, Image, ScrollView, Pressable } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -113,8 +120,6 @@ export const Play = ({
       >
     >();
 
-  if (!searchLocationMarker || !searchLocationName || !initialMapRegion)
-    return <View></View>;
   return (
     <React.Fragment>
       <Pressable
@@ -129,27 +134,25 @@ export const Play = ({
       >
         <View style={styles.header}>
           {mapDisplayed && (
-            <MaterialIcon
-              name="arrow-back"
-              color={"white"}
-              size={24}
+            <TouchableOpacity
               style={{ position: "absolute", left: 0 }}
               onPress={() => {
                 setMapDisplayed(false);
               }}
-            />
+            >
+              <MaterialIcon name="arrow-back" color={"white"} size={24} />
+            </TouchableOpacity>
           )}
           <Text style={styles.title}>Create a Game</Text>
-          <Feather
-            name="x"
-            size={24}
-            color={"white"}
+          <TouchableOpacity
             style={{ position: "absolute", right: 0 }}
             onPress={() => {
               setVisible(false);
               setMapDisplayed(false);
             }}
-          />
+          >
+            <Feather name="x" size={24} color={"white"} />
+          </TouchableOpacity>
         </View>
         {!mapDisplayed ? (
           <View style={styles.createView}>
@@ -158,7 +161,8 @@ export const Play = ({
               showsHorizontalScrollIndicator={false}
               horizontal
             >
-              <Pressable
+              <TouchableOpacity
+                activeOpacity={0.6}
                 onPress={() => {
                   setGameType("Basketball");
                 }}
@@ -182,8 +186,9 @@ export const Play = ({
                   source={require("assets/images/home/basketball.png")}
                   style={{ width: 30, height: 30 }}
                 />
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.6}
                 onPress={() => {
                   setGameType("Football");
                 }}
@@ -206,8 +211,9 @@ export const Play = ({
                   source={require("assets/images/home/football.png")}
                   style={{ width: 30, height: 30 }}
                 />
-              </Pressable>
-              <Pressable
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.6}
                 onPress={() => {
                   setGameType("Tennis");
                 }}
@@ -229,7 +235,7 @@ export const Play = ({
                   source={require("assets/images/home/tennis.png")}
                   style={{ width: 30, height: 30 }}
                 />
-              </Pressable>
+              </TouchableOpacity>
             </ScrollView>
             {!venueId && (
               <View style={styles.contentView}>
@@ -249,15 +255,35 @@ export const Play = ({
                       },
                     ]}
                   >
-                    Nearby: {searchLocationName}
+                    Nearby:{" "}
+                    {!searchLocationMarker ||
+                    !searchLocationName ||
+                    !initialMapRegion
+                      ? "Loading..."
+                      : searchLocationName}
                   </Text>
                 </View>
-                <Text
-                  style={styles.buttonText}
+                <TouchableOpacity
                   onPress={() => setMapDisplayed(true)}
+                  disabled={
+                    !searchLocationMarker ||
+                    !searchLocationName ||
+                    !initialMapRegion
+                  }
                 >
-                  Change
-                </Text>
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      searchLocationMarker &&
+                      searchLocationName &&
+                      initialMapRegion
+                        ? { color: colors.primary }
+                        : { color: colors.tertiary },
+                    ]}
+                  >
+                    Change
+                  </Text>
+                </TouchableOpacity>
               </View>
             )}
             <View style={styles.contentView}>
@@ -271,15 +297,18 @@ export const Play = ({
                 <Text style={styles.labelText}>How many players?</Text>
               </View>
               <View style={styles.contentIconView}>
-                <Feather
-                  name="minus-circle"
-                  color={colors.primary}
-                  size={24}
+                <TouchableOpacity
                   onPress={() => {
                     if (numberOfPlayers > 1)
                       setNumberOfPlayers((oldNum) => oldNum - 1);
                   }}
-                />
+                >
+                  <Feather
+                    name="minus-circle"
+                    color={colors.primary}
+                    size={24}
+                  />
+                </TouchableOpacity>
                 <Text
                   style={[
                     styles.labelText,
@@ -288,15 +317,18 @@ export const Play = ({
                 >
                   {numberOfPlayers}
                 </Text>
-                <Feather
-                  name="plus-circle"
-                  color={colors.primary}
-                  size={24}
+                <TouchableOpacity
                   onPress={() => {
                     if (numberOfPlayers < 12)
                       setNumberOfPlayers((oldNum) => oldNum + 1);
                   }}
-                />
+                >
+                  <Feather
+                    name="plus-circle"
+                    color={colors.primary}
+                    size={24}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
             <View style={styles.dateTime}>
@@ -314,12 +346,13 @@ export const Play = ({
                     Reset
                   </Text>
                 )}
-                <Text
-                  style={styles.buttonText}
+                <TouchableOpacity
                   onPress={() => setDateTimePickerVisible("date")}
                 >
-                  {selectedDate ? selectedDate : "Select Date"}
-                </Text>
+                  <Text style={styles.buttonText}>
+                    {selectedDate ? selectedDate : "Select Date"}
+                  </Text>
+                </TouchableOpacity>
               </View>
               <View style={styles.dateTimeRow}>
                 <Text style={styles.labelText}>Start Time</Text>
@@ -334,39 +367,47 @@ export const Play = ({
                     Reset
                   </Text>
                 )}
-                <Text
-                  style={[
-                    styles.buttonText,
-                    searchDate
-                      ? { color: colors.primary }
-                      : { color: colors.tertiary },
-                  ]}
+                <TouchableOpacity
                   onPress={
                     searchDate
                       ? () => setDateTimePickerVisible("startTime")
                       : undefined
                   }
+                  disabled={!searchDate}
                 >
-                  {selectedStartTime ? selectedStartTime : "Select Time"}
-                </Text>
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      searchDate
+                        ? { color: colors.primary }
+                        : { color: colors.tertiary },
+                    ]}
+                  >
+                    {selectedStartTime ? selectedStartTime : "Select Time"}
+                  </Text>
+                </TouchableOpacity>
               </View>
               <View style={styles.dateTimeRow}>
                 <Text style={styles.labelText}>End Time</Text>
-                <Text
-                  style={[
-                    styles.buttonText,
-                    startTimeDate
-                      ? { color: colors.primary }
-                      : { color: colors.tertiary },
-                  ]}
+                <TouchableOpacity
                   onPress={
                     startTimeDate
                       ? () => setDateTimePickerVisible("endTime")
                       : undefined
                   }
+                  disabled={!startTimeDate}
                 >
-                  {selectedEndTime ? selectedEndTime : "Select Time"}
-                </Text>
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      startTimeDate
+                        ? { color: colors.primary }
+                        : { color: colors.tertiary },
+                    ]}
+                  >
+                    {selectedEndTime ? selectedEndTime : "Select Time"}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
             <View style={styles.buttonView}>
@@ -375,7 +416,7 @@ export const Play = ({
                 textColor={"black"}
                 style={{ borderRadius: 5, width: "100%" }}
                 onPress={
-                  searchDate
+                  searchDate && searchLocationMarker && searchLocationName
                     ? () => {
                         setVisible(false);
                         navigation.push("ChooseVenue", {
@@ -404,7 +445,7 @@ export const Play = ({
                   style={{ borderRadius: 5, width: "100%", marginTop: "3%" }}
                   onPress={() => {
                     setVisible(false);
-                    if (!venueId)
+                    if (!venueId && searchLocationMarker && searchLocationName)
                       navigation.push("ChooseGame", {
                         date: searchDate
                           ? JSON.stringify(searchDate)
@@ -432,7 +473,7 @@ export const Play = ({
             setLocationMarker={setSearchLocationMarker}
             setLocationName={setSearchLocationName}
             setMapDisplayed={setMapDisplayed}
-            region={initialMapRegion}
+            region={initialMapRegion!}
             setRegion={setInitialMapRegion}
           />
         )}

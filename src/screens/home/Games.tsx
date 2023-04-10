@@ -315,7 +315,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
         let isActive = route.key === props.navigationState.routes[index].key;
         return (
           <Pressable
-            style={[
+            style={({ pressed }) => [
               styles.tabViewItem,
               {
                 width: 0.5 * (windowWidth - 40 - 20),
@@ -323,6 +323,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
                   ? colors.background
                   : colors.secondary,
               },
+              pressed && { backgroundColor: colors.background },
             ]}
             onPress={() => {
               setIndex(routes.findIndex(({ key }) => route.key === key));

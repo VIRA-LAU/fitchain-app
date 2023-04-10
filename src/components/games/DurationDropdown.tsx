@@ -26,7 +26,8 @@ export const DurationDropdown = ({
 
   return (
     <View>
-      <Pressable
+      <TouchableOpacity
+        activeOpacity={0.6}
         style={styles.dropDownButton}
         onPress={() => setModalVisible(true)}
       >
@@ -37,7 +38,7 @@ export const DurationDropdown = ({
           size={24}
           style={{ marginLeft: 5 }}
         />
-      </Pressable>
+      </TouchableOpacity>
       <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <TouchableOpacity
           style={styles.transparentView}
@@ -48,7 +49,7 @@ export const DurationDropdown = ({
         <View style={styles.modalView}>
           {durations.map((duration, localIndex) => {
             return (
-              <Pressable
+              <TouchableOpacity
                 key={localIndex}
                 onPress={() => {
                   setIndex(localIndex);
@@ -73,7 +74,7 @@ export const DurationDropdown = ({
                     />
                   )}
                 </View>
-              </Pressable>
+              </TouchableOpacity>
             );
           })}
         </View>

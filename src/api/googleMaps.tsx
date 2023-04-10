@@ -99,13 +99,14 @@ export const getLocationName = async (coordinates: LatLng): Promise<string> => {
         const locationNameArr = results[0].formatted_address.split(" ");
         if (locationNameArr[0].includes("+")) locationNameArr.shift();
         const locationName = locationNameArr.join(" ");
+        if (!locationName) return "Unknown";
         return locationName;
       } else {
-        return "";
+        return "Unknown";
       }
     })
     .catch((error) => {
       console.log(error.response.data.error_message);
-      return "";
+      return "Unknown";
     });
 };
