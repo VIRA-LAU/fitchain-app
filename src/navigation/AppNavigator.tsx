@@ -42,7 +42,6 @@ export type HomeStackParamList = {
     gameType: GameType;
     date: string;
     location: LatLng;
-    locationName: string;
     startTime?: string;
     endTime?: string;
   };
@@ -62,7 +61,6 @@ export type HomeStackParamList = {
     date: string;
     location: LatLng;
     locationName: string;
-    venueId?: number;
     startTime?: string;
     endTime?: string;
   };

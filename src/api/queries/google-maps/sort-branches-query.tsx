@@ -8,7 +8,7 @@ const client = new Client({});
 
 const sortBranchesByLocation =
   (branches: VenueBranch[] | undefined, userLocation: LatLng) => async () => {
-    if (branches) {
+    if (branches && branches.length > 0) {
       const parsedUserLocation = {
         lat: userLocation.latitude,
         lng: userLocation.longitude,

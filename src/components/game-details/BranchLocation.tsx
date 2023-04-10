@@ -4,11 +4,17 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Image, StyleSheet, View, Pressable } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  View,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
-import { Court, Game } from "src/types";
+import { Court, Game, GameType } from "src/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { MiniMapComponent } from "../home";
 
@@ -18,6 +24,7 @@ export const BranchLocation = ({
   branch,
   team,
   isPressable = false,
+  playScreenBookingDetails,
 }: {
   type: "branch" | "court";
   court?: Game["court"];
@@ -31,6 +38,12 @@ export const BranchLocation = ({
   };
   team?: "Home" | "Away";
   isPressable?: boolean;
+  playScreenBookingDetails?: {
+    date: string;
+    startTime?: string;
+    endTime?: string;
+    gameType: GameType;
+  };
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -56,7 +69,8 @@ export const BranchLocation = ({
     courtsStr = branch.courts.map(({ courtType }) => courtType).join(", ");
   }
   return (
-    <Pressable
+    <TouchableOpacity
+      activeOpacity={0.6}
       style={styles.wrapperView}
       onPress={() => {
         if (isPressable && branch)
@@ -64,8 +78,10 @@ export const BranchLocation = ({
             courts: branch.courts,
             venueName: branch.venueName,
             branchLocation: branch.location,
+            bookingDetails: playScreenBookingDetails,
           });
       }}
+      disabled={!isPressable || !branch}
     >
       <View style={styles.background}>
         {branch && (
@@ -149,7 +165,7 @@ export const BranchLocation = ({
       {/* <View style={styles.icon}>
         <OctIcon name="location" color="white" size={24} />
       </View> */}
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

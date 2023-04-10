@@ -6,7 +6,6 @@ import { LatLng } from "react-native-maps";
 const client = new Client({});
 
 const getLocationName = (coordinates: LatLng | undefined) => async () => {
-  console.log(coordinates, GOOGLE_MAPS_API_KEY);
   if (coordinates) {
     const parsedCoordinates = {
       lat: coordinates.latitude,
@@ -32,7 +31,7 @@ const getLocationName = (coordinates: LatLng | undefined) => async () => {
         }
       })
       .catch((error) => {
-        console.log(error.response.data.error_message);
+        console.error(error.response.data.error_message);
         return "Unknown";
       });
   }

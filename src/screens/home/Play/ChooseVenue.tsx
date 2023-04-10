@@ -25,7 +25,6 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
     startTime,
     endTime,
     gameType,
-    venueId,
   } = route.params;
 
   const date = new Date(JSON.parse(dateStr));
@@ -39,7 +38,6 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
     gameType,
     startTime,
     endTime,
-    venueId,
   });
 
   const { data: sortedBranches } = useSortBranchesByLocationQuery(
@@ -56,14 +54,12 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
       backEnabled
     >
       <ScrollView contentContainerStyle={styles.wrapperView}>
-        {!venueId && (
-          <View style={styles.infoView}>
-            <IonIcon name={"location-outline"} size={20} color={"white"} />
-            <Text variant="labelLarge" style={styles.information}>
-              {locationName}
-            </Text>
-          </View>
-        )}
+        <View style={styles.infoView}>
+          <IonIcon name={"location-outline"} size={20} color={"white"} />
+          <Text variant="labelLarge" style={styles.information}>
+            {locationName}
+          </Text>
+        </View>
         <View style={[styles.infoView, { marginBottom: 20 }]}>
           <IonIcon name={"calendar-outline"} size={20} color={"white"} />
           <Text variant="labelLarge" style={styles.information}>

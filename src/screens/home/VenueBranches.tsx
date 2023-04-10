@@ -1,11 +1,14 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View } from "react-native";
-import { useTheme } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList } from "navigation";
 import { AppHeader, BranchLocation } from "src/components";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { useBranchesQuery } from "src/api";
+import {
+  useSearchBranchesQuery,
+  useSortBranchesByLocationQuery,
+} from "src/api";
 import { ScrollView } from "react-native-gesture-handler";
 
 type Props = StackScreenProps<HomeStackParamList, "VenueBranches">;
@@ -14,8 +17,34 @@ export const VenueBranches = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { id, venueName } = route.params;
-  const { data: branches } = useBranchesQuery(id);
+  const {
+    id,
+    venueName,
+    location,
+    date: dateStr,
+    startTime,
+    endTime,
+    gameType,
+  } = route.params;
+
+  const date = new Date(JSON.parse(dateStr));
+  const searchDate = `${date.getFullYear()}-${(
+    "0" +
+    (date.getMonth() + 1)
+  ).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
+
+  const { data: branches } = useSearchBranchesQuery({
+    date: searchDate,
+    gameType,
+    startTime,
+    endTime,
+    venueId: id,
+  });
+
+  const { data: sortedBranches } = useSortBranchesByLocationQuery(
+    branches,
+    location
+  );
 
   return (
     <AppHeader
@@ -27,8 +56,13 @@ export const VenueBranches = ({ navigation, route }: Props) => {
       searchBar
       backEnabled
     >
+      {(!sortedBranches || sortedBranches.length === 0) && (
+        <Text style={styles.placeholderText}>
+          There are no branches that match your search.
+        </Text>
+      )}
       <ScrollView contentContainerStyle={styles.wrapperView}>
-        {branches?.map((branch, index: number) => {
+        {sortedBranches?.map((branch, index: number) => {
           return (
             <BranchLocation
               key={index}
@@ -41,6 +75,12 @@ export const VenueBranches = ({ navigation, route }: Props) => {
                 rating: 0,
                 latitude: branch.latitude,
                 longitude: branch.longitude,
+              }}
+              playScreenBookingDetails={{
+                date: dateStr,
+                gameType,
+                startTime,
+                endTime,
               }}
             />
           );
@@ -59,51 +99,11 @@ const makeStyles = (colors: MD3Colors) =>
       marginVertical: 10,
       marginHorizontal: "3%",
     },
-    background: {
-      position: "absolute",
-      height: "100%",
-      width: "100%",
-      borderRadius: 10,
-    },
-    dataView: {
-      width: "50%",
-      margin: 10,
-      backgroundColor: colors.secondary,
-      borderRadius: 10,
-      padding: 10,
-    },
-    headerView: {
-      flexDirection: "row",
-      alignItems: "center",
-      padding: 5,
-    },
-    titleView: { marginLeft: 10 },
-    icon: {
-      flex: 1,
-      alignItems: "center",
-    },
-    rowView: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      marginVertical: 2,
-    },
-    title: {
-      color: "white",
+    placeholderText: {
+      height: 150,
       fontFamily: "Inter-Medium",
-    },
-    subtitle: {
       color: colors.tertiary,
-      fontFamily: "Inter-Medium",
-      fontSize: 12,
-    },
-    rowKey: {
-      color: colors.tertiary,
-      fontFamily: "Inter-Medium",
-      fontSize: 10,
-    },
-    rowValue: {
-      color: "white",
-      fontFamily: "Inter-Medium",
-      fontSize: 10,
+      textAlign: "center",
+      textAlignVertical: "center",
     },
   });

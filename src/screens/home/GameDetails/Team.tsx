@@ -104,9 +104,10 @@ export const Team = ({
               Top Players
             </Text>
             <ScrollView
-              horizontal={true}
               style={{ flexGrow: 1 }}
               contentContainerStyle={{ minWidth: 480 }}
+              showsHorizontalScrollIndicator={false}
+              horizontal
             >
               <View
                 style={{

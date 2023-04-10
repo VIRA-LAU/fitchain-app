@@ -289,6 +289,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
         visible={playScreenVisible}
         setVisible={setPlayScreenVisible}
         venueId={id}
+        venueName={venue?.name}
       />
     </AppHeader>
   );

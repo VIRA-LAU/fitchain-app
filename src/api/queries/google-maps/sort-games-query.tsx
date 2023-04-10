@@ -8,7 +8,7 @@ const client = new Client({});
 
 const sortGamesByLocation =
   (games: Game[] | undefined, userLocation: LatLng) => async () => {
-    if (games) {
+    if (games && games.length > 0) {
       const parsedUserLocation = {
         lat: userLocation.latitude,
         lng: userLocation.longitude,

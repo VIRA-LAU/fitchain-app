@@ -53,10 +53,12 @@ export const Play = ({
   visible,
   setVisible,
   venueId = undefined,
+  venueName = undefined,
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
-  venueId?: number | undefined;
+  venueId?: number;
+  venueName?: string;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -147,7 +149,9 @@ export const Play = ({
               <MaterialIcon name="arrow-back" color={"white"} size={24} />
             </TouchableOpacity>
           )}
-          <Text style={styles.title}>Create a Game</Text>
+          <Text style={styles.title}>
+            {!venueId && "Find or "}Create a Game
+          </Text>
           <TouchableOpacity
             style={{ position: "absolute", right: 0 }}
             onPress={() => {
@@ -424,19 +428,34 @@ export const Play = ({
                   searchDate && searchLocationMarker && searchLocationName
                     ? () => {
                         setVisible(false);
-                        navigation.push("ChooseVenue", {
-                          venueId,
-                          date: JSON.stringify(searchDate),
-                          gameType,
-                          location: searchLocationMarker,
-                          locationName: searchLocationName,
-                          startTime: startTimeDate
-                            ? timeFormatter(startTimeDate, "24")
-                            : undefined,
-                          endTime: endTimeDate
-                            ? timeFormatter(endTimeDate, "24")
-                            : undefined,
-                        });
+                        if (!venueId)
+                          navigation.push("ChooseVenue", {
+                            date: JSON.stringify(searchDate),
+                            gameType,
+                            location: searchLocationMarker,
+                            locationName: searchLocationName,
+                            startTime: startTimeDate
+                              ? timeFormatter(startTimeDate, "24")
+                              : undefined,
+                            endTime: endTimeDate
+                              ? timeFormatter(endTimeDate, "24")
+                              : undefined,
+                          });
+                        else {
+                          navigation.push("VenueBranches", {
+                            date: JSON.stringify(searchDate),
+                            gameType,
+                            location: searchLocationMarker,
+                            startTime: startTimeDate
+                              ? timeFormatter(startTimeDate, "24")
+                              : undefined,
+                            endTime: endTimeDate
+                              ? timeFormatter(endTimeDate, "24")
+                              : undefined,
+                            venueName: venueName!,
+                            id: venueId,
+                          });
+                        }
                       }
                     : undefined
                 }
@@ -447,7 +466,7 @@ export const Play = ({
                 <Button
                   buttonColor={colors.primary}
                   textColor={"black"}
-                  style={{ borderRadius: 5, width: "100%", marginTop: "3%" }}
+                  style={{ borderRadius: 5, width: "100%", marginTop: 15 }}
                   onPress={() => {
                     setVisible(false);
                     if (!venueId && searchLocationMarker && searchLocationName)
@@ -579,7 +598,7 @@ const makeStyles = (colors: MD3Colors) =>
       marginRight: 10,
       color: "white",
     },
-    createView: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 30 },
+    createView: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 20 },
     contentView: {
       backgroundColor: colors.secondary,
       marginTop: 15,
