@@ -85,10 +85,11 @@ export const PlayerCard = ({
             styles.statusView,
             {
               backgroundColor:
-                rated || userData?.userId == id
+                !upcoming && (rated || userData?.userId == id)
                   ? colors.primary
                   : colors.background,
-              borderWidth: rated || userData?.userId == id ? 0 : 1,
+              borderWidth:
+                !upcoming && (rated || userData?.userId == id) ? 0 : 1,
             },
           ]}
         >

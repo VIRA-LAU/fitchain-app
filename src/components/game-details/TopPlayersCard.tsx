@@ -26,21 +26,13 @@ export const TopPlayersCard = ({
           borderWidth: 5,
           borderColor: "white",
           justifyContent: "center",
+          alignItems: "center",
           borderRadius: 90,
           height: "60%",
           width: "60%",
         }}
       >
-        <Button
-          style={{ justifyContent: "center", height: "100%", width: "100%" }}
-        >
-          <FeatherIcon
-            name={"user-plus"}
-            color={"white"}
-            size={25}
-            style={{ height: "100%", width: "100%" }}
-          />
-        </Button>
+        <FeatherIcon name={"user-plus"} color={"white"} size={24} />
       </View>
       <View style={{ marginTop: 5, alignItems: "center" }}>
         <Text variant="titleMedium" style={{ color: colors.tertiary }}>

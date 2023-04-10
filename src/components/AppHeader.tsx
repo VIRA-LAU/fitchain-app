@@ -81,7 +81,7 @@ export const AppHeader = ({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              paddingTop: 20,
+              paddingTop: Platform.OS === "ios" ? 20 : 0,
             }}
           >
             {backEnabled && (
@@ -170,7 +170,7 @@ const makeStyles = (
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      paddingBottom: Platform.OS == "ios" ? 10 + SBHeight : SBHeight,
+      paddingBottom: Platform.OS == "ios" ? 10 + SBHeight : 0,
     },
     searchBarView: {
       borderWidth: 1,

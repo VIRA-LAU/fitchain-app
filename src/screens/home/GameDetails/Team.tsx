@@ -105,7 +105,7 @@ export const Team = ({
             </Text>
             <ScrollView
               horizontal={true}
-              style={{ flex: 1 }}
+              style={{ flexGrow: 1 }}
               contentContainerStyle={{ minWidth: 480 }}
             >
               <View
@@ -137,6 +137,12 @@ export const Team = ({
             <View style={styles.divider} />
           </View>
         )}
+        <Text
+          variant="labelLarge"
+          style={{ color: colors.tertiary, marginTop: 20, marginLeft: 20 }}
+        >
+          Team Players
+        </Text>
         {players && players.length > 0 && (
           <ScrollView
             style={styles.playerCardView}

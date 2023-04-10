@@ -134,6 +134,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
           backgroundColor: colors.secondary,
           borderRadius: 10,
           marginHorizontal: 20,
+          marginTop: 10,
         }}
         renderTabBarItem={({ route }) => {
           let isActive = route.key === props.navigationState.routes[index].key;
@@ -342,7 +343,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
           darkMode
         >
           <View style={styles.wrapperView}>
-            {new Date(game.date) > new Date() ? (
+            {new Date(game.date) > new Date() && (
               <View style={styles.headerView}>
                 <Text variant="labelLarge" style={styles.greyFont}>
                   {dateHeader}
@@ -480,8 +481,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   </Button>
                 )}
               </View>
-            ) : (
-              <View />
             )}
 
             <View style={styles.contentView}>
@@ -508,7 +507,6 @@ const makeStyles = (colors: MD3Colors) =>
     },
     headerView: {
       paddingTop: 10,
-      paddingBottom: 10,
       paddingHorizontal: 20,
       borderRadius: 10,
       backgroundColor: colors.secondary,
