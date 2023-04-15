@@ -94,6 +94,7 @@ export interface Branch {
   venueId: number;
   photoDirectoryURL: string;
   courts: Court[];
+  rating: number;
 }
 
 export interface Venue {
@@ -108,6 +109,7 @@ export interface Venue {
   managerPhoneNumber: number;
   hash: string;
   branches: Branch[];
+  rating: number;
 }
 
 // Shown in Home page
@@ -120,6 +122,7 @@ export interface VenueBranch {
     name: string;
   };
   courts: Court[];
+  rating: number;
 }
 
 export interface Activity {

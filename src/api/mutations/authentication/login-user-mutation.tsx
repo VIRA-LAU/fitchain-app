@@ -17,7 +17,7 @@ const LoginUser = async (data: Request) => {
 export const useLoginUserMutation = (
   setSignedIn: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const { setUserData } = useContext(UserContext) as any;
+  const { setUserData } = useContext(UserContext);
   return useMutation<User, unknown, Request>({
     mutationFn: LoginUser,
     onSuccess: async (data) => {

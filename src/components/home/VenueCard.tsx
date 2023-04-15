@@ -90,7 +90,7 @@ export const VenueCard = ({
           <View style={styles.ratingView}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <IonIcon name={"star"} color={colors.primary} />
-              <Text style={styles.rating}>{0}</Text>
+              <Text style={styles.rating}>{venueBranch.rating}</Text>
             </View>
             <Text style={styles.location}>
               {type !== "horizontal" && " • "}

@@ -11,6 +11,7 @@ import {
   Image,
   useWindowDimensions,
   Pressable,
+  TouchableOpacity,
 } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -52,7 +53,8 @@ export const PlayerCard = ({
   const { userData } = useContext(UserContext);
 
   return (
-    <Pressable
+    <TouchableOpacity
+      activeOpacity={id === userData?.userId ? 1 : 0.6}
       style={[
         styles.wrapperView,
         isActive
@@ -60,6 +62,12 @@ export const PlayerCard = ({
           : { elevation: 10, opacity: 0.6 },
       ]}
       onPress={() => {
+        if (id !== userData?.userId)
+          navigation.push("PlayerProfile", {
+            playerId: id,
+            firstName,
+            lastName,
+          });
         setActivePlayer(index);
       }}
     >
@@ -130,7 +138,7 @@ export const PlayerCard = ({
           style={{ marginVertical: 5 }}
         />
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 

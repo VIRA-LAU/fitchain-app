@@ -5,31 +5,34 @@ import { User } from "src/types";
 import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
-const getUserDetails = (userData: UserData) => async () => {
+const getUserDetails = (userData: UserData, id?: number) => async () => {
   const header = getHeader(userData);
-
-  return await client
-    .get(`/users/me`, header)
-    .then((res) => res.data)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  if (id)
+    return await client
+      .get(`/users/${id}`, header)
+      .then((res) => res.data)
+      .catch((e) => {
+        throw new Error(e);
+      });
 };
 
 export const useUserDetailsQuery = (
+  id?: number,
   enabled = true,
   setSignedIn?: Dispatch<SetStateAction<boolean>>,
   setTokenFoundOnOpen?: Dispatch<SetStateAction<boolean>>
 ) => {
   const { userData } = useContext(UserContext);
-  return useQuery<User>("user-details", getUserDetails(userData!), {
+  return useQuery<User>(["user-details", id], getUserDetails(userData!, id), {
     enabled,
     onSuccess: (data) => {
       if (setSignedIn) setSignedIn(true);
     },
     onError: () => {
-      AsyncStorage.clear();
-      if (setSignedIn) setSignedIn(false);
+      if (setSignedIn) {
+        AsyncStorage.clear();
+        setSignedIn(false);
+      }
       if (setTokenFoundOnOpen) setTokenFoundOnOpen(false);
     },
   });

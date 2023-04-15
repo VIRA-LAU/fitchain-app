@@ -3,7 +3,6 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   useWindowDimensions,
   View,
-  Pressable,
   StyleSheet,
   BackHandler,
   TouchableOpacity,
@@ -88,11 +87,7 @@ const BottomTabNavigator = ({
         <Tab.Screen
           name="Profile"
           children={(props) => (
-            <Profile
-              isUserProfile={true}
-              setSignedIn={setSignedIn}
-              {...props}
-            />
+            <Profile {...props} setSignedIn={setSignedIn} isUserProfile />
           )}
         />
       </Tab.Navigator>
@@ -146,6 +141,7 @@ export const HomeNavigator = ({
       <Stack.Screen name="ChooseGame" component={ChooseGame} />
       <Stack.Screen name="InviteUsers" component={InviteUsers} />
       <Stack.Screen name="RatePlayer" component={RatePlayer} />
+      <Stack.Screen name="PlayerProfile" component={Profile} />
     </Stack.Navigator>
   );
 };

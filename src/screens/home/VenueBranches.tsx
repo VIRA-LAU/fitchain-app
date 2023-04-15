@@ -72,7 +72,7 @@ export const VenueBranches = ({ navigation, route }: Props) => {
                 venueName,
                 location: branch.location,
                 courts: branch.courts,
-                rating: 0,
+                rating: branch.rating,
                 latitude: branch.latitude,
                 longitude: branch.longitude,
               }}

@@ -81,14 +81,20 @@ export type HomeStackParamList = {
     lastName: string;
     gameId: number;
   };
+  PlayerProfile: {
+    playerId: number;
+    firstName: string;
+    lastName: string;
+  };
 };
 
 export const AppNavigator = () => {
-  const { userData, setUserData } = useContext(UserContext) as any;
+  const { userData, setUserData } = useContext(UserContext);
 
   const [signedIn, setSignedIn] = useState<boolean>(false);
   const [tokenFoundOnOpen, setTokenFoundOnOpen] = useState<boolean>(false);
   const { refetch: verifyToken } = useUserDetailsQuery(
+    userData?.userId,
     false,
     setSignedIn,
     setTokenFoundOnOpen
@@ -101,14 +107,13 @@ export const AppNavigator = () => {
     const userId: number = await getData("userId");
     const token: string = await getData("token");
     if (firstName && lastName && email && userId && token) {
-      let fetchedData = {
-        userId: userId,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        token: token,
-      };
-      setUserData(fetchedData);
+      setUserData({
+        userId,
+        firstName,
+        lastName,
+        email,
+        token,
+      });
       setTokenFoundOnOpen(true);
     }
   };

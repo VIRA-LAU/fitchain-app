@@ -5,33 +5,38 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { ActivityCard, AppHeader } from "src/components";
-import { BottomTabParamList } from "src/navigation";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Activity } from "src/types";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { UserContext } from "src/utils";
 import {
   useActivitiesQuery,
+  useGameCountQuery,
   useGamesQuery,
   useUserDetailsQuery,
 } from "src/api";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StackScreenProps } from "@react-navigation/stack";
 
-type Props = BottomTabScreenProps<BottomTabParamList>;
+type Props =
+  | BottomTabScreenProps<BottomTabParamList>
+  | StackScreenProps<HomeStackParamList, "PlayerProfile">;
 
 export const Profile = ({
   navigation,
   route,
-  isUserProfile,
+  isUserProfile = false,
   setSignedIn,
 }: Props & {
-  isUserProfile: boolean;
-  setSignedIn: Dispatch<SetStateAction<boolean>>;
+  isUserProfile?: boolean;
+  setSignedIn?: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(
@@ -41,28 +46,39 @@ export const Profile = ({
   );
 
   const { userData, setUserData } = useContext(UserContext);
-  const { firstName, lastName } = userData!;
+  const { firstName, lastName, userId } = userData!;
+  const { data: gameCount } = useGameCountQuery(
+    route.params?.playerId || userId
+  );
+  const { data: userDetails } = useUserDetailsQuery(
+    route.params?.playerId || userId
+  );
+  const { data: activities } = useActivitiesQuery(
+    route.params?.playerId || userId
+  );
 
-  const { data: games } = useGamesQuery();
-  const { data: userDetails } = useUserDetailsQuery();
-  const { data: activities } = useActivitiesQuery();
   return (
     <AppHeader
       navigation={navigation}
       route={route}
       right={
-        <IonIcon
-          name="ellipsis-horizontal"
-          color="white"
-          size={24}
-          onPress={() => {
-            AsyncStorage.clear();
-            setSignedIn(false);
-            setUserData(null);
-          }}
-        />
+        isUserProfile ? (
+          <TouchableOpacity
+            onPress={() => {
+              AsyncStorage.clear();
+              if (setSignedIn) setSignedIn(false);
+              setUserData(null);
+            }}
+          >
+            <IonIcon name="log-out-outline" color="white" size={24} />
+          </TouchableOpacity>
+        ) : (
+          <View />
+        )
       }
-      title={`${firstName} ${lastName}`}
+      title={`${route.params?.firstName || firstName} ${
+        route.params?.lastName || lastName
+      }`}
       backEnabled
     >
       <ScrollView>
@@ -76,36 +92,37 @@ export const Profile = ({
               source={require("assets/images/home/profile-picture.png")}
               style={styles.profilePicture}
             />
-            <Text style={styles.headerText1}>Played {games?.length} games</Text>
+            <Text style={styles.headerText1}>
+              Played {gameCount} game{gameCount !== 1 && "s"}
+            </Text>
             <Text style={styles.headerText2}>{userDetails?.description}</Text>
-            {!isUserProfile && (
-              <View style={styles.buttonsView}>
-                <Button
-                  icon={() => (
-                    <IonIcon
-                      name={"basketball-outline"}
-                      size={26}
-                      color={colors.secondary}
-                    />
-                  )}
-                  style={{ borderRadius: 5, flex: 1 }}
-                  textColor={colors.secondary}
-                  buttonColor={colors.tertiary}
-                >
-                  Invite To Play
-                </Button>
-                <Button
-                  icon={() => (
-                    <FeatherIcon name="thumbs-up" size={22} color={"white"} />
-                  )}
-                  style={{ borderRadius: 5, flex: 1 }}
-                  textColor={"white"}
-                  buttonColor={"transparent"}
-                >
-                  Follow Player
-                </Button>
-              </View>
-            )}
+
+            {/* <View style={styles.buttonsView}>
+              <Button
+                icon={() => (
+                  <IonIcon
+                    name={"basketball-outline"}
+                    size={26}
+                    color={colors.secondary}
+                  />
+                )}
+                style={{ borderRadius: 5, flex: 1 }}
+                textColor={colors.secondary}
+                buttonColor={colors.tertiary}
+              >
+                Invite To Play
+              </Button>
+              <Button
+                icon={() => (
+                  <FeatherIcon name="thumbs-up" size={22} color={"white"} />
+                )}
+                style={{ borderRadius: 5, flex: 1 }}
+                textColor={"white"}
+                buttonColor={"transparent"}
+              >
+                Follow Player
+              </Button>
+            </View> */}
           </View>
         </View>
         <View style={styles.contentView}>
@@ -222,7 +239,10 @@ export const Profile = ({
             {!activities ||
               (activities.length === 0 && (
                 <Text style={styles.placeholderText}>
-                  You have no recent activities.
+                  {route.params?.firstName
+                    ? `${route.params.firstName} ${route.params.lastName} has `
+                    : "You have "}
+                  no recent activities.
                 </Text>
               ))}
           </View>

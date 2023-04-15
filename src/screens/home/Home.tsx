@@ -24,7 +24,6 @@ import {
   useActivitiesQuery,
   useReceivedRequestsQuery,
 } from "src/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Activity,
   Game,
@@ -32,7 +31,6 @@ import {
   Invitation,
   VenueBranch,
 } from "src/types";
-import { useQueryClient } from "react-query";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -87,7 +85,7 @@ export const Home = ({ navigation, route }: Props) => {
     data: activities,
     isFetching: activitiesLoading,
     refetch: refetchActivities,
-  } = useActivitiesQuery();
+  } = useActivitiesQuery(userData?.userId);
 
   const [selectedSports, setSelectedSports] = useState({
     Basketball: true,
