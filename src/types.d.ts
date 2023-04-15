@@ -51,6 +51,7 @@ export interface Game {
   createdAt: Date;
   homeScore: number;
   awayScore: number;
+  isRecording: boolean;
 }
 
 export interface Invitation {
