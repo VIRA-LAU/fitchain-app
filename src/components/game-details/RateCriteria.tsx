@@ -1,6 +1,6 @@
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import FeatherIcon from "react-native-vector-icons/Feather";
 
@@ -35,21 +35,15 @@ export const RateCriteria = ({
         {name}
       </Text>
       <View style={styles.scoreWrapper}>
-        <FeatherIcon
-          name={`minus-circle`}
-          color={colors.primary}
-          size={26}
-          onPress={decreaseScore}
-        />
+        <TouchableOpacity onPress={decreaseScore}>
+          <FeatherIcon name={`minus-circle`} color={colors.primary} size={26} />
+        </TouchableOpacity>
         <Text variant="titleLarge" style={styles.score}>
           {score % 1 !== 0 ? score.toFixed(1) : score}/5
         </Text>
-        <FeatherIcon
-          name={`plus-circle`}
-          color={colors.primary}
-          size={26}
-          onPress={increaseScore}
-        />
+        <TouchableOpacity onPress={increaseScore}>
+          <FeatherIcon name={`plus-circle`} color={colors.primary} size={26} />
+        </TouchableOpacity>
       </View>
     </View>
   );

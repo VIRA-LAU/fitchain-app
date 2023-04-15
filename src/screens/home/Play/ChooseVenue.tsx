@@ -25,6 +25,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
     startTime,
     endTime,
     gameType,
+    nbOfPlayers,
   } = route.params;
 
   const date = new Date(JSON.parse(dateStr));
@@ -38,6 +39,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
     gameType,
     startTime,
     endTime,
+    nbOfPlayers,
   });
 
   const { data: sortedBranches } = useSortBranchesByLocationQuery(
@@ -71,6 +73,11 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
             })}
           </Text>
         </View>
+        {(!sortedBranches || sortedBranches.length === 0) && (
+          <Text style={styles.placeholderText}>
+            There are no venue branches that match your search.
+          </Text>
+        )}
         {sortedBranches?.map((venuesBranch: VenueBranch, index: number) => (
           <VenueCard
             key={index}
@@ -83,15 +90,10 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
               startTime,
               endTime,
               gameType,
+              nbOfPlayers,
             }}
           />
         ))}
-        {!sortedBranches ||
-          (sortedBranches.length === 0 && (
-            <Text style={styles.placeholderText}>
-              There are no venue branches that match your search.
-            </Text>
-          ))}
       </ScrollView>
     </AppHeader>
   );

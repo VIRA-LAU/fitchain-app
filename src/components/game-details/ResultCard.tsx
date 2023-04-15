@@ -1,25 +1,42 @@
-import { Text, useTheme } from "react-native-paper";
-import { View } from "react-native";
-import { useGetPlayerTeamQuery } from "src/api";
-import { useEffect, useState } from "react";
+import { Button, Text, TextInput, useTheme } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { useGetPlayerTeamQuery, useUpdateGameMutation } from "src/api";
+import { useContext, useEffect, useState } from "react";
 import { Game } from "src/types";
+import { MD3Colors } from "react-native-paper/lib/typescript/types";
+import { UserContext } from "src/utils";
 
 export const ResultCard = ({ game }: { game: Game }) => {
+  const { userData } = useContext(UserContext);
   const { colors } = useTheme();
+  const styles = makeStyles(colors);
+
+  const [team, setTeam] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+
+  const [isChangingScore, setIsChangingScore] = useState<boolean>(false);
+  const [tempHomeScore, setTempHomeScore] = useState<number>(game.homeScore);
+  const [tempAwayScore, setTempAwayScore] = useState<number>(game.awayScore);
+
   const { data: playersTeam } = useGetPlayerTeamQuery(game.id);
-  const [team, setTeam] = useState<string>("HOME");
-  const [message, setMessage] = useState<string>("Congrats!");
+  const { mutate: updateScore } = useUpdateGameMutation(
+    game.id,
+    setIsChangingScore
+  );
 
   useEffect(() => {
-    if (playersTeam) {
-      setTeam(playersTeam.team);
-      if (game.winnerTeam == "Draw") {
-        setMessage("Draw!");
-      } else if (game.winnerTeam != playersTeam.team) {
+    setTeam(game.winnerTeam);
+    if (playersTeam?.team && playersTeam?.team !== "none") {
+      if (game.winnerTeam == "DRAW") {
+        setMessage("It's a draw!");
+      } else if (game.winnerTeam === playersTeam.team) {
+        setMessage("Congrats!");
+      } else {
         setMessage("Hardluck!");
       }
-    }
-  }, [playersTeam]);
+    } else if (game.winnerTeam === "DRAW") setMessage("It's a draw!");
+    else setMessage(`${game.winnerTeam} team wins!`);
+  }, [JSON.stringify(playersTeam), JSON.stringify(game)]);
 
   return (
     <View>
@@ -27,25 +44,29 @@ export const ResultCard = ({ game }: { game: Game }) => {
         Teams
       </Text>
       <View style={{ alignContent: "center", alignItems: "center" }}>
-        <Text
-          style={{
-            color: "white",
-            fontSize: 18,
-            fontWeight: "800",
-          }}
-        >
-          {message}
-        </Text>
+        <Text style={styles.result}>{message}</Text>
         <View style={{ flexDirection: "row" }}>
           <View style={{ alignItems: "center" }}>
-            <Text
-              style={{
-                color: team === "HOME" ? "white" : colors.tertiary,
-                fontSize: 70,
-              }}
-            >
-              {game.homeScore}
-            </Text>
+            {isChangingScore ? (
+              <TextInput
+                textColor="white"
+                keyboardType="numeric"
+                value={tempHomeScore.toString()}
+                onChangeText={(text) =>
+                  setTempHomeScore(text ? parseInt(text) : 0)
+                }
+                style={styles.scoreInput}
+              />
+            ) : (
+              <Text
+                style={{
+                  color: team === "HOME" ? "white" : colors.tertiary,
+                  fontSize: 70,
+                }}
+              >
+                {game.homeScore}
+              </Text>
+            )}
             <Text
               style={{
                 color: team === "HOME" ? "white" : colors.tertiary,
@@ -54,15 +75,11 @@ export const ResultCard = ({ game }: { game: Game }) => {
             >
               HOME
             </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.tertiary,
-                fontWeight: "400",
-              }}
-            >
-              Opponent
-            </Text>
+            {playersTeam && playersTeam.team !== "none" && (
+              <Text style={styles.teamLabel}>
+                {playersTeam?.team === "HOME" ? "Your Team" : "Opponent"}
+              </Text>
+            )}
           </View>
           <View>
             <Text
@@ -77,14 +94,26 @@ export const ResultCard = ({ game }: { game: Game }) => {
             </Text>
           </View>
           <View style={{ alignItems: "center" }}>
-            <Text
-              style={{
-                color: team === "AWAY" ? "white" : colors.tertiary,
-                fontSize: 70,
-              }}
-            >
-              {game.awayScore}
-            </Text>
+            {isChangingScore ? (
+              <TextInput
+                textColor="white"
+                keyboardType="numeric"
+                value={tempAwayScore.toString()}
+                onChangeText={(text) =>
+                  setTempAwayScore(text ? parseInt(text) : 0)
+                }
+                style={styles.scoreInput}
+              />
+            ) : (
+              <Text
+                style={{
+                  color: team === "AWAY" ? "white" : colors.tertiary,
+                  fontSize: 70,
+                }}
+              >
+                {game.awayScore}
+              </Text>
+            )}
             <Text
               style={{
                 color: team === "AWAY" ? "white" : colors.tertiary,
@@ -93,18 +122,64 @@ export const ResultCard = ({ game }: { game: Game }) => {
             >
               AWAY
             </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.tertiary,
-                fontWeight: "400",
-              }}
-            >
-              Your Team
-            </Text>
+            {playersTeam && playersTeam.team !== "none" && (
+              <Text style={styles.teamLabel}>
+                {playersTeam?.team === "AWAY" ? "Your Team" : "Opponent"}
+              </Text>
+            )}
           </View>
         </View>
+        {game.admin.id === userData?.userId &&
+          (!isChangingScore ? (
+            <Button
+              style={{ marginTop: 20 }}
+              onPress={() => setIsChangingScore(true)}
+            >
+              Change Score
+            </Button>
+          ) : (
+            <View>
+              <Button
+                style={{ marginTop: 20 }}
+                onPress={() => {
+                  updateScore({
+                    homeScore: tempHomeScore,
+                    awayScore: tempAwayScore,
+                  });
+                }}
+              >
+                Confirm
+              </Button>
+              <Button
+                onPress={() => setIsChangingScore(false)}
+                textColor={"#ff4500"}
+              >
+                Cancel
+              </Button>
+            </View>
+          ))}
       </View>
     </View>
   );
 };
+
+const makeStyles = (colors: MD3Colors) =>
+  StyleSheet.create({
+    result: {
+      color: "white",
+      fontSize: 18,
+      fontWeight: "800",
+    },
+    teamLabel: {
+      fontSize: 12,
+      color: colors.tertiary,
+      fontWeight: "400",
+    },
+    scoreInput: {
+      color: "white",
+      fontSize: 30,
+      padding: 10,
+      marginVertical: 10,
+      backgroundColor: colors.secondary,
+    },
+  });

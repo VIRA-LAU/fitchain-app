@@ -1,24 +1,37 @@
 import client, { getHeader } from "../../client";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { UserContext, UserData } from "../../../utils/UserContext";
-import { useContext } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
+import { Game } from "src/types";
 
-type Request = {};
-
-const updateGame = (userData: UserData) => async (data: Request) => {
-  const header = getHeader(userData);
-  return await client
-    .patch("/game/update", data, header)
-    .then((res) => res.data)
-    .catch((e) => {
-      console.error("update-game-mutation", e);
-      throw new Error(e);
-    });
+type Request = {
+  homeScore?: number;
+  awayScore?: number;
 };
 
-export const useUpdateGameMutation = () => {
+const updateGame =
+  (userData: UserData, id: number) => async (data: Request) => {
+    const header = getHeader(userData);
+    return await client
+      .patch(`/games/${id}`, data, header)
+      .then((res) => res.data)
+      .catch((e) => {
+        console.error("update-game-mutation", e);
+        throw new Error(e);
+      });
+  };
+
+export const useUpdateGameMutation = (
+  id: number,
+  setIsChangingScore?: Dispatch<SetStateAction<boolean>>
+) => {
   const { userData } = useContext(UserContext);
-  return useMutation<unknown, unknown, Request>({
-    mutationFn: updateGame(userData!),
+  const queryClient = useQueryClient();
+  return useMutation<Game, unknown, Request>({
+    mutationFn: updateGame(userData!, id),
+    onSuccess: (data) => {
+      queryClient.refetchQueries(["games", id]);
+      if (setIsChangingScore) setIsChangingScore(false);
+    },
   });
 };

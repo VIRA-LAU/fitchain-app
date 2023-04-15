@@ -102,7 +102,7 @@ export const PlayerCard = ({
           ]}
         >
           {!upcoming ? (
-            <Pressable
+            <TouchableOpacity
               disabled={rated || id == userData?.userId}
               onPress={() =>
                 navigation.push("RatePlayer", {
@@ -126,7 +126,7 @@ export const PlayerCard = ({
               >
                 {id == userData?.userId ? "You" : rated ? "Rated" : "Rate"}
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           ) : (
             <Text style={[styles.statusText]}>{displayedStatus}</Text>
           )}

@@ -43,6 +43,7 @@ export const BranchLocation = ({
     startTime?: string;
     endTime?: string;
     gameType: GameType;
+    nbOfPlayers: number;
   };
 }) => {
   const { colors } = useTheme();

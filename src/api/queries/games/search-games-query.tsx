@@ -7,6 +7,7 @@ import client, { getHeader } from "../../client";
 
 type Props = {
   gameType: GameType;
+  nbOfPlayers: number;
   date?: string;
   startTime?: string;
   endTime?: string;

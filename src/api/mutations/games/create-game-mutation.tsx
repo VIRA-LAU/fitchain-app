@@ -21,7 +21,7 @@ type Request = {
 const createGame = (userData: UserData) => async (data: Request) => {
   const header = getHeader(userData);
   return await client
-    .post("/games/bookings", data, header)
+    .post("/games", data, header)
     .then((res) => res.data)
     .catch((e) => {
       console.error("create-game-mutation", e);

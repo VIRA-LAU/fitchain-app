@@ -91,14 +91,13 @@ export const RatePlayer = ({ navigation, route }: Props) => {
               onRatingChange={handleChangeRating}
             ></RateCriteria>
           </View>
-          <View style={styles.rateButtonView}>
-            <Button
-              style={styles.rateButton}
-              onPress={() => handleRatePlayer()}
-            >
-              <Text style={styles.rateButtonText}>Rate Player</Text>
-            </Button>
-          </View>
+          <Button
+            style={styles.rateButton}
+            textColor={colors.secondary}
+            onPress={() => handleRatePlayer()}
+          >
+            Rate Player
+          </Button>
         </View>
       </ScrollView>
     </AppHeader>
@@ -111,19 +110,12 @@ const makeStyles = (
   windowHeight: number
 ) =>
   StyleSheet.create({
-    rateButtonView: {
-      marginTop: "auto",
-      marginBottom: 20,
-      width: "95%",
-    },
-    rateButtonText: {
-      color: colors.background,
-      fontFamily: "Inter-SemiBold",
-      fontSize: 16,
-    },
     rateButton: {
       backgroundColor: colors.primary,
       borderRadius: 5,
+      marginTop: "auto",
+      marginBottom: 20,
+      width: "95%",
     },
     rateCriteria: {
       marginTop: 20,
@@ -169,27 +161,6 @@ const makeStyles = (
       justifyContent: "space-between",
       alignItems: "center",
     },
-    headerText1: {
-      fontFamily: "Inter-SemiBold",
-      color: colors.tertiary,
-      marginTop: 15,
-    },
-    headerText2: {
-      fontFamily: "Inter-Medium",
-      lineHeight: 20,
-      color: "white",
-      marginTop: 10,
-      marginBottom: 20,
-      textAlign: "center",
-    },
-    contentView: {
-      padding: 20,
-      marginBottom: 30,
-    },
-    teamsView: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
     rating: {
       fontFamily: "Inter-SemiBold",
       color: "white",
@@ -197,11 +168,6 @@ const makeStyles = (
       lineHeight: 70 - 1.5,
       height: 70 - 16,
       marginVertical: 20,
-    },
-    ratingLabelsView: {
-      marginLeft: 15,
-      height: 70,
-      justifyContent: "space-around",
     },
     ratingLabel: {
       fontFamily: "Inter-SemiBold",
@@ -213,50 +179,5 @@ const makeStyles = (
       height: 70,
       marginLeft: 15,
       justifyContent: "space-around",
-    },
-    ratingLineOuter: {
-      height: 5,
-      backgroundColor: colors.secondary,
-      borderRadius: 5,
-    },
-    ratingLineInner: {
-      backgroundColor: colors.tertiary,
-      height: "100%",
-      borderRadius: 5,
-    },
-    achievementsView: {
-      flexDirection: "row",
-      justifyContent: "space-around",
-      marginVertical: 20,
-    },
-    achievementView: {
-      alignItems: "center",
-    },
-    achievement: {
-      width: 0.1 * windowWidth,
-      height: 0.1 * windowWidth,
-    },
-    achievementTitle: {
-      fontFamily: "Inter-SemiBold",
-      color: colors.tertiary,
-      marginTop: 5,
-      fontSize: 12,
-    },
-    achievementValue: {
-      fontFamily: "Inter-SemiBold",
-      color: "white",
-      fontSize: 16,
-    },
-    divider: {
-      borderColor: colors.secondary,
-      borderBottomWidth: 1,
-    },
-    placeholderText: {
-      height: 50,
-      fontFamily: "Inter-Medium",
-      color: colors.tertiary,
-      textAlign: "center",
-      textAlignVertical: "center",
-      marginBottom: -10,
     },
   });

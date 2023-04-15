@@ -25,6 +25,7 @@ export const VenueBranches = ({ navigation, route }: Props) => {
     startTime,
     endTime,
     gameType,
+    nbOfPlayers,
   } = route.params;
 
   const date = new Date(JSON.parse(dateStr));
@@ -39,6 +40,7 @@ export const VenueBranches = ({ navigation, route }: Props) => {
     startTime,
     endTime,
     venueId: id,
+    nbOfPlayers,
   });
 
   const { data: sortedBranches } = useSortBranchesByLocationQuery(
@@ -81,6 +83,7 @@ export const VenueBranches = ({ navigation, route }: Props) => {
                 gameType,
                 startTime,
                 endTime,
+                nbOfPlayers,
               }}
             />
           );

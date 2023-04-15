@@ -1,5 +1,5 @@
 import { Button, Text, useTheme } from "react-native-paper";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { useEffect } from "react";
 import FeatherIcon from "react-native-vector-icons/Feather";
 
@@ -13,7 +13,7 @@ export const TopPlayersCard = ({
   const { colors } = useTheme();
   useEffect(() => {}, []);
   return (
-    <View
+    <TouchableOpacity
       style={{
         height: "100%",
         width: "100%",
@@ -42,6 +42,6 @@ export const TopPlayersCard = ({
           {achievement}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };

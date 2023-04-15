@@ -11,6 +11,7 @@ type Props = {
   startTime?: string;
   endTime?: string;
   venueId?: number;
+  nbOfPlayers?: number;
 };
 
 const searchBranches = (userData: UserData, params: Props) => async () => {

@@ -38,6 +38,7 @@ export const VenueCard = ({
     startTime?: string;
     endTime?: string;
     gameType: GameType;
+    nbOfPlayers: number;
   };
   isFirst?: boolean;
   isLast?: boolean;

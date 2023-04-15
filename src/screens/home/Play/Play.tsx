@@ -440,6 +440,7 @@ export const Play = ({
                             endTime: endTimeDate
                               ? timeFormatter(endTimeDate, "24")
                               : undefined,
+                            nbOfPlayers: numberOfPlayers,
                           });
                         else {
                           navigation.push("VenueBranches", {
@@ -454,6 +455,7 @@ export const Play = ({
                               : undefined,
                             venueName: venueName!,
                             id: venueId,
+                            nbOfPlayers: numberOfPlayers,
                           });
                         }
                       }
@@ -475,6 +477,7 @@ export const Play = ({
                           ? JSON.stringify(searchDate)
                           : undefined,
                         gameType,
+                        nbOfPlayers: numberOfPlayers,
                         location: searchLocationMarker,
                         locationName: searchLocationName,
                         startTime: startTimeDate

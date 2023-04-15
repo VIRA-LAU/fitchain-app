@@ -5,7 +5,7 @@ import { TeamPlayer } from "src/types";
 import { useContext } from "react";
 
 type Response = {
-  team: "Home" | "AWAY" | "none";
+  team: "HOME" | "AWAY" | "none";
 };
 const getPlayerTeamQuery = (userData: UserData, gameId: number) => async () => {
   const header = getHeader(userData);

@@ -27,6 +27,7 @@ export const ChooseGame = ({ navigation, route }: Props) => {
     startTime,
     endTime,
     gameType,
+    nbOfPlayers,
   } = route.params;
 
   const date = dateStr ? new Date(JSON.parse(dateStr)) : undefined;
@@ -41,6 +42,7 @@ export const ChooseGame = ({ navigation, route }: Props) => {
     date: searchDate,
     startTime,
     endTime,
+    nbOfPlayers,
   });
 
   const { data: sortedGamesByLocation, refetch: sortGamesByLocation } =

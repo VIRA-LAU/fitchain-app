@@ -18,6 +18,7 @@ export type HomeStackParamList = {
     playScreenBranch: VenueBranch | null;
     playScreenBookingDetails?: {
       date: string;
+      nbOfPlayers: number;
       startTime?: string;
       endTime?: string;
       gameType: GameType;
@@ -30,6 +31,7 @@ export type HomeStackParamList = {
     bookingDetails: {
       courtId: number;
       date: string;
+      nbOfPlayers: number;
       timeSlotIds: number[];
       startTime?: string;
       endTime?: string;
@@ -40,6 +42,7 @@ export type HomeStackParamList = {
     id: number;
     venueName: string;
     gameType: GameType;
+    nbOfPlayers: number;
     date: string;
     location: LatLng;
     startTime?: string;
@@ -51,6 +54,7 @@ export type HomeStackParamList = {
     branchLocation: string;
     bookingDetails?: {
       date: string;
+      nbOfPlayers: number;
       startTime?: string;
       endTime?: string;
       gameType: GameType;
@@ -58,6 +62,7 @@ export type HomeStackParamList = {
   };
   ChooseVenue: {
     gameType: GameType;
+    nbOfPlayers: number;
     date: string;
     location: LatLng;
     locationName: string;
@@ -68,6 +73,7 @@ export type HomeStackParamList = {
     gameType: GameType;
     location: LatLng;
     locationName: string;
+    nbOfPlayers: number;
     date?: string;
     startTime?: string;
     endTime?: string;
