@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { AppHeader, BranchLocation } from "src/components";
+import { AppHeader, BranchLocation, Skeleton } from "src/components";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
@@ -27,7 +27,7 @@ export const VenueDetails = ({ navigation, route }: Props) => {
 
   const { id, isPlayScreen, playScreenBranch, playScreenBookingDetails } =
     route.params;
-  const { data: venue } = useVenueByIdQuery(id);
+  const { data: venue, isLoading } = useVenueByIdQuery(id);
 
   const [playScreenVisible, setPlayScreenVisible] = useState<boolean>(false);
   const courtPrices: number[] = [];
@@ -76,7 +76,11 @@ export const VenueDetails = ({ navigation, route }: Props) => {
               source={require("assets/images/home/basketball-hub-icon.png")}
               style={styles.clubIcon}
             />
-            <Text style={styles.headerText}>{venue?.description}</Text>
+            {isLoading ? (
+              <Skeleton height={20} width={180} style={styles.headerText} />
+            ) : (
+              <Text style={styles.headerText}>{venue?.description}</Text>
+            )}
             {!isPlayScreen && (
               <View style={styles.buttonsView}>
                 <TouchableOpacity

@@ -1,7 +1,14 @@
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { BranchLocation, PlayerCard, Update } from "components";
+import {
+  BranchLocation,
+  BranchLocationSkeleton,
+  PlayerCard,
+  PlayerCardSkeleton,
+  UpdateCard,
+  UpdateCardSkeleton,
+} from "components";
 import { Game, TeamPlayer } from "src/types";
 import { useUpdatesQuery } from "src/api";
 import { ReactNode, useEffect, useState } from "react";
@@ -12,15 +19,21 @@ export const Team = ({
   name,
   game,
   players,
+  gameDetailsLoading,
+  playersLoading,
 }: {
   name: "Home" | "Away";
-  game: Game;
+  game?: Game;
   players?: TeamPlayer[];
+  gameDetailsLoading: boolean;
+  playersLoading: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { data: gameUpdates } = useUpdatesQuery(game.id);
+  const { data: gameUpdates, isFetching: updatesLoading } = useUpdatesQuery(
+    game?.id
+  );
 
   const [upcomingGame, setUpcomingGame] = useState<boolean>();
   const [activePlayer, setActivePlayer] = useState<number>(0);
@@ -30,12 +43,12 @@ export const Team = ({
   if (gameUpdates) {
     updateCards.push({
       card: (
-        <Update
+        <UpdateCard
           key="created"
           type="create"
           name={`${gameUpdates.admin.firstName} ${gameUpdates.admin.lastName}`}
           date={new Date(gameUpdates.createdAt)}
-          gameId={game.id}
+          gameId={game?.id}
         />
       ),
       date: new Date(gameUpdates.createdAt),
@@ -44,7 +57,7 @@ export const Team = ({
       if (invitation.status !== "REJECTED")
         updateCards.push({
           card: (
-            <Update
+            <UpdateCard
               key={`invitation-${index}`}
               type={invitation.status === "APPROVED" ? "join" : "invitation"}
               name={
@@ -54,7 +67,7 @@ export const Team = ({
               }
               friendName={`${invitation.friend.firstName} ${invitation.friend.lastName}`}
               date={new Date(invitation.createdAt)}
-              gameId={game.id}
+              gameId={game?.id}
             />
           ),
           date: new Date(invitation.createdAt),
@@ -64,13 +77,13 @@ export const Team = ({
       if (request.status !== "REJECTED")
         updateCards.push({
           card: (
-            <Update
+            <UpdateCard
               key={`request-${index}`}
               type={request.status === "APPROVED" ? "join" : "join-request"}
               name={`${request.user.firstName} ${request.user.lastName}`}
               date={new Date(request.createdAt)}
               requestId={request.id}
-              gameId={game.id}
+              gameId={game?.id}
             />
           ),
           date: new Date(request.createdAt),
@@ -83,11 +96,11 @@ export const Team = ({
 
   useEffect(() => {
     const currentDate = new Date();
-    const gameDate = new Date(game.date);
+    const gameDate = game?.date ? new Date(game.date) : new Date();
     if (gameDate < currentDate) {
       setUpcomingGame(false);
     } else setUpcomingGame(true);
-  }, [game.date]);
+  }, [game?.date]);
 
   if (typeof upcomingGame === "undefined") return <View />;
   return (
@@ -144,7 +157,7 @@ export const Team = ({
         >
           Team Players
         </Text>
-        {players && players.length > 0 && (
+        {!playersLoading && players && players.length > 0 && (
           <ScrollView
             style={styles.playerCardView}
             contentContainerStyle={{
@@ -154,7 +167,8 @@ export const Team = ({
             showsHorizontalScrollIndicator={false}
             horizontal
           >
-            {players?.map((player: TeamPlayer, index: number) => (
+            {playersLoading && <PlayerCardSkeleton />}
+            {players.map((player: TeamPlayer, index: number) => (
               <PlayerCard
                 key={index}
                 player={player}
@@ -162,12 +176,13 @@ export const Team = ({
                 index={index}
                 setActivePlayer={setActivePlayer}
                 upcoming={upcomingGame ? upcomingGame : false}
-                gameId={game.id}
+                gameId={game?.id}
               />
             ))}
           </ScrollView>
         )}
-        {(!players || players.length === 0) && (
+
+        {!playersLoading && (!players || players.length === 0) && (
           <Text style={styles.placeholderText}>
             There are no players on this team.
           </Text>
@@ -180,14 +195,19 @@ export const Team = ({
         source={require("assets/images/home/basketball-court.png")}
       />
       <View style={{ marginHorizontal: 20, marginBottom: -10 }}>
-        <BranchLocation type="court" court={game.court} team={name} />
+        {gameDetailsLoading ? (
+          <BranchLocationSkeleton />
+        ) : (
+          <BranchLocation type="court" court={game?.court} team={name} />
+        )}
       </View>
       <View style={styles.divider} />
       <Text variant="labelLarge" style={{ color: colors.tertiary, margin: 20 }}>
         Updates
       </Text>
       <View style={styles.updatesView}>
-        {updateCards.map(({ card }) => card)}
+        {updatesLoading && <UpdateCardSkeleton />}
+        {!updatesLoading && updateCards.map(({ card }) => card)}
       </View>
     </ScrollView>
   );

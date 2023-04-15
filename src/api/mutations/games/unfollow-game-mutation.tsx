@@ -18,9 +18,7 @@ const unfollowGame = (userData: UserData) => async (data: Request) => {
     });
 };
 
-export const useUnfollowGameMutation = (
-  setFollowDisabled: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+export const useUnfollowGameMutation = () => {
   const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
 
@@ -28,10 +26,6 @@ export const useUnfollowGameMutation = (
     mutationFn: unfollowGame(userData!),
     onSuccess: (data) => {
       queryClient.refetchQueries(["followed-games"]);
-      setFollowDisabled(false);
-    },
-    onError: (e) => {
-      setFollowDisabled(false);
     },
   });
 };

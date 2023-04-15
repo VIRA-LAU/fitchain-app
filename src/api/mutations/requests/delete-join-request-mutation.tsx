@@ -19,9 +19,7 @@ const deleteJoinRequest = (userData: UserData) => async (data: Request) => {
     });
 };
 
-export const useDeleteJoinRequestMutation = (
-  setJoinDisabled: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+export const useDeleteJoinRequestMutation = () => {
   const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
 
@@ -32,10 +30,6 @@ export const useDeleteJoinRequestMutation = (
       queryClient.refetchQueries(["games"]);
       queryClient.refetchQueries(["game-players", variables.gameId]);
       queryClient.refetchQueries(["updates", variables.gameId]);
-      setJoinDisabled(false);
-    },
-    onError: (e) => {
-      setJoinDisabled(false);
     },
   });
 };

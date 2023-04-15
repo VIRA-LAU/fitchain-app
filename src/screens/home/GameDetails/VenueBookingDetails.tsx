@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { useTheme, Text } from "react-native-paper";
+import { useTheme, Text, ActivityIndicator } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { AppHeader } from "src/components";
 import Feather from "react-native-vector-icons/Feather";
@@ -23,7 +23,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
   const { venueName, courtType, price, bookingDetails } = route.params;
   const styles = makeStyles(colors);
 
-  const { mutate: createGame } = useCreateGameMutation();
+  const { mutate: createGame, isLoading } = useCreateGameMutation();
 
   return (
     <AppHeader
@@ -154,29 +154,36 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             </Text>
           </View>
         </View>
-        <TouchableOpacity
-          activeOpacity={0.6}
-          style={styles.paymentView}
-          onPress={() => {
-            const bookingDate = new Date(JSON.parse(bookingDetails.date));
-            createGame({
-              courtId: bookingDetails.courtId,
-              timeSlotIds: bookingDetails.timeSlotIds,
-              date: bookingDate,
-              type: bookingDetails.gameType,
-            });
-          }}
-        >
-          <View>
-            <Text style={{ fontFamily: "Inter-Medium", fontSize: 10 }}>
-              TOTAL
+        {isLoading ? (
+          <ActivityIndicator
+            size="large"
+            style={{ marginTop: "auto", marginBottom: 10 }}
+          />
+        ) : (
+          <TouchableOpacity
+            activeOpacity={0.6}
+            style={styles.paymentView}
+            onPress={() => {
+              const bookingDate = new Date(JSON.parse(bookingDetails.date));
+              createGame({
+                courtId: bookingDetails.courtId,
+                timeSlotIds: bookingDetails.timeSlotIds,
+                date: bookingDate,
+                type: bookingDetails.gameType,
+              });
+            }}
+          >
+            <View>
+              <Text style={{ fontFamily: "Inter-Medium", fontSize: 10 }}>
+                TOTAL
+              </Text>
+              <Text style={{ fontFamily: "Inter-Medium" }}>USD 24.20</Text>
+            </View>
+            <Text style={{ fontFamily: "Inter-SemiBold" }}>
+              Continue To Payment
             </Text>
-            <Text style={{ fontFamily: "Inter-Medium" }}>USD 24.20</Text>
-          </View>
-          <Text style={{ fontFamily: "Inter-SemiBold" }}>
-            Continue To Payment
-          </Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </AppHeader>
   );

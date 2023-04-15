@@ -9,7 +9,12 @@ import {
 } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { ActivityCard, AppHeader, Skeleton } from "src/components";
+import {
+  ActivityCard,
+  ActivityCardSkeleton,
+  AppHeader,
+  Skeleton,
+} from "src/components";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Activity } from "src/types";
@@ -89,7 +94,7 @@ export const Profile = ({
               source={require("assets/images/home/profile-picture.png")}
               style={styles.profilePicture}
             />
-            {userDetailsLoading ? (
+            {gameCountLoading ? (
               <Skeleton height={15} width={100} style={styles.headerText1} />
             ) : (
               <Text style={styles.headerText1}>
@@ -243,18 +248,19 @@ export const Profile = ({
             Activity
           </Text>
           <View>
-            {activities?.map((activity: Activity, index: number) => (
-              <ActivityCard key={index} {...activity} />
-            ))}
-            {!activities ||
-              (activities.length === 0 && (
-                <Text style={styles.placeholderText}>
-                  {route.params?.firstName
-                    ? `${route.params.firstName} ${route.params.lastName} has `
-                    : "You have "}
-                  no recent activities.
-                </Text>
+            {activitiesLoading && <ActivityCardSkeleton />}
+            {!activitiesLoading &&
+              activities?.map((activity: Activity, index: number) => (
+                <ActivityCard key={index} {...activity} />
               ))}
+            {!activitiesLoading && (!activities || activities.length === 0) && (
+              <Text style={styles.placeholderText}>
+                {route.params?.firstName
+                  ? `${route.params.firstName} ${route.params.lastName} has `
+                  : "You have "}
+                no recent activities.
+              </Text>
+            )}
           </View>
         </View>
       </ScrollView>

@@ -3,6 +3,7 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { View, StyleSheet, Image } from "react-native";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useEditJoinRequestMutation, usePlayerStatusQuery } from "src/api";
+import { Skeleton } from "../home";
 
 type textOptions =
   | "create"
@@ -18,7 +19,26 @@ const updateText = (type: textOptions) => {
   else if (type === "photo-upload") return " uploaded a photo.";
 };
 
-export const Update = ({
+export const UpdateCardSkeleton = () => {
+  const { colors } = useTheme();
+  const styles = makeStyles(colors);
+
+  return (
+    <View style={styles.wrapperView}>
+      <Image
+        source={require("assets/images/home/profile-picture.png")}
+        style={styles.profilePicture}
+        resizeMode="contain"
+      />
+      <View style={styles.contentView}>
+        <Skeleton height={15} width={"80%"} />
+        <Skeleton height={15} width={"40%"} style={{ marginTop: 5 }} />
+      </View>
+    </View>
+  );
+};
+
+export const UpdateCard = ({
   name,
   type,
   friendName,

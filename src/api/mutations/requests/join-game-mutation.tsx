@@ -25,9 +25,7 @@ const joinGame = (userData: UserData) => async (data: Request) => {
     });
 };
 
-export const useJoinGameMutation = (
-  setJoinDisabled: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+export const useJoinGameMutation = () => {
   const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
 
@@ -43,10 +41,6 @@ export const useJoinGameMutation = (
       queryClient.refetchQueries(["games"]);
       queryClient.refetchQueries(["game-players", data.gameId]);
       queryClient.refetchQueries(["updates", data.gameId]);
-      setJoinDisabled(false);
-    },
-    onError: (e) => {
-      setJoinDisabled(false);
     },
   });
 };

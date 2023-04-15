@@ -16,7 +16,40 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
 import { Court, Game, GameType } from "src/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import { MiniMapComponent } from "../home";
+import { MiniMapComponent, Skeleton } from "../home";
+
+export const BranchLocationSkeleton = () => {
+  const { colors } = useTheme();
+  const styles = makeStyles(colors);
+
+  return (
+    <View style={styles.wrapperView}>
+      <Skeleton style={styles.background} />
+      <View style={styles.dataView}>
+        <View style={styles.headerView}>
+          <Skeleton style={{ width: 35, aspectRatio: 1 }} />
+          <View style={styles.titleView}>
+            <Skeleton height={15} width={120} style={styles.title} />
+            <Skeleton
+              height={15}
+              width={60}
+              style={[styles.subtitle, { marginTop: 5 }]}
+            />
+          </View>
+        </View>
+        <View style={styles.rowView}>
+          <Skeleton height={15} width={80} style={styles.rowKey} />
+          <Skeleton height={15} width={80} style={styles.rowValue} />
+        </View>
+
+        <View style={styles.rowView}>
+          <Skeleton height={15} width={80} style={styles.rowKey} />
+          <Skeleton height={15} width={80} style={styles.rowValue} />
+        </View>
+      </View>
+    </View>
+  );
+};
 
 export const BranchLocation = ({
   type,

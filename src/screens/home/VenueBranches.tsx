@@ -3,7 +3,11 @@ import { StyleSheet } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList } from "navigation";
-import { AppHeader, BranchLocation } from "src/components";
+import {
+  AppHeader,
+  BranchLocation,
+  BranchLocationSkeleton,
+} from "src/components";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import {
   useSearchBranchesQuery,
@@ -43,7 +47,7 @@ export const VenueBranches = ({ navigation, route }: Props) => {
     nbOfPlayers,
   });
 
-  const { data: sortedBranches } = useSortBranchesByLocationQuery(
+  const { data: sortedBranches, isLoading } = useSortBranchesByLocationQuery(
     branches,
     location
   );
@@ -58,36 +62,38 @@ export const VenueBranches = ({ navigation, route }: Props) => {
       searchBar
       backEnabled
     >
-      {(!sortedBranches || sortedBranches.length === 0) && (
+      {!isLoading && (!sortedBranches || sortedBranches.length === 0) && (
         <Text style={styles.placeholderText}>
           There are no branches that match your search.
         </Text>
       )}
       <ScrollView contentContainerStyle={styles.wrapperView}>
-        {sortedBranches?.map((branch, index: number) => {
-          return (
-            <BranchLocation
-              key={index}
-              type="branch"
-              isPressable
-              branch={{
-                venueName,
-                location: branch.location,
-                courts: branch.courts,
-                rating: branch.rating,
-                latitude: branch.latitude,
-                longitude: branch.longitude,
-              }}
-              playScreenBookingDetails={{
-                date: dateStr,
-                gameType,
-                startTime,
-                endTime,
-                nbOfPlayers,
-              }}
-            />
-          );
-        })}
+        {isLoading && <BranchLocationSkeleton />}
+        {!isLoading &&
+          sortedBranches?.map((branch, index: number) => {
+            return (
+              <BranchLocation
+                key={index}
+                type="branch"
+                isPressable
+                branch={{
+                  venueName,
+                  location: branch.location,
+                  courts: branch.courts,
+                  rating: branch.rating,
+                  latitude: branch.latitude,
+                  longitude: branch.longitude,
+                }}
+                playScreenBookingDetails={{
+                  date: dateStr,
+                  gameType,
+                  startTime,
+                  endTime,
+                  nbOfPlayers,
+                }}
+              />
+            );
+          })}
       </ScrollView>
     </AppHeader>
   );

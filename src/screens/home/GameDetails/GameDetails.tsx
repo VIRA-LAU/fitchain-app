@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useContext } from "react";
-import { AppHeader } from "src/components";
+import { AppHeader, Skeleton } from "src/components";
 import {
   View,
   StyleSheet,
@@ -13,16 +13,19 @@ import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
-import { Button, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
 import { Team } from "./Team";
 import {
+  useDeleteJoinRequestMutation,
   useFollowedGamesQuery,
   useFollowGameMutation,
   useGameByIdQuery,
   useGamePlayersQuery,
+  useJoinGameMutation,
   usePlayerStatusQuery,
+  useRespondToInviteMutation,
   useUnfollowGameMutation,
 } from "src/api";
 import { PopupContainer, PopupType } from "./Popups";
@@ -38,8 +41,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const { userData } = useContext(UserContext);
 
   const [popupVisible, setPopupVisible] = useState<PopupType | null>(null);
-  const [joinDisabled, setJoinDisabled] = useState<boolean>(false);
-  const [followDisabled, setFollowDisabled] = useState<boolean>(false);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "Home", title: "Home" },
@@ -47,17 +48,29 @@ export const GameDetails = ({ navigation, route }: Props) => {
   ]);
 
   const { id } = route.params;
-  const { data: game } = useGameByIdQuery(id);
-  const { data: players } = useGamePlayersQuery(id);
-  const { data: playerStatus } = usePlayerStatusQuery(id);
-  const { data: followedGames } = useFollowedGamesQuery();
+  const { data: game, isLoading: gameDetailsLoading } = useGameByIdQuery(id);
+  const { data: players, isLoading: playersLoading } = useGamePlayersQuery(id);
+  const { data: playerStatus, isLoading: playerStatusLoading } =
+    usePlayerStatusQuery(id);
+  const {
+    data: followedGames,
+    isLoading: followedGamesLoading,
+    isFetching: followedGamesFetching,
+  } = useFollowedGamesQuery();
 
-  const { mutate: followGame } = useFollowGameMutation(setFollowDisabled);
-  const { mutate: unfollowGame } = useUnfollowGameMutation(setFollowDisabled);
+  const { mutate: joinGame, isLoading: joinLoading } = useJoinGameMutation();
+  const { mutate: cancelRequest, isLoading: cancelLoading } =
+    useDeleteJoinRequestMutation();
+  const { mutate: respondToInvite, isLoading: respondLoading } =
+    useRespondToInviteMutation();
+  const { mutate: followGame, isLoading: followLoading } =
+    useFollowGameMutation();
+  const { mutate: unfollowGame, isLoading: unfollowLoading } =
+    useUnfollowGameMutation();
 
   const dateHeader = useMemo(() => {
     if (game?.date) {
-      let date = new Date(game.date);
+      let date = new Date(game?.date);
       const bookingDate = new Date(
         date.toISOString().substring(0, date.toISOString().indexOf("T"))
       );
@@ -90,117 +103,152 @@ export const GameDetails = ({ navigation, route }: Props) => {
     };
   }, [popupVisible]);
 
-  if (!game || !players || !playerStatus || !followedGames) return <View />;
-  else {
-    const date = new Date(game.date);
+  const date = game?.date ? new Date(game?.date) : new Date();
 
-    const renderScene = () => {
-      const route = routes[index];
-      switch (route.key) {
-        case "Home":
-          return (
-            <Team
-              name={"Home"}
-              game={game}
-              players={players.filter(
-                ({ team, status }) => team === "HOME" && status !== "REJECTED"
-              )}
-            />
-          );
-        case "Away":
-          return (
-            <Team
-              name={"Away"}
-              game={game}
-              players={players.filter(
-                ({ team, status }) => team === "AWAY" && status !== "REJECTED"
-              )}
-            />
-          );
-        default:
-          return null;
-      }
-    };
+  const renderScene = () => {
+    const route = routes[index];
+    switch (route.key) {
+      case "Home":
+        return (
+          <Team
+            name={"Home"}
+            game={game}
+            players={players?.filter(
+              ({ team, status }) => team === "HOME" && status !== "REJECTED"
+            )}
+            gameDetailsLoading={gameDetailsLoading}
+            playersLoading={playersLoading}
+          />
+        );
+      case "Away":
+        return (
+          <Team
+            name={"Away"}
+            game={game}
+            players={players?.filter(
+              ({ team, status }) => team === "AWAY" && status !== "REJECTED"
+            )}
+            gameDetailsLoading={gameDetailsLoading}
+            playersLoading={playersLoading}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
-    const renderTabBar = (props: TabBarProps<any>) => (
-      <TabBar
-        {...props}
-        style={{
-          backgroundColor: colors.secondary,
-          borderRadius: 10,
-          marginHorizontal: 20,
-          marginTop: 10,
-        }}
-        renderTabBarItem={({ route }) => {
-          let isActive = route.key === props.navigationState.routes[index].key;
-          return (
-            <Pressable
-              style={({ pressed }) => [
-                styles.tabViewItem,
-                {
-                  width: 0.5 * (windowWidth - 40 - 20),
-                  backgroundColor: isActive
-                    ? colors.background
-                    : colors.secondary,
-                },
-                pressed && { backgroundColor: colors.background },
-              ]}
-              onPress={() => {
-                setIndex(routes.findIndex(({ key }) => route.key === key));
+  const renderTabBar = (props: TabBarProps<any>) => (
+    <TabBar
+      {...props}
+      style={{
+        backgroundColor: colors.secondary,
+        borderRadius: 10,
+        marginHorizontal: 20,
+        marginTop: 10,
+      }}
+      renderTabBarItem={({ route }) => {
+        let isActive = route.key === props.navigationState.routes[index].key;
+        return (
+          <Pressable
+            style={({ pressed }) => [
+              styles.tabViewItem,
+              {
+                width: 0.5 * (windowWidth - 40 - 20),
+                backgroundColor: isActive
+                  ? colors.background
+                  : colors.secondary,
+              },
+              pressed && { backgroundColor: colors.background },
+            ]}
+            onPress={() => {
+              setIndex(routes.findIndex(({ key }) => route.key === key));
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Inter-Medium",
+                color: isActive ? "white" : colors.tertiary,
               }}
             >
-              <Text
-                style={{
-                  fontFamily: "Inter-Medium",
-                  color: isActive ? "white" : colors.tertiary,
-                }}
-              >
-                {route.title}
-              </Text>
-            </Pressable>
-          );
-        }}
-        renderIndicator={() => <View style={{ width: 0 }} />}
-      />
-    );
+              {route.title}
+            </Text>
+          </Pressable>
+        );
+      }}
+      renderIndicator={() => <View style={{ width: 0 }} />}
+    />
+  );
 
-    return (
-      <React.Fragment>
-        {popupVisible && (
-          <PopupContainer
-            game={game}
-            popupVisible={popupVisible}
-            setPopupVisible={setPopupVisible}
-            setJoinDisabled={setJoinDisabled}
-            followedGames={followedGames}
-            setFollowDisabled={setFollowDisabled}
-            playerStatus={playerStatus}
-          />
-        )}
-        <AppHeader
-          absolutePosition={false}
-          backEnabled
-          title={game.type}
-          right={
-            game.admin.id === userData?.userId ? (
-              <TouchableOpacity
-                onPress={() => {
-                  setPopupVisible("recordVideo");
+  return (
+    <React.Fragment>
+      {popupVisible && (
+        <PopupContainer
+          game={game}
+          popupVisible={popupVisible}
+          setPopupVisible={setPopupVisible}
+          followedGames={followedGames}
+          playerStatus={playerStatus}
+          joinGame={joinGame}
+          cancelRequest={cancelRequest}
+          respondToInvite={respondToInvite}
+          followGame={followGame}
+          unfollowGame={unfollowGame}
+        />
+      )}
+      <AppHeader
+        absolutePosition={false}
+        backEnabled
+        title={game?.type}
+        right={
+          game?.admin.id === userData?.userId ? (
+            <TouchableOpacity
+              onPress={() => {
+                setPopupVisible("recordVideo");
+              }}
+            >
+              <IonIcon name="videocam" color={"black"} size={24} />
+            </TouchableOpacity>
+          ) : (
+            <View />
+          )
+        }
+        backgroundImage={game?.type}
+        navigation={navigation}
+        route={route}
+        darkMode
+      >
+        <View style={styles.wrapperView}>
+          {gameDetailsLoading || playerStatusLoading || followedGamesLoading ? (
+            <View style={styles.headerView}>
+              <Skeleton height={15} width={80} style={styles.greyFont} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                <IonIcon name="videocam" color={"black"} size={24} />
-              </TouchableOpacity>
-            ) : (
-              <View />
-            )
-          }
-          backgroundImage={game.type}
-          navigation={navigation}
-          route={route}
-          darkMode
-        >
-          <View style={styles.wrapperView}>
-            {new Date(game.date) > new Date() && (
+                <Skeleton
+                  height={30}
+                  width={160}
+                  style={{ color: "white", marginTop: -5, marginBottom: 10 }}
+                />
+                <Skeleton
+                  height={15}
+                  width={80}
+                  style={{ color: "white", marginTop: -5, marginBottom: 10 }}
+                />
+              </View>
+              <Skeleton
+                height={40}
+                width={"100%"}
+                style={{ borderRadius: 5 }}
+              />
+            </View>
+          ) : (
+            !gameDetailsLoading &&
+            game &&
+            new Date(game?.date) > new Date() && (
               <View style={styles.headerView}>
                 <Text variant="labelLarge" style={styles.greyFont}>
                   {dateHeader}
@@ -229,100 +277,109 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     variant="labelLarge"
                     style={{ color: "white", marginTop: -5, marginBottom: 10 }}
                   >
-                    {game.gameTimeSlots[0].timeSlot.startTime} -{" "}
+                    {game?.gameTimeSlots[0].timeSlot.startTime} -{" "}
                     {
-                      game.gameTimeSlots[game.gameTimeSlots.length - 1].timeSlot
-                        .endTime
+                      game?.gameTimeSlots[game?.gameTimeSlots.length - 1]
+                        .timeSlot.endTime
                     }
                   </Text>
                 </View>
-                {!playerStatus.isAdmin && (
+                {!playerStatus?.isAdmin && (
                   <View style={styles.buttonsView}>
-                    <Button
-                      icon={() => (
-                        <IonIcon
-                          name={"basketball-outline"}
-                          size={26}
-                          color={colors.secondary}
-                        />
-                      )}
-                      style={{
-                        borderRadius: 5,
-                        flex: 1,
-                        backgroundColor: joinDisabled
-                          ? colors.tertiary
-                          : colors.primary,
-                      }}
-                      textColor={colors.secondary}
-                      onPress={
-                        joinDisabled
-                          ? undefined
-                          : playerStatus.hasRequestedtoJoin === "APPROVED" ||
-                            playerStatus.hasRequestedtoJoin === "PENDING" ||
-                            playerStatus.hasBeenInvited === "APPROVED"
-                          ? () => {
-                              setPopupVisible("cancelJoinGame");
-                            }
-                          : playerStatus.hasBeenInvited === "PENDING"
-                          ? () => {
-                              setPopupVisible("respondToInvitation");
-                            }
-                          : () => {
-                              setPopupVisible("joinGame");
-                            }
-                      }
-                    >
-                      {playerStatus.hasBeenInvited === "APPROVED" ||
-                      playerStatus.hasRequestedtoJoin === "APPROVED"
-                        ? "Leave Game"
-                        : playerStatus.hasBeenInvited === "PENDING"
-                        ? "Invited to Game"
-                        : playerStatus.hasRequestedtoJoin === "PENDING"
-                        ? "Cancel Request"
-                        : "Join Game"}
-                    </Button>
-                    <Button
-                      icon={() => (
-                        <FontAwesomeIcon
-                          name={
-                            followedGames.some((game) => game.id === id)
-                              ? "thumbs-up"
-                              : "thumbs-o-up"
-                          }
-                          size={22}
+                    {joinLoading || cancelLoading || respondLoading ? (
+                      <View style={{ flexGrow: 1 }}>
+                        <ActivityIndicator style={{ marginLeft: 20 }} />
+                      </View>
+                    ) : (
+                      <Button
+                        icon={() => (
+                          <IonIcon
+                            name={"basketball-outline"}
+                            size={26}
+                            color={colors.secondary}
+                          />
+                        )}
+                        style={{
+                          borderRadius: 5,
+                          flex: 1,
+                          backgroundColor: colors.primary,
+                        }}
+                        textColor={colors.secondary}
+                        onPress={
+                          playerStatus?.hasRequestedtoJoin === "APPROVED" ||
+                          playerStatus?.hasRequestedtoJoin === "PENDING" ||
+                          playerStatus?.hasBeenInvited === "APPROVED"
+                            ? () => {
+                                setPopupVisible("cancelJoinGame");
+                              }
+                            : playerStatus?.hasBeenInvited === "PENDING"
+                            ? () => {
+                                setPopupVisible("respondToInvitation");
+                              }
+                            : () => {
+                                setPopupVisible("joinGame");
+                              }
+                        }
+                      >
+                        {playerStatus?.hasBeenInvited === "APPROVED" ||
+                        playerStatus?.hasRequestedtoJoin === "APPROVED"
+                          ? "Leave Game"
+                          : playerStatus?.hasBeenInvited === "PENDING"
+                          ? "Invited to Game"
+                          : playerStatus?.hasRequestedtoJoin === "PENDING"
+                          ? "Cancel Request"
+                          : "Join Game"}
+                      </Button>
+                    )}
+                    {followLoading ||
+                    unfollowLoading ||
+                    followedGamesFetching ? (
+                      <View style={{ flexGrow: 1 }}>
+                        <ActivityIndicator
+                          style={{ marginRight: 20 }}
                           color={"white"}
                         />
-                      )}
-                      style={{ borderRadius: 5, flex: 1 }}
-                      textColor={"white"}
-                      buttonColor={"transparent"}
-                      onPress={
-                        followDisabled
-                          ? undefined
-                          : followedGames.some((game) => game.id === id)
-                          ? () => {
-                              setFollowDisabled(true);
-                              unfollowGame({
-                                gameId: game.id,
-                              });
+                      </View>
+                    ) : (
+                      <Button
+                        icon={() => (
+                          <FontAwesomeIcon
+                            name={
+                              followedGames?.some((game) => game?.id === id)
+                                ? "thumbs-up"
+                                : "thumbs-o-up"
                             }
-                          : () => {
-                              setFollowDisabled(true);
-                              followGame({
-                                gameId: game.id,
-                              });
-                            }
-                      }
-                    >
-                      {followedGames.some((game) => game.id === id)
-                        ? "Unfollow Game"
-                        : "Follow Game"}
-                    </Button>
+                            size={22}
+                            color={"white"}
+                          />
+                        )}
+                        style={{ borderRadius: 5, flex: 1 }}
+                        textColor={"white"}
+                        buttonColor={"transparent"}
+                        onPress={
+                          followedGames?.some((game) => game?.id === id)
+                            ? () => {
+                                unfollowGame({
+                                  gameId: game?.id,
+                                });
+                              }
+                            : () => {
+                                followGame({
+                                  gameId: game?.id,
+                                });
+                              }
+                        }
+                      >
+                        {followedGames?.some((game) => game?.id === id)
+                          ? "Unfollow Game"
+                          : "Follow Game"}
+                      </Button>
+                    )}
                   </View>
                 )}
-                {(playerStatus.isAdmin ||
-                  playerStatus.hasBeenInvited === "APPROVED" ||
-                  playerStatus.hasRequestedtoJoin === "APPROVED") && (
+                {(playerStatus?.isAdmin ||
+                  playerStatus?.hasBeenInvited === "APPROVED" ||
+                  playerStatus?.hasRequestedtoJoin === "APPROVED") && (
                   <Button
                     buttonColor={colors.primary}
                     textColor={colors.secondary}
@@ -331,30 +388,30 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       <Feather name="user-plus" size={size} color={color} />
                     )}
                     onPress={() => {
-                      navigation.push("InviteUsers", { gameId: game.id });
+                      navigation.push("InviteUsers", { gameId: game?.id });
                     }}
                   >
                     Invite Players
                   </Button>
                 )}
               </View>
-            )}
+            )
+          )}
 
-            <View style={styles.contentView}>
-              <TabView
-                navigationState={{ index, routes }}
-                renderTabBar={renderTabBar}
-                renderScene={renderScene}
-                onIndexChange={setIndex}
-                initialLayout={{ width: windowWidth }}
-                swipeEnabled={false}
-              />
-            </View>
+          <View style={styles.contentView}>
+            <TabView
+              navigationState={{ index, routes }}
+              renderTabBar={renderTabBar}
+              renderScene={renderScene}
+              onIndexChange={setIndex}
+              initialLayout={{ width: windowWidth }}
+              swipeEnabled={false}
+            />
           </View>
-        </AppHeader>
-      </React.Fragment>
-    );
-  }
+        </View>
+      </AppHeader>
+    </React.Fragment>
+  );
 };
 
 const makeStyles = (colors: MD3Colors) =>

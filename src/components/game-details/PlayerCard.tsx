@@ -10,7 +10,6 @@ import {
   StyleSheet,
   Image,
   useWindowDimensions,
-  Pressable,
   TouchableOpacity,
 } from "react-native";
 import { Text, useTheme } from "react-native-paper";
@@ -19,6 +18,40 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { TeamPlayer } from "src/types";
 import { UserContext } from "src/utils";
+import { Skeleton } from "../home";
+
+export const PlayerCardSkeleton = () => {
+  const { colors } = useTheme();
+  const windowWidth = useWindowDimensions().width;
+  const styles = makeStyles(colors, windowWidth);
+
+  return (
+    <View
+      style={[
+        styles.wrapperView,
+        { elevation: 15, transform: [{ scale: 1.1 }], zIndex: 2 },
+      ]}
+    >
+      <Skeleton style={styles.header} />
+      <View style={{ alignItems: "center", paddingTop: 40 }}>
+        <Skeleton style={styles.profilePicture} />
+        <Skeleton height={20} width={100} style={styles.name} />
+        <View style={[styles.ratingView, { marginTop: 8 }]}>
+          <IonIcon name={"star"} color={"white"} />
+          <Skeleton height={15} width={30} style={styles.ratingText} />
+        </View>
+        <Skeleton height={30} style={styles.statusView} />
+
+        <IonIcon
+          name="ellipsis-horizontal"
+          color={"white"}
+          size={24}
+          style={{ marginVertical: 5 }}
+        />
+      </View>
+    </View>
+  );
+};
 
 export const PlayerCard = ({
   isActive = false,

@@ -22,31 +22,29 @@ export const PopupContainer = ({
   game,
   popupVisible,
   setPopupVisible,
-  setJoinDisabled,
   followedGames,
-  setFollowDisabled,
   playerStatus,
+  joinGame,
+  cancelRequest,
+  respondToInvite,
+  followGame,
+  unfollowGame,
 }: {
-  game: Game;
+  game?: Game;
   popupVisible: PopupType | null;
   setPopupVisible: Dispatch<SetStateAction<PopupType | null>>;
-  setJoinDisabled: Dispatch<SetStateAction<boolean>>;
   followedGames?: Game[];
-  setFollowDisabled: Dispatch<SetStateAction<boolean>>;
-  playerStatus: PlayerStatus;
+  playerStatus?: PlayerStatus;
+  joinGame: Function;
+  cancelRequest: Function;
+  respondToInvite: Function;
+  followGame: Function;
+  unfollowGame: Function;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { mutate: joinGame } = useJoinGameMutation(setJoinDisabled);
-  const { mutate: cancelRequest } =
-    useDeleteJoinRequestMutation(setJoinDisabled);
-  const { mutate: respondToInvite } =
-    useRespondToInviteMutation(setJoinDisabled);
-
-  const { mutate: followGame } = useFollowGameMutation(setFollowDisabled);
-  const { mutate: unfollowGame } = useUnfollowGameMutation(setFollowDisabled);
-  const { mutate: startStopRecording } = useStartStopRecording(game.id);
+  const { mutate: startStopRecording } = useStartStopRecording(game?.id);
 
   if (popupVisible === "joinGame")
     return (
@@ -66,19 +64,17 @@ export const PopupContainer = ({
               style={styles.promptTeam}
               onPress={() => {
                 setPopupVisible(null);
-                setJoinDisabled(true);
                 joinGame({
-                  gameId: game.id,
+                  gameId: game?.id,
                   team: "HOME",
                 });
                 if (
                   !followedGames?.some(
-                    (followedGame) => game.id === followedGame.id
+                    (followedGame) => game?.id === followedGame.id
                   )
                 ) {
-                  setFollowDisabled(true);
                   followGame({
-                    gameId: game.id,
+                    gameId: game?.id,
                   });
                 }
               }}
@@ -90,19 +86,17 @@ export const PopupContainer = ({
               style={styles.promptTeam}
               onPress={() => {
                 setPopupVisible(null);
-                setJoinDisabled(true);
                 joinGame({
-                  gameId: game.id,
+                  gameId: game?.id,
                   team: "AWAY",
                 });
                 if (
                   !followedGames?.some(
-                    (followedGame) => followedGame.id === game.id
+                    (followedGame) => followedGame.id === game?.id
                   )
                 ) {
-                  setFollowDisabled(true);
                   followGame({
-                    gameId: game.id,
+                    gameId: game?.id,
                   });
                 }
               }}
@@ -122,8 +116,8 @@ export const PopupContainer = ({
         <View style={styles.prompt}>
           <Text style={styles.promptText}>
             Are you sure you want to{" "}
-            {playerStatus.hasRequestedtoJoin === "APPROVED" ||
-            playerStatus.hasBeenInvited === "APPROVED"
+            {playerStatus?.hasRequestedtoJoin === "APPROVED" ||
+            playerStatus?.hasBeenInvited === "APPROVED"
               ? "leave game"
               : "cancel your game request"}
             ?
@@ -137,29 +131,27 @@ export const PopupContainer = ({
               marginHorizontal: 20,
             }}
             onPress={() => {
-              setJoinDisabled(true);
               if (
-                playerStatus.hasRequestedtoJoin === "APPROVED" ||
-                playerStatus.hasRequestedtoJoin === "PENDING"
+                playerStatus?.hasRequestedtoJoin === "APPROVED" ||
+                playerStatus?.hasRequestedtoJoin === "PENDING"
               )
                 cancelRequest({
-                  requestId: playerStatus.requestId as number,
-                  gameId: game.id,
+                  requestId: playerStatus?.requestId as number,
+                  gameId: game?.id,
                 });
-              else if (playerStatus.hasBeenInvited === "APPROVED")
+              else if (playerStatus?.hasBeenInvited === "APPROVED")
                 respondToInvite({
-                  gameId: game.id,
-                  invitationId: playerStatus.invitationId as number,
+                  gameId: game?.id,
+                  invitationId: playerStatus?.invitationId as number,
                   status: "REJECTED",
                 });
               if (
                 followedGames?.some(
-                  (followedGame) => followedGame.id === game.id
+                  (followedGame) => followedGame.id === game?.id
                 )
               ) {
-                setFollowDisabled(true);
                 unfollowGame({
-                  gameId: game.id,
+                  gameId: game?.id,
                 });
               }
               setPopupVisible(null);
@@ -190,20 +182,18 @@ export const PopupContainer = ({
               marginHorizontal: 20,
             }}
             onPress={() => {
-              setJoinDisabled(true);
               respondToInvite({
-                gameId: game.id,
-                invitationId: playerStatus.invitationId as number,
+                gameId: game?.id,
+                invitationId: playerStatus?.invitationId as number,
                 status: "APPROVED",
               });
               if (
                 !followedGames?.some(
-                  (followedGame) => followedGame.id === game.id
+                  (followedGame) => followedGame.id === game?.id
                 )
               ) {
-                setFollowDisabled(true);
                 followGame({
-                  gameId: game.id,
+                  gameId: game?.id,
                 });
               }
               setPopupVisible(null);
@@ -220,10 +210,9 @@ export const PopupContainer = ({
               marginHorizontal: 20,
             }}
             onPress={() => {
-              setJoinDisabled(true);
               respondToInvite({
-                gameId: game.id,
-                invitationId: playerStatus.invitationId as number,
+                gameId: game?.id,
+                invitationId: playerStatus?.invitationId as number,
                 status: "REJECTED",
               });
               setPopupVisible(null);
@@ -243,7 +232,7 @@ export const PopupContainer = ({
       >
         <View style={styles.prompt}>
           <Text style={styles.promptText}>Record a video from the court.</Text>
-          {!game.isRecording ? (
+          {!game?.isRecording ? (
             <Button
               buttonColor={colors.primary}
               textColor={colors.background}

@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList } from "navigation";
-import { AppHeader, VenueCard } from "src/components";
+import { AppHeader, VenueCard, VenueCardSkeleton } from "src/components";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-gesture-handler";
 import {
@@ -42,7 +42,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
     nbOfPlayers,
   });
 
-  const { data: sortedBranches } = useSortBranchesByLocationQuery(
+  const { data: sortedBranches, isLoading } = useSortBranchesByLocationQuery(
     branches,
     location
   );
@@ -73,27 +73,29 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
             })}
           </Text>
         </View>
-        {(!sortedBranches || sortedBranches.length === 0) && (
+        {isLoading && <VenueCardSkeleton type="horizontal" />}
+        {!isLoading && (!sortedBranches || sortedBranches.length === 0) && (
           <Text style={styles.placeholderText}>
             There are no venue branches that match your search.
           </Text>
         )}
-        {sortedBranches?.map((venuesBranch: VenueBranch, index: number) => (
-          <VenueCard
-            key={index}
-            type="horizontal"
-            venueBranch={venuesBranch}
-            promoted={false}
-            isPlayScreen
-            playScreenBookingDetails={{
-              date: dateStr,
-              startTime,
-              endTime,
-              gameType,
-              nbOfPlayers,
-            }}
-          />
-        ))}
+        {!isLoading &&
+          sortedBranches?.map((venuesBranch: VenueBranch, index: number) => (
+            <VenueCard
+              key={index}
+              type="horizontal"
+              venueBranch={venuesBranch}
+              promoted={false}
+              isPlayScreen
+              playScreenBookingDetails={{
+                date: dateStr,
+                startTime,
+                endTime,
+                gameType,
+                nbOfPlayers,
+              }}
+            />
+          ))}
       </ScrollView>
     </AppHeader>
   );
