@@ -1,5 +1,4 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { NavigationProp } from "@react-navigation/native";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ScrollView,
@@ -15,6 +14,7 @@ import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
 import {
   AppHeader,
   BookingCard,
+  BookingCardSkeleton,
   DurationDropdown,
   SportSelection,
   SportTypeDropdown,
@@ -53,6 +53,7 @@ const AllGames = (props: Props) => {
     data: allGames,
     refetch,
     isFetching,
+    isLoading,
   } = useBookingsQuery({ type: props.type });
   return (
     <GameList
@@ -61,6 +62,7 @@ const AllGames = (props: Props) => {
       isFollowed={false}
       refetch={refetch}
       isFetching={isFetching}
+      isLoading={isLoading}
     />
   );
 };
@@ -70,11 +72,13 @@ const FollowedGames = (props: Props) => {
     data: followedGames,
     refetch: refetchFollowedGames,
     isFetching: followedGamesFetching,
+    isLoading: followedGamesLoading,
   } = useFollowedGamesQuery({ type: props.type });
   const {
     data: myGames,
     refetch: refetchGames,
     isFetching: gamesFetching,
+    isLoading: gamesLoading,
   } = useGamesQuery({ type: props.type });
 
   const refetch = () => {
@@ -103,6 +107,7 @@ const FollowedGames = (props: Props) => {
       isFollowed={true}
       refetch={refetch}
       isFetching={gamesFetching || followedGamesFetching}
+      isLoading={gamesLoading || followedGamesLoading}
     />
   );
 };
@@ -114,11 +119,13 @@ const GameList = ({
   isFollowed,
   refetch,
   isFetching,
+  isLoading,
 }: Props & {
   games?: Game[];
   isFollowed: boolean;
   refetch: (() => Promise<QueryObserverResult<Game[], unknown>>) | (() => void);
   isFetching: boolean;
+  isLoading: boolean;
 }) => {
   const { colors } = useTheme();
   const today = new Date();
@@ -243,8 +250,9 @@ const GameList = ({
           day: "numeric",
         })}
       </Text>
-      {gameCards}
-      {gameCards.length === 0 && (
+      {isLoading && <BookingCardSkeleton />}
+      {!isLoading && gameCards}
+      {!isLoading && gameCards.length === 0 && (
         <Text
           style={{
             height: 100,

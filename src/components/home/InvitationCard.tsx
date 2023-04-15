@@ -20,6 +20,31 @@ import {
 } from "src/api";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { Game } from "src/types";
+import { Skeleton } from "./Skeleton";
+
+export const InvitationCardSkeleton = () => {
+  const { colors } = useTheme();
+  const { height, width } = useWindowDimensions();
+  const styles = makeStyles(colors, height, width);
+
+  return (
+    <View style={[styles.wrapper, { marginLeft: 20 }]}>
+      <Skeleton style={styles.header} />
+      <View style={styles.content}>
+        <Skeleton style={styles.profilePicture} />
+        <Skeleton height={60} style={{ maxWidth: 0.45 * width }} />
+        <View style={styles.buttonsView}>
+          <Skeleton height={40} style={{ borderRadius: 5, flex: 1 }} />
+          <Skeleton
+            height={40}
+            style={{ borderRadius: 5, flex: 1, marginHorizontal: 10 }}
+          />
+          <EntypoIcon name="dots-three-horizontal" color="white" size={18} />
+        </View>
+      </View>
+    </View>
+  );
+};
 
 export const InvitationCard = ({
   id,

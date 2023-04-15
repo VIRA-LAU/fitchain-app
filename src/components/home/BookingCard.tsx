@@ -4,14 +4,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Pressable,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
@@ -20,6 +13,40 @@ import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import "intl";
 import "intl/locale-data/jsonp/en";
 import { Game } from "src/types";
+import { Skeleton } from "./Skeleton";
+
+export const BookingCardSkeleton = () => {
+  const { colors } = useTheme();
+  const styles = makeStyles(colors);
+  return (
+    <View style={styles.wrapper}>
+      <View style={styles.leftImageView}>
+        <Skeleton style={styles.leftImage} />
+      </View>
+      <View style={[styles.content, { justifyContent: "space-between" }]}>
+        <Skeleton height={20} width={"100%"} />
+        <View style={styles.textRow}>
+          <IonIcon
+            name={"location-outline"}
+            size={14}
+            color={colors.tertiary}
+            style={{ marginRight: 5 }}
+          />
+          <Skeleton height={20} width={100} />
+        </View>
+        <View style={styles.textRow}>
+          <FeatherIcon
+            name={"calendar"}
+            size={14}
+            color={colors.tertiary}
+            style={{ marginRight: 5 }}
+          />
+          <Skeleton height={20} width={100} />
+        </View>
+      </View>
+    </View>
+  );
+};
 
 export const BookingCard = ({ booking }: { booking: Game }) => {
   const { colors } = useTheme();

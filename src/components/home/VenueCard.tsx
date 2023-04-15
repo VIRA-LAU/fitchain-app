@@ -17,8 +17,44 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { GameType, VenueBranch } from "src/types";
+import { Skeleton } from "./Skeleton";
 
 type styleOptions = "vertical" | "horizontal" | "focused";
+
+export const VenueCardSkeleton = ({ type }: { type: styleOptions }) => {
+  const { colors } = useTheme();
+  const styles = makeStyles(colors, type === "horizontal", type === "focused");
+
+  return (
+    <View
+      style={[styles.wrapper, type === "vertical" ? { marginLeft: 20 } : {}]}
+    >
+      <Skeleton style={styles.image} />
+      <View style={styles.content}>
+        <Skeleton
+          style={{ width: 35, height: 35, aspectRatio: 1, borderRadius: 18 }}
+        />
+        <View style={styles.textView}>
+          <Skeleton height={20} width={"100%"} />
+          <View style={styles.ratingView}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 5,
+                marginRight: 5,
+              }}
+            >
+              <IonIcon name={"star"} color={colors.primary} />
+              <Skeleton height={15} width={30} style={{ marginLeft: 5 }} />
+            </View>
+            <Skeleton height={15} width={100} style={{ marginTop: 5 }} />
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+};
 
 export const VenueCard = ({
   type,

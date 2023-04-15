@@ -1,7 +1,12 @@
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { Text, useTheme } from "react-native-paper";
-import { AppHeader, SportTypeDropdown, VenueCard } from "src/components";
+import {
+  AppHeader,
+  SportTypeDropdown,
+  VenueCard,
+  VenueCardSkeleton,
+} from "src/components";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -15,7 +20,7 @@ export const Venues = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { data: venueBranches } = useBranchesQuery();
+  const { data: venueBranches, isLoading } = useBranchesQuery();
 
   const [searchBarText, setSearchBarText] = useState<string>("");
   const [selectedSports, setSelectedSports] = useState({
@@ -45,22 +50,24 @@ export const Venues = ({ navigation, route }: Props) => {
       setSearchBarText={setSearchBarText}
     >
       <ScrollView style={styles.wrapperView}>
-        {filteredVenueBranches?.map(
-          (venueBranch: VenueBranch, index: number) => (
-            <VenueCard
-              key={index}
-              type="horizontal"
-              promoted={false}
-              venueBranch={venueBranch}
-            />
-          )
-        )}
-
-        {(!filteredVenueBranches || filteredVenueBranches.length === 0) && (
-          <Text style={styles.placeholderText}>
-            There are no nearby venues.
-          </Text>
-        )}
+        {isLoading && <VenueCardSkeleton type="horizontal" />}
+        {!isLoading &&
+          filteredVenueBranches?.map(
+            (venueBranch: VenueBranch, index: number) => (
+              <VenueCard
+                key={index}
+                type="horizontal"
+                promoted={false}
+                venueBranch={venueBranch}
+              />
+            )
+          )}
+        {!isLoading &&
+          (!filteredVenueBranches || filteredVenueBranches.length === 0) && (
+            <Text style={styles.placeholderText}>
+              There are no nearby venues.
+            </Text>
+          )}
       </ScrollView>
     </AppHeader>
   );

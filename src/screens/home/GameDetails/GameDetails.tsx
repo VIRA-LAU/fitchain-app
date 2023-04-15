@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useContext } from "react";
 import { AppHeader } from "src/components";
 import {
   View,
@@ -26,6 +26,7 @@ import {
   useUnfollowGameMutation,
 } from "src/api";
 import { PopupContainer, PopupType } from "./Popups";
+import { UserContext } from "src/utils";
 
 type Props = StackScreenProps<HomeStackParamList, "GameDetails">;
 
@@ -33,6 +34,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const windowWidth = useWindowDimensions().width;
+
+  const { userData } = useContext(UserContext);
 
   const [popupVisible, setPopupVisible] = useState<PopupType | null>(null);
   const [joinDisabled, setJoinDisabled] = useState<boolean>(false);
@@ -179,13 +182,17 @@ export const GameDetails = ({ navigation, route }: Props) => {
           backEnabled
           title={game.type}
           right={
-            <TouchableOpacity
-              onPress={() => {
-                setPopupVisible("recordVideo");
-              }}
-            >
-              <IonIcon name="videocam" color={"black"} size={24} />
-            </TouchableOpacity>
+            game.admin.id === userData?.userId ? (
+              <TouchableOpacity
+                onPress={() => {
+                  setPopupVisible("recordVideo");
+                }}
+              >
+                <IonIcon name="videocam" color={"black"} size={24} />
+              </TouchableOpacity>
+            ) : (
+              <View />
+            )
           }
           backgroundImage={game.type}
           navigation={navigation}

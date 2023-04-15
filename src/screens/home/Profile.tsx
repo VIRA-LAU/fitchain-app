@@ -7,21 +7,19 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { Button, Text, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { ActivityCard, AppHeader } from "src/components";
+import { ActivityCard, AppHeader, Skeleton } from "src/components";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Activity } from "src/types";
-import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import { UserContext } from "src/utils";
 import {
   useActivitiesQuery,
   useGameCountQuery,
-  useGamesQuery,
   useUserDetailsQuery,
 } from "src/api";
-import FeatherIcon from "react-native-vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackScreenProps } from "@react-navigation/stack";
 
@@ -47,13 +45,12 @@ export const Profile = ({
 
   const { userData, setUserData } = useContext(UserContext);
   const { firstName, lastName, userId } = userData!;
-  const { data: gameCount } = useGameCountQuery(
+  const { data: gameCount, isLoading: gameCountLoading } = useGameCountQuery(
     route.params?.playerId || userId
   );
-  const { data: userDetails } = useUserDetailsQuery(
-    route.params?.playerId || userId
-  );
-  const { data: activities } = useActivitiesQuery(
+  const { data: userDetails, isLoading: userDetailsLoading } =
+    useUserDetailsQuery(route.params?.playerId || userId);
+  const { data: activities, isLoading: activitiesLoading } = useActivitiesQuery(
     route.params?.playerId || userId
   );
 
@@ -92,11 +89,18 @@ export const Profile = ({
               source={require("assets/images/home/profile-picture.png")}
               style={styles.profilePicture}
             />
-            <Text style={styles.headerText1}>
-              Played {gameCount} game{gameCount !== 1 && "s"}
-            </Text>
-            <Text style={styles.headerText2}>{userDetails?.description}</Text>
-
+            {userDetailsLoading ? (
+              <Skeleton height={15} width={100} style={styles.headerText1} />
+            ) : (
+              <Text style={styles.headerText1}>
+                Played {gameCount} game{gameCount !== 1 && "s"}
+              </Text>
+            )}
+            {userDetailsLoading ? (
+              <Skeleton height={20} width={150} style={styles.headerText2} />
+            ) : (
+              <Text style={styles.headerText2}>{userDetails?.description}</Text>
+            )}
             {/* <View style={styles.buttonsView}>
               <Button
                 icon={() => (
@@ -130,7 +134,13 @@ export const Profile = ({
             Teams
           </Text>
           <View style={styles.teamsView}>
-            <Text style={styles.rating}>{userDetails?.rating.toFixed(1)}</Text>
+            {userDetailsLoading ? (
+              <Skeleton height={60} width={90} />
+            ) : (
+              <Text style={styles.rating}>
+                {userDetails?.rating.toFixed(1)}
+              </Text>
+            )}
             <View style={styles.ratingLabelsView}>
               <Text style={styles.ratingLabel}>PERFORMANCE</Text>
               <Text style={styles.ratingLabel}>PUNCTUALITY</Text>

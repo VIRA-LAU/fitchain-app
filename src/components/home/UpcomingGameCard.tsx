@@ -17,19 +17,33 @@ import {
 } from "@react-navigation/native";
 import { Game } from "src/types";
 import { useMemo } from "react";
+import { Skeleton } from "./Skeleton";
+
+export const UpcomingGameCardSkeleton = () => {
+  const { colors } = useTheme();
+  const styles = makeStyles(colors);
+
+  return (
+    <View style={styles.wrapper}>
+      <View style={{ flex: 1, marginRight: 20 }}>
+        <Skeleton height={15} width={"100%"} />
+        <Skeleton height={15} width={"80%"} style={{ marginTop: 5 }} />
+      </View>
+      <Skeleton
+        style={[
+          styles.gameIcon,
+          {
+            borderRadius: 23,
+          },
+        ]}
+      />
+    </View>
+  );
+};
 
 export const UpcomingGameCard = ({ game }: { game: Game }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const weekday = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
 
   const navigation =
     useNavigation<

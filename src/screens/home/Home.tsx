@@ -10,6 +10,11 @@ import {
   InvitationCard,
   VenueCard,
   SportTypeDropdown,
+  BookingCardSkeleton,
+  UpcomingGameCardSkeleton,
+  VenueCardSkeleton,
+  InvitationCardSkeleton,
+  ActivityCardSkeleton,
 } from "components";
 import { BottomTabParamList } from "src/navigation/tabScreenOptions";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
@@ -200,18 +205,21 @@ export const Home = ({ navigation, route }: Props) => {
           Upcoming Games
         </Text>
         <View>
-          {games
-            ?.filter(({ type }: Game) => selectedSports[type])
-            .map((game: Game, index: number) => (
-              <UpcomingGameCard key={index} game={game} />
-            ))}
-          {!games ||
-            (games.filter(({ type }: Game) => selectedSports[type]).length ===
-              0 && (
-              <Text style={styles.placeholderText}>
-                You have no upcoming games.
-              </Text>
-            ))}
+          {gamesLoading && <UpcomingGameCardSkeleton />}
+          {!gamesLoading &&
+            games
+              ?.filter(({ type }: Game) => selectedSports[type])
+              .map((game: Game, index: number) => (
+                <UpcomingGameCard key={index} game={game} />
+              ))}
+          {!gamesLoading &&
+            (!games ||
+              (games.filter(({ type }: Game) => selectedSports[type]).length ===
+                0 && (
+                <Text style={styles.placeholderText}>
+                  You have no upcoming games.
+                </Text>
+              )))}
         </View>
 
         <SectionTitle title="Invitations" styles={styles} />
@@ -225,13 +233,18 @@ export const Home = ({ navigation, route }: Props) => {
             showsHorizontalScrollIndicator={false}
             horizontal
           >
-            {invitationsRequests}
+            {(invitationsLoading || requestsLoading) && (
+              <InvitationCardSkeleton />
+            )}
+            {!invitationsLoading && !requestsLoading && invitationsRequests}
           </ScrollView>
-          {invitationsRequests.length === 0 && (
-            <Text style={styles.placeholderText}>
-              You have no pending invitations.
-            </Text>
-          )}
+          {!invitationsLoading &&
+            !requestsLoading &&
+            invitationsRequests.length === 0 && (
+              <Text style={styles.placeholderText}>
+                You have no pending invitations.
+              </Text>
+            )}
         </View>
         <SectionTitle title="Venues" styles={styles} />
         <View>
@@ -240,52 +253,63 @@ export const Home = ({ navigation, route }: Props) => {
             showsHorizontalScrollIndicator={false}
             horizontal
           >
-            {branchesVenues?.map((venuesBranch: VenueBranch, index: number) => (
-              <VenueCard
-                key={index}
-                type="vertical"
-                venueBranch={venuesBranch}
-                isFirst={index === 0}
-                isLast={index === branchesVenues.length - 1}
-              />
-            ))}
+            {branchesLoading && <VenueCardSkeleton type="vertical" />}
+            {!branchesLoading &&
+              branchesVenues?.map(
+                (venuesBranch: VenueBranch, index: number) => (
+                  <VenueCard
+                    key={index}
+                    type="vertical"
+                    venueBranch={venuesBranch}
+                    isFirst={index === 0}
+                    isLast={index === branchesVenues.length - 1}
+                  />
+                )
+              )}
           </ScrollView>
-          {!branchesVenues ||
-            (branchesVenues.length === 0 && (
-              <Text style={styles.placeholderText}>
-                There are no nearby venues.
-              </Text>
-            ))}
+          {!branchesLoading &&
+            (!branchesVenues ||
+              (branchesVenues.length === 0 && (
+                <Text style={styles.placeholderText}>
+                  There are no nearby venues.
+                </Text>
+              )))}
         </View>
         <SectionTitle title="Bookings" styles={styles} />
         <View>
-          {bookings
-            ?.filter(({ type }: Game) => selectedSports[type])
-            .map((booking: Game, index: number) => (
-              <BookingCard key={index} booking={booking} />
-            ))}
-          {!bookings ||
-            (bookings.filter(({ type }: Game) => selectedSports[type])
-              .length === 0 && (
-              <Text style={styles.placeholderText}>
-                There are no nearby bookings.
-              </Text>
-            ))}
+          {bookingsLoading && <BookingCardSkeleton />}
+          {!bookingsLoading &&
+            bookings
+              ?.filter(({ type }: Game) => selectedSports[type])
+              .map((booking: Game, index: number) => (
+                <BookingCard key={index} booking={booking} />
+              ))}
+          {!bookingsLoading &&
+            (!bookings ||
+              (bookings.filter(({ type }: Game) => selectedSports[type])
+                .length === 0 && (
+                <Text style={styles.placeholderText}>
+                  There are no nearby bookings.
+                </Text>
+              )))}
         </View>
         <SectionTitle title="Activities" styles={styles} />
         <View>
-          {activities
-            ?.filter(({ type }) => selectedSports[type])
-            .map((activity: Activity, index: number) => (
-              <ActivityCard key={index} {...activity} />
-            ))}
-          {!activities ||
-            (activities.filter(({ type }) => selectedSports[type]).length ===
-              0 && (
-              <Text style={styles.placeholderText}>
-                You have no recent activities.
-              </Text>
-            ))}
+          {activitiesLoading && <ActivityCardSkeleton />}
+          {!activitiesLoading &&
+            activities
+              ?.filter(({ type }) => selectedSports[type])
+              .map((activity: Activity, index: number) => (
+                <ActivityCard key={index} {...activity} />
+              ))}
+          {!activitiesLoading &&
+            (!activities ||
+              (activities.filter(({ type }) => selectedSports[type]).length ===
+                0 && (
+                <Text style={styles.placeholderText}>
+                  You have no recent activities.
+                </Text>
+              )))}
         </View>
       </ScrollView>
     </AppHeader>

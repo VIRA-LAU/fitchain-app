@@ -6,3 +6,4 @@ export * from "./VenueCard";
 export * from "./TimeSlotPicker";
 export * from "./SportTypeDropdown";
 export * from "./MapComponent";
+export * from "./Skeleton";
