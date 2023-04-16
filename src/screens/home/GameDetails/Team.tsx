@@ -157,6 +157,19 @@ export const Team = ({
         >
           Team Players
         </Text>
+        {playersLoading && (
+          <View
+            style={[
+              styles.playerCardView,
+              {
+                alignItems: "center",
+                paddingHorizontal: 20,
+              },
+            ]}
+          >
+            <PlayerCardSkeleton />
+          </View>
+        )}
         {!playersLoading && players && players.length > 0 && (
           <ScrollView
             style={styles.playerCardView}
@@ -167,7 +180,6 @@ export const Team = ({
             showsHorizontalScrollIndicator={false}
             horizontal
           >
-            {playersLoading && <PlayerCardSkeleton />}
             {players.map((player: TeamPlayer, index: number) => (
               <PlayerCard
                 key={index}

@@ -47,7 +47,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
     { key: "Away", title: "Away" },
   ]);
 
-  const { id } = route.params;
+  const { id, isPrevious } = route.params;
   const { data: game, isLoading: gameDetailsLoading } = useGameByIdQuery(id);
   const { data: players, isLoading: playersLoading } = useGamePlayersQuery(id);
   const { data: playerStatus, isLoading: playerStatusLoading } =
@@ -218,37 +218,37 @@ export const GameDetails = ({ navigation, route }: Props) => {
         darkMode
       >
         <View style={styles.wrapperView}>
-          {gameDetailsLoading || playerStatusLoading || followedGamesLoading ? (
-            <View style={styles.headerView}>
-              <Skeleton height={15} width={80} style={styles.greyFont} />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
+          {!isPrevious &&
+            (gameDetailsLoading ||
+            playerStatusLoading ||
+            followedGamesLoading ? (
+              <View style={styles.headerView}>
+                <Skeleton height={15} width={80} style={styles.greyFont} />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Skeleton
+                    height={30}
+                    width={160}
+                    style={{ color: "white", marginTop: -5, marginBottom: 10 }}
+                  />
+                  <Skeleton
+                    height={15}
+                    width={80}
+                    style={{ color: "white", marginTop: -5, marginBottom: 10 }}
+                  />
+                </View>
                 <Skeleton
-                  height={30}
-                  width={160}
-                  style={{ color: "white", marginTop: -5, marginBottom: 10 }}
-                />
-                <Skeleton
-                  height={15}
-                  width={80}
-                  style={{ color: "white", marginTop: -5, marginBottom: 10 }}
+                  height={40}
+                  width={"100%"}
+                  style={{ borderRadius: 5 }}
                 />
               </View>
-              <Skeleton
-                height={40}
-                width={"100%"}
-                style={{ borderRadius: 5 }}
-              />
-            </View>
-          ) : (
-            !gameDetailsLoading &&
-            game &&
-            new Date(game?.date) > new Date() && (
+            ) : (
               <View style={styles.headerView}>
                 <Text variant="labelLarge" style={styles.greyFont}>
                   {dateHeader}
@@ -395,8 +395,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   </Button>
                 )}
               </View>
-            )
-          )}
+            ))}
 
           <View style={styles.contentView}>
             <TabView

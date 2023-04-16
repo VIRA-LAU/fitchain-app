@@ -169,7 +169,9 @@ const GameList = ({
           gameCards.push(<DayHeader key={"future"} day="In the Future" />);
         }
 
-        gameCards.push(<BookingCard key={index} booking={game} />);
+        gameCards.push(
+          <BookingCard key={index} booking={game} isPrevious={false} />
+        );
       });
   else
     games
@@ -208,7 +210,7 @@ const GameList = ({
           gameCards.push(<DayHeader key={"past"} day="In the Past" />);
         }
 
-        gameCards.push(<BookingCard key={index} booking={game} />);
+        gameCards.push(<BookingCard key={index} booking={game} isPrevious />);
       });
 
   const [refreshing, setRefreshing] = useState<boolean>(false);

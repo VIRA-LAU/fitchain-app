@@ -48,7 +48,13 @@ export const BookingCardSkeleton = () => {
   );
 };
 
-export const BookingCard = ({ booking }: { booking: Game }) => {
+export const BookingCard = ({
+  booking,
+  isPrevious,
+}: {
+  booking: Game;
+  isPrevious: boolean;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -76,7 +82,9 @@ export const BookingCard = ({ booking }: { booking: Game }) => {
     <TouchableOpacity
       activeOpacity={0.6}
       style={styles.wrapper}
-      onPress={() => navigation.push("GameDetails", { id: booking.id })}
+      onPress={() =>
+        navigation.push("GameDetails", { id: booking.id, isPrevious })
+      }
     >
       <View style={styles.leftImageView}>
         <Image
