@@ -9,12 +9,12 @@ import { StyleSheet } from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { SignUpStackParamList } from "navigation";
-import { Button, useTheme, Text } from "react-native-paper";
+import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Dispatch, SetStateAction, useRef, useState, useEffect } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { AppHeader } from "src/components";
-import { useSignInQuery, useLoginUserMutation } from "src/api";
+import { useLoginUserMutation } from "src/api";
 type Props = StackScreenProps<SignUpStackParamList, "SignUp">;
 
 export const SignUp = ({
@@ -30,7 +30,8 @@ export const SignUp = ({
   const { colors } = useTheme();
   const styles = makeStyles(fontScale, colors);
   const [email, setEmail] = useState("");
-  const { mutate: loginUser } = useLoginUserMutation(setSignedIn);
+  const { mutate: loginUser, isLoading: loginLoading } =
+    useLoginUserMutation(setSignedIn);
 
   const [password, setPassword] = useState("");
   const validateEmail = (email: string) => {
@@ -95,14 +96,18 @@ export const SignUp = ({
               onChangeText={(password) => setPassword(password)}
             />
           </View>
-          <Button
-            textColor={colors.background}
-            buttonColor={colors.primary}
-            style={styles.signInButton}
-            onPress={() => signIn()}
-          >
-            Sign In
-          </Button>
+          {loginLoading ? (
+            <ActivityIndicator style={{ marginTop: 15, marginBottom: 20 }} />
+          ) : (
+            <Button
+              textColor={colors.background}
+              buttonColor={colors.primary}
+              style={styles.signInButton}
+              onPress={() => signIn()}
+            >
+              Sign In
+            </Button>
+          )}
         </View>
 
         <View style={styles.separatorView}>

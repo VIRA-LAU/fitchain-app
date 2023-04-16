@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, TextInput, ScrollView } from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { Button, useTheme, Text } from "react-native-paper";
+import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useRef } from "react";
 import { useState } from "react";
@@ -17,7 +17,8 @@ export const SignUpWithNumberDetails = ({
   navigation: Props["navigation"];
   route: Props["route"];
 }) => {
-  const { mutate: createUser } = useCreateUserMutation();
+  const { mutate: createUser, isLoading: createUserLoading } =
+    useCreateUserMutation();
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [password, setPassword] = useState("");
@@ -171,14 +172,18 @@ export const SignUpWithNumberDetails = ({
               Make Sure your first name, last name, and email are valid!
             </Text>
           )}
-          <Button
-            textColor={colors.background}
-            buttonColor={colors.primary}
-            style={styles.getStartedButton}
-            onPress={() => signUp()}
-          >
-            Get Started
-          </Button>
+          {createUserLoading ? (
+            <ActivityIndicator style={{ marginTop: "13%" }} />
+          ) : (
+            <Button
+              textColor={colors.background}
+              buttonColor={colors.primary}
+              style={styles.getStartedButton}
+              onPress={() => signUp()}
+            >
+              Get Started
+            </Button>
+          )}
         </View>
       </ScrollView>
     </AppHeader>

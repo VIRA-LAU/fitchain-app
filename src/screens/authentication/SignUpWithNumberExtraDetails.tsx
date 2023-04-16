@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, TextInput, ScrollView } from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { Button, useTheme, Text } from "react-native-paper";
+import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Dispatch, SetStateAction, useRef } from "react";
 import { useState } from "react";
@@ -23,7 +23,8 @@ export const SignUpWithNumberExtraDetails = ({
   route: Props["route"];
   setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
-  const { mutate: updateUserData } = useUpdateUserDataMutation(setSignedIn);
+  const { mutate: updateUserData, isLoading: updateUserLoading } =
+    useUpdateUserDataMutation(setSignedIn);
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [description, setDescription] = useState("");
@@ -111,20 +112,27 @@ export const SignUpWithNumberExtraDetails = ({
               onChangeText={setWeight}
             />
           </View>
-          <Button
-            textColor={colors.background}
-            buttonColor={colors.primary}
-            style={[styles.getStartedButton, { marginTop: "10%" }]}
-            onPress={() => handleUpdateUserData()}
-          >
-            Complete
-          </Button>
-          <Button
-            style={styles.getStartedButton}
-            onPress={() => setSignedIn("player")}
-          >
-            Skip
-          </Button>
+          {updateUserLoading && (
+            <ActivityIndicator style={{ marginTop: "13%" }} />
+          )}
+          {!updateUserLoading && (
+            <Button
+              textColor={colors.background}
+              buttonColor={colors.primary}
+              style={[styles.getStartedButton, { marginTop: "10%" }]}
+              onPress={() => handleUpdateUserData()}
+            >
+              Complete
+            </Button>
+          )}
+          {!updateUserLoading && (
+            <Button
+              style={styles.getStartedButton}
+              onPress={() => setSignedIn("player")}
+            >
+              Skip
+            </Button>
+          )}
         </View>
       </ScrollView>
     </AppHeader>
