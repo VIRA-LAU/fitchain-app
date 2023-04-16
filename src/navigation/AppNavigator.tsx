@@ -7,6 +7,7 @@ import { getData } from "src/utils/AsyncStorage";
 import { UserContext } from "src/utils";
 import { useUserDetailsQuery } from "src/api";
 import { HomeNavigator } from "./HomeNavigator";
+import { VenueHomeNavigator } from "./VenueHomeNavigator";
 import { LatLng } from "react-native-maps";
 
 export type HomeStackParamList = {
@@ -97,7 +98,7 @@ export type HomeStackParamList = {
 export const AppNavigator = () => {
   const { userData, setUserData } = useContext(UserContext);
 
-  const [signedIn, setSignedIn] = useState<boolean>(false);
+  const [signedIn, setSignedIn] = useState<"player" | "venue" | null>(null);
   const [tokenFoundOnOpen, setTokenFoundOnOpen] = useState<boolean>(false);
   const { refetch: verifyToken } = useUserDetailsQuery(
     userData?.userId,
@@ -132,6 +133,8 @@ export const AppNavigator = () => {
     if (userData && tokenFoundOnOpen) verifyToken();
   }, [JSON.stringify(userData), tokenFoundOnOpen]);
 
-  if (signedIn) return <HomeNavigator setSignedIn={setSignedIn} />;
+  if (signedIn === "player") return <HomeNavigator setSignedIn={setSignedIn} />;
+  else if (signedIn === "venue")
+    return <VenueHomeNavigator setSignedIn={setSignedIn} />;
   else return <SignUpNavigator setSignedIn={setSignedIn} />;
 };

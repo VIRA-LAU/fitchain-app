@@ -51,11 +51,18 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const [code, setCode] = useState<(number | null)[]>([null, null, null, null]);
   const [correctCode, setCorrectCode] = useState(route.params.code);
+  const { isVenue } = route.params;
+
   const verifyCode = () => {
     if (code.join("").toString().match(correctCode)) {
-      navigation.push("SignUpWithNumberDetails", {
-        phoneNumber: route.params.phoneNumber,
-      });
+      if (isVenue)
+        navigation.push("SignUpAsVenueDetails", {
+          phoneNumber: route.params.phoneNumber,
+        });
+      else
+        navigation.push("SignUpWithNumberDetails", {
+          phoneNumber: route.params.phoneNumber,
+        });
     }
   };
   const refs: React.MutableRefObject<TextInput | null>[] = [

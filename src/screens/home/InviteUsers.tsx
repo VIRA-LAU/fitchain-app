@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View, Image, Pressable } from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList } from "navigation";
@@ -101,11 +101,9 @@ export const InviteUsers = ({ navigation, route }: Props) => {
               </View>
               {existingPlayers.findIndex((player) => player.id === user.id) ===
               -1 ? (
-                <Pressable
-                  style={({ pressed }) => [
-                    styles.inviteView,
-                    pressed ? { borderColor: colors.primary } : {},
-                  ]}
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  style={styles.inviteView}
                   onPress={() => {
                     invitePlayer({
                       gameId,
@@ -122,7 +120,7 @@ export const InviteUsers = ({ navigation, route }: Props) => {
                   >
                     Invite
                   </Text>
-                </Pressable>
+                </TouchableOpacity>
               ) : (
                 <View style={styles.invitedView}>
                   <Feather

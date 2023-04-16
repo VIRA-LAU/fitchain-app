@@ -15,7 +15,7 @@ const LoginUser = async (data: Request) => {
 };
 
 export const useLoginUserMutation = (
-  setSignedIn: React.Dispatch<React.SetStateAction<boolean>>
+  setSignedIn: React.Dispatch<React.SetStateAction<"player" | "venue" | null>>
 ) => {
   const { setUserData } = useContext(UserContext);
   return useMutation<User, unknown, Request>({
@@ -29,7 +29,7 @@ export const useLoginUserMutation = (
         token: data.access_token,
       };
       setUserData(fetchedInfo);
-      setSignedIn(true);
+      setSignedIn("player");
       const keys = ["userId", "firstName", "lastName", "email", "token"];
       const values = [
         data.userId,

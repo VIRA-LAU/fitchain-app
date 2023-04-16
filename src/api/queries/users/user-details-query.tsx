@@ -19,19 +19,19 @@ const getUserDetails = (userData: UserData, id?: number) => async () => {
 export const useUserDetailsQuery = (
   id?: number,
   enabled = true,
-  setSignedIn?: Dispatch<SetStateAction<boolean>>,
+  setSignedIn?: Dispatch<SetStateAction<"player" | "venue" | null>>,
   setTokenFoundOnOpen?: Dispatch<SetStateAction<boolean>>
 ) => {
   const { userData } = useContext(UserContext);
   return useQuery<User>(["user-details", id], getUserDetails(userData!, id), {
     enabled,
     onSuccess: (data) => {
-      if (setSignedIn) setSignedIn(true);
+      if (setSignedIn) setSignedIn("player");
     },
     onError: () => {
       if (setSignedIn) {
         AsyncStorage.clear();
-        setSignedIn(false);
+        setSignedIn(null);
       }
       if (setTokenFoundOnOpen) setTokenFoundOnOpen(false);
     },

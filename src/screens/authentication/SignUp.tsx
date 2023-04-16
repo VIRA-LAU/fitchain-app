@@ -24,7 +24,7 @@ export const SignUp = ({
 }: {
   navigation: Props["navigation"];
   route: Props["route"];
-  setSignedIn: Dispatch<SetStateAction<boolean>>;
+  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
   const { fontScale } = useWindowDimensions();
   const { colors } = useTheme();
@@ -136,11 +136,31 @@ export const SignUp = ({
             icon={({ size, color }) => (
               <OctIcon name="device-mobile" size={size} color={color} />
             )}
-            onPress={() => navigation.push("SignUpWithNumber")}
+            onPress={() =>
+              navigation.push("SignUpWithNumber", { isVenue: false })
+            }
           >
             <Text style={styles.buttonText}>Sign up with Mobile Number</Text>
           </Button>
         </View>
+        <View
+          style={[styles.separatorView, { marginTop: 15, marginBottom: 15 }]}
+        >
+          <View style={styles.separator}></View>
+          <Text style={[styles.h2, styles.separatorText]}>Venue Account</Text>
+          <View style={styles.separator}></View>
+        </View>
+        <Button
+          textColor={colors.primary}
+          style={{ width: "80%" }}
+          icon={({ size, color }) => (
+            <OctIcon name="organization" size={size} color={color} />
+          )}
+          // onPress={() => navigation.push("SignUpWithNumber", { isVenue: true })}
+          onPress={() => setSignedIn("venue")}
+        >
+          <Text style={styles.buttonText}>Sign up as a Venue</Text>
+        </Button>
       </ScrollView>
     </AppHeader>
   );

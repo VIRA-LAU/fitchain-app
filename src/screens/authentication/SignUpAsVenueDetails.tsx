@@ -5,17 +5,19 @@ import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useRef } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 import { useState } from "react";
 import { useCreateUserMutation } from "src/api";
-type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumberDetails">;
+type Props = StackScreenProps<SignUpStackParamList, "SignUpAsVenueDetails">;
 
-export const SignUpWithNumberDetails = ({
+export const SignUpAsVenueDetails = ({
   navigation,
   route,
+  setSignedIn,
 }: {
   navigation: Props["navigation"];
   route: Props["route"];
+  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
   const { mutate: createUser } = useCreateUserMutation();
   const { colors } = useTheme();
@@ -31,25 +33,25 @@ export const SignUpWithNumberDetails = ({
     return reg.test(email);
   };
 
-  const signUp = () => {
-    if (
-      passwordValid &&
-      validateEmail(email.trim()) &&
-      firstName.trim().length > 0 &&
-      lastName.trim().length > 0
-    ) {
-      let data = {
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        phoneNumber: route.params.phoneNumber,
-        email: email.trim(),
-        password: password.trim(),
-      };
-      createUser(data);
-    } else {
-      setValidEntry(false);
-    }
-  };
+  // const signUp = () => {
+  //   if (
+  //     passwordValid &&
+  //     validateEmail(email.trim()) &&
+  //     firstName.trim().length > 0 &&
+  //     lastName.trim().length > 0
+  //   ) {
+  //     let data = {
+  //       firstName: firstName.trim(),
+  //       lastName: lastName.trim(),
+  //       phoneNumber: route.params.phoneNumber,
+  //       email: email.trim(),
+  //       password: password.trim(),
+  //     };
+  //     createUser(data);
+  //   } else {
+  //     setValidEntry(false);
+  //   }
+  // };
   const checkPasswordValidity = (currentPassword: string) => {
     setPassword(currentPassword);
     const upperCaseLetters = /[A-Z]/g;
@@ -67,6 +69,7 @@ export const SignUpWithNumberDetails = ({
       setPasswordValid(false);
     }
   };
+
   const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const lastNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
@@ -79,7 +82,7 @@ export const SignUpWithNumberDetails = ({
           style={styles.logo}
         />
         <Text variant="titleLarge" style={styles.titleText}>
-          Account Details
+          Venue Account Details
         </Text>
         <View style={styles.inputView}>
           <Text variant="labelLarge" style={styles.h2}>
@@ -94,7 +97,7 @@ export const SignUpWithNumberDetails = ({
             />
             <TextInput
               style={styles.textInput}
-              placeholder={"First Name"}
+              placeholder={"Venue Name"}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               onSubmitEditing={() => lastNameRef.current?.focus()}
@@ -110,7 +113,23 @@ export const SignUpWithNumberDetails = ({
             />
             <TextInput
               style={styles.textInput}
-              placeholder={"Last Name"}
+              placeholder={"Admin First Name"}
+              placeholderTextColor={"#a8a8a8"}
+              selectionColor={colors.primary}
+              onSubmitEditing={() => lastNameRef.current?.focus()}
+              onChangeText={(text) => setFirstName(text)}
+            />
+          </View>
+          <View style={styles.textInputView}>
+            <MaterialCommunityIcon
+              name={"account-outline"}
+              size={20}
+              color={"#c9c9c9"}
+              style={{ marginHorizontal: 15 }}
+            />
+            <TextInput
+              style={styles.textInput}
+              placeholder={"Admin Last Name"}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               onSubmitEditing={() => emailRef.current?.focus()}
@@ -128,7 +147,7 @@ export const SignUpWithNumberDetails = ({
             />
             <TextInput
               style={styles.textInput}
-              placeholder={"Email"}
+              placeholder={"Venue Email"}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               textContentType="emailAddress"
@@ -175,7 +194,10 @@ export const SignUpWithNumberDetails = ({
             textColor={colors.background}
             buttonColor={colors.primary}
             style={styles.getStartedButton}
-            onPress={() => signUp()}
+            // onPress={() => signUp()}
+            onPress={() => {
+              setSignedIn("venue");
+            }}
           >
             Get Started
           </Button>

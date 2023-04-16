@@ -63,7 +63,9 @@ export const ActivityCard = ({ gameId, date, type, isWinner }: Activity) => {
     <TouchableOpacity
       activeOpacity={0.6}
       style={styles.wrapper}
-      onPress={() => navigation.push("GameDetails", { id: gameId })}
+      onPress={() =>
+        navigation.push("GameDetails", { id: gameId, isPrevious: true })
+      }
     >
       <Image
         source={

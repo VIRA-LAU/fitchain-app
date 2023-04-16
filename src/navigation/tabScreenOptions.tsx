@@ -15,7 +15,12 @@ export type BottomTabParamList = {
   Profile: undefined;
 };
 
-type Props = BottomTabScreenProps<BottomTabParamList>;
+export type VenueBottomTabParamList = {
+  Home: undefined;
+  Venue: undefined;
+};
+
+type Props = BottomTabScreenProps<BottomTabParamList & VenueBottomTabParamList>;
 
 export const tabScreenOptions = ({
   route,
@@ -30,7 +35,7 @@ export const tabScreenOptions = ({
         return <FeatherIcon name={"calendar"} size={20} color={color} />;
       } else if (route.name === "Venues") {
         return <IonIcon name={"location-outline"} size={20} color={color} />;
-      } else if (route.name === "Profile") {
+      } else if (route.name === "Profile" || route.name === "Venue") {
         return <MatComIcon name={"account-outline"} size={20} color={color} />;
       }
     },

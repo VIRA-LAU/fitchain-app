@@ -36,7 +36,7 @@ const Tab = createBottomTabNavigator<BottomTabParamList>();
 const BottomTabNavigator = ({
   setSignedIn,
 }: {
-  setSignedIn: Dispatch<SetStateAction<boolean>>;
+  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, useWindowDimensions().width);
@@ -121,7 +121,7 @@ const BottomTabNavigator = ({
 export const HomeNavigator = ({
   setSignedIn,
 }: {
-  setSignedIn: Dispatch<SetStateAction<boolean>>;
+  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
   const Stack = createStackNavigator<HomeStackParamList>();
   return (

@@ -39,7 +39,7 @@ export const Profile = ({
   setSignedIn,
 }: Props & {
   isUserProfile?: boolean;
-  setSignedIn?: Dispatch<SetStateAction<boolean>>;
+  setSignedIn?: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(
@@ -68,7 +68,7 @@ export const Profile = ({
           <TouchableOpacity
             onPress={() => {
               AsyncStorage.clear();
-              if (setSignedIn) setSignedIn(false);
+              if (setSignedIn) setSignedIn(null);
               setUserData(null);
             }}
           >

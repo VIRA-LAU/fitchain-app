@@ -8,6 +8,7 @@ import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIc
 import { Dispatch, SetStateAction, useRef } from "react";
 import { useState } from "react";
 import { useUpdateUserDataMutation } from "src/api";
+
 type Props = StackScreenProps<
   SignUpStackParamList,
   "SignUpWithNumberExtraDetails"
@@ -20,8 +21,7 @@ export const SignUpWithNumberExtraDetails = ({
 }: {
   navigation: Props["navigation"];
   route: Props["route"];
-
-  setSignedIn: Dispatch<SetStateAction<boolean>>;
+  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
   const { mutate: updateUserData } = useUpdateUserDataMutation(setSignedIn);
   const { colors } = useTheme();
@@ -121,7 +121,7 @@ export const SignUpWithNumberExtraDetails = ({
           </Button>
           <Button
             style={styles.getStartedButton}
-            onPress={() => setSignedIn(true)}
+            onPress={() => setSignedIn("player")}
           >
             Skip
           </Button>

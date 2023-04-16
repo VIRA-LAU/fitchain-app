@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Button, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
   useDeleteJoinRequestMutation,
@@ -44,7 +44,8 @@ export const PopupContainer = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { mutate: startStopRecording } = useStartStopRecording(game?.id);
+  const { mutate: startStopRecording, isLoading: recordLoading } =
+    useStartStopRecording(game?.id);
 
   if (popupVisible === "joinGame")
     return (
@@ -232,7 +233,9 @@ export const PopupContainer = ({
       >
         <View style={styles.prompt}>
           <Text style={styles.promptText}>Record a video from the court.</Text>
-          {!game?.isRecording ? (
+          {recordLoading ? (
+            <ActivityIndicator style={{ marginBottom: 10 }} />
+          ) : !game?.isRecording ? (
             <Button
               buttonColor={colors.primary}
               textColor={colors.background}

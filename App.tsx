@@ -35,6 +35,9 @@ function AppContent() {
     labelLarge: {
       fontFamily: "Inter-SemiBold",
     },
+    headlineLarge: {
+      fontFamily: "Inter-SemiBold",
+    },
   };
   const theme = {
     ...DefaultTheme,

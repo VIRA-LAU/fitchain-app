@@ -22,13 +22,13 @@ const updateUserData = (userData: UserData) => async (data: Request) => {
 };
 
 export const useUpdateUserDataMutation = (
-  setSignedIn: React.Dispatch<React.SetStateAction<boolean>>
+  setSignedIn?: React.Dispatch<React.SetStateAction<"player" | "venue" | null>>
 ) => {
   const { userData } = useContext(UserContext);
   return useMutation<User, unknown, Request>({
     mutationFn: updateUserData(userData!),
     onSuccess: () => {
-      setSignedIn(true);
+      if (setSignedIn) setSignedIn("player");
     },
   });
 };

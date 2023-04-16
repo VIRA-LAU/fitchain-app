@@ -6,14 +6,20 @@ import {
   VerifySignUpWithNumber,
   SignUpWithNumberDetails,
   SignUpWithNumberExtraDetails,
+  SignUpAsVenueDetails,
 } from "screens";
 
 export type SignUpStackParamList = {
   SignUp: undefined;
-  SignUpWithNumber: undefined;
-  VerifySignUpWithNumber: { code: string; phoneNumber: string };
+  SignUpWithNumber: { isVenue: boolean };
+  VerifySignUpWithNumber: {
+    code: string;
+    phoneNumber: string;
+    isVenue: boolean;
+  };
   SignUpWithNumberDetails: { phoneNumber: string };
   SignUpWithNumberExtraDetails: undefined;
+  SignUpAsVenueDetails: { phoneNumber: string };
 };
 
 const Stack = createStackNavigator<SignUpStackParamList>();
@@ -21,7 +27,7 @@ const Stack = createStackNavigator<SignUpStackParamList>();
 export const SignUpNavigator = ({
   setSignedIn,
 }: {
-  setSignedIn: Dispatch<SetStateAction<boolean>>;
+  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => (
   <Stack.Navigator
     initialRouteName="SignUp"
@@ -43,6 +49,9 @@ export const SignUpNavigator = ({
       {(props) => (
         <SignUpWithNumberExtraDetails {...props} setSignedIn={setSignedIn} />
       )}
+    </Stack.Screen>
+    <Stack.Screen name="SignUpAsVenueDetails">
+      {(props) => <SignUpAsVenueDetails {...props} setSignedIn={setSignedIn} />}
     </Stack.Screen>
   </Stack.Navigator>
 );
