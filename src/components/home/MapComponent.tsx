@@ -72,6 +72,16 @@ export const MiniMapComponent = ({
 }) => {
   return (
     <View style={{ flex: 1, borderRadius: 10, overflow: "hidden" }}>
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 2,
+        }}
+      />
       <MapView
         style={{ flex: 1 }}
         // initialRegion={region}
@@ -81,6 +91,7 @@ export const MiniMapComponent = ({
         pitchEnabled={false}
         rotateEnabled={false}
         scrollEnabled={false}
+        zoomTapEnabled={false}
         customMapStyle={customMapStyle}
         region={{
           latitudeDelta: 0.01,
