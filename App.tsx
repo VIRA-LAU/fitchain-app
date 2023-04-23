@@ -9,17 +9,23 @@ import { StatusBar } from "react-native";
 import { AppNavigator } from "navigation";
 import { useFonts } from "expo-font/build/FontHooks";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { UserContext, UserData } from "src/utils";
+import { UserContext, UserData, VenueData } from "src/utils";
 import { useState } from "react";
 import { en, registerTranslation } from "react-native-paper-dates";
 
 registerTranslation("en", en);
 function AppContent() {
+  const [isVenue, setIsVenue] = useState<boolean>(false);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [venueData, setVenueData] = useState<VenueData | null>(null);
 
   const value = {
+    isVenue,
+    setIsVenue,
     userData,
     setUserData,
+    venueData,
+    setVenueData,
   };
 
   const fontConfig = {

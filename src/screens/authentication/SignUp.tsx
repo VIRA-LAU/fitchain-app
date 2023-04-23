@@ -168,8 +168,7 @@ export const SignUp = ({
           icon={({ size, color }) => (
             <OctIcon name="organization" size={size} color={color} />
           )}
-          // onPress={() => navigation.push("SignUpWithNumber", { isVenue: true })}
-          onPress={() => setSignedIn("venue")}
+          onPress={() => navigation.push("SignUpWithNumber", { isVenue: true })}
         >
           <Text style={styles.buttonText}>Sign up as a Venue</Text>
         </Button>

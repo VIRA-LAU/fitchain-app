@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import { UserData } from "src/utils";
+import { UserData, VenueData } from "src/utils";
 import { API_URL } from "@dotenv";
 
 let client: AxiosInstance;
@@ -18,7 +18,7 @@ if (API_URL) {
 
 export default client;
 
-export function getHeader(userData: UserData) {
+export function getHeader(userData: UserData | VenueData) {
   return {
     headers: {
       Authorization: `Bearer ${userData?.token}`,

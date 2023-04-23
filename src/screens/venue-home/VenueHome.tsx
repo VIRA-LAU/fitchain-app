@@ -6,25 +6,41 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { VenueBottomTabParamList } from "src/navigation";
 import CalendarPicker from "react-native-calendar-picker";
 import { VenueBooking } from "src/components";
-import { useState } from "react";
+import { useContext, useMemo, useState } from "react";
+import { UserContext } from "src/utils";
+import { useBookingsInVenueQuery, useTimeSlotsInVenueQuery } from "src/api";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 
 export const VenueHome = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+  const { venueData } = useContext(UserContext);
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  const parsedDate = useMemo(() => {
+    return `${selectedDate.getFullYear()}-${(
+      "0" +
+      (selectedDate.getMonth() + 1)
+    ).slice(-2)}-${("0" + selectedDate.getDate()).slice(-2)}`;
+  }, [selectedDate]);
+
+  const { data: bookings } = useBookingsInVenueQuery(
+    venueData?.venueId,
+    parsedDate
+  );
+  const { data: timeSlots } = useTimeSlotsInVenueQuery(venueData?.venueId);
 
   return (
     <ScrollView contentContainerStyle={styles.wrapper}>
       <Text variant="titleLarge" style={{ color: colors.tertiary }}>
-        Hi, Toni
+        Hi, {venueData?.managerFirstName}
       </Text>
       <Text variant="headlineLarge" style={styles.venueName}>
-        Athletico Sports Club
+        {venueData?.venueName}
       </Text>
-      <Text style={styles.location}>Dbayeh, Lebanon</Text>
+      <Text style={styles.location}>Location?</Text>
       <View style={styles.calendarView}>
         <Text style={[styles.myCalendar]}>My Calendar</Text>
         <CalendarPicker

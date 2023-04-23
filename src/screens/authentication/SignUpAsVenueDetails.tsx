@@ -3,11 +3,11 @@ import { StyleSheet, View, Image, TextInput, ScrollView } from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { Button, useTheme, Text } from "react-native-paper";
+import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Dispatch, SetStateAction, useRef } from "react";
 import { useState } from "react";
-import { useCreateUserMutation } from "src/api";
+import { useCreateUserMutation, useCreateVenueMutation } from "src/api";
 type Props = StackScreenProps<SignUpStackParamList, "SignUpAsVenueDetails">;
 
 export const SignUpAsVenueDetails = ({
@@ -19,39 +19,46 @@ export const SignUpAsVenueDetails = ({
   route: Props["route"];
   setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
-  const { mutate: createUser } = useCreateUserMutation();
+  const { mutate: createVenue, isLoading: createVenueLoading } =
+    useCreateVenueMutation(setSignedIn);
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  const [venueName, setVenueName] = useState("");
+  const [managerFirstName, setManagerFirstName] = useState("");
+  const [managerLastName, setManagerLastName] = useState("");
+  const [managerEmail, setManagerEmail] = useState("");
   const [validEntry, setValidEntry] = useState(true);
-  const validateEmail = (email: string) => {
+
+  const validateEmail = (managerEmail: string) => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return reg.test(email);
+    return reg.test(managerEmail);
   };
 
-  // const signUp = () => {
-  //   if (
-  //     passwordValid &&
-  //     validateEmail(email.trim()) &&
-  //     firstName.trim().length > 0 &&
-  //     lastName.trim().length > 0
-  //   ) {
-  //     let data = {
-  //       firstName: firstName.trim(),
-  //       lastName: lastName.trim(),
-  //       phoneNumber: route.params.phoneNumber,
-  //       email: email.trim(),
-  //       password: password.trim(),
-  //     };
-  //     createUser(data);
-  //   } else {
-  //     setValidEntry(false);
-  //   }
-  // };
+  const signUp = () => {
+    if (
+      passwordValid &&
+      venueName.trim().length > 0 &&
+      validateEmail(managerEmail.trim()) &&
+      managerFirstName.trim().length > 0 &&
+      managerLastName.trim().length > 0
+    ) {
+      let data = {
+        isVenue: true,
+        name: venueName.trim(),
+        managerFirstName: managerFirstName.trim(),
+        managerLastName: managerLastName.trim(),
+        phoneNumber: route.params.phoneNumber,
+        managerEmail: managerEmail.trim(),
+        password: password.trim(),
+      };
+      createVenue(data);
+    } else {
+      setValidEntry(false);
+    }
+  };
+
   const checkPasswordValidity = (currentPassword: string) => {
     setPassword(currentPassword);
     const upperCaseLetters = /[A-Z]/g;
@@ -101,7 +108,7 @@ export const SignUpAsVenueDetails = ({
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               onSubmitEditing={() => lastNameRef.current?.focus()}
-              onChangeText={(text) => setFirstName(text)}
+              onChangeText={(text) => setVenueName(text)}
             />
           </View>
           <View style={styles.textInputView}>
@@ -113,11 +120,11 @@ export const SignUpAsVenueDetails = ({
             />
             <TextInput
               style={styles.textInput}
-              placeholder={"Admin First Name"}
+              placeholder={"Manager First Name"}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               onSubmitEditing={() => lastNameRef.current?.focus()}
-              onChangeText={(text) => setFirstName(text)}
+              onChangeText={(text) => setManagerFirstName(text)}
             />
           </View>
           <View style={styles.textInputView}>
@@ -129,12 +136,12 @@ export const SignUpAsVenueDetails = ({
             />
             <TextInput
               style={styles.textInput}
-              placeholder={"Admin Last Name"}
+              placeholder={"Manager Last Name"}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               onSubmitEditing={() => emailRef.current?.focus()}
               ref={lastNameRef}
-              onChangeText={(text) => setLastName(text)}
+              onChangeText={(text) => setManagerLastName(text)}
             />
           </View>
 
@@ -154,7 +161,7 @@ export const SignUpAsVenueDetails = ({
               autoCapitalize="none"
               onSubmitEditing={() => passwordRef.current?.focus()}
               ref={emailRef}
-              onChangeText={(text) => setEmail(text)}
+              onChangeText={(text) => setManagerEmail(text)}
             />
           </View>
           <View style={styles.textInputView}>
@@ -187,20 +194,21 @@ export const SignUpAsVenueDetails = ({
             <View></View>
           ) : (
             <Text variant="labelMedium" style={{ color: "red" }}>
-              Make Sure your first name, last name, and email are valid!
+              Make Sure your first name, last name, and managerEmail are valid!
             </Text>
           )}
-          <Button
-            textColor={colors.background}
-            buttonColor={colors.primary}
-            style={styles.getStartedButton}
-            // onPress={() => signUp()}
-            onPress={() => {
-              setSignedIn("venue");
-            }}
-          >
-            Get Started
-          </Button>
+          {createVenueLoading ? (
+            <ActivityIndicator style={{ marginTop: "13%" }} />
+          ) : (
+            <Button
+              textColor={colors.background}
+              buttonColor={colors.primary}
+              style={styles.getStartedButton}
+              onPress={() => signUp()}
+            >
+              Get Started
+            </Button>
+          )}
         </View>
       </ScrollView>
     </AppHeader>

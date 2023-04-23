@@ -1,4 +1,13 @@
-import React from "react";
+import { Dispatch, SetStateAction, createContext } from "react";
+
+export type VenueData = {
+  venueId: number;
+  venueName: string;
+  managerFirstName: string;
+  managerLastName: string;
+  managerEmail: string;
+  token: string;
+};
 
 export type UserData = {
   userId: number;
@@ -9,11 +18,19 @@ export type UserData = {
 };
 
 export type ContextProps = {
+  readonly isVenue: boolean;
+  readonly setIsVenue: Dispatch<SetStateAction<boolean>>;
   readonly userData: UserData | null;
-  readonly setUserData: React.Dispatch<React.SetStateAction<UserData | null>>;
+  readonly setUserData: Dispatch<SetStateAction<UserData | null>>;
+  readonly venueData: VenueData | null;
+  readonly setVenueData: Dispatch<SetStateAction<VenueData | null>>;
 };
 
-export const UserContext = React.createContext<ContextProps>({
+export const UserContext = createContext<ContextProps>({
+  isVenue: false,
+  setIsVenue: () => {},
   userData: null,
   setUserData: () => {},
+  venueData: null,
+  setVenueData: () => {},
 });

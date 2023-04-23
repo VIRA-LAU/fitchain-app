@@ -29,19 +29,34 @@ const createUser = async (data: Request) => {
 export const useCreateUserMutation = () => {
   const { setUserData } = useContext(UserContext);
   const navigation = useNavigation<NavigationProp<SignUpStackParamList>>();
-  return useMutation<User, unknown, Request>({
+  return useMutation<
+    User & {
+      userId: number;
+      access_token: string;
+    },
+    unknown,
+    Request
+  >({
     mutationFn: createUser,
     onSuccess: async (data) => {
       let fetchedInfo = {
-        userId: data.userId!,
+        userId: data.userId,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         token: data.access_token,
       };
       setUserData(fetchedInfo);
-      const keys = ["userId", "firstName", "lastName", "email", "token"];
+      const keys = [
+        "isVenue",
+        "userId",
+        "firstName",
+        "lastName",
+        "email",
+        "token",
+      ];
       const values = [
+        false,
         data.userId,
         data.firstName,
         data.lastName,

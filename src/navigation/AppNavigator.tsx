@@ -4,8 +4,8 @@ import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList } from "./tabScreenOptions";
 import { GameType, VenueBranch } from "src/types";
 import { getData } from "src/utils/AsyncStorage";
-import { UserContext } from "src/utils";
-import { useUserDetailsQuery } from "src/api";
+import { UserContext, UserData, VenueData } from "src/utils";
+import { useUserDetailsQuery, useVenueByIdQuery } from "src/api";
 import { HomeNavigator } from "./HomeNavigator";
 import { VenueHomeNavigator } from "./VenueHomeNavigator";
 import { LatLng } from "react-native-maps";
@@ -96,33 +96,71 @@ export type HomeStackParamList = {
 };
 
 export const AppNavigator = () => {
-  const { userData, setUserData } = useContext(UserContext);
+  const { userData, venueData, setUserData, setVenueData } =
+    useContext(UserContext);
 
   const [signedIn, setSignedIn] = useState<"player" | "venue" | null>(null);
   const [tokenFoundOnOpen, setTokenFoundOnOpen] = useState<boolean>(false);
-  const { refetch: verifyToken, isLoading: verifyLoading } =
+  const { refetch: verifyUserToken, isLoading: verifyUserLoading } =
     useUserDetailsQuery(
       userData?.userId,
       false,
       setSignedIn,
       setTokenFoundOnOpen
     );
+  const { refetch: verifyVenueToken, isLoading: verifyVenueLoading } =
+    useVenueByIdQuery(
+      venueData?.venueId,
+      false,
+      setSignedIn,
+      setTokenFoundOnOpen
+    );
 
   const getToken = async () => {
-    const firstName: string = await getData("firstName");
-    const lastName: string = await getData("lastName");
-    const email: string = await getData("email");
-    const userId: number = await getData("userId");
-    const token: string = await getData("token");
-    if (firstName && lastName && email && userId && token) {
-      setUserData({
-        userId,
-        firstName,
-        lastName,
-        email,
-        token,
-      });
-      setTokenFoundOnOpen(true);
+    const isVenue: boolean = await getData("isVenue");
+    if (typeof isVenue !== "undefined") {
+      if (isVenue) {
+        const venueId: number = await getData("venueId");
+        const venueName: string = await getData("venueName");
+        const managerFirstName: string = await getData("managerFirstName");
+        const managerLastName: string = await getData("managerLastName");
+        const managerEmail: string = await getData("managerEmail");
+        const token: string = await getData("token");
+        if (
+          venueId &&
+          venueName &&
+          managerFirstName &&
+          managerLastName &&
+          managerEmail &&
+          token
+        ) {
+          setVenueData({
+            venueId,
+            venueName,
+            managerFirstName,
+            managerLastName,
+            managerEmail,
+            token,
+          });
+          setTokenFoundOnOpen(true);
+        }
+      } else {
+        const firstName: string = await getData("firstName");
+        const lastName: string = await getData("lastName");
+        const email: string = await getData("email");
+        const userId: number = await getData("userId");
+        const token: string = await getData("token");
+        if (firstName && lastName && email && userId && token) {
+          setUserData({
+            userId,
+            firstName,
+            lastName,
+            email,
+            token,
+          });
+          setTokenFoundOnOpen(true);
+        }
+      }
     }
   };
 
@@ -131,8 +169,12 @@ export const AppNavigator = () => {
   }, []);
 
   useEffect(() => {
-    if (userData && tokenFoundOnOpen) verifyToken();
+    if (userData && tokenFoundOnOpen) verifyUserToken();
   }, [JSON.stringify(userData), tokenFoundOnOpen]);
+
+  useEffect(() => {
+    if (venueData && tokenFoundOnOpen) verifyVenueToken();
+  }, [JSON.stringify(venueData), tokenFoundOnOpen]);
 
   if (signedIn === "player") return <HomeNavigator setSignedIn={setSignedIn} />;
   else if (signedIn === "venue")
@@ -141,8 +183,8 @@ export const AppNavigator = () => {
     return (
       <SignUpNavigator
         setSignedIn={setSignedIn}
-        storedEmail={userData?.email}
-        verifyLoading={verifyLoading}
+        storedEmail={userData?.email || venueData?.managerEmail}
+        verifyLoading={verifyUserLoading || verifyVenueLoading}
       />
     );
 };

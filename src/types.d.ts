@@ -1,7 +1,5 @@
 export interface User {
   id?: number;
-  userId?: number;
-  access_token: string;
   firstName: string;
   lastName: string;
   description: string;
