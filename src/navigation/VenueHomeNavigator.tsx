@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { VenueHome } from "screens";
+import { VenueHome, VenueManagement } from "screens";
 import { VenueBottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { HomeStackParamList } from "./AppNavigator";
 import * as Location from "expo-location";
@@ -30,14 +30,12 @@ const BottomTabNavigator = ({
       <Tab.Navigator screenOptions={tabScreenOptions}>
         <Tab.Screen
           name="Home"
-          children={(props) => (
-            <VenueHome {...props} setSignedIn={setSignedIn} />
-          )}
+          children={(props) => <VenueHome {...props} />}
         />
         <Tab.Screen
           name="Venue"
           children={(props) => (
-            <VenueHome {...props} setSignedIn={setSignedIn} />
+            <VenueManagement {...props} setSignedIn={setSignedIn} />
           )}
         />
       </Tab.Navigator>

@@ -1,31 +1,18 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { VenueBottomTabParamList } from "src/navigation";
 import CalendarPicker from "react-native-calendar-picker";
 import { VenueBooking, VenueBookingSkeleton } from "src/components";
-import { Dispatch, SetStateAction, useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { UserContext } from "src/utils";
 import { useBookingsInVenueQuery, useTimeSlotsInVenueQuery } from "src/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import IonIcon from "react-native-vector-icons/Ionicons";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 
-export const VenueHome = ({
-  navigation,
-  route,
-  setSignedIn,
-}: Props & {
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
-}) => {
+export const VenueHome = ({ navigation, route }: Props & {}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const { venueData, setVenueData } = useContext(UserContext);
@@ -77,21 +64,9 @@ export const VenueHome = ({
 
   return (
     <ScrollView contentContainerStyle={styles.wrapper}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text variant="titleLarge" style={{ color: colors.tertiary }}>
-          Hi, {venueData?.managerFirstName}
-        </Text>
-
-        <TouchableOpacity
-          onPress={() => {
-            AsyncStorage.clear();
-            if (setSignedIn) setSignedIn(null);
-            setVenueData(null);
-          }}
-        >
-          <IonIcon name="log-out-outline" color="white" size={24} />
-        </TouchableOpacity>
-      </View>
+      <Text variant="titleLarge" style={{ color: colors.tertiary }}>
+        Hi, {venueData?.managerFirstName}
+      </Text>
       <Text variant="headlineLarge" style={styles.venueName}>
         {venueData?.venueName}
       </Text>
