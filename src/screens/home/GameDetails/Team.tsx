@@ -8,12 +8,12 @@ import {
   PlayerCardSkeleton,
   UpdateCard,
   UpdateCardSkeleton,
+  ResultCard,
+  TopPlayersCard,
 } from "components";
 import { Game, TeamPlayer } from "src/types";
 import { useUpdatesQuery } from "src/api";
-import { ReactNode, useEffect, useState } from "react";
-import { ResultCard } from "src/components/game-details/ResultCard";
-import { TopPlayersCard } from "src/components/game-details/TopPlayersCard";
+import { ReactNode, useState } from "react";
 
 export const Team = ({
   name,
@@ -21,12 +21,14 @@ export const Team = ({
   players,
   gameDetailsLoading,
   playersLoading,
+  isPrevious,
 }: {
   name: "Home" | "Away";
   game?: Game;
   players?: TeamPlayer[];
   gameDetailsLoading: boolean;
   playersLoading: boolean;
+  isPrevious?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -35,7 +37,6 @@ export const Team = ({
     game?.id
   );
 
-  const [upcomingGame, setUpcomingGame] = useState<boolean>();
   const [activePlayer, setActivePlayer] = useState<number>(0);
 
   let updateCards: { card: ReactNode; date: Date }[] = [];
@@ -94,21 +95,12 @@ export const Team = ({
     );
   }
 
-  useEffect(() => {
-    const currentDate = new Date();
-    const gameDate = game?.date ? new Date(game.date) : new Date();
-    if (gameDate < currentDate) {
-      setUpcomingGame(false);
-    } else setUpcomingGame(true);
-  }, [game?.date]);
-
-  if (typeof upcomingGame === "undefined") return <View />;
   return (
     <ScrollView style={{ backgroundColor: colors.background }}>
       <View>
-        {!upcomingGame && (
+        {isPrevious && (
           <View>
-            <ResultCard game={game}></ResultCard>
+            <ResultCard game={game} />
             <View style={styles.divider} />
             <Text
               variant="labelLarge"
@@ -187,7 +179,7 @@ export const Team = ({
                 isActive={index === activePlayer}
                 index={index}
                 setActivePlayer={setActivePlayer}
-                upcoming={upcomingGame ? upcomingGame : false}
+                isPrevious={!isPrevious}
                 gameId={game?.id}
               />
             ))}

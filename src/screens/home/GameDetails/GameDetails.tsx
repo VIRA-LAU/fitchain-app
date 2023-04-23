@@ -118,6 +118,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             )}
             gameDetailsLoading={gameDetailsLoading}
             playersLoading={playersLoading}
+            isPrevious={isPrevious}
           />
         );
       case "Away":
@@ -130,6 +131,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             )}
             gameDetailsLoading={gameDetailsLoading}
             playersLoading={playersLoading}
+            isPrevious={isPrevious}
           />
         );
       default:

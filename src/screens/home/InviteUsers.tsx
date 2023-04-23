@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
-import { Button, Text, useTheme } from "react-native-paper";
+import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList } from "navigation";
 import { AppHeader } from "src/components";
@@ -22,12 +22,16 @@ export const InviteUsers = ({ navigation, route }: Props) => {
 
   const { gameId } = route.params;
 
-  const { data: users } = useUsersQuery();
-  const { data: existingPlayers } = useGamePlayersQuery(gameId);
-
-  const { mutate: invitePlayer } = useInvitePlayerMutation();
-
+  const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
   const [selectedTeam, setSelectedTeam] = useState<"Home" | "Away">("Home");
+
+  const { data: users } = useUsersQuery();
+  const { data: existingPlayers } = useGamePlayersQuery(
+    gameId,
+    setLoadingIndex
+  );
+
+  const { mutate: invitePlayer } = useInvitePlayerMutation(setLoadingIndex);
 
   if (!existingPlayers || !users) return <View />;
   return (
@@ -101,26 +105,35 @@ export const InviteUsers = ({ navigation, route }: Props) => {
               </View>
               {existingPlayers.findIndex((player) => player.id === user.id) ===
               -1 ? (
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  style={styles.inviteView}
-                  onPress={() => {
-                    invitePlayer({
-                      gameId,
-                      friendId: user.id,
-                      team: selectedTeam.toUpperCase() as "HOME" | "AWAY",
-                    });
-                  }}
-                >
-                  <Text
+                loadingIndex === user.id ? (
+                  <ActivityIndicator
                     style={{
-                      fontFamily: "Inter-Medium",
-                      color: "white",
+                      marginLeft: "auto",
+                      marginRight: 30,
+                    }}
+                  />
+                ) : (
+                  <TouchableOpacity
+                    activeOpacity={0.6}
+                    style={styles.inviteView}
+                    onPress={() => {
+                      invitePlayer({
+                        gameId,
+                        friendId: user.id,
+                        team: selectedTeam.toUpperCase() as "HOME" | "AWAY",
+                      });
                     }}
                   >
-                    Invite
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={{
+                        fontFamily: "Inter-Medium",
+                        color: "white",
+                      }}
+                    >
+                      Invite
+                    </Text>
+                  </TouchableOpacity>
+                )
               ) : (
                 <View style={styles.invitedView}>
                   <Feather

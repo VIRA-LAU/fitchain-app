@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { Game } from "src/types";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { UserContext } from "src/utils";
+import { Skeleton } from "../home";
 
 export const ResultCard = ({ game }: { game?: Game }) => {
   const { userData } = useContext(UserContext);
@@ -22,7 +23,9 @@ export const ResultCard = ({ game }: { game?: Game }) => {
     game?.awayScore
   );
 
-  const { data: playersTeam } = useGetPlayerTeamQuery(game?.id);
+  const { data: playersTeam, isLoading: teamLoading } = useGetPlayerTeamQuery(
+    game?.id
+  );
   const { mutate: updateScore } = useUpdateGameMutation(
     game?.id,
     setIsChangingScore
@@ -42,14 +45,41 @@ export const ResultCard = ({ game }: { game?: Game }) => {
     else setMessage(`${game?.winnerTeam} team wins!`);
   }, [JSON.stringify(playersTeam), JSON.stringify(game)]);
 
+  if (!game || teamLoading)
+    return (
+      <View>
+        <Text
+          variant="labelLarge"
+          style={{ color: colors.tertiary, margin: 20 }}
+        >
+          Score
+        </Text>
+        <View style={{ alignContent: "center", alignItems: "center" }}>
+          <Skeleton height={20} width={100} style={{ marginBottom: 20 }} />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Skeleton height={100} width={80} />
+            <Text
+              variant="labelLarge"
+              style={{
+                color: colors.tertiary,
+                marginHorizontal: 20,
+              }}
+            >
+              vs
+            </Text>
+            <Skeleton height={100} width={80} />
+          </View>
+        </View>
+      </View>
+    );
   return (
     <View>
       <Text variant="labelLarge" style={{ color: colors.tertiary, margin: 20 }}>
-        Teams
+        Score
       </Text>
       <View style={{ alignContent: "center", alignItems: "center" }}>
         <Text style={styles.result}>{message}</Text>
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={{ alignItems: "center" }}>
             {isChangingScore ? (
               <TextInput
@@ -85,18 +115,15 @@ export const ResultCard = ({ game }: { game?: Game }) => {
               </Text>
             )}
           </View>
-          <View>
-            <Text
-              variant="labelLarge"
-              style={{
-                color: colors.tertiary,
-                marginTop: 50,
-                marginHorizontal: 20,
-              }}
-            >
-              vs
-            </Text>
-          </View>
+          <Text
+            variant="labelLarge"
+            style={{
+              color: colors.tertiary,
+              marginHorizontal: 20,
+            }}
+          >
+            vs
+          </Text>
           <View style={{ alignItems: "center" }}>
             {isChangingScore ? (
               <TextInput

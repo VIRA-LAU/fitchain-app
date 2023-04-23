@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 import { TeamPlayer } from "src/types";
-import { useContext } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 
 const getGamePlayers = (userData: UserData, id: number) => async () => {
   const header = getHeader(userData);
@@ -16,10 +16,18 @@ const getGamePlayers = (userData: UserData, id: number) => async () => {
     });
 };
 
-export const useGamePlayersQuery = (id: number) => {
+export const useGamePlayersQuery = (
+  id: number,
+  setLoadingIndex?: Dispatch<SetStateAction<number | null>>
+) => {
   const { userData } = useContext(UserContext);
   return useQuery<TeamPlayer[]>(
     ["game-players", id],
-    getGamePlayers(userData!, id)
+    getGamePlayers(userData!, id),
+    {
+      onSuccess: () => {
+        if (setLoadingIndex) setLoadingIndex(null);
+      },
+    }
   );
 };

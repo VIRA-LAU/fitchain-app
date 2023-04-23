@@ -26,15 +26,26 @@ const Stack = createStackNavigator<SignUpStackParamList>();
 
 export const SignUpNavigator = ({
   setSignedIn,
+  storedEmail,
+  verifyLoading,
 }: {
   setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
+  storedEmail: string | undefined;
+  verifyLoading: boolean;
 }) => (
   <Stack.Navigator
     initialRouteName="SignUp"
     screenOptions={{ headerShown: false }}
   >
     <Stack.Screen name="SignUp">
-      {(props) => <SignUp {...props} setSignedIn={setSignedIn} />}
+      {(props) => (
+        <SignUp
+          {...props}
+          setSignedIn={setSignedIn}
+          storedEmail={storedEmail}
+          verifyLoading={verifyLoading}
+        />
+      )}
     </Stack.Screen>
     <Stack.Screen name="SignUpWithNumber" component={SignUpWithNumber} />
     <Stack.Screen

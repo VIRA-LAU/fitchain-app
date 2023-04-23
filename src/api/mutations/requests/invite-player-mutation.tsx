@@ -1,8 +1,7 @@
 import client, { getHeader } from "../../client";
 import { useMutation, useQueryClient } from "react-query";
 import { UserContext, UserData } from "../../../utils/UserContext";
-import { useContext } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { Dispatch, SetStateAction, useContext } from "react";
 
 type Request = {
   gameId: number;
@@ -29,13 +28,17 @@ const invitePlayer = (userData: UserData) => async (data: Request) => {
     });
 };
 
-export const useInvitePlayerMutation = () => {
+export const useInvitePlayerMutation = (
+  setLoadingIndex: Dispatch<SetStateAction<number | null>>
+) => {
   const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
-  const navigation = useNavigation();
 
   return useMutation<Response, unknown, Request>({
     mutationFn: invitePlayer(userData!),
+    onMutate: (variables) => {
+      setLoadingIndex(variables.friendId);
+    },
     onSuccess: (data, variables) => {
       queryClient.refetchQueries(["game-players", variables.gameId]);
       queryClient.refetchQueries(["updates", variables.gameId]);

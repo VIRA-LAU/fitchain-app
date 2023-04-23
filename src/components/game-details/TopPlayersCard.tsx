@@ -1,4 +1,4 @@
-import { Button, Text, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { TouchableOpacity, View } from "react-native";
 import { useEffect } from "react";
 import FeatherIcon from "react-native-vector-icons/Feather";

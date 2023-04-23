@@ -21,15 +21,19 @@ export const SignUp = ({
   navigation,
   route,
   setSignedIn,
+  storedEmail,
+  verifyLoading,
 }: {
   navigation: Props["navigation"];
   route: Props["route"];
   setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
+  storedEmail: string | undefined;
+  verifyLoading: boolean;
 }) => {
   const { fontScale } = useWindowDimensions();
   const { colors } = useTheme();
   const styles = makeStyles(fontScale, colors);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState<string>();
   const { mutate: loginUser, isLoading: loginLoading } =
     useLoginUserMutation(setSignedIn);
 
@@ -40,13 +44,15 @@ export const SignUp = ({
   };
 
   const signIn = () => {
-    let emailValid = validateEmail(email.trim());
-    if (emailValid) {
-      let data = {
-        email: email.trim(),
-        password: password.trim(),
-      };
-      loginUser(data);
+    if (email) {
+      let emailValid = validateEmail(email.trim());
+      if (emailValid) {
+        let data = {
+          email: email.trim(),
+          password: password.trim(),
+        };
+        loginUser(data);
+      }
     }
   };
   return (
@@ -76,6 +82,7 @@ export const SignUp = ({
               selectionColor={colors.primary}
               textContentType="emailAddress"
               autoCapitalize="none"
+              value={email || storedEmail}
               onChangeText={(email) => setEmail(email)}
             />
           </View>
@@ -96,7 +103,7 @@ export const SignUp = ({
               onChangeText={(password) => setPassword(password)}
             />
           </View>
-          {loginLoading ? (
+          {loginLoading || verifyLoading ? (
             <ActivityIndicator style={{ marginTop: 15, marginBottom: 20 }} />
           ) : (
             <Button

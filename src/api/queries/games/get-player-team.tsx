@@ -9,14 +9,14 @@ type Response = {
 };
 const getPlayerTeamQuery = (userData: UserData, gameId: number) => async () => {
   const header = getHeader(userData);
-
-  return await client
-    .get(`/games/getTeam?gameId=${gameId}`, header)
-    .then((res) => res.data)
-    .catch((e) => {
-      console.error("player-team-query", e);
-      throw new Error(e);
-    });
+  if (gameId)
+    return await client
+      .get(`/games/getTeam?gameId=${gameId}`, header)
+      .then((res) => res.data)
+      .catch((e) => {
+        console.error("player-team-query", e);
+        throw new Error(e);
+      });
 };
 
 export const useGetPlayerTeamQuery = (id: number) => {

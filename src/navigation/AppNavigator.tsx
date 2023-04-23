@@ -100,12 +100,13 @@ export const AppNavigator = () => {
 
   const [signedIn, setSignedIn] = useState<"player" | "venue" | null>(null);
   const [tokenFoundOnOpen, setTokenFoundOnOpen] = useState<boolean>(false);
-  const { refetch: verifyToken } = useUserDetailsQuery(
-    userData?.userId,
-    false,
-    setSignedIn,
-    setTokenFoundOnOpen
-  );
+  const { refetch: verifyToken, isLoading: verifyLoading } =
+    useUserDetailsQuery(
+      userData?.userId,
+      false,
+      setSignedIn,
+      setTokenFoundOnOpen
+    );
 
   const getToken = async () => {
     const firstName: string = await getData("firstName");
@@ -136,5 +137,12 @@ export const AppNavigator = () => {
   if (signedIn === "player") return <HomeNavigator setSignedIn={setSignedIn} />;
   else if (signedIn === "venue")
     return <VenueHomeNavigator setSignedIn={setSignedIn} />;
-  else return <SignUpNavigator setSignedIn={setSignedIn} />;
+  else
+    return (
+      <SignUpNavigator
+        setSignedIn={setSignedIn}
+        storedEmail={userData?.email}
+        verifyLoading={verifyLoading}
+      />
+    );
 };

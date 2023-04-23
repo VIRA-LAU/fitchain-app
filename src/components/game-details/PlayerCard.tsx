@@ -58,20 +58,20 @@ export const PlayerCard = ({
   player: { firstName, lastName, status, id, rated, rating },
   setActivePlayer,
   index,
-  upcoming,
+  isPrevious,
   gameId,
 }: {
   isActive?: boolean;
   player: TeamPlayer;
   setActivePlayer: React.Dispatch<React.SetStateAction<number>>;
   index: number;
-  upcoming: boolean;
+  isPrevious: boolean;
   gameId: number;
 }) => {
   const { colors } = useTheme();
   const windowWidth = useWindowDimensions().width;
   const styles = makeStyles(colors, windowWidth);
-  const displayedStatus = upcoming
+  const displayedStatus = !isPrevious
     ? status === "APPROVED"
       ? "Confirmed"
       : "Pending"
@@ -126,15 +126,15 @@ export const PlayerCard = ({
             styles.statusView,
             {
               backgroundColor:
-                !upcoming && (rated || userData?.userId == id)
+                isPrevious && (rated || userData?.userId == id)
                   ? colors.primary
                   : colors.background,
               borderWidth:
-                !upcoming && (rated || userData?.userId == id) ? 0 : 1,
+                isPrevious && (rated || userData?.userId == id) ? 0 : 1,
             },
           ]}
         >
-          {!upcoming ? (
+          {isPrevious ? (
             <TouchableOpacity
               disabled={rated || id == userData?.userId}
               onPress={() =>
