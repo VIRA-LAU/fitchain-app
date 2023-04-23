@@ -18,8 +18,15 @@ const getTimeSlotsInVenue = (venueData: VenueData, id?: number) => async () => {
 
 export const useTimeSlotsInVenueQuery = (id?: number) => {
   const { venueData } = useContext(UserContext);
-  return useQuery<TimeSlot[]>(
+  return useQuery<TimeSlot[], unknown, (TimeSlot & { adminName: string })[]>(
     ["timeSlots-in-venue", id],
-    getTimeSlotsInVenue(venueData!, id)
+    getTimeSlotsInVenue(venueData!, id),
+    {
+      select: (data) => {
+        let sorted = data.sort((a, b) => (a.startTime <= b.startTime ? -1 : 1));
+        sorted = sorted.sort((a, b) => (a.endTime <= b.endTime ? -1 : 0));
+        return sorted.map((slot) => ({ ...slot, adminName: "" }));
+      },
+    }
   );
 };

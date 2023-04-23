@@ -304,12 +304,12 @@ export const Home = ({ navigation, route }: Props) => {
               ))}
           {!activitiesLoading &&
             (!activities ||
-              (activities.filter(({ type }) => selectedSports[type]).length ===
-                0 && (
-                <Text style={styles.placeholderText}>
-                  You have no recent activities.
-                </Text>
-              )))}
+              activities.filter(({ type }) => selectedSports[type]).length ===
+                0) && (
+              <Text style={styles.placeholderText}>
+                You have no recent activities.
+              </Text>
+            )}
         </View>
       </ScrollView>
     </AppHeader>

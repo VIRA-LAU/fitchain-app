@@ -28,8 +28,18 @@ const BottomTabNavigator = ({
   return (
     <View style={{ height: "100%", position: "relative" }}>
       <Tab.Navigator screenOptions={tabScreenOptions}>
-        <Tab.Screen name="Home" component={VenueHome} />
-        <Tab.Screen name="Venue" component={VenueHome} />
+        <Tab.Screen
+          name="Home"
+          children={(props) => (
+            <VenueHome {...props} setSignedIn={setSignedIn} />
+          )}
+        />
+        <Tab.Screen
+          name="Venue"
+          children={(props) => (
+            <VenueHome {...props} setSignedIn={setSignedIn} />
+          )}
+        />
       </Tab.Navigator>
     </View>
   );

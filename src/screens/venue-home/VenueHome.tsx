@@ -1,42 +1,97 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { VenueBottomTabParamList } from "src/navigation";
 import CalendarPicker from "react-native-calendar-picker";
-import { VenueBooking } from "src/components";
-import { useContext, useMemo, useState } from "react";
+import { VenueBooking, VenueBookingSkeleton } from "src/components";
+import { Dispatch, SetStateAction, useContext, useMemo, useState } from "react";
 import { UserContext } from "src/utils";
 import { useBookingsInVenueQuery, useTimeSlotsInVenueQuery } from "src/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import IonIcon from "react-native-vector-icons/Ionicons";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 
-export const VenueHome = ({ navigation, route }: Props) => {
+export const VenueHome = ({
+  navigation,
+  route,
+  setSignedIn,
+}: Props & {
+  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const { venueData } = useContext(UserContext);
+  const { venueData, setVenueData } = useContext(UserContext);
 
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-
-  const parsedDate = useMemo(() => {
-    return `${selectedDate.getFullYear()}-${(
-      "0" +
-      (selectedDate.getMonth() + 1)
-    ).slice(-2)}-${("0" + selectedDate.getDate()).slice(-2)}`;
-  }, [selectedDate]);
+  const [selectedDate, setSelectedDate] = useState<string>(
+    `${new Date().getFullYear()}-${("0" + (new Date().getMonth() + 1)).slice(
+      -2
+    )}-${("0" + new Date().getDate()).slice(-2)}`
+  );
 
   const { data: bookings } = useBookingsInVenueQuery(
     venueData?.venueId,
-    parsedDate
+    selectedDate
   );
-  const { data: timeSlots } = useTimeSlotsInVenueQuery(venueData?.venueId);
+  const { data: timeSlots, isLoading: timeSlotsLoading } =
+    useTimeSlotsInVenueQuery(venueData?.venueId);
+
+  const allSlots = useMemo(() => {
+    const filteredTimeSlots = timeSlots?.filter(
+      (timeSlot) =>
+        bookings?.findIndex(
+          (booking) =>
+            booking.gameTimeSlots.findIndex(
+              (bookingTimeSlot) => bookingTimeSlot.timeSlot.id === timeSlot.id
+            ) !== -1
+        ) === -1
+    );
+    const mappedBookings = bookings?.map((booking) => ({
+      startTime: booking.gameTimeSlots[0].timeSlot.startTime,
+      endTime:
+        booking.gameTimeSlots[booking.gameTimeSlots.length - 1].timeSlot
+          .endTime,
+      adminName: `${booking.admin.firstName} ${booking.admin.lastName}`,
+    }));
+    let combinedArr: {
+      startTime: string;
+      endTime: string;
+      adminName?: string;
+    }[] = [];
+    if (filteredTimeSlots) combinedArr = combinedArr.concat(filteredTimeSlots);
+    if (mappedBookings) combinedArr = combinedArr.concat(mappedBookings);
+
+    combinedArr = combinedArr.sort((a, b) =>
+      a.startTime <= b.startTime ? -1 : 1
+    );
+    combinedArr = combinedArr.sort((a, b) => (a.endTime <= b.endTime ? -1 : 0));
+    return combinedArr;
+  }, [JSON.stringify(bookings), JSON.stringify(timeSlots)]);
 
   return (
     <ScrollView contentContainerStyle={styles.wrapper}>
-      <Text variant="titleLarge" style={{ color: colors.tertiary }}>
-        Hi, {venueData?.managerFirstName}
-      </Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text variant="titleLarge" style={{ color: colors.tertiary }}>
+          Hi, {venueData?.managerFirstName}
+        </Text>
+
+        <TouchableOpacity
+          onPress={() => {
+            AsyncStorage.clear();
+            if (setSignedIn) setSignedIn(null);
+            setVenueData(null);
+          }}
+        >
+          <IonIcon name="log-out-outline" color="white" size={24} />
+        </TouchableOpacity>
+      </View>
       <Text variant="headlineLarge" style={styles.venueName}>
         {venueData?.venueName}
       </Text>
@@ -47,14 +102,37 @@ export const VenueHome = ({ navigation, route }: Props) => {
           textStyle={{ color: "white" }}
           todayBackgroundColor={colors.primary}
           selectedDayStyle={{ backgroundColor: colors.primary }}
-          initialDate={selectedDate}
-          onDateChange={(date) => setSelectedDate(date.toDate())}
+          initialDate={new Date()}
+          onDateChange={(date) => {
+            const parsedDate = date.toDate();
+            setSelectedDate(
+              `${parsedDate.getFullYear()}-${(
+                "0" +
+                (parsedDate.getMonth() + 1)
+              ).slice(-2)}-${("0" + parsedDate.getDate()).slice(-2)}`
+            );
+          }}
           width={useWindowDimensions().width * 0.89}
         />
       </View>
-      <VenueBooking type="available" />
-      <VenueBooking type="confirmed" />
-      <VenueBooking type="confirmed" />
+      {timeSlotsLoading && <VenueBookingSkeleton />}
+      {!timeSlotsLoading &&
+        (allSlots.length === 0 ? timeSlots : allSlots)?.map(
+          ({ startTime, endTime, adminName }, index) => (
+            <VenueBooking
+              key={index}
+              type={adminName ? "confirmed" : "available"}
+              startTime={startTime}
+              endTime={endTime}
+              adminName={adminName}
+            />
+          )
+        )}
+      {!timeSlotsLoading && (!timeSlots || timeSlots.length === 0) && (
+        <Text style={styles.placeholderText}>
+          There are no assigned time slots.
+        </Text>
+      )}
     </ScrollView>
   );
 };
@@ -89,5 +167,12 @@ const makeStyles = (colors: MD3Colors) =>
       fontSize: 16,
       marginBottom: 10,
       marginLeft: 10,
+    },
+    placeholderText: {
+      height: 50,
+      fontFamily: "Inter-Medium",
+      color: colors.tertiary,
+      textAlign: "center",
+      textAlignVertical: "center",
     },
   });

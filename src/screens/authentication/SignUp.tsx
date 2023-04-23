@@ -12,7 +12,7 @@ import { SignUpStackParamList } from "navigation";
 import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AppHeader } from "src/components";
 import { useLoginUserMutation } from "src/api";
 type Props = StackScreenProps<SignUpStackParamList, "SignUp">;
@@ -33,7 +33,7 @@ export const SignUp = ({
   const { fontScale } = useWindowDimensions();
   const { colors } = useTheme();
   const styles = makeStyles(fontScale, colors);
-  const [email, setEmail] = useState<string>();
+  const [email, setEmail] = useState<string | undefined>(storedEmail);
   const { mutate: loginUser, isLoading: loginLoading } =
     useLoginUserMutation(setSignedIn);
 
@@ -55,6 +55,11 @@ export const SignUp = ({
       }
     }
   };
+
+  useEffect(() => {
+    setEmail(storedEmail);
+  }, [storedEmail]);
+
   return (
     <AppHeader autoScroll>
       <ScrollView contentContainerStyle={styles.wrapperView}>
@@ -82,7 +87,7 @@ export const SignUp = ({
               selectionColor={colors.primary}
               textContentType="emailAddress"
               autoCapitalize="none"
-              value={email || storedEmail}
+              value={email}
               onChangeText={(email) => setEmail(email)}
             />
           </View>

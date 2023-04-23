@@ -7,7 +7,7 @@ import client, { getHeader } from "../../client";
 const getBookingsInVenue =
   (venueData: VenueData, id?: number, date?: string) => async () => {
     const header = getHeader(venueData);
-    if (id)
+    if (id && date)
       return await client
         .get(`/venues/bookings/${id}?date=${date}`, header)
         .then((res) => res.data)
