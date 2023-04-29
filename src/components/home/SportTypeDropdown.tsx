@@ -19,7 +19,7 @@ export type SportSelection = {
 };
 
 type SportOption = {
-  type: "Basketball" | "Football" | "Tennis";
+  type: GameType;
   image: JSX.Element;
 };
 
@@ -33,10 +33,7 @@ const SportIcons = ({
   return (
     <View style={{ flexDirection: "row" }}>
       {sports
-        .filter(
-          (sport, index) =>
-            selectedSports[Object.keys(selectedSports)[index] as GameType]
-        )
+        .filter((sport) => selectedSports[sport.type])
         .map((sport) => sport.image)}
     </View>
   );
@@ -45,9 +42,11 @@ const SportIcons = ({
 export const SportTypeDropdown = ({
   selectedSports,
   setSelectedSports,
+  position = "left",
 }: {
   selectedSports: SportSelection;
   setSelectedSports: React.Dispatch<React.SetStateAction<SportSelection>>;
+  position: "right" | "left";
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -93,12 +92,9 @@ export const SportTypeDropdown = ({
       if (selectedSports[key as GameType]) numSelectedSports++;
     });
     if (numSelectedSports !== 1 || !selectedSports[sport])
-      setSelectedSports((oldSelectedSports) => {
-        const updatedSelectedSports = {
-          ...oldSelectedSports,
-          [sport]: !selectedSports[sport],
-        };
-        return updatedSelectedSports;
+      setSelectedSports({
+        ...selectedSports,
+        [sport]: !selectedSports[sport],
       });
   };
 
@@ -124,7 +120,20 @@ export const SportTypeDropdown = ({
             setModalVisible(false);
           }}
         />
-        <View style={styles.modalView}>
+        <View
+          style={[
+            styles.modalView,
+            position === "left"
+              ? {
+                  marginLeft: 15,
+                }
+              : {
+                  marginLeft: "auto",
+                  marginRight: 15,
+                  marginTop: 80,
+                },
+          ]}
+        >
           {sports().map((sport, index) => {
             return (
               <TouchableOpacity
@@ -174,7 +183,6 @@ const makeStyles = (colors: MD3Colors) =>
     modalView: {
       width: 250,
       marginTop: 70,
-      marginLeft: 15,
       backgroundColor: colors.secondary,
       borderRadius: 20,
       paddingHorizontal: 20,

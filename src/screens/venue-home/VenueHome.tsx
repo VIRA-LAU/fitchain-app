@@ -5,10 +5,16 @@ import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { VenueBottomTabParamList } from "src/navigation";
 import CalendarPicker from "react-native-calendar-picker";
-import { VenueBooking, VenueBookingSkeleton } from "src/components";
+import {
+  SportSelection,
+  SportTypeDropdown,
+  VenueBooking,
+  VenueBookingSkeleton,
+} from "src/components";
 import { useContext, useMemo, useState } from "react";
 import { UserContext } from "src/utils";
-import { useBookingsInVenueQuery, useTimeSlotsInVenueQuery } from "src/api";
+import { useBookingsInVenueQuery, useTimeSlotsQuery } from "src/api";
+import { GameType } from "src/types";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 
@@ -23,15 +29,22 @@ export const VenueHome = ({ navigation, route }: Props & {}) => {
     )}-${("0" + new Date().getDate()).slice(-2)}`
   );
 
+  const [selectedSports, setSelectedSports] = useState<SportSelection>({
+    Basketball: true,
+    Football: true,
+    Tennis: true,
+  });
+
   const { data: bookings } = useBookingsInVenueQuery(
     venueData?.venueId,
     selectedDate
   );
-  const { data: timeSlots, isLoading: timeSlotsLoading } =
-    useTimeSlotsInVenueQuery(venueData?.venueId);
+  const { data: timeSlots, isLoading: timeSlotsLoading } = useTimeSlotsQuery(
+    venueData?.venueId
+  );
 
   const allSlots = useMemo(() => {
-    const filteredTimeSlots = timeSlots?.filter(
+    const occupiedTimeSlots = timeSlots?.filter(
       (timeSlot) =>
         bookings?.findIndex(
           (booking) =>
@@ -40,33 +53,55 @@ export const VenueHome = ({ navigation, route }: Props & {}) => {
             ) !== -1
         ) === -1
     );
+
     const mappedBookings = bookings?.map((booking) => ({
       startTime: booking.gameTimeSlots[0].timeSlot.startTime,
       endTime:
         booking.gameTimeSlots[booking.gameTimeSlots.length - 1].timeSlot
           .endTime,
       adminName: `${booking.admin.firstName} ${booking.admin.lastName}`,
+      gameType: booking.type,
     }));
+
     let combinedArr: {
       startTime: string;
       endTime: string;
+      gameType: GameType;
       adminName?: string;
     }[] = [];
-    if (filteredTimeSlots) combinedArr = combinedArr.concat(filteredTimeSlots);
+
+    if (occupiedTimeSlots) combinedArr = combinedArr.concat(occupiedTimeSlots);
     if (mappedBookings) combinedArr = combinedArr.concat(mappedBookings);
 
     combinedArr = combinedArr.sort((a, b) =>
       a.startTime <= b.startTime ? -1 : 1
     );
     combinedArr = combinedArr.sort((a, b) => (a.endTime <= b.endTime ? -1 : 0));
+    console.log(selectedSports, combinedArr);
+    combinedArr = combinedArr.filter((slot) => selectedSports[slot.gameType]);
     return combinedArr;
-  }, [JSON.stringify(bookings), JSON.stringify(timeSlots)]);
+  }, [
+    JSON.stringify(bookings),
+    JSON.stringify(timeSlots),
+    JSON.stringify(selectedSports),
+  ]);
+
+  const filteredTimeSlots = useMemo(() => {
+    return timeSlots?.filter((slot) => selectedSports[slot.gameType]);
+  }, [JSON.stringify(timeSlots), JSON.stringify(selectedSports)]);
 
   return (
     <ScrollView contentContainerStyle={styles.wrapper}>
-      <Text variant="titleLarge" style={{ color: colors.tertiary }}>
-        Hi, {venueData?.managerFirstName}
-      </Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text variant="titleLarge" style={{ color: colors.tertiary }}>
+          Hi, {venueData?.managerFirstName}
+        </Text>
+        <SportTypeDropdown
+          selectedSports={selectedSports}
+          setSelectedSports={setSelectedSports}
+          position={"right"}
+        />
+      </View>
       <Text variant="headlineLarge" style={styles.venueName}>
         {venueData?.venueName}
       </Text>
@@ -92,22 +127,24 @@ export const VenueHome = ({ navigation, route }: Props & {}) => {
       </View>
       {timeSlotsLoading && <VenueBookingSkeleton />}
       {!timeSlotsLoading &&
-        (allSlots.length === 0 ? timeSlots : allSlots)?.map(
-          ({ startTime, endTime, adminName }, index) => (
+        (allSlots.length === 0 ? filteredTimeSlots : allSlots)?.map(
+          ({ startTime, endTime, adminName, gameType }, index) => (
             <VenueBooking
               key={index}
               type={adminName ? "confirmed" : "available"}
               startTime={startTime}
               endTime={endTime}
               adminName={adminName}
+              gameType={gameType}
             />
           )
         )}
-      {!timeSlotsLoading && (!timeSlots || timeSlots.length === 0) && (
-        <Text style={styles.placeholderText}>
-          There are no assigned time slots.
-        </Text>
-      )}
+      {!timeSlotsLoading &&
+        (!filteredTimeSlots || filteredTimeSlots.length === 0) && (
+          <Text style={styles.placeholderText}>
+            There are no assigned time slots.
+          </Text>
+        )}
     </ScrollView>
   );
 };
