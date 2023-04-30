@@ -1,56 +1,52 @@
 import { useQuery } from "react-query";
-import { GOOGLE_MAPS_API_KEY } from "@dotenv";
-import { Game } from "src/types";
-import { Client } from "@googlemaps/google-maps-services-js";
 import { LatLng } from "react-native-maps";
-
-const client = new Client({});
+import client, { getHeader } from "src/api/client";
+import { UserContext, UserData } from "src/utils";
+import { useContext } from "react";
+import { Game } from "src/types";
 
 const sortGamesByLocation =
-  (games: Game[] | undefined, userLocation: LatLng) => async () => {
-    if (games && games.length > 0) {
-      const parsedUserLocation = {
-        lat: userLocation.latitude,
-        lng: userLocation.longitude,
-      };
+  (userData: UserData, games?: Game[], userLocation?: LatLng) => async () => {
+    const header = getHeader(userData);
+    if (games && games.length > 0 && userLocation) {
       const gameLocations = games.map((game) => ({
         lat: game.court.branch.latitude,
         lng: game.court.branch.longitude,
       }));
       return await client
-        .distancematrix({
-          params: {
-            key: GOOGLE_MAPS_API_KEY,
-            origins: [parsedUserLocation],
-            destinations: gameLocations,
+        .post(
+          "/maps/distance",
+          {
+            ...userLocation,
+            locations: gameLocations,
           },
-        })
-        .then((res) => {
-          const rows = res.data.rows;
-          const distances = rows[0].elements.map(
-            (element: any) => element.distance.value
-          );
+          header
+        )
+        .then((res) => res.data)
+        .then((data) => {
           const sortedGames: (Game & { distance: any })[] = games
             .map((game, index) => ({
               ...game,
-              distance: distances[index],
+              distance: data[index],
             }))
             .sort((a, b) => a.distance - b.distance);
           return sortedGames;
         })
         .catch((e) => {
-          throw new Error("Failed to fetch distances from Google Maps API");
+          console.error("sort-games-query", e);
+          throw new Error(e);
         });
     }
   };
 
 export const useSortGamesByLocationQuery = (
-  games: Game[] | undefined,
-  userLocation: LatLng
+  games?: Game[],
+  userLocation?: LatLng
 ) => {
+  const { userData } = useContext(UserContext);
   return useQuery<(Game & { distance: any })[] | undefined>(
     ["sort-games-by-location", games],
-    sortGamesByLocation(games, userLocation),
+    sortGamesByLocation(userData!, games, userLocation),
     {
       enabled: false,
     }

@@ -1,55 +1,52 @@
 import { useQuery } from "react-query";
-import { GOOGLE_MAPS_API_KEY } from "@dotenv";
-import { Branch } from "src/types";
-import { Client } from "@googlemaps/google-maps-services-js";
 import { LatLng } from "react-native-maps";
-
-const client = new Client({});
+import client, { getHeader } from "src/api/client";
+import { UserContext, UserData } from "src/utils";
+import { useContext } from "react";
+import { Branch } from "src/types";
 
 const sortBranchesByLocation =
-  (branches: Branch[] | undefined, userLocation: LatLng) => async () => {
-    if (branches && branches.length > 0) {
-      const parsedUserLocation = {
-        lat: userLocation.latitude,
-        lng: userLocation.longitude,
-      };
+  (userData: UserData, branches?: Branch[], userLocation?: LatLng) =>
+  async () => {
+    const header = getHeader(userData);
+    if (branches && branches.length > 0 && userLocation) {
       const branchLocations = branches.map(({ latitude, longitude }) => ({
         lat: latitude,
         lng: longitude,
       }));
       return await client
-        .distancematrix({
-          params: {
-            key: GOOGLE_MAPS_API_KEY,
-            origins: [parsedUserLocation],
-            destinations: branchLocations,
+        .post(
+          "/maps/distance",
+          {
+            ...userLocation,
+            locations: branchLocations,
           },
-        })
-        .then((res) => {
-          const rows = res.data.rows;
-          const distances = rows[0].elements.map(
-            (element: any) => element.distance.value
-          );
+          header
+        )
+        .then((res) => res.data)
+        .then((data) => {
           const sortedBranches: (Branch & { distance: any })[] = branches
             .map((branch, index) => ({
               ...branch,
-              distance: distances[index],
+              distance: data[index],
             }))
             .sort((a, b) => a.distance - b.distance);
           return sortedBranches;
         })
         .catch((e) => {
-          throw new Error("Failed to fetch distances from Google Maps API");
+          console.error("sort-branches-query", e);
+          throw new Error(e);
         });
     }
   };
 
 export const useSortBranchesByLocationQuery = (
-  branches: Branch[] | undefined,
-  userLocation: LatLng
+  branches?: Branch[],
+  userLocation?: LatLng
 ) => {
+  const { userData } = useContext(UserContext);
   return useQuery<(Branch & { distance: any })[] | undefined>(
     ["sort-branches-by-location", branches],
-    sortBranchesByLocation(branches, userLocation)
+    sortBranchesByLocation(userData!, branches, userLocation)
   );
 };
