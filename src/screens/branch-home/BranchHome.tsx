@@ -8,13 +8,16 @@ import CalendarPicker from "react-native-calendar-picker";
 import {
   SportSelection,
   SportTypeDropdown,
-  VenueBooking,
-  VenueBookingSkeleton,
+  BranchBooking,
+  BranchBookingSkeleton,
 } from "src/components";
 import { useContext, useMemo, useState } from "react";
 import { UserContext } from "src/utils";
-import { useBookingsInBranchQuery, useTimeSlotsQuery } from "src/api";
-import { GameType } from "src/types";
+import {
+  TimeSlotsResponse,
+  useBookingsInBranchQuery,
+  useTimeSlotsQuery,
+} from "src/api";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 
@@ -44,7 +47,7 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
   );
 
   const allSlots = useMemo(() => {
-    const occupiedTimeSlots = timeSlots?.filter(
+    const occupiedTimeSlots = (timeSlots as TimeSlotsResponse[])?.filter(
       (timeSlot) =>
         bookings?.findIndex(
           (booking) =>
@@ -61,14 +64,10 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
           .endTime,
       adminName: `${booking.admin.firstName} ${booking.admin.lastName}`,
       gameType: booking.type,
+      courtName: booking.court.name,
     }));
 
-    let combinedArr: {
-      startTime: string;
-      endTime: string;
-      gameType: GameType;
-      adminName?: string;
-    }[] = [];
+    let combinedArr: TimeSlotsResponse[] = [];
 
     if (occupiedTimeSlots) combinedArr = combinedArr.concat(occupiedTimeSlots);
     if (mappedBookings) combinedArr = combinedArr.concat(mappedBookings);
@@ -86,7 +85,9 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
   ]);
 
   const filteredTimeSlots = useMemo(() => {
-    return timeSlots?.filter((slot) => selectedSports[slot.gameType]);
+    return (timeSlots as TimeSlotsResponse[])?.filter(
+      (slot) => selectedSports[slot.gameType]
+    );
   }, [JSON.stringify(timeSlots), JSON.stringify(selectedSports)]);
 
   return (
@@ -130,17 +131,18 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
           width={useWindowDimensions().width * 0.89}
         />
       </View>
-      {timeSlotsLoading && <VenueBookingSkeleton />}
+      {timeSlotsLoading && <BranchBookingSkeleton />}
       {!timeSlotsLoading &&
         (allSlots.length === 0 ? filteredTimeSlots : allSlots)?.map(
-          ({ startTime, endTime, adminName, gameType }, index) => (
-            <VenueBooking
+          ({ startTime, endTime, adminName, gameType, courtName }, index) => (
+            <BranchBooking
               key={index}
               type={adminName ? "confirmed" : "available"}
               startTime={startTime}
               endTime={endTime}
               adminName={adminName}
               gameType={gameType}
+              courtName={courtName}
             />
           )
         )}

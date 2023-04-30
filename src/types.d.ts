@@ -27,6 +27,7 @@ export interface TimeSlot {
   endTime: string;
   courtTimeSlots?: {
     court: {
+      name: string;
       courtType: GameType;
     };
   }[];

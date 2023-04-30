@@ -4,7 +4,7 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Skeleton } from "../home";
 import { GameType } from "src/types";
 
-export const VenueBookingSkeleton = () => {
+export const BranchBookingSkeleton = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   return (
@@ -18,17 +18,19 @@ export const VenueBookingSkeleton = () => {
   );
 };
 
-export const VenueBooking = ({
+export const BranchBooking = ({
   type,
   startTime,
   endTime,
   gameType,
   adminName,
+  courtName,
 }: {
   type: "available" | "confirmed";
   startTime: string;
   endTime: string;
   gameType: GameType;
+  courtName: string;
   adminName?: string;
 }) => {
   const { colors } = useTheme();
@@ -69,7 +71,7 @@ export const VenueBooking = ({
               <Text style={styles.confirmedInfo}>Booked by {adminName}</Text>
             </View>
           )}
-          <Text style={styles.confirmedInfo}>Court Name: {gameType}</Text>
+          <Text style={styles.confirmedInfo}>Court Name: {courtName}</Text>
         </View>
         <Text style={styles.timeSlotText}>
           {startTime} - {endTime}
