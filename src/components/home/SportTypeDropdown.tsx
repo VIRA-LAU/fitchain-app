@@ -46,7 +46,7 @@ export const SportTypeDropdown = ({
 }: {
   selectedSports: SportSelection;
   setSelectedSports: React.Dispatch<React.SetStateAction<SportSelection>>;
-  position: "right" | "left";
+  position?: "right" | "left";
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);

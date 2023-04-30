@@ -1,5 +1,5 @@
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import {
   AppHeader,
@@ -12,7 +12,7 @@ import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useBranchesQuery } from "src/api";
 import { useState } from "react";
-import { VenueBranch } from "src/types";
+import { Branch } from "src/types";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -52,16 +52,14 @@ export const Venues = ({ navigation, route }: Props) => {
       <ScrollView style={styles.wrapperView}>
         {isLoading && <VenueCardSkeleton type="horizontal" />}
         {!isLoading &&
-          filteredVenueBranches?.map(
-            (venueBranch: VenueBranch, index: number) => (
-              <VenueCard
-                key={index}
-                type="horizontal"
-                promoted={false}
-                venueBranch={venueBranch}
-              />
-            )
-          )}
+          filteredVenueBranches?.map((venueBranch: Branch, index: number) => (
+            <VenueCard
+              key={index}
+              type="horizontal"
+              promoted={false}
+              venueBranch={venueBranch}
+            />
+          ))}
         {!isLoading &&
           (!filteredVenueBranches || filteredVenueBranches.length === 0) && (
             <Text style={styles.placeholderText}>

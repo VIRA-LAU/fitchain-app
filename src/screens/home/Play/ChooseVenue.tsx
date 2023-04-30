@@ -10,7 +10,7 @@ import {
   useSortBranchesByLocationQuery,
   useSearchBranchesQuery,
 } from "src/api";
-import { VenueBranch } from "src/types";
+import { Branch } from "src/types";
 
 type Props = StackScreenProps<HomeStackParamList, "ChooseVenue">;
 
@@ -80,7 +80,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
           </Text>
         )}
         {!isLoading &&
-          sortedBranches?.map((venuesBranch: VenueBranch, index: number) => (
+          sortedBranches?.map((venuesBranch: Branch, index: number) => (
             <VenueCard
               key={index}
               type="horizontal"

@@ -27,6 +27,7 @@ export const useUserDetailsQuery = (
     enabled,
     onSuccess: (data) => {
       if (setSignedIn) setSignedIn("player");
+      if (setTokenFoundOnOpen) setTokenFoundOnOpen(false);
     },
     onError: () => {
       if (setSignedIn) {
@@ -35,5 +36,6 @@ export const useUserDetailsQuery = (
       }
       if (setTokenFoundOnOpen) setTokenFoundOnOpen(false);
     },
+    retry: 1,
   });
 };

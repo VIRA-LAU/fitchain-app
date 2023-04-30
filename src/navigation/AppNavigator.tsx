@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList } from "./tabScreenOptions";
-import { GameType, VenueBranch } from "src/types";
+import { GameType, Branch } from "src/types";
 import { getData } from "src/utils/AsyncStorage";
-import { UserContext, UserData, VenueData } from "src/utils";
-import { useUserDetailsQuery, useVenueByIdQuery } from "src/api";
+import { UserContext } from "src/utils";
+import { useUserDetailsQuery, useBranchByIdQuery } from "src/api";
 import { HomeNavigator } from "./HomeNavigator";
 import { VenueHomeNavigator } from "./VenueHomeNavigator";
 import { LatLng } from "react-native-maps";
@@ -16,7 +16,7 @@ export type HomeStackParamList = {
   VenueDetails: {
     id: number;
     isPlayScreen: boolean;
-    playScreenBranch: VenueBranch | null;
+    playScreenBranch: Branch | null;
     playScreenBookingDetails?: {
       date: string;
       nbOfPlayers: number;
@@ -51,7 +51,7 @@ export type HomeStackParamList = {
   };
   BranchCourts: {
     venueName: string;
-    courts: VenueBranch["courts"];
+    courts: Branch["courts"];
     branchLocation: string;
     bookingDetails?: {
       date: string;
@@ -109,8 +109,8 @@ export const AppNavigator = () => {
       setTokenFoundOnOpen
     );
   const { refetch: verifyVenueToken, isLoading: verifyVenueLoading } =
-    useVenueByIdQuery(
-      venueData?.venueId,
+    useBranchByIdQuery(
+      venueData?.branchId,
       false,
       setSignedIn,
       setTokenFoundOnOpen
@@ -120,23 +120,26 @@ export const AppNavigator = () => {
     const isVenue: boolean = await getData("isVenue");
     if (typeof isVenue !== "undefined") {
       if (isVenue) {
-        const venueId: number = await getData("venueId");
+        const branchId: number = await getData("branchId");
         const venueName: string = await getData("venueName");
+        const branchLocation: string = await getData("branchLocation");
         const managerFirstName: string = await getData("managerFirstName");
         const managerLastName: string = await getData("managerLastName");
         const managerEmail: string = await getData("managerEmail");
         const token: string = await getData("token");
         if (
-          venueId &&
+          branchId &&
           venueName &&
+          branchLocation &&
           managerFirstName &&
           managerLastName &&
           managerEmail &&
           token
         ) {
           setVenueData({
-            venueId,
+            branchId,
             venueName,
+            branchLocation,
             managerFirstName,
             managerLastName,
             managerEmail,

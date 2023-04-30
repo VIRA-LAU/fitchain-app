@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction, createContext } from "react";
 
 export type VenueData = {
-  venueId: number;
+  branchId: number;
   venueName: string;
+  branchLocation: string;
   managerFirstName: string;
   managerLastName: string;
   managerEmail: string;

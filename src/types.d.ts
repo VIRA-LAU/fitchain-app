@@ -80,6 +80,7 @@ export interface GameRequest {
 
 export interface Court {
   id: number;
+  name: string;
   courtType: string;
   price: number;
   rating: number;
@@ -89,16 +90,23 @@ export interface Court {
   }[];
 }
 
-// Contained inside Venue
 export interface Branch {
   id: number;
   location: string;
   latitude: number;
   longitude: number;
-  venueId: number;
+  venue: {
+    id: number;
+    name: string;
+  };
   photoDirectoryURL: string;
   courts: Court[];
   rating: number;
+  managerFirstName: string;
+  managerLastName: string;
+  managerEmail: string;
+  managerPhoneNumber: number;
+  hash: string;
 }
 
 export interface Venue {
@@ -107,25 +115,7 @@ export interface Venue {
   updatedAt: string;
   name: string;
   description: string;
-  managerFirstName: string;
-  managerLastName: string;
-  managerEmail: string;
-  managerPhoneNumber: number;
-  hash: string;
   branches: Branch[];
-  rating: number;
-}
-
-// Shown in Home page
-export interface VenueBranch {
-  location: string;
-  latitude: number;
-  longitude: number;
-  venue: {
-    id: number;
-    name: string;
-  };
-  courts: Court[];
   rating: number;
 }
 

@@ -4,19 +4,12 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Pressable,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
-import { GameType, VenueBranch } from "src/types";
+import { GameType, Branch } from "src/types";
 import { Skeleton } from "./Skeleton";
 
 type styleOptions = "vertical" | "horizontal" | "focused";
@@ -67,7 +60,7 @@ export const VenueCard = ({
 }: {
   type: styleOptions;
   promoted?: boolean;
-  venueBranch: VenueBranch;
+  venueBranch: Branch;
   isPlayScreen?: boolean;
   playScreenBookingDetails?: {
     date: string;

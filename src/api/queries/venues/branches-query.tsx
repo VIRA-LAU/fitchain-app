@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useQuery } from "react-query";
-import { VenueBranch } from "src/types";
+import { Branch } from "src/types";
 import { UserContext, UserData, VenueData } from "src/utils";
 import client, { getHeader } from "../../client";
 
@@ -19,7 +19,7 @@ const getBranches =
 
 export const useBranchesQuery = (venueId?: number) => {
   const { userData, venueData } = useContext(UserContext);
-  return useQuery<VenueBranch[]>(
+  return useQuery<Branch[]>(
     ["branches", venueId],
     getBranches((userData || venueData)!, venueId)
   );

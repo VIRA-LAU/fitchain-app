@@ -2,20 +2,23 @@ import client from "../../client";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
-import { Venue } from "src/types";
+import { Branch } from "src/types";
 import { storeData } from "src/utils/AsyncStorage";
 
 type Request = {
   isVenue: boolean;
+  venueId: number;
+  location: string;
+  latitude: number;
+  longitude: number;
   managerEmail: string;
   managerFirstName: string;
   managerLastName: string;
-  name: string;
   phoneNumber: string;
   password: string;
 };
 
-const createVenue = async (data: Request) => {
+const createBranch = async (data: Request) => {
   return await client
     .post("/auth/signup", data)
     .then((res) => res.data)
@@ -26,23 +29,26 @@ const createVenue = async (data: Request) => {
     });
 };
 
-export const useCreateVenueMutation = (
+export const useCreateBranchMutation = (
   setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>
 ) => {
   const { setVenueData, setIsVenue } = useContext(UserContext);
   return useMutation<
-    Venue & {
-      venueId: number;
+    Branch & {
+      branchId: number;
+      venueName: string;
+      branchLocation: string;
       access_token: string;
     },
     unknown,
     Request
   >({
-    mutationFn: createVenue,
+    mutationFn: createBranch,
     onSuccess: async (data) => {
       let fetchedInfo = {
-        venueId: data.venueId,
-        venueName: data.name,
+        branchId: data.branchId,
+        venueName: data.venueName,
+        branchLocation: data.branchLocation,
         managerFirstName: data.managerFirstName,
         managerLastName: data.managerLastName,
         managerEmail: data.managerEmail,
@@ -52,8 +58,9 @@ export const useCreateVenueMutation = (
       setVenueData(fetchedInfo);
       const keys = [
         "isVenue",
-        "venueId",
+        "branchId",
         "venueName",
+        "branchLocation",
         "managerFirstName",
         "managerLastName",
         "managerEmail",
@@ -61,8 +68,9 @@ export const useCreateVenueMutation = (
       ];
       const values = [
         true,
-        data.venueId,
-        data.name,
+        data.branchId,
+        data.venueName,
+        data.branchLocation,
         data.managerFirstName,
         data.managerLastName,
         data.managerEmail,

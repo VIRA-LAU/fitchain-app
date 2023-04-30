@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { useQuery } from "react-query";
 import queryBuilder from "src/api/queryBuilder";
-import { GameType, VenueBranch } from "src/types";
+import { GameType, Branch } from "src/types";
 import { UserContext, UserData } from "src/utils";
 import client, { getHeader } from "../../client";
 
@@ -28,7 +28,7 @@ const searchBranches = (userData: UserData, params: Props) => async () => {
 
 export const useSearchBranchesQuery = (params: Props) => {
   const { userData } = useContext(UserContext);
-  return useQuery<VenueBranch[]>(
+  return useQuery<Branch[]>(
     ["search-branches", params],
     searchBranches(userData!, params)
   );

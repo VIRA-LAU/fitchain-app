@@ -16,10 +16,10 @@ const getTimeSlots = (venueData: VenueData, id?: number) => async () => {
   const header = getHeader(venueData);
   if (id)
     return await client
-      .get(`/timeslots/${id}`, header)
+      .get(`/timeslots?branchId=${id}`, header)
       .then((res) => res.data)
       .catch((e) => {
-        console.error("timeSlots-in-venue-query", e);
+        console.error("timeSlots-in-branch-query", e.response.data);
         throw new Error(e);
       });
 };
@@ -27,7 +27,7 @@ const getTimeSlots = (venueData: VenueData, id?: number) => async () => {
 export const useTimeSlotsQuery = (id?: number) => {
   const { venueData } = useContext(UserContext);
   return useQuery<TimeSlot[], unknown, Response>(
-    ["timeSlots-in-venue", id],
+    ["timeSlots-in-branch", id],
     getTimeSlots(venueData!, id),
     {
       select: (data) => {

@@ -23,10 +23,6 @@ export const VenueManagement = ({
   const styles = makeStyles(colors);
   const { venueData, setVenueData } = useContext(UserContext);
 
-  const { data: branches, isLoading: branchesLoading } = useBranchesQuery(
-    venueData?.venueId
-  );
-
   return (
     <ScrollView contentContainerStyle={styles.wrapper}>
       <View
@@ -53,7 +49,7 @@ export const VenueManagement = ({
           <IonIcon name="log-out-outline" color="white" size={24} />
         </TouchableOpacity>
       </View>
-      {branchesLoading && <BranchLocationSkeleton />}
+      {/* {branchesLoading && <BranchLocationSkeleton />}
       {!branchesLoading &&
         branches?.map((branch, index: number) => (
           <BranchLocation
@@ -73,7 +69,7 @@ export const VenueManagement = ({
         <Text style={styles.placeholderText}>
           You have not created any branches yet.
         </Text>
-      )}
+      )} */}
     </ScrollView>
   );
 };

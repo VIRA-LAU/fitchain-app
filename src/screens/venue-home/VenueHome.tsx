@@ -13,7 +13,7 @@ import {
 } from "src/components";
 import { useContext, useMemo, useState } from "react";
 import { UserContext } from "src/utils";
-import { useBookingsInVenueQuery, useTimeSlotsQuery } from "src/api";
+import { useBookingsInBranchQuery, useTimeSlotsQuery } from "src/api";
 import { GameType } from "src/types";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
@@ -21,7 +21,7 @@ type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 export const VenueHome = ({ navigation, route }: Props & {}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const { venueData, setVenueData } = useContext(UserContext);
+  const { venueData } = useContext(UserContext);
 
   const [selectedDate, setSelectedDate] = useState<string>(
     `${new Date().getFullYear()}-${("0" + (new Date().getMonth() + 1)).slice(
@@ -35,12 +35,12 @@ export const VenueHome = ({ navigation, route }: Props & {}) => {
     Tennis: true,
   });
 
-  const { data: bookings } = useBookingsInVenueQuery(
-    venueData?.venueId,
+  const { data: bookings } = useBookingsInBranchQuery(
+    venueData?.branchId,
     selectedDate
   );
   const { data: timeSlots, isLoading: timeSlotsLoading } = useTimeSlotsQuery(
-    venueData?.venueId
+    venueData?.branchId
   );
 
   const allSlots = useMemo(() => {
@@ -77,7 +77,6 @@ export const VenueHome = ({ navigation, route }: Props & {}) => {
       a.startTime <= b.startTime ? -1 : 1
     );
     combinedArr = combinedArr.sort((a, b) => (a.endTime <= b.endTime ? -1 : 0));
-    console.log(selectedSports, combinedArr);
     combinedArr = combinedArr.filter((slot) => selectedSports[slot.gameType]);
     return combinedArr;
   }, [
@@ -92,7 +91,13 @@ export const VenueHome = ({ navigation, route }: Props & {}) => {
 
   return (
     <ScrollView contentContainerStyle={styles.wrapper}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
+        }}
+      >
         <Text variant="titleLarge" style={{ color: colors.tertiary }}>
           Hi, {venueData?.managerFirstName}
         </Text>
@@ -105,7 +110,7 @@ export const VenueHome = ({ navigation, route }: Props & {}) => {
       <Text variant="headlineLarge" style={styles.venueName}>
         {venueData?.venueName}
       </Text>
-      <Text style={styles.location}>Location?</Text>
+      <Text style={styles.location}>{venueData?.branchLocation}</Text>
       <View style={styles.calendarView}>
         <Text style={[styles.myCalendar]}>My Calendar</Text>
         <CalendarPicker

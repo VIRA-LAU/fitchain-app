@@ -2,7 +2,7 @@ import client from "../../client";
 import { useContext } from "react";
 import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
-import { User, Venue } from "src/types";
+import { Branch, User } from "src/types";
 import { storeData } from "src/utils/AsyncStorage";
 
 type Request = {
@@ -14,11 +14,13 @@ type UserRes = User & {
   userId: number;
   access_token: string;
 };
-type VenueRes = Venue & {
-  venueId: number;
+type BranchRes = Branch & {
+  branchId: number;
+  venueName: string;
+  branchLocation: string;
   access_token: string;
 };
-type Response = (UserRes | VenueRes) & { isVenue: boolean };
+type Response = (UserRes | BranchRes) & { isVenue: boolean };
 
 const LoginUser = async (data: Request) => {
   return await client.post("/auth/signin", data).then((res) => res.data);
@@ -33,19 +35,21 @@ export const useLoginUserMutation = (
     onSuccess: async (data) => {
       if (data.isVenue) {
         let fetchedInfo = {
-          venueId: (data as VenueRes).venueId,
-          venueName: (data as VenueRes).name,
-          managerFirstName: (data as VenueRes).managerFirstName,
-          managerLastName: (data as VenueRes).managerLastName,
-          managerEmail: (data as VenueRes).managerEmail,
-          token: (data as VenueRes).access_token,
+          branchId: (data as BranchRes).branchId,
+          venueName: (data as BranchRes).venueName,
+          branchLocation: (data as BranchRes).branchLocation,
+          managerFirstName: (data as BranchRes).managerFirstName,
+          managerLastName: (data as BranchRes).managerLastName,
+          managerEmail: (data as BranchRes).managerEmail,
+          token: (data as BranchRes).access_token,
         };
         setIsVenue(true);
         setVenueData(fetchedInfo);
         const keys = [
           "isVenue",
-          "venueId",
+          "branchId",
           "venueName",
+          "branchLocation",
           "managerFirstName",
           "managerLastName",
           "managerEmail",
@@ -53,12 +57,13 @@ export const useLoginUserMutation = (
         ];
         const values = [
           true,
-          (data as VenueRes).venueId,
-          (data as VenueRes).name,
-          (data as VenueRes).managerFirstName,
-          (data as VenueRes).managerLastName,
-          (data as VenueRes).managerEmail,
-          (data as VenueRes).access_token,
+          (data as BranchRes).branchId,
+          (data as BranchRes).venueName,
+          (data as BranchRes).branchLocation,
+          (data as BranchRes).managerFirstName,
+          (data as BranchRes).managerLastName,
+          (data as BranchRes).managerEmail,
+          (data as BranchRes).access_token,
         ];
         storeData(keys, values);
         setSignedIn("venue");

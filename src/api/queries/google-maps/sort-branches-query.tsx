@@ -1,13 +1,13 @@
 import { useQuery } from "react-query";
 import { GOOGLE_MAPS_API_KEY } from "@dotenv";
-import { VenueBranch } from "src/types";
+import { Branch } from "src/types";
 import { Client } from "@googlemaps/google-maps-services-js";
 import { LatLng } from "react-native-maps";
 
 const client = new Client({});
 
 const sortBranchesByLocation =
-  (branches: VenueBranch[] | undefined, userLocation: LatLng) => async () => {
+  (branches: Branch[] | undefined, userLocation: LatLng) => async () => {
     if (branches && branches.length > 0) {
       const parsedUserLocation = {
         lat: userLocation.latitude,
@@ -30,7 +30,7 @@ const sortBranchesByLocation =
           const distances = rows[0].elements.map(
             (element: any) => element.distance.value
           );
-          const sortedBranches: (VenueBranch & { distance: any })[] = branches
+          const sortedBranches: (Branch & { distance: any })[] = branches
             .map((branch, index) => ({
               ...branch,
               distance: distances[index],
@@ -45,10 +45,10 @@ const sortBranchesByLocation =
   };
 
 export const useSortBranchesByLocationQuery = (
-  branches: VenueBranch[] | undefined,
+  branches: Branch[] | undefined,
   userLocation: LatLng
 ) => {
-  return useQuery<(VenueBranch & { distance: any })[] | undefined>(
+  return useQuery<(Branch & { distance: any })[] | undefined>(
     ["sort-branches-by-location", branches],
     sortBranchesByLocation(branches, userLocation)
   );

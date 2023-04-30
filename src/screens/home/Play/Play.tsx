@@ -74,7 +74,12 @@ export const Play = ({
 
   const [mapDisplayed, setMapDisplayed] = useState<boolean>(false);
   const [searchLocationMarker, setSearchLocationMarker] = useState<LatLng>();
-  const [initialMapRegion, setInitialMapRegion] = useState<Region>();
+  const [initialMapRegion, setInitialMapRegion] = useState<Region>({
+    latitude: 33.895462996463095,
+    longitude: 35.5006168037653,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
 
   const { data: searchLocationName, refetch: getLocationName } =
     useLocationNameQuery(searchLocationMarker);
@@ -499,7 +504,7 @@ export const Play = ({
             locationMarker={searchLocationMarker}
             setLocationMarker={setSearchLocationMarker}
             setMapDisplayed={setMapDisplayed}
-            region={initialMapRegion!}
+            region={initialMapRegion}
             setRegion={setInitialMapRegion}
           />
         )}

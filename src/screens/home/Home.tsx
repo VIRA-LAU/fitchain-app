@@ -29,13 +29,7 @@ import {
   useActivitiesQuery,
   useReceivedRequestsQuery,
 } from "src/api";
-import {
-  Activity,
-  Game,
-  GameRequest,
-  Invitation,
-  VenueBranch,
-} from "src/types";
+import { Activity, Game, GameRequest, Invitation, Branch } from "src/types";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -255,17 +249,15 @@ export const Home = ({ navigation, route }: Props) => {
           >
             {branchesLoading && <VenueCardSkeleton type="vertical" />}
             {!branchesLoading &&
-              branchesVenues?.map(
-                (venuesBranch: VenueBranch, index: number) => (
-                  <VenueCard
-                    key={index}
-                    type="vertical"
-                    venueBranch={venuesBranch}
-                    isFirst={index === 0}
-                    isLast={index === branchesVenues.length - 1}
-                  />
-                )
-              )}
+              branchesVenues?.map((venuesBranch: Branch, index: number) => (
+                <VenueCard
+                  key={index}
+                  type="vertical"
+                  venueBranch={venuesBranch}
+                  isFirst={index === 0}
+                  isLast={index === branchesVenues.length - 1}
+                />
+              ))}
           </ScrollView>
           {!branchesLoading &&
             (!branchesVenues ||

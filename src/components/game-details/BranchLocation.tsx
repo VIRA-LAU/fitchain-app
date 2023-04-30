@@ -89,18 +89,22 @@ export const BranchLocation = ({
       >
     >();
   let courtsStr = "";
-  let prices = "";
+  let prices = "null";
   if (branch) {
     const pricesArr = branch?.courts.map(({ price }) => price);
-    prices =
-      pricesArr?.length === 1
-        ? pricesArr[0].toString()
-        : `${Math.min.apply(null, pricesArr!)} - ${Math.max.apply(
-            null,
-            pricesArr!
-          )}`;
+    if (pricesArr.length > 0)
+      prices =
+        pricesArr?.length === 1
+          ? pricesArr[0].toString()
+          : `${Math.min.apply(null, pricesArr!)} - ${Math.max.apply(
+              null,
+              pricesArr!
+            )}`;
 
-    courtsStr = branch.courts.map(({ courtType }) => courtType).join(", ");
+    courtsStr =
+      branch.courts.length > 0
+        ? branch.courts.map(({ courtType }) => courtType).join(", ")
+        : "None";
   }
   return (
     <TouchableOpacity

@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, useRef, useEffect } from "react";
+import React, { useState, Dispatch, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import MapView, { LatLng, Marker, Region } from "react-native-maps";
 import { Button, useTheme } from "react-native-paper";
@@ -13,7 +13,7 @@ export const MapComponent = ({
   locationMarker: LatLng | undefined;
   setLocationMarker: Dispatch<React.SetStateAction<LatLng | undefined>>;
   region: Region;
-  setRegion: Dispatch<React.SetStateAction<Region | undefined>>;
+  setRegion: Dispatch<React.SetStateAction<Region>>;
   setMapDisplayed: Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { colors } = useTheme();
@@ -24,7 +24,7 @@ export const MapComponent = ({
   >(locationMarker);
 
   return (
-    <View style={{ flex: 1, borderRadius: 10, overflow: "hidden" }}>
+    <View style={{ flexGrow: 1, borderRadius: 10, overflow: "hidden" }}>
       <MapView
         style={{ flex: 1 }}
         ref={mapRef}
@@ -45,8 +45,7 @@ export const MapComponent = ({
           <Marker coordinate={tempLocationMarker} tappable={false} />
         )}
       </MapView>
-      {locationMarker &&
-        tempLocationMarker &&
+      {tempLocationMarker &&
         JSON.stringify(tempLocationMarker) !==
           JSON.stringify(locationMarker) && (
           <Button
