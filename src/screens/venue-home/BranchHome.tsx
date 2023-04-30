@@ -18,7 +18,7 @@ import { GameType } from "src/types";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 
-export const VenueHome = ({ navigation, route }: Props & {}) => {
+export const BranchHome = ({ navigation, route }: Props & {}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const { venueData } = useContext(UserContext);

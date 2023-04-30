@@ -39,16 +39,7 @@ export interface Game {
     timeSlot: TimeSlot;
   }[];
   type: GameType;
-  court: {
-    branch: {
-      location: string;
-      latitude: number;
-      longitude: number;
-      venue: {
-        name: string;
-      };
-    };
-  };
+  court: Court;
   winnerTeam: string;
   admin: User;
   createdAt: Date;
@@ -84,10 +75,18 @@ export interface Court {
   courtType: string;
   price: number;
   rating: number;
-  branchId;
   courtTimeSlots: {
     timeSlot: TimeSlot;
   }[];
+  branchId: number;
+  branch: {
+    location: string;
+    latitude: number;
+    longitude: number;
+    venue: {
+      name: string;
+    };
+  };
 }
 
 export interface Branch {

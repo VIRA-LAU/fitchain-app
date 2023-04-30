@@ -7,7 +7,7 @@ import { getData } from "src/utils/AsyncStorage";
 import { UserContext } from "src/utils";
 import { useUserDetailsQuery, useBranchByIdQuery } from "src/api";
 import { HomeNavigator } from "./HomeNavigator";
-import { VenueHomeNavigator } from "./VenueHomeNavigator";
+import { VenueHomeNavigator } from "./BranchHomeNavigator";
 import { LatLng } from "react-native-maps";
 
 export type HomeStackParamList = {

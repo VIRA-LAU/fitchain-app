@@ -1,2 +1,2 @@
-export * from "./VenueHome";
-export * from "./VenueManagement";
+export * from "./BranchHome";
+export * from "./BranchManagement";

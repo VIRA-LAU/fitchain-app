@@ -7,12 +7,12 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { VenueBottomTabParamList } from "src/navigation";
 import { UserContext } from "src/utils";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { useBranchesQuery } from "src/api";
+import { useBranchesQuery, useCourtsInBranchQuery } from "src/api";
 import { BranchLocation, BranchLocationSkeleton } from "src/components";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 
-export const VenueManagement = ({
+export const BranchManagement = ({
   navigation,
   route,
   setSignedIn,
@@ -22,6 +22,9 @@ export const VenueManagement = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const { venueData, setVenueData } = useContext(UserContext);
+
+  const { data: courtsInBranch, isLoading: courtsLoading } =
+    useCourtsInBranchQuery(venueData?.branchId);
 
   return (
     <ScrollView contentContainerStyle={styles.wrapper}>
@@ -37,7 +40,7 @@ export const VenueManagement = ({
           variant="labelLarge"
           style={{ color: colors.tertiary, fontSize: 20 }}
         >
-          Branches
+          Courts
         </Text>
         <TouchableOpacity
           onPress={() => {
@@ -49,27 +52,16 @@ export const VenueManagement = ({
           <IonIcon name="log-out-outline" color="white" size={24} />
         </TouchableOpacity>
       </View>
-      {/* {branchesLoading && <BranchLocationSkeleton />}
-      {!branchesLoading &&
-        branches?.map((branch, index: number) => (
-          <BranchLocation
-            key={index}
-            type="branch"
-            branch={{
-              location: branch.location,
-              courts: branch.courts,
-              rating: branch.rating,
-              venueName: venueData?.venueName || "",
-              latitude: branch.latitude,
-              longitude: branch.longitude,
-            }}
-          />
+      {courtsLoading && <BranchLocationSkeleton />}
+      {!courtsLoading &&
+        courtsInBranch?.map((court, index: number) => (
+          <BranchLocation key={index} type="court" court={court} />
         ))}
-      {!branchesLoading && (!branches || branches.length === 0) && (
+      {!courtsLoading && (!courtsInBranch || courtsInBranch.length === 0) && (
         <Text style={styles.placeholderText}>
-          You have not created any branches yet.
+          You have not assigned any courts yet.
         </Text>
-      )} */}
+      )}
     </ScrollView>
   );
 };

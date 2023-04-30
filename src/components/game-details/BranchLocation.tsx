@@ -4,17 +4,11 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  Image,
-  StyleSheet,
-  View,
-  Pressable,
-  TouchableOpacity,
-} from "react-native";
+import { Image, StyleSheet, View, TouchableOpacity } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
-import { Court, Game, GameType } from "src/types";
+import { Court, GameType } from "src/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { MiniMapComponent, Skeleton } from "../home";
 
@@ -60,7 +54,7 @@ export const BranchLocation = ({
   playScreenBookingDetails,
 }: {
   type: "branch" | "court";
-  court?: Game["court"];
+  court?: Court;
   branch?: {
     venueName: string;
     location: string;
@@ -106,6 +100,7 @@ export const BranchLocation = ({
         ? branch.courts.map(({ courtType }) => courtType).join(", ")
         : "None";
   }
+  console.log(court);
   return (
     <TouchableOpacity
       activeOpacity={0.6}
@@ -172,7 +167,7 @@ export const BranchLocation = ({
         {type === "court" && (
           <View style={styles.rowView}>
             <Text style={styles.rowKey}>COURT</Text>
-            <Text style={styles.rowValue}>A003</Text>
+            <Text style={styles.rowValue}>{court?.name}</Text>
           </View>
         )}
         {type === "court" && (
@@ -184,7 +179,7 @@ export const BranchLocation = ({
         {type === "court" && (
           <View style={styles.rowView}>
             <Text style={styles.rowKey}>PRICE</Text>
-            <Text style={styles.rowValue}>USD 12/hr</Text>
+            <Text style={styles.rowValue}>USD {court?.price}/hr</Text>
           </View>
         )}
         {type === "branch" && (
@@ -200,9 +195,6 @@ export const BranchLocation = ({
           </View>
         )}
       </View>
-      {/* <View style={styles.icon}>
-        <OctIcon name="location" color="white" size={24} />
-      </View> */}
     </TouchableOpacity>
   );
 };

@@ -9,8 +9,11 @@ export const VenueBookingSkeleton = () => {
   const styles = makeStyles(colors);
   return (
     <View style={styles.wrapper}>
-      <Skeleton height={20} width={80} />
-      <Skeleton height={20} width={100} />
+      <Skeleton height={70} width={80} style={styles.leftImageView} />
+      <View style={styles.contentView}>
+        <Skeleton height={20} width={80} />
+        <Skeleton height={20} width={100} />
+      </View>
     </View>
   );
 };
