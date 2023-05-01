@@ -30,7 +30,7 @@ export const useCreateCourtMutation = (completeCreate: Function) => {
     mutationFn: createCourt(venueData!),
     onSuccess: () => {
       queryClient.refetchQueries(["courts-in-branch", venueData?.branchId]);
-      queryClient.refetchQueries(["timeSlots", venueData?.branchId]);
+      queryClient.refetchQueries(["timeSlots-in-branch", venueData?.branchId]);
       completeCreate();
     },
   });

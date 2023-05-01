@@ -16,7 +16,7 @@ import { UserContext } from "src/utils";
 import {
   TimeSlotsResponse,
   useBookingsInBranchQuery,
-  useTimeSlotsQuery,
+  useTimeSlotsInBranchQuery,
 } from "src/api";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
@@ -42,9 +42,8 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
     venueData?.branchId,
     selectedDate
   );
-  const { data: timeSlots, isLoading: timeSlotsLoading } = useTimeSlotsQuery(
-    venueData?.branchId
-  );
+  const { data: timeSlots, isLoading: timeSlotsLoading } =
+    useTimeSlotsInBranchQuery(venueData?.branchId);
 
   const allSlots = useMemo(() => {
     const occupiedTimeSlots = (timeSlots as TimeSlotsResponse[])?.filter(
@@ -52,7 +51,9 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
         bookings?.findIndex(
           (booking) =>
             booking.gameTimeSlots.findIndex(
-              (bookingTimeSlot) => bookingTimeSlot.timeSlot.id === timeSlot.id
+              (bookingTimeSlot) =>
+                bookingTimeSlot.timeSlot.id === timeSlot.id &&
+                booking.court.id === timeSlot.courtId
             ) !== -1
         ) === -1
     );
@@ -64,6 +65,7 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
           .endTime,
       adminName: `${booking.admin.firstName} ${booking.admin.lastName}`,
       gameType: booking.type,
+      courtId: booking.court.id,
       courtName: booking.court.name,
     }));
 

@@ -73,7 +73,7 @@ export interface GameRequest {
 export interface Court {
   id: number;
   name: string;
-  courtType: string;
+  courtType: GameType;
   price: number;
   rating: number;
   courtTimeSlots: {

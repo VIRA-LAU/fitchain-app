@@ -243,7 +243,7 @@ export const SignUpAsVenueDetails = ({
                   placeholder={"Location Description"}
                   placeholderTextColor={"#a8a8a8"}
                   selectionColor={colors.primary}
-                  value={locationDescription || autoLocationDescription}
+                  value={locationDescription ?? autoLocationDescription}
                   onChangeText={(text) => setLocationDescription(text)}
                   editable={
                     typeof autoLocationDescription !== "undefined" &&
