@@ -34,18 +34,18 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
     (date.getMonth() + 1)
   ).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
 
-  const { data: branches } = useSearchBranchesQuery({
-    date: searchDate,
-    gameType,
-    startTime,
-    endTime,
-    nbOfPlayers,
-  });
-
-  const { data: sortedBranches, isLoading } = useSortBranchesByLocationQuery(
-    branches,
-    location
+  const { data: branches, isLoading: branchesLoading } = useSearchBranchesQuery(
+    {
+      date: searchDate,
+      gameType,
+      startTime,
+      endTime,
+      nbOfPlayers,
+    }
   );
+
+  const { data: sortedBranches, isLoading: sortingLoading } =
+    useSortBranchesByLocationQuery(branches, location);
 
   return (
     <AppHeader
@@ -73,13 +73,16 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
             })}
           </Text>
         </View>
-        {isLoading && <VenueCardSkeleton type="horizontal" />}
-        {!isLoading && (!sortedBranches || sortedBranches.length === 0) && (
-          <Text style={styles.placeholderText}>
-            There are no venue branches that match your search.
-          </Text>
+        {(branchesLoading || sortingLoading) && (
+          <VenueCardSkeleton type="horizontal" />
         )}
-        {!isLoading &&
+        {!(branchesLoading || sortingLoading) &&
+          (!sortedBranches || sortedBranches.length === 0) && (
+            <Text style={styles.placeholderText}>
+              There are no venue branches that match your search.
+            </Text>
+          )}
+        {!(branchesLoading || sortingLoading) &&
           sortedBranches?.map((venuesBranch: Branch, index: number) => (
             <VenueCard
               key={index}

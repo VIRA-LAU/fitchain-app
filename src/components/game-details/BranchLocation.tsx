@@ -73,7 +73,7 @@ export const BranchLocation = ({
     gameType: GameType;
     nbOfPlayers: number;
   };
-  isBranchAccount: boolean;
+  isBranchAccount?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);

@@ -9,12 +9,14 @@ export const CourtCard = ({
   price,
   rating,
   onPress,
+  name,
 }: {
   id: number;
   venueName: string;
   type: string;
   // rating: number;
   price: number;
+  name: string;
   rating: number;
   onPress: Function;
 }) => {
@@ -41,7 +43,7 @@ export const CourtCard = ({
         >
           <View style={styles.rowView}>
             <Text variant="labelLarge" style={styles.courtType}>
-              {type}
+              {name}
             </Text>
             <View style={styles.rating}>
               <FeatherIcon name={`star`} color={"white"} size={14} />

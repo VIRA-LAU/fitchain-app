@@ -62,6 +62,7 @@ export const BranchCourts = ({ navigation, route }: Props) => {
             id={court.id}
             venueName={venueName}
             type={court.courtType}
+            name={court.name}
             price={court.price}
             onPress={() => {
               setPressedCourt(court);
