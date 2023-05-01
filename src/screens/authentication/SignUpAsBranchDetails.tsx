@@ -1,5 +1,12 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View, Image, TextInput, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader, MapComponent } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -10,6 +17,7 @@ import { useState } from "react";
 import { useCreateBranchMutation, useLocationNameQuery } from "src/api";
 import { LatLng, Region } from "react-native-maps";
 import * as Location from "expo-location";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUpAsVenueDetails">;
 
@@ -39,12 +47,15 @@ export const SignUpAsVenueDetails = ({
   const [managerLastName, setManagerLastName] = useState("");
   const [managerEmail, setManagerEmail] = useState("");
   const [validEntry, setValidEntry] = useState<boolean>(true);
-  const [isMap, setIsMap] = useState<boolean>(false);
+  const [mapVisible, setMapVisible] = useState<boolean>(false);
 
   const { mutate: createBranch, isLoading: createBranchLoading } =
     useCreateBranchMutation(setSignedIn);
-  const { data: autoLocationDescription, refetch: getAutoLocationDescription } =
-    useLocationNameQuery(branchLocation);
+  const {
+    data: autoLocationDescription,
+    refetch: getAutoLocationDescription,
+    isFetching: locationNameLoading,
+  } = useLocationNameQuery(branchLocation);
 
   useEffect(() => {
     const getUserLocation = async () => {
@@ -132,7 +143,7 @@ export const SignUpAsVenueDetails = ({
         <Text variant="titleLarge" style={styles.titleText}>
           Branch Account Details
         </Text>
-        {!isMap ? (
+        {!mapVisible ? (
           <View style={styles.inputView}>
             <Text variant="labelLarge" style={styles.h2}>
               Please provide the following information.
@@ -212,31 +223,35 @@ export const SignUpAsVenueDetails = ({
               icon={"map-marker-outline"}
               style={{ marginTop: "7%" }}
               onPress={() => {
-                setIsMap(true);
+                setMapVisible(true);
               }}
             >
               Set Branch Location
             </Button>
-            <View style={styles.textInputView}>
-              <MaterialCommunityIcon
-                name={"map-marker-outline"}
-                size={20}
-                color={"#c9c9c9"}
-                style={{ marginHorizontal: 15 }}
-              />
-              <TextInput
-                style={styles.textInput}
-                placeholder={"Location Description"}
-                placeholderTextColor={"#a8a8a8"}
-                selectionColor={colors.primary}
-                value={locationDescription || autoLocationDescription}
-                onChangeText={(text) => setLocationDescription(text)}
-                editable={
-                  typeof autoLocationDescription !== "undefined" &&
-                  autoLocationDescription !== ""
-                }
-              />
-            </View>
+            {locationNameLoading ? (
+              <ActivityIndicator style={{ marginTop: 20 }} />
+            ) : (
+              <View style={styles.textInputView}>
+                <MaterialCommunityIcon
+                  name={"map-marker-outline"}
+                  size={20}
+                  color={"#c9c9c9"}
+                  style={{ marginHorizontal: 15 }}
+                />
+                <TextInput
+                  style={styles.textInput}
+                  placeholder={"Location Description"}
+                  placeholderTextColor={"#a8a8a8"}
+                  selectionColor={colors.primary}
+                  value={locationDescription || autoLocationDescription}
+                  onChangeText={(text) => setLocationDescription(text)}
+                  editable={
+                    typeof autoLocationDescription !== "undefined" &&
+                    autoLocationDescription !== ""
+                  }
+                />
+              </View>
+            )}
             {passwordValid || password.length == 0 ? (
               <View></View>
             ) : (
@@ -249,8 +264,7 @@ export const SignUpAsVenueDetails = ({
               <View></View>
             ) : (
               <Text variant="labelMedium" style={{ color: "red" }}>
-                Make Sure your first name, last name, and managerEmail are
-                valid!
+                Make sure you filled all the fields.
               </Text>
             )}
             {createBranchLoading ? (
@@ -274,13 +288,28 @@ export const SignUpAsVenueDetails = ({
             >
               Please set the branch location.
             </Text>
-            <MapComponent
-              locationMarker={branchLocation}
-              setLocationMarker={setBranchLocation}
-              region={mapRegion}
-              setRegion={setMapRegion}
-              setMapDisplayed={setIsMap}
-            />
+            <View style={{ flexGrow: 1 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setMapVisible(false);
+                }}
+                style={{ position: "absolute", left: 20, top: 20, zIndex: 2 }}
+              >
+                <MaterialIcon
+                  name="arrow-back"
+                  color={"white"}
+                  size={25}
+                  style={{ marginRight: 20 }}
+                />
+              </TouchableOpacity>
+              <MapComponent
+                locationMarker={branchLocation}
+                setLocationMarker={setBranchLocation}
+                region={mapRegion}
+                setRegion={setMapRegion}
+                setMapDisplayed={setMapVisible}
+              />
+            </View>
           </View>
         )}
       </ScrollView>

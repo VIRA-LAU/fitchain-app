@@ -21,14 +21,22 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.fitchain.app"
+      "bundleIdentifier": "com.fitchain.app",
+      "config": {
+        "googleMapsApiKey": "IOS_API_KEY"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/Logo-Icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.fitchain.app"
+      "package": "com.fitchain.app",
+      "config": {
+        "googleMaps": {
+          "apiKey": "ANDROID_API_KEY"
+        }
+      }
     },
     "web": {
       "favicon": "./src/assets/images/Logo-Icon.png"
