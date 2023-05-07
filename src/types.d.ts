@@ -125,7 +125,7 @@ export interface Activity {
   gameId: number;
   date: Date;
   type: GameType;
-  isWinner: boolean;
+  isWinner: boolean | "DRAW";
 }
 
 export interface GameUpdate {

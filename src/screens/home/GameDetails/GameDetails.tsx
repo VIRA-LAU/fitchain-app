@@ -119,6 +119,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             gameDetailsLoading={gameDetailsLoading}
             playersLoading={playersLoading}
             isPrevious={isPrevious}
+            playerStatus={playerStatus}
           />
         );
       case "Away":
@@ -132,6 +133,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             gameDetailsLoading={gameDetailsLoading}
             playersLoading={playersLoading}
             isPrevious={isPrevious}
+            playerStatus={playerStatus}
           />
         );
       default:

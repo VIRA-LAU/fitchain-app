@@ -274,7 +274,7 @@ export const Home = ({ navigation, route }: Props) => {
             bookings
               ?.filter(({ type }: Game) => selectedSports[type])
               .map((booking: Game, index: number) => (
-                <BookingCard key={index} booking={booking} />
+                <BookingCard key={index} booking={booking} isPrevious={false} />
               ))}
           {!bookingsLoading &&
             (!bookings ||

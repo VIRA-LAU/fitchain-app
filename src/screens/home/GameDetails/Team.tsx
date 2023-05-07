@@ -11,7 +11,7 @@ import {
   ResultCard,
   TopPlayersCard,
 } from "components";
-import { Game, TeamPlayer } from "src/types";
+import { Game, PlayerStatus, TeamPlayer } from "src/types";
 import { useUpdatesQuery } from "src/api";
 import { ReactNode, useState } from "react";
 
@@ -22,13 +22,15 @@ export const Team = ({
   gameDetailsLoading,
   playersLoading,
   isPrevious,
+  playerStatus,
 }: {
   name: "Home" | "Away";
   game?: Game;
   players?: TeamPlayer[];
   gameDetailsLoading: boolean;
   playersLoading: boolean;
-  isPrevious?: boolean;
+  isPrevious: boolean;
+  playerStatus?: PlayerStatus;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -179,8 +181,9 @@ export const Team = ({
                 isActive={index === activePlayer}
                 index={index}
                 setActivePlayer={setActivePlayer}
-                isPrevious={!isPrevious}
+                isPrevious={isPrevious}
                 gameId={game?.id}
+                playerStatus={playerStatus}
               />
             ))}
           </ScrollView>

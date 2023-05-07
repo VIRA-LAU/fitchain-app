@@ -78,11 +78,17 @@ export const ActivityCard = ({ gameId, date, type, isWinner }: Activity) => {
         style={styles.gameIcon}
       />
       <View style={styles.textView}>
-        <Text style={styles.greyText}>
-          <Text style={styles.text}>{isWinner ? "Won" : "Lost"}</Text> a{" "}
-          {type[0].toLowerCase()}
-          {type.substring(1)} game.
-        </Text>
+        {isWinner === "DRAW" ? (
+          <Text style={styles.greyText}>
+            {type} game ended in a <Text style={styles.text}>Draw</Text>.
+          </Text>
+        ) : (
+          <Text style={styles.greyText}>
+            <Text style={styles.text}>{isWinner ? "Won" : "Lost"}</Text> a{" "}
+            {type[0].toLowerCase()}
+            {type.substring(1)} game.
+          </Text>
+        )}
         <Text style={[styles.greyText, { fontSize: 10 }]}>{dateHeader}</Text>
       </View>
 

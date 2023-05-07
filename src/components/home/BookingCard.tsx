@@ -53,7 +53,7 @@ export const BookingCard = ({
   isPrevious,
 }: {
   booking: Game;
-  isPrevious?: boolean;
+  isPrevious: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);

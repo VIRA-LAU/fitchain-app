@@ -45,6 +45,13 @@ export const ResultCard = ({ game }: { game?: Game }) => {
     else setMessage(`${game?.winnerTeam} team wins!`);
   }, [JSON.stringify(playersTeam), JSON.stringify(game)]);
 
+  useEffect(() => {
+    if (game) {
+      setTempHomeScore(game.homeScore);
+      setTempAwayScore(game.awayScore);
+    }
+  }, [JSON.stringify(game)]);
+
   if (!game || teamLoading)
     return (
       <View>

@@ -16,7 +16,7 @@ import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
-import { TeamPlayer } from "src/types";
+import { PlayerStatus, TeamPlayer } from "src/types";
 import { UserContext } from "src/utils";
 import { Skeleton } from "../home";
 
@@ -60,6 +60,7 @@ export const PlayerCard = ({
   index,
   isPrevious,
   gameId,
+  playerStatus,
 }: {
   isActive?: boolean;
   player: TeamPlayer;
@@ -67,6 +68,7 @@ export const PlayerCard = ({
   index: number;
   isPrevious: boolean;
   gameId: number;
+  playerStatus?: PlayerStatus;
 }) => {
   const { colors } = useTheme();
   const windowWidth = useWindowDimensions().width;
@@ -84,6 +86,11 @@ export const PlayerCard = ({
       >
     >();
   const { userData } = useContext(UserContext);
+
+  const isInGame =
+    playerStatus?.hasBeenInvited === "APPROVED" ||
+    playerStatus?.hasRequestedtoJoin === "APPROVED" ||
+    playerStatus?.isAdmin;
 
   return (
     <TouchableOpacity
@@ -108,7 +115,14 @@ export const PlayerCard = ({
         source={require("assets/images/home/profile-background.png")}
         style={styles.header}
       />
-      <View style={{ alignItems: "center", paddingTop: 40 }}>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          paddingTop: 40,
+          flexGrow: 1,
+        }}
+      >
         <Image
           source={require("assets/images/home/profile-picture.png")}
           style={styles.profilePicture}
@@ -130,36 +144,40 @@ export const PlayerCard = ({
                   ? colors.primary
                   : colors.background,
               borderWidth:
-                isPrevious && (rated || userData?.userId == id) ? 0 : 1,
+                isPrevious && (rated || userData?.userId == id || !isInGame)
+                  ? 0
+                  : 1,
             },
           ]}
         >
           {isPrevious ? (
-            <TouchableOpacity
-              disabled={rated || id == userData?.userId}
-              onPress={() =>
-                navigation.push("RatePlayer", {
-                  playerId: id,
-                  firstName,
-                  lastName,
-                  gameId: gameId,
-                })
-              }
-            >
-              <Text
-                style={[
-                  styles.statusText,
-                  {
-                    color:
-                      rated || userData?.userId == id
-                        ? colors.background
-                        : colors.tertiary,
-                  },
-                ]}
+            isInGame && (
+              <TouchableOpacity
+                disabled={rated || id == userData?.userId}
+                onPress={() =>
+                  navigation.push("RatePlayer", {
+                    playerId: id,
+                    firstName,
+                    lastName,
+                    gameId: gameId,
+                  })
+                }
               >
-                {id == userData?.userId ? "You" : rated ? "Rated" : "Rate"}
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.statusText,
+                    {
+                      color:
+                        rated || userData?.userId == id
+                          ? colors.background
+                          : colors.tertiary,
+                    },
+                  ]}
+                >
+                  {id == userData?.userId ? "You" : rated ? "Rated" : "Rate"}
+                </Text>
+              </TouchableOpacity>
+            )
           ) : (
             <Text style={[styles.statusText]}>{displayedStatus}</Text>
           )}
@@ -202,6 +220,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       color: "white",
       fontFamily: "Inter-SemiBold",
       fontSize: 16,
+      marginBottom: 5,
     },
     ratingView: {
       flexDirection: "row",

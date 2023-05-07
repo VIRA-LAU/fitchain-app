@@ -12,7 +12,7 @@ import { LatLng } from "react-native-maps";
 
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
-  GameDetails: { id: number; isPrevious?: boolean };
+  GameDetails: { id: number; isPrevious: boolean };
   VenueDetails: {
     id: number;
     isPlayScreen: boolean;
