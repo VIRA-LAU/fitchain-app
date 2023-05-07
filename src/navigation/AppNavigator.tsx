@@ -121,6 +121,7 @@ export const AppNavigator = () => {
     if (typeof isVenue !== "undefined") {
       if (isVenue) {
         const branchId: number = await getData("branchId");
+        const venueId: number = await getData("venueId");
         const venueName: string = await getData("venueName");
         const branchLocation: string = await getData("branchLocation");
         const managerFirstName: string = await getData("managerFirstName");
@@ -129,6 +130,7 @@ export const AppNavigator = () => {
         const token: string = await getData("token");
         if (
           branchId &&
+          venueId &&
           venueName &&
           branchLocation &&
           managerFirstName &&
@@ -138,6 +140,7 @@ export const AppNavigator = () => {
         ) {
           setVenueData({
             branchId,
+            venueId,
             venueName,
             branchLocation,
             managerFirstName,

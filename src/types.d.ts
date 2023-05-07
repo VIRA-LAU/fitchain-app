@@ -76,8 +76,10 @@ export interface Court {
   courtType: GameType;
   price: number;
   rating: number;
+  nbOfPlayers: number;
   courtTimeSlots: {
     timeSlot: TimeSlot;
+    timeSlotId: number;
   }[];
   branchId: number;
   branch: {

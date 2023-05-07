@@ -2,7 +2,12 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { BackHandler, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { BranchHome, BranchManagement, CreateCourt } from "screens";
+import {
+  BranchHome,
+  BranchManagement,
+  CreateCourt,
+  existingCourtType,
+} from "screens";
 import { VenueBottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { HomeStackParamList } from "./AppNavigator";
 import * as Location from "expo-location";
@@ -14,7 +19,10 @@ const BottomTabNavigator = ({
 }: {
   setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
-  const [createCourtVisible, setCreateCourtVisible] = useState<boolean>(false);
+  const [createCourtVisible, setCreateCourtVisible] = useState<
+    "create" | "edit" | false
+  >(false);
+  const [courtInfo, setCourtInfo] = useState<existingCourtType>();
 
   useEffect(() => {
     const handleBack = () => {
@@ -54,6 +62,7 @@ const BottomTabNavigator = ({
               {...props}
               setSignedIn={setSignedIn}
               setCreateCourtVisible={setCreateCourtVisible}
+              setCourtInfo={setCourtInfo}
             />
           )}
         />
@@ -61,6 +70,7 @@ const BottomTabNavigator = ({
       <CreateCourt
         visible={createCourtVisible}
         setVisible={setCreateCourtVisible}
+        existingInfo={courtInfo}
       />
     </View>
   );

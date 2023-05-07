@@ -1,12 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import {
-  Dispatch,
-  Fragment,
-  SetStateAction,
-  useContext,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import {
   Image,
   ScrollView,
@@ -32,7 +26,7 @@ import {
   CourtCard,
   Skeleton,
 } from "src/components";
-import { CreateCourt } from "./CreateCourt";
+import { existingCourtType } from "./CreateCourt";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 
@@ -41,9 +35,11 @@ export const BranchManagement = ({
   route,
   setSignedIn,
   setCreateCourtVisible,
+  setCourtInfo,
 }: Props & {
   setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
-  setCreateCourtVisible: Dispatch<SetStateAction<boolean>>;
+  setCreateCourtVisible: Dispatch<SetStateAction<"create" | "edit" | false>>;
+  setCourtInfo: Dispatch<SetStateAction<existingCourtType | undefined>>;
 }) => {
   const { colors } = useTheme();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
@@ -53,9 +49,8 @@ export const BranchManagement = ({
   const { data: branchDetails, isLoading: branchDetailsLoading } =
     useBranchByIdQuery(venueData?.branchId);
 
-  const { data: venueDetails, isLoading: detailsLoading } = useVenueByIdQuery(
-    venueData?.venueId
-  );
+  const { data: venueDetails, isLoading: venueDetailsLoading } =
+    useVenueByIdQuery(venueData?.venueId);
 
   const { data: courtsInBranch, isLoading: courtsLoading } =
     useCourtsInBranchQuery(venueData?.branchId);
@@ -89,7 +84,7 @@ export const BranchManagement = ({
               source={require("assets/images/home/basketball-hub-icon.png")}
               style={styles.clubIcon}
             />
-            {detailsLoading ? (
+            {venueDetailsLoading ? (
               <Skeleton height={20} width={180} style={styles.headerText} />
             ) : (
               <Text style={styles.headerText}>{venueDetails?.description}</Text>
@@ -103,6 +98,7 @@ export const BranchManagement = ({
           >
             Your Branch
           </Text>
+          {branchDetailsLoading && <BranchLocationSkeleton />}
           {branchDetails && (
             <BranchLocation
               type="branch"
@@ -114,7 +110,6 @@ export const BranchManagement = ({
                 courts: branchDetails.courts,
                 rating: branchDetails.rating,
               }}
-              isBranchAccount
             />
           )}
           <Text
@@ -123,27 +118,36 @@ export const BranchManagement = ({
           >
             Your Courts
           </Text>
-          {courtsLoading && <BranchLocationSkeleton />}
           <View style={{ marginHorizontal: -20 }}>
-            {!courtsLoading &&
-              courtsInBranch?.map((court, index: number) => (
-                <CourtCard
-                  key={index}
-                  name={court.name}
-                  price={court.price}
-                  rating={court.rating}
-                  type={court.courtType}
-                  venueName={venueData?.venueName!}
-                  onPress={() => {}}
-                />
-              ))}
+            {courtsInBranch?.map((court, index: number) => (
+              <CourtCard
+                key={index}
+                name={court.name}
+                price={court.price}
+                rating={court.rating}
+                type={court.courtType}
+                venueName={venueData?.venueName!}
+                onPress={() => {
+                  setCourtInfo({
+                    courtId: court.id,
+                    name: court.name,
+                    courtType: court.courtType,
+                    price: court.price.toString(),
+                    numOfPlayers: court.nbOfPlayers,
+                    selectedTimeSlots: court.courtTimeSlots.map(
+                      (slot) => slot.timeSlotId
+                    ),
+                  });
+                  setCreateCourtVisible("edit");
+                }}
+              />
+            ))}
           </View>
-          {!courtsLoading &&
-            (!courtsInBranch || courtsInBranch.length === 0) && (
-              <Text style={styles.placeholderText}>
-                You have not assigned any courts yet.
-              </Text>
-            )}
+          {(!courtsInBranch || courtsInBranch.length === 0) && (
+            <Text style={styles.placeholderText}>
+              You have not assigned any courts yet.
+            </Text>
+          )}
         </View>
       </ScrollView>
       <IconButton
@@ -153,7 +157,7 @@ export const BranchManagement = ({
         size={40}
         style={{ position: "absolute", right: 20, bottom: 20 }}
         onPress={() => {
-          setCreateCourtVisible(true);
+          setCreateCourtVisible("create");
         }}
       />
     </AppHeader>

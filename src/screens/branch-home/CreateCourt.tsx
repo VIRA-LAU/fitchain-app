@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   StyleSheet,
   View,
@@ -14,36 +20,82 @@ import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
 import { GameType } from "src/types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useCreateCourtMutation, useTimeSlotsQuery } from "src/api";
+import {
+  useCreateCourtMutation,
+  useTimeSlotsQuery,
+  useUpdateCourtMutation,
+} from "src/api";
+
+export type existingCourtType = {
+  courtId: number;
+  name: string;
+  price: string;
+  courtType: GameType;
+  numOfPlayers: number;
+  selectedTimeSlots: number[];
+};
 
 export const CreateCourt = ({
   visible,
   setVisible,
+  existingInfo = {
+    courtId: 0,
+    name: "",
+    price: "",
+    courtType: "Basketball",
+    numOfPlayers: 6,
+    selectedTimeSlots: [],
+  },
 }: {
-  visible: boolean;
-  setVisible: Dispatch<SetStateAction<boolean>>;
+  visible: "create" | "edit" | false;
+  setVisible: Dispatch<SetStateAction<"create" | "edit" | false>>;
+  isEditing?: boolean;
+  existingInfo?: existingCourtType;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const [name, setName] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
-  const [courtType, setCourtType] = useState<GameType>("Basketball");
-  const [numOfPlayers, setNumOfPlayers] = useState<number>(6);
-  const [selectedTimeSlots, setSelectedTimeSlots] = useState<number[]>([]);
+  const [name, setName] = useState<string>(existingInfo.name);
+  const [price, setPrice] = useState<string>(existingInfo.price.toString());
+  const [courtType, setCourtType] = useState<GameType>(existingInfo.courtType);
+  const [numOfPlayers, setNumOfPlayers] = useState<number>(
+    existingInfo.numOfPlayers
+  );
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<number[]>(
+    existingInfo.selectedTimeSlots
+  );
 
-  const completeCreate = () => {
+  const resetFields = () => {
     setName("");
     setPrice("");
+    setCourtType("Basketball");
+    setNumOfPlayers(6);
     setSelectedTimeSlots([]);
-    setVisible(false);
   };
 
   const { data: timeSlots } = useTimeSlotsQuery();
-  const { mutate: createCourt, isLoading } =
-    useCreateCourtMutation(completeCreate);
+  const { mutate: createCourt, isLoading: createLoading } =
+    useCreateCourtMutation(() => {
+      resetFields();
+      setVisible(false);
+    });
+  const { mutate: updateCourt, isLoading: updateLoading } =
+    useUpdateCourtMutation(() => {
+      resetFields();
+      setVisible(false);
+    });
 
   const priceRef: React.MutableRefObject<TextInput | null> = useRef(null);
+
+  useEffect(() => {
+    if (existingInfo && visible === "edit") {
+      setName(existingInfo.name);
+      setPrice(existingInfo.price);
+      setCourtType(existingInfo.courtType);
+      setNumOfPlayers(existingInfo.numOfPlayers);
+      setSelectedTimeSlots(existingInfo.selectedTimeSlots);
+    } else resetFields();
+  }, [visible, JSON.stringify(existingInfo)]);
 
   return (
     <React.Fragment>
@@ -57,7 +109,9 @@ export const CreateCourt = ({
         style={[styles.wrapperView, { display: visible ? "flex" : "none" }]}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Create a Court</Text>
+          <Text style={styles.title}>
+            {visible === "edit" ? "Edit" : "Create a"} Court
+          </Text>
           <TouchableOpacity
             style={{ position: "absolute", right: 0 }}
             onPress={() => {
@@ -275,7 +329,7 @@ export const CreateCourt = ({
               </Pressable>
             ))}
           </ScrollView>
-          {isLoading ? (
+          {createLoading || updateLoading ? (
             <ActivityIndicator />
           ) : (
             <Button
@@ -283,18 +337,31 @@ export const CreateCourt = ({
               buttonColor={colors.primary}
               style={{ borderRadius: 5 }}
               onPress={() => {
-                if (name && price) {
-                  createCourt({
-                    courtType,
-                    name: name.trim(),
-                    price: parseInt(price.trim()),
-                    nbOfPlayers: numOfPlayers,
-                    timeSlots: selectedTimeSlots,
-                  });
+                if (visible === "create") {
+                  if (name && price) {
+                    createCourt({
+                      courtType,
+                      name: name.trim(),
+                      price: parseInt(price.trim()),
+                      nbOfPlayers: numOfPlayers,
+                      timeSlots: selectedTimeSlots,
+                    });
+                  }
+                } else {
+                  if (name && price) {
+                    updateCourt({
+                      courtId: existingInfo.courtId,
+                      courtType,
+                      name: name.trim(),
+                      price: parseInt(price.trim()),
+                      nbOfPlayers: numOfPlayers,
+                      timeSlots: selectedTimeSlots,
+                    });
+                  }
                 }
               }}
             >
-              Create
+              {visible === "edit" ? "Update" : "Create"}
             </Button>
           )}
         </View>

@@ -52,7 +52,6 @@ export const BranchLocation = ({
   team,
   isPressable = false,
   playScreenBookingDetails,
-  isBranchAccount = false,
 }: {
   type: "branch" | "court";
   court?: Court;
@@ -73,7 +72,6 @@ export const BranchLocation = ({
     gameType: GameType;
     nbOfPlayers: number;
   };
-  isBranchAccount?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -106,15 +104,7 @@ export const BranchLocation = ({
   return (
     <TouchableOpacity
       activeOpacity={0.6}
-      style={[
-        styles.wrapperView,
-        isBranchAccount
-          ? {
-              borderWidth: 1,
-              borderColor: colors.tertiary,
-            }
-          : {},
-      ]}
+      style={[styles.wrapperView]}
       onPress={() => {
         if (isPressable && branch)
           navigation.push("BranchCourts", {
@@ -180,7 +170,7 @@ export const BranchLocation = ({
             <Text style={styles.rowValue}>{court?.name}</Text>
           </View>
         )}
-        {type === "court" && !isBranchAccount && (
+        {type === "court" && (
           <View style={styles.rowView}>
             <Text style={styles.rowKey}>SIDE</Text>
             <Text style={styles.rowValue}>{team}</Text>
