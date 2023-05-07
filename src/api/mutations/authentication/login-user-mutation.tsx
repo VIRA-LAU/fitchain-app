@@ -16,6 +16,7 @@ type UserRes = User & {
 };
 type BranchRes = Branch & {
   branchId: number;
+  venueId: number;
   venueName: string;
   branchLocation: string;
   access_token: string;
@@ -36,6 +37,7 @@ export const useLoginUserMutation = (
       if (data.isVenue) {
         let fetchedInfo = {
           branchId: (data as BranchRes).branchId,
+          venueId: (data as BranchRes).venueId,
           venueName: (data as BranchRes).venueName,
           branchLocation: (data as BranchRes).branchLocation,
           managerFirstName: (data as BranchRes).managerFirstName,
@@ -48,6 +50,7 @@ export const useLoginUserMutation = (
         const keys = [
           "isVenue",
           "branchId",
+          "venueId",
           "venueName",
           "branchLocation",
           "managerFirstName",
@@ -58,6 +61,7 @@ export const useLoginUserMutation = (
         const values = [
           true,
           (data as BranchRes).branchId,
+          (data as BranchRes).venueId,
           (data as BranchRes).venueName,
           (data as BranchRes).branchLocation,
           (data as BranchRes).managerFirstName,

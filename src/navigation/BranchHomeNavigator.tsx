@@ -1,8 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { Dispatch, SetStateAction, useEffect } from "react";
-import { View } from "react-native";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { BackHandler, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { BranchHome, BranchManagement } from "screens";
+import { BranchHome, BranchManagement, CreateCourt } from "screens";
 import { VenueBottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { HomeStackParamList } from "./AppNavigator";
 import * as Location from "expo-location";
@@ -14,6 +14,21 @@ const BottomTabNavigator = ({
 }: {
   setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
+  const [createCourtVisible, setCreateCourtVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleBack = () => {
+      if (createCourtVisible) {
+        setCreateCourtVisible(false);
+        return true;
+      } else return false;
+    };
+    BackHandler.addEventListener("hardwareBackPress", handleBack);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBack);
+    };
+  }, [createCourtVisible]);
+
   useEffect(() => {
     const requestLocationPermission = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -35,10 +50,18 @@ const BottomTabNavigator = ({
         <Tab.Screen
           name="Branch"
           children={(props) => (
-            <BranchManagement {...props} setSignedIn={setSignedIn} />
+            <BranchManagement
+              {...props}
+              setSignedIn={setSignedIn}
+              setCreateCourtVisible={setCreateCourtVisible}
+            />
           )}
         />
       </Tab.Navigator>
+      <CreateCourt
+        visible={createCourtVisible}
+        setVisible={setCreateCourtVisible}
+      />
     </View>
   );
 };

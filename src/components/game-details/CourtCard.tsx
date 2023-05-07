@@ -5,16 +5,13 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 
 export const CourtCard = ({
   type,
-  // rating,
   price,
   rating,
   onPress,
   name,
 }: {
-  id: number;
   venueName: string;
   type: string;
-  // rating: number;
   price: number;
   name: string;
   rating: number;

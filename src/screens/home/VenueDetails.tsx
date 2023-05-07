@@ -48,20 +48,6 @@ export const VenueDetails = ({ navigation, route }: Props) => {
     <AppHeader
       navigation={navigation}
       route={route}
-      right={
-        !isPlayScreen ? (
-          <IonIcon name="ellipsis-horizontal" color="white" size={24} />
-        ) : (
-          <IonIcon
-            name="close-outline"
-            color="white"
-            size={30}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        )
-      }
       title={venue?.name}
       backEnabled
     >

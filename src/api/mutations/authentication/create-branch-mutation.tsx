@@ -36,6 +36,7 @@ export const useCreateBranchMutation = (
   return useMutation<
     Branch & {
       branchId: number;
+      venueId: number;
       venueName: string;
       branchLocation: string;
       access_token: string;
@@ -47,6 +48,7 @@ export const useCreateBranchMutation = (
     onSuccess: async (data) => {
       let fetchedInfo = {
         branchId: data.branchId,
+        venueId: data.venueId,
         venueName: data.venueName,
         branchLocation: data.branchLocation,
         managerFirstName: data.managerFirstName,
@@ -59,6 +61,7 @@ export const useCreateBranchMutation = (
       const keys = [
         "isVenue",
         "branchId",
+        "venueId",
         "venueName",
         "branchLocation",
         "managerFirstName",
@@ -69,6 +72,7 @@ export const useCreateBranchMutation = (
       const values = [
         true,
         data.branchId,
+        data.venueId,
         data.venueName,
         data.branchLocation,
         data.managerFirstName,

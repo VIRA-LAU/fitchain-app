@@ -59,7 +59,6 @@ export const BranchCourts = ({ navigation, route }: Props) => {
         {courts.map((court, index: number) => (
           <CourtCard
             key={index}
-            id={court.id}
             venueName={venueName}
             type={court.courtType}
             name={court.name}
