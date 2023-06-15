@@ -43,12 +43,14 @@ export const SignUpWithNumberExtraDetails = ({
     updateUserData(data);
   };
 
+  const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
+  const bioRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const heightRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const weightRef: React.MutableRefObject<TextInput | null> = useRef(null);
 
   return (
-    <AppHeader navigation={navigation} route={route} backEnabled autoScroll>
-      <ScrollView contentContainerStyle={styles.wrapperView}>
+    <AppHeader navigation={navigation} route={route} backEnabled>
+      <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
         <Image
           source={require("assets/images/Logo-Icon.png")}
           style={styles.logo}
@@ -73,6 +75,16 @@ export const SignUpWithNumberExtraDetails = ({
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               onSubmitEditing={() => heightRef.current?.focus()}
+              blurOnSubmit={false}
+              ref={bioRef}
+              onFocus={() => {
+                bioRef.current?.measureInWindow((x, y) =>
+                  scrollRef.current?.scrollTo({
+                    y,
+                    animated: true,
+                  })
+                );
+              }}
               onChangeText={setDescription}
             />
           </View>
@@ -89,7 +101,16 @@ export const SignUpWithNumberExtraDetails = ({
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               onSubmitEditing={() => weightRef.current?.focus()}
+              blurOnSubmit={false}
               ref={heightRef}
+              onFocus={() => {
+                heightRef.current?.measureInWindow((x, y) =>
+                  scrollRef.current?.scrollTo({
+                    y,
+                    animated: true,
+                  })
+                );
+              }}
               onChangeText={setHeight}
             />
           </View>
@@ -109,6 +130,14 @@ export const SignUpWithNumberExtraDetails = ({
               textContentType="emailAddress"
               autoCapitalize="none"
               ref={weightRef}
+              onFocus={() => {
+                weightRef.current?.measureInWindow((x, y) =>
+                  scrollRef.current?.scrollTo({
+                    y,
+                    animated: true,
+                  })
+                );
+              }}
               onChangeText={setWeight}
             />
           </View>

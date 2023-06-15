@@ -12,7 +12,7 @@ import { SignUpStackParamList } from "navigation";
 import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { AppHeader } from "src/components";
 import { useLoginUserMutation } from "src/api";
 type Props = StackScreenProps<SignUpStackParamList, "SignUp">;
@@ -70,9 +70,13 @@ export const SignUp = ({
       setErrorMessage("Invalid email or password.");
   }, [error]);
 
+  const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
+  const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
+  const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
+
   return (
-    <AppHeader autoScroll>
-      <ScrollView contentContainerStyle={styles.wrapperView}>
+    <AppHeader>
+      <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
         <Image
           source={require("assets/images/signup/background.png")}
           style={styles.background}
@@ -98,6 +102,9 @@ export const SignUp = ({
               textContentType="emailAddress"
               autoCapitalize="none"
               value={email}
+              ref={emailRef}
+              onSubmitEditing={() => passwordRef.current?.focus()}
+              blurOnSubmit={false}
               onChangeText={(email) => {
                 setEmail(email.trim());
                 setErrorMessage("");
@@ -118,6 +125,7 @@ export const SignUp = ({
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               secureTextEntry
+              ref={passwordRef}
               onChangeText={(password) => {
                 setPassword(password.trim());
                 setErrorMessage("");

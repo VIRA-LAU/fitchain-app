@@ -141,13 +141,17 @@ export const SignUpAsVenueDetails = ({
     }
   };
 
-  const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
+  const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
+  const firstNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const lastNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
+  const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
+  const locationDescRef: React.MutableRefObject<TextInput | null> =
+    useRef(null);
 
   return (
-    <AppHeader navigation={navigation} route={route} backEnabled autoScroll>
-      <ScrollView contentContainerStyle={styles.wrapperView}>
+    <AppHeader navigation={navigation} route={route} backEnabled>
+      <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
         <Image
           source={require("assets/images/Logo-Icon.png")}
           style={styles.logo}
@@ -173,6 +177,16 @@ export const SignUpAsVenueDetails = ({
                 placeholderTextColor={"#a8a8a8"}
                 selectionColor={colors.primary}
                 onSubmitEditing={() => lastNameRef.current?.focus()}
+                blurOnSubmit={false}
+                ref={firstNameRef}
+                onFocus={() => {
+                  firstNameRef.current?.measureInWindow((x, y) =>
+                    scrollRef.current?.scrollTo({
+                      y,
+                      animated: true,
+                    })
+                  );
+                }}
                 onChangeText={(text) => {
                   setManagerFirstName(text.trim());
                   setErrorMessage("");
@@ -192,7 +206,16 @@ export const SignUpAsVenueDetails = ({
                 placeholderTextColor={"#a8a8a8"}
                 selectionColor={colors.primary}
                 onSubmitEditing={() => emailRef.current?.focus()}
+                blurOnSubmit={false}
                 ref={lastNameRef}
+                onFocus={() => {
+                  lastNameRef.current?.measureInWindow((x, y) =>
+                    scrollRef.current?.scrollTo({
+                      y,
+                      animated: true,
+                    })
+                  );
+                }}
                 onChangeText={(text) => {
                   setManagerLastName(text.trim());
                   setErrorMessage("");
@@ -215,7 +238,16 @@ export const SignUpAsVenueDetails = ({
                 textContentType="emailAddress"
                 autoCapitalize="none"
                 onSubmitEditing={() => passwordRef.current?.focus()}
+                blurOnSubmit={false}
                 ref={emailRef}
+                onFocus={() => {
+                  emailRef.current?.measureInWindow((x, y) =>
+                    scrollRef.current?.scrollTo({
+                      y,
+                      animated: true,
+                    })
+                  );
+                }}
                 onChangeText={(text) => {
                   setManagerEmail(text.trim());
                   setErrorMessage("");
@@ -237,6 +269,14 @@ export const SignUpAsVenueDetails = ({
                 secureTextEntry={true}
                 value={password}
                 ref={passwordRef}
+                onFocus={() => {
+                  passwordRef.current?.measureInWindow((x, y) =>
+                    scrollRef.current?.scrollTo({
+                      y,
+                      animated: true,
+                    })
+                  );
+                }}
                 onChangeText={(password) =>
                   checkPasswordValidity(password.trim())
                 }
@@ -267,7 +307,24 @@ export const SignUpAsVenueDetails = ({
                   placeholderTextColor={"#a8a8a8"}
                   selectionColor={colors.primary}
                   value={locationDescription ?? autoLocationDescription}
-                  onChangeText={(text) => setLocationDescription(text)}
+                  onChangeText={(text) => {
+                    setLocationDescription(text.trim());
+                    locationDescRef.current?.measureInWindow((x, y) =>
+                      scrollRef.current?.scrollTo({
+                        y,
+                        animated: true,
+                      })
+                    );
+                  }}
+                  ref={locationDescRef}
+                  onFocus={() => {
+                    locationDescRef.current?.measureInWindow((x, y) =>
+                      scrollRef.current?.scrollTo({
+                        y,
+                        animated: true,
+                      })
+                    );
+                  }}
                   editable={
                     typeof autoLocationDescription !== "undefined" &&
                     autoLocationDescription !== ""

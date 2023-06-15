@@ -14,12 +14,14 @@ const CodeInput = ({
   styles,
   setCode,
   refs,
+  scrollRef,
 }: {
   index: number;
   colors: MD3Colors;
   styles: any;
   setCode: React.Dispatch<React.SetStateAction<(number | null)[]>>;
   refs: React.MutableRefObject<TextInput | null>[];
+  scrollRef: React.MutableRefObject<ScrollView | null>;
 }) => {
   return (
     <TextInput
@@ -31,6 +33,15 @@ const CodeInput = ({
       style={styles.codeInput}
       placeholder="0"
       placeholderTextColor={colors.tertiary}
+      ref={refs[index]}
+      onFocus={() => {
+        refs[index].current?.measureInWindow((x, y) =>
+          scrollRef.current?.scrollTo({
+            y,
+            animated: true,
+          })
+        );
+      }}
       onChangeText={(digit) => {
         setCode((code) =>
           code.map((codeDigit, codeIndex) =>
@@ -41,7 +52,6 @@ const CodeInput = ({
           if (index < 3) refs[index + 1].current?.focus();
           else refs[index].current?.blur();
       }}
-      ref={refs[index]}
     />
   );
 };
@@ -65,22 +75,27 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
         });
     }
   };
+
+  const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
   const refs: React.MutableRefObject<TextInput | null>[] = [
     useRef(null),
     useRef(null),
     useRef(null),
     useRef(null),
   ];
+
   const generateCode = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
   };
+
   const resendCode = () => {
     let newCode = generateCode();
     setCorrectCode(newCode);
   };
+
   return (
-    <AppHeader navigation={navigation} route={route} backEnabled autoScroll>
-      <ScrollView contentContainerStyle={styles.wrapperView}>
+    <AppHeader navigation={navigation} route={route} backEnabled>
+      <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
         <Image
           source={require("assets/images/Logo-Icon.png")}
           style={styles.logo}
@@ -102,6 +117,7 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
                   styles={styles}
                   setCode={setCode}
                   refs={refs}
+                  scrollRef={scrollRef}
                 />
               );
             })}

@@ -5,7 +5,7 @@ import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import PhoneInput from "react-native-phone-number-input";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumber">;
 export const SignUpWithNumber = ({ navigation, route }: Props) => {
@@ -38,9 +38,12 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
       isVenue: route.params.isVenue,
     });
   };
+
+  const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
+
   return (
-    <AppHeader navigation={navigation} route={route} backEnabled autoScroll>
-      <ScrollView contentContainerStyle={styles.wrapperView}>
+    <AppHeader navigation={navigation} route={route} backEnabled>
+      <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
         <Image
           source={require("assets/images/Logo-Icon.png")}
           style={styles.logo}
@@ -73,6 +76,9 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
             textInputProps={{
               placeholderTextColor: colors.tertiary,
               selectionColor: colors.primary,
+              onFocus: () => {
+                scrollRef.current?.scrollToEnd();
+              },
             }}
             disableArrowIcon={true}
             containerStyle={{

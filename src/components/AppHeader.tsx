@@ -21,7 +21,6 @@ const sportBackground = {
 export const AppHeader = ({
   children,
   absolutePosition = true,
-  autoScroll = false,
   navigation,
   route,
   title,
@@ -37,7 +36,6 @@ export const AppHeader = ({
 }: {
   children: any;
   absolutePosition?: boolean;
-  autoScroll?: boolean;
   navigation?: any;
   route?: any;
   title?: string;
