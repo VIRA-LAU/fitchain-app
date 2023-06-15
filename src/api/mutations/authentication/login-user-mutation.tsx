@@ -4,6 +4,7 @@ import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
 import { Branch, User } from "src/types";
 import { storeData } from "src/utils/AsyncStorage";
+import { AxiosError } from "axios";
 
 type Request = {
   email: string;
@@ -31,7 +32,7 @@ export const useLoginUserMutation = (
   setSignedIn: React.Dispatch<React.SetStateAction<"player" | "venue" | null>>
 ) => {
   const { setUserData, setIsVenue, setVenueData } = useContext(UserContext);
-  return useMutation<Response, unknown, Request>({
+  return useMutation<Response, AxiosError<{ message: string }>, Request>({
     mutationFn: LoginUser,
     onSuccess: async (data) => {
       if (data.isVenue) {

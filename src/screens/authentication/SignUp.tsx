@@ -34,10 +34,15 @@ export const SignUp = ({
   const { colors } = useTheme();
   const styles = makeStyles(fontScale, colors);
   const [email, setEmail] = useState<string | undefined>(storedEmail);
-  const { mutate: loginUser, isLoading: loginLoading } =
-    useLoginUserMutation(setSignedIn);
-
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const {
+    mutate: loginUser,
+    isLoading: loginLoading,
+    error,
+  } = useLoginUserMutation(setSignedIn);
+
   const validateEmail = (email: string) => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     return reg.test(email);
@@ -45,20 +50,25 @@ export const SignUp = ({
 
   const signIn = () => {
     if (email) {
-      let emailValid = validateEmail(email.trim());
-      if (emailValid) {
+      if (validateEmail(email) && password) {
         let data = {
-          email: email.trim(),
-          password: password.trim(),
+          email: email,
+          password: password,
         };
+        setErrorMessage("");
         loginUser(data);
-      }
+      } else setErrorMessage("Make sure email and password are valid.");
     }
   };
 
   useEffect(() => {
     setEmail(storedEmail);
   }, [storedEmail]);
+
+  useEffect(() => {
+    if (error && error?.response?.data?.message === "CREDENTIALS_INCORRECT")
+      setErrorMessage("Invalid email or password.");
+  }, [error]);
 
   return (
     <AppHeader autoScroll>
@@ -88,7 +98,10 @@ export const SignUp = ({
               textContentType="emailAddress"
               autoCapitalize="none"
               value={email}
-              onChangeText={(email) => setEmail(email)}
+              onChangeText={(email) => {
+                setEmail(email.trim());
+                setErrorMessage("");
+              }}
             />
           </View>
 
@@ -105,9 +118,25 @@ export const SignUp = ({
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               secureTextEntry
-              onChangeText={(password) => setPassword(password)}
+              onChangeText={(password) => {
+                setPassword(password.trim());
+                setErrorMessage("");
+              }}
             />
           </View>
+          {errorMessage && (
+            <Text
+              variant="labelMedium"
+              style={{
+                color: "red",
+                textAlign: "center",
+                marginTop: "5%",
+                fontFamily: "Inter-SemiBold",
+              }}
+            >
+              {errorMessage}
+            </Text>
+          )}
           {loginLoading || verifyLoading ? (
             <ActivityIndicator style={{ marginTop: 15, marginBottom: 20 }} />
           ) : (
@@ -121,7 +150,6 @@ export const SignUp = ({
             </Button>
           )}
         </View>
-
         <View style={styles.separatorView}>
           <View style={styles.separator}></View>
           <Text style={[styles.h2, styles.separatorText]}>

@@ -12,7 +12,7 @@ if (API_URL) {
 } else {
   // AWS URL for production
   client = axios.create({
-    baseURL: "http://ec2-52-91-118-179.compute-1.amazonaws.com:3000",
+    baseURL: "http://ec2-16-171-9-213.eu-north-1.compute.amazonaws.com:3000",
   });
 }
 

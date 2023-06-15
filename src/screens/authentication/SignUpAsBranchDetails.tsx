@@ -34,7 +34,6 @@ export const SignUpAsVenueDetails = ({
   const styles = makeStyles(colors);
 
   const [password, setPassword] = useState("");
-  const [passwordValid, setPasswordValid] = useState(false);
   const [branchLocation, setBranchLocation] = useState<LatLng>();
   const [mapRegion, setMapRegion] = useState<Region>({
     latitude: 33.895462996463095,
@@ -46,11 +45,14 @@ export const SignUpAsVenueDetails = ({
   const [managerFirstName, setManagerFirstName] = useState("");
   const [managerLastName, setManagerLastName] = useState("");
   const [managerEmail, setManagerEmail] = useState("");
-  const [validEntry, setValidEntry] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const [mapVisible, setMapVisible] = useState<boolean>(false);
 
-  const { mutate: createBranch, isLoading: createBranchLoading } =
-    useCreateBranchMutation(setSignedIn);
+  const {
+    mutate: createBranch,
+    isLoading: createBranchLoading,
+    error,
+  } = useCreateBranchMutation(setSignedIn);
   const {
     data: autoLocationDescription,
     refetch: getAutoLocationDescription,
@@ -79,6 +81,11 @@ export const SignUpAsVenueDetails = ({
       setLocationDescription(autoLocationDescription);
   }, [autoLocationDescription]);
 
+  useEffect(() => {
+    if (error && error?.response?.data?.message === "CREDENTIALS_TAKEN")
+      setErrorMessage("Email already in use.");
+  }, [error]);
+
   const validateEmail = (managerEmail: string) => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     return reg.test(managerEmail);
@@ -86,12 +93,12 @@ export const SignUpAsVenueDetails = ({
 
   const signUp = () => {
     if (
-      passwordValid &&
-      locationDescription.trim().length > 0 &&
+      checkPasswordValidity(password) &&
+      locationDescription.length > 0 &&
       branchLocation &&
-      validateEmail(managerEmail.trim()) &&
-      managerFirstName.trim().length > 0 &&
-      managerLastName.trim().length > 0
+      validateEmail(managerEmail) &&
+      managerFirstName.length > 0 &&
+      managerLastName.length > 0
     ) {
       let data = {
         isVenue: true,
@@ -99,15 +106,16 @@ export const SignUpAsVenueDetails = ({
         location: locationDescription,
         latitude: branchLocation.latitude,
         longitude: branchLocation.longitude,
-        managerFirstName: managerFirstName.trim(),
-        managerLastName: managerLastName.trim(),
+        managerFirstName,
+        managerLastName,
         phoneNumber: route.params.phoneNumber,
-        managerEmail: managerEmail.trim(),
-        password: password.trim(),
+        managerEmail,
+        password,
       };
+      setErrorMessage("");
       createBranch(data);
     } else {
-      setValidEntry(false);
+      setErrorMessage("Make sure all fields are valid.");
     }
   };
 
@@ -123,9 +131,13 @@ export const SignUpAsVenueDetails = ({
       currentPassword.match(numbers) &&
       currentPassword.length >= 8
     ) {
-      setPasswordValid(true);
+      setErrorMessage("");
+      return true;
     } else {
-      setPasswordValid(false);
+      setErrorMessage(
+        "Make sure your password includes at least an upper case, a lower case, a digit, and 8 characters."
+      );
+      return false;
     }
   };
 
@@ -161,7 +173,10 @@ export const SignUpAsVenueDetails = ({
                 placeholderTextColor={"#a8a8a8"}
                 selectionColor={colors.primary}
                 onSubmitEditing={() => lastNameRef.current?.focus()}
-                onChangeText={(text) => setManagerFirstName(text)}
+                onChangeText={(text) => {
+                  setManagerFirstName(text.trim());
+                  setErrorMessage("");
+                }}
               />
             </View>
             <View style={styles.textInputView}>
@@ -178,7 +193,10 @@ export const SignUpAsVenueDetails = ({
                 selectionColor={colors.primary}
                 onSubmitEditing={() => emailRef.current?.focus()}
                 ref={lastNameRef}
-                onChangeText={(text) => setManagerLastName(text)}
+                onChangeText={(text) => {
+                  setManagerLastName(text.trim());
+                  setErrorMessage("");
+                }}
               />
             </View>
 
@@ -198,7 +216,10 @@ export const SignUpAsVenueDetails = ({
                 autoCapitalize="none"
                 onSubmitEditing={() => passwordRef.current?.focus()}
                 ref={emailRef}
-                onChangeText={(text) => setManagerEmail(text)}
+                onChangeText={(text) => {
+                  setManagerEmail(text.trim());
+                  setErrorMessage("");
+                }}
               />
             </View>
             <View style={styles.textInputView}>
@@ -216,7 +237,9 @@ export const SignUpAsVenueDetails = ({
                 secureTextEntry={true}
                 value={password}
                 ref={passwordRef}
-                onChangeText={(password) => checkPasswordValidity(password)}
+                onChangeText={(password) =>
+                  checkPasswordValidity(password.trim())
+                }
               />
             </View>
             <Button
@@ -252,19 +275,17 @@ export const SignUpAsVenueDetails = ({
                 />
               </View>
             )}
-            {passwordValid || password.length == 0 ? (
-              <View></View>
-            ) : (
-              <Text variant="labelMedium" style={{ color: "red" }}>
-                Make sure your password includes at least an upper case, a lower
-                case, a digit, and 8 characters
-              </Text>
-            )}
-            {validEntry ? (
-              <View></View>
-            ) : (
-              <Text variant="labelMedium" style={{ color: "red" }}>
-                Make sure you filled all the fields.
+            {errorMessage && (
+              <Text
+                variant="labelMedium"
+                style={{
+                  color: "red",
+                  textAlign: "center",
+                  marginTop: "5%",
+                  fontFamily: "Inter-SemiBold",
+                }}
+              >
+                {errorMessage}
               </Text>
             )}
             {createBranchLoading ? (
@@ -360,7 +381,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     getStartedButton: {
       borderRadius: 6,
-      marginTop: "10%",
+      marginTop: "7%",
       height: 50,
       justifyContent: "center",
       borderWidth: 1,

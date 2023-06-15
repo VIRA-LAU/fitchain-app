@@ -5,7 +5,7 @@ import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { useCreateUserMutation } from "src/api";
 type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumberDetails">;
@@ -17,16 +17,20 @@ export const SignUpWithNumberDetails = ({
   navigation: Props["navigation"];
   route: Props["route"];
 }) => {
-  const { mutate: createUser, isLoading: createUserLoading } =
-    useCreateUserMutation();
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [password, setPassword] = useState("");
-  const [passwordValid, setPasswordValid] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [validEntry, setValidEntry] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const {
+    mutate: createUser,
+    isLoading: createUserLoading,
+    error,
+  } = useCreateUserMutation();
+
   const validateEmail = (email: string) => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     return reg.test(email);
@@ -34,23 +38,25 @@ export const SignUpWithNumberDetails = ({
 
   const signUp = () => {
     if (
-      passwordValid &&
-      validateEmail(email.trim()) &&
-      firstName.trim().length > 0 &&
-      lastName.trim().length > 0
+      checkPasswordValidity(password) &&
+      validateEmail(email) &&
+      firstName.length > 0 &&
+      lastName.length > 0
     ) {
       let data = {
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
+        firstName,
+        lastName,
         phoneNumber: route.params.phoneNumber,
-        email: email.trim(),
-        password: password.trim(),
+        email,
+        password,
       };
+      setErrorMessage("");
       createUser(data);
     } else {
-      setValidEntry(false);
+      setErrorMessage("Make sure all fields are valid.");
     }
   };
+
   const checkPasswordValidity = (currentPassword: string) => {
     setPassword(currentPassword);
     const upperCaseLetters = /[A-Z]/g;
@@ -63,11 +69,21 @@ export const SignUpWithNumberDetails = ({
       currentPassword.match(numbers) &&
       currentPassword.length >= 8
     ) {
-      setPasswordValid(true);
+      setErrorMessage("");
+      return true;
     } else {
-      setPasswordValid(false);
+      setErrorMessage(
+        "Make sure your password includes at least an upper case, a lower case, a digit, and 8 characters."
+      );
+      return false;
     }
   };
+
+  useEffect(() => {
+    if (error && error?.response?.data?.message === "CREDENTIALS_TAKEN")
+      setErrorMessage("Email already in use.");
+  }, [error]);
+
   const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const lastNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
@@ -99,7 +115,10 @@ export const SignUpWithNumberDetails = ({
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
               onSubmitEditing={() => lastNameRef.current?.focus()}
-              onChangeText={(text) => setFirstName(text)}
+              onChangeText={(text) => {
+                setFirstName(text.trim());
+                setErrorMessage("");
+              }}
             />
           </View>
           <View style={styles.textInputView}>
@@ -116,7 +135,10 @@ export const SignUpWithNumberDetails = ({
               selectionColor={colors.primary}
               onSubmitEditing={() => emailRef.current?.focus()}
               ref={lastNameRef}
-              onChangeText={(text) => setLastName(text)}
+              onChangeText={(text) => {
+                setLastName(text.trim());
+                setErrorMessage("");
+              }}
             />
           </View>
 
@@ -136,7 +158,10 @@ export const SignUpWithNumberDetails = ({
               autoCapitalize="none"
               onSubmitEditing={() => passwordRef.current?.focus()}
               ref={emailRef}
-              onChangeText={(text) => setEmail(text)}
+              onChangeText={(text) => {
+                setEmail(text.trim());
+                setErrorMessage("");
+              }}
             />
           </View>
           <View style={styles.textInputView}>
@@ -154,22 +179,22 @@ export const SignUpWithNumberDetails = ({
               secureTextEntry={true}
               value={password}
               ref={passwordRef}
-              onChangeText={(password) => checkPasswordValidity(password)}
+              onChangeText={(password) =>
+                checkPasswordValidity(password.trim())
+              }
             />
           </View>
-          {passwordValid || password.length == 0 ? (
-            <View></View>
-          ) : (
-            <Text variant="labelMedium" style={{ color: "red" }}>
-              Make sure your password includes at least an upper case, a lower
-              case, a digit, and 8 characters
-            </Text>
-          )}
-          {validEntry ? (
-            <View></View>
-          ) : (
-            <Text variant="labelMedium" style={{ color: "red" }}>
-              Make Sure your first name, last name, and email are valid!
+          {errorMessage && (
+            <Text
+              variant="labelMedium"
+              style={{
+                color: "red",
+                textAlign: "center",
+                marginTop: "5%",
+                fontFamily: "Inter-SemiBold",
+              }}
+            >
+              {errorMessage}
             </Text>
           )}
           {createUserLoading ? (
@@ -231,7 +256,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     getStartedButton: {
       borderRadius: 6,
-      marginTop: "10%",
+      marginTop: "7%",
       height: 50,
       justifyContent: "center",
       borderWidth: 1,

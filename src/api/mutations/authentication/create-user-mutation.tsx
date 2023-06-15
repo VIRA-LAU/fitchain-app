@@ -6,6 +6,7 @@ import { User } from "src/types";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SignUpStackParamList } from "src/navigation";
 import { storeData } from "src/utils/AsyncStorage";
+import { AxiosError } from "axios";
 
 type Request = {
   firstName: string;
@@ -20,8 +21,7 @@ const createUser = async (data: Request) => {
     .post("/auth/signup", data)
     .then((res) => res.data)
     .catch((error) => {
-      console.error("signup-mutation", error);
-      console.error(error.response?.data);
+      console.error("signup-mutation", error?.response?.data);
       throw error;
     });
 };
@@ -34,7 +34,7 @@ export const useCreateUserMutation = () => {
       userId: number;
       access_token: string;
     },
-    unknown,
+    AxiosError<{ message: string }>,
     Request
   >({
     mutationFn: createUser,

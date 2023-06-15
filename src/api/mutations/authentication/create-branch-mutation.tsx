@@ -4,6 +4,7 @@ import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
 import { Branch } from "src/types";
 import { storeData } from "src/utils/AsyncStorage";
+import { AxiosError } from "axios";
 
 type Request = {
   isVenue: boolean;
@@ -41,7 +42,7 @@ export const useCreateBranchMutation = (
       branchLocation: string;
       access_token: string;
     },
-    unknown,
+    AxiosError<{ message: string }>,
     Request
   >({
     mutationFn: createBranch,
