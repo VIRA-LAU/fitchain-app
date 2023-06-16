@@ -160,29 +160,31 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             style={{ marginTop: "auto", marginBottom: 10 }}
           />
         ) : (
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={styles.paymentView}
-            onPress={() => {
-              const bookingDate = new Date(JSON.parse(bookingDetails.date));
-              createGame({
-                courtId: bookingDetails.courtId,
-                timeSlotIds: bookingDetails.timeSlotIds,
-                date: bookingDate,
-                type: bookingDetails.gameType,
-              });
-            }}
-          >
-            <View>
-              <Text style={{ fontFamily: "Inter-Medium", fontSize: 10 }}>
-                TOTAL
+          <View style={styles.paymentViewWrapper}>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              style={styles.paymentView}
+              onPress={() => {
+                const bookingDate = new Date(JSON.parse(bookingDetails.date));
+                createGame({
+                  courtId: bookingDetails.courtId,
+                  timeSlotIds: bookingDetails.timeSlotIds,
+                  date: bookingDate,
+                  type: bookingDetails.gameType,
+                });
+              }}
+            >
+              <View>
+                <Text style={{ fontFamily: "Inter-Medium", fontSize: 10 }}>
+                  TOTAL
+                </Text>
+                <Text style={{ fontFamily: "Inter-Medium" }}>USD 24.20</Text>
+              </View>
+              <Text style={{ fontFamily: "Inter-SemiBold" }}>
+                Continue To Payment
               </Text>
-              <Text style={{ fontFamily: "Inter-Medium" }}>USD 24.20</Text>
-            </View>
-            <Text style={{ fontFamily: "Inter-SemiBold" }}>
-              Continue To Payment
-            </Text>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         )}
       </ScrollView>
     </AppHeader>
@@ -249,10 +251,13 @@ const makeStyles = (colors: MD3Colors) =>
       fontFamily: "Inter-SemiBold",
       color: "white",
     },
+    paymentViewWrapper: {
+      marginTop: "auto",
+    },
     paymentView: {
       height: 65,
       backgroundColor: colors.primary,
-      marginTop: "auto",
+      marginTop: 20,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",

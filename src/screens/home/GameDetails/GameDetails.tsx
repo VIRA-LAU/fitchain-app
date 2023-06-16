@@ -295,45 +295,50 @@ export const GameDetails = ({ navigation, route }: Props) => {
                         <ActivityIndicator style={{ marginLeft: 20 }} />
                       </View>
                     ) : (
-                      <Button
-                        icon={() => (
-                          <IonIcon
-                            name={"basketball-outline"}
-                            size={26}
-                            color={colors.secondary}
-                          />
-                        )}
+                      <View
                         style={{
-                          borderRadius: 5,
-                          flex: 1,
-                          backgroundColor: colors.primary,
+                          width: "50%",
                         }}
-                        textColor={colors.secondary}
-                        onPress={
-                          playerStatus?.hasRequestedtoJoin === "APPROVED" ||
-                          playerStatus?.hasRequestedtoJoin === "PENDING" ||
-                          playerStatus?.hasBeenInvited === "APPROVED"
-                            ? () => {
-                                setPopupVisible("cancelJoinGame");
-                              }
-                            : playerStatus?.hasBeenInvited === "PENDING"
-                            ? () => {
-                                setPopupVisible("respondToInvitation");
-                              }
-                            : () => {
-                                setPopupVisible("joinGame");
-                              }
-                        }
                       >
-                        {playerStatus?.hasBeenInvited === "APPROVED" ||
-                        playerStatus?.hasRequestedtoJoin === "APPROVED"
-                          ? "Leave Game"
-                          : playerStatus?.hasBeenInvited === "PENDING"
-                          ? "Invited to Game"
-                          : playerStatus?.hasRequestedtoJoin === "PENDING"
-                          ? "Cancel Request"
-                          : "Join Game"}
-                      </Button>
+                        <Button
+                          icon={() => (
+                            <IonIcon
+                              name={"basketball-outline"}
+                              size={26}
+                              color={colors.secondary}
+                            />
+                          )}
+                          style={{
+                            borderRadius: 5,
+                            backgroundColor: colors.primary,
+                          }}
+                          textColor={colors.secondary}
+                          onPress={
+                            playerStatus?.hasRequestedtoJoin === "APPROVED" ||
+                            playerStatus?.hasRequestedtoJoin === "PENDING" ||
+                            playerStatus?.hasBeenInvited === "APPROVED"
+                              ? () => {
+                                  setPopupVisible("cancelJoinGame");
+                                }
+                              : playerStatus?.hasBeenInvited === "PENDING"
+                              ? () => {
+                                  setPopupVisible("respondToInvitation");
+                                }
+                              : () => {
+                                  setPopupVisible("joinGame");
+                                }
+                          }
+                        >
+                          {playerStatus?.hasBeenInvited === "APPROVED" ||
+                          playerStatus?.hasRequestedtoJoin === "APPROVED"
+                            ? "Leave Game"
+                            : playerStatus?.hasBeenInvited === "PENDING"
+                            ? "Invited to Game"
+                            : playerStatus?.hasRequestedtoJoin === "PENDING"
+                            ? "Cancel Request"
+                            : "Join Game"}
+                        </Button>
+                      </View>
                     )}
                     {followLoading ||
                     unfollowLoading ||
@@ -345,39 +350,45 @@ export const GameDetails = ({ navigation, route }: Props) => {
                         />
                       </View>
                     ) : (
-                      <Button
-                        icon={() => (
-                          <FontAwesomeIcon
-                            name={
-                              followedGames?.some((game) => game?.id === id)
-                                ? "thumbs-up"
-                                : "thumbs-o-up"
-                            }
-                            size={22}
-                            color={"white"}
-                          />
-                        )}
-                        style={{ borderRadius: 5, flex: 1 }}
-                        textColor={"white"}
-                        buttonColor={"transparent"}
-                        onPress={
-                          followedGames?.some((game) => game?.id === id)
-                            ? () => {
-                                unfollowGame({
-                                  gameId: game?.id,
-                                });
-                              }
-                            : () => {
-                                followGame({
-                                  gameId: game?.id,
-                                });
-                              }
-                        }
+                      <View
+                        style={{
+                          width: "50%",
+                        }}
                       >
-                        {followedGames?.some((game) => game?.id === id)
-                          ? "Unfollow Game"
-                          : "Follow Game"}
-                      </Button>
+                        <Button
+                          icon={() => (
+                            <FontAwesomeIcon
+                              name={
+                                followedGames?.some((game) => game?.id === id)
+                                  ? "thumbs-up"
+                                  : "thumbs-o-up"
+                              }
+                              size={22}
+                              color={"white"}
+                            />
+                          )}
+                          style={{ borderRadius: 5 }}
+                          textColor={"white"}
+                          buttonColor={"transparent"}
+                          onPress={
+                            followedGames?.some((game) => game?.id === id)
+                              ? () => {
+                                  unfollowGame({
+                                    gameId: game?.id,
+                                  });
+                                }
+                              : () => {
+                                  followGame({
+                                    gameId: game?.id,
+                                  });
+                                }
+                          }
+                        >
+                          {followedGames?.some((game) => game?.id === id)
+                            ? "Unfollow Game"
+                            : "Follow Game"}
+                        </Button>
+                      </View>
                     )}
                   </View>
                 )}

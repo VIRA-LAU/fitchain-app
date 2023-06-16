@@ -103,7 +103,9 @@ export const ChooseGame = ({ navigation, route }: Props) => {
       gameCards.push(<DayHeader key={`future${index}`} day="In the Future" />);
     }
 
-    gameCards.push(<BookingCard key={index} booking={game} />);
+    gameCards.push(
+      <BookingCard key={index} booking={game} isPrevious={false} />
+    );
   });
 
   return (
@@ -203,17 +205,11 @@ export const ChooseGame = ({ navigation, route }: Props) => {
         </Text>
         {gameCards}
         {gameCards.length === 0 && (
-          <Text
-            style={{
-              height: 100,
-              fontFamily: "Inter-Medium",
-              color: colors.tertiary,
-              textAlign: "center",
-              textAlignVertical: "center",
-            }}
-          >
-            There are no games that match your search.
-          </Text>
+          <View style={styles.placeholder}>
+            <Text style={styles.placeholderText}>
+              There are no games that match your search.
+            </Text>
+          </View>
         )}
       </ScrollView>
     </AppHeader>
@@ -250,12 +246,22 @@ const makeStyles = (colors: MD3Colors) =>
     modalTitle: {
       fontFamily: "Inter-Medium",
       marginTop: 10,
+      marginBottom: 7,
       color: colors.tertiary,
     },
     selectionRow: {
       flexDirection: "row",
       alignItems: "center",
-      marginVertical: 10,
+      marginVertical: 7,
       height: 30,
+    },
+    placeholder: {
+      height: 100,
+      justifyContent: "center",
+    },
+    placeholderText: {
+      fontFamily: "Inter-Medium",
+      color: colors.tertiary,
+      textAlign: "center",
     },
   });

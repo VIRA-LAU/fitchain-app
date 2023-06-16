@@ -257,7 +257,7 @@ export const Profile = ({
               <View style={styles.placeholder}>
                 <Text style={styles.placeholderText}>
                   {route.params?.firstName
-                    ? `${route.params.firstName} ${route.params.lastName} has `
+                    ? `${route.params.firstName} has `
                     : "You have "}
                   no recent activities.
                 </Text>

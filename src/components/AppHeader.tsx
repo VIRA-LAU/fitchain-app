@@ -55,8 +55,7 @@ export const AppHeader = ({
   const styles = makeStyles(
     colors,
     darkMode,
-    StatusBar.currentHeight as number,
-    Platform
+    StatusBar.currentHeight as number
   );
 
   return (
@@ -75,6 +74,7 @@ export const AppHeader = ({
             style={{
               flexDirection: "row",
               alignItems: "center",
+              zIndex: 2,
             }}
           >
             {backEnabled && (
@@ -105,7 +105,7 @@ export const AppHeader = ({
             )}
             {middle}
           </View>
-          {right}
+          <View style={{ zIndex: 2 }}>{right}</View>
         </View>
         {searchBar && (
           <View style={styles.searchBarView}>
@@ -125,12 +125,7 @@ export const AppHeader = ({
   );
 };
 
-const makeStyles = (
-  colors: MD3Colors,
-  darkMode: boolean,
-  SBHeight: number,
-  platform: Object
-) =>
+const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
   StyleSheet.create({
     wrapperView: {
       position: "relative",
@@ -142,7 +137,6 @@ const makeStyles = (
       backgroundColor: colors.secondary,
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
-      paddingTop: Platform.OS == "ios" ? 20 : 0,
     },
     headerAbsolute: {
       position: "absolute",
@@ -151,12 +145,11 @@ const makeStyles = (
       paddingBottom: 20,
       width: "100%",
       zIndex: 1,
-      paddingTop: Platform.OS == "ios" ? 20 : 0,
     },
     headerContent: {
       flexGrow: 1,
-      paddingTop: SBHeight,
-      minHeight: 65 + SBHeight,
+      paddingTop: Platform.OS == "ios" ? 20 + SBHeight : SBHeight,
+      minHeight: Platform.OS == "ios" ? 85 + SBHeight : 65 + SBHeight,
       paddingHorizontal: 20,
       flexDirection: "row",
       justifyContent: "space-between",
@@ -187,7 +180,7 @@ const makeStyles = (
       left: 0,
       right: 0,
       height: 65,
-      top: SBHeight,
+      top: Platform.OS == "ios" ? 20 + SBHeight : SBHeight,
       alignItems: "center",
       justifyContent: "center",
     },

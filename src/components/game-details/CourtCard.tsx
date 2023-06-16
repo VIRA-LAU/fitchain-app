@@ -74,7 +74,7 @@ const makeStyles = (colors: MD3Colors) =>
       alignItems: "center",
     },
     lineStyle: {
-      borderWidth: 0.3,
+      borderWidth: 0.4,
       borderColor: colors.tertiary,
       width: "100%",
     },

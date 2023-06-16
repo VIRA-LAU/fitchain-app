@@ -4,7 +4,6 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
-  Pressable,
   TouchableOpacity,
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
@@ -165,7 +164,11 @@ export const VenueDetails = ({ navigation, route }: Props) => {
           >
             Photos
           </Text>
-          <ScrollView style={styles.photosView} horizontal>
+          <ScrollView
+            style={styles.photosView}
+            showsHorizontalScrollIndicator={false}
+            horizontal
+          >
             <Image
               source={require("assets/images/home/profile-background.png")}
               resizeMode={"contain"}
@@ -247,32 +250,37 @@ export const VenueDetails = ({ navigation, route }: Props) => {
             </View>
           )}
           {isPlayScreen && (
-            <TouchableOpacity
-              activeOpacity={0.6}
-              style={styles.bookCourtPressable}
-              onPress={() => {
-                navigation.push("BranchCourts", {
-                  branchLocation: playScreenBranch!.location,
-                  courts: playScreenBranch!.courts,
-                  venueName: venue!.name,
-                  bookingDetails: playScreenBookingDetails!,
-                });
-              }}
-            >
-              <IonIcon
-                name={"basketball-outline"}
-                size={30}
-                color={colors.secondary}
-              />
-              <View style={{ marginLeft: 5 }}>
-                <Text variant="titleSmall" style={styles.bookCourtButton}>
-                  Book Court
-                </Text>
-                <Text variant="labelMedium" style={{ color: colors.secondary }}>
-                  USD {pricesStr}/hr
-                </Text>
-              </View>
-            </TouchableOpacity>
+            <View style={styles.bookCourtPressableView}>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                style={styles.bookCourtPressable}
+                onPress={() => {
+                  navigation.push("BranchCourts", {
+                    branchLocation: playScreenBranch!.location,
+                    courts: playScreenBranch!.courts,
+                    venueName: venue!.name,
+                    bookingDetails: playScreenBookingDetails!,
+                  });
+                }}
+              >
+                <IonIcon
+                  name={"basketball-outline"}
+                  size={30}
+                  color={colors.secondary}
+                />
+                <View style={{ marginLeft: 5 }}>
+                  <Text variant="titleSmall" style={styles.bookCourtButton}>
+                    Book Court
+                  </Text>
+                  <Text
+                    variant="labelMedium"
+                    style={{ color: colors.secondary }}
+                  >
+                    USD {pricesStr}/hr
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           )}
         </View>
       </ScrollView>
@@ -340,12 +348,15 @@ const makeStyles = (
       flexDirection: "row",
       backgroundColor: colors.primary,
     },
+    bookCourtPressableView: {
+      marginTop: "auto",
+    },
     bookCourtPressable: {
       borderRadius: 5,
       justifyContent: "center",
       alignItems: "center",
       flexDirection: "row",
-      marginTop: "auto",
+      marginTop: 20,
       height: 50,
       width: "100%",
       alignSelf: "center",

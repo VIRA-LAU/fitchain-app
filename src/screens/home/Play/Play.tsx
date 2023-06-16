@@ -140,8 +140,9 @@ export const Play = ({
           setMapDisplayed(false);
         }}
       />
-      <View
+      <ScrollView
         style={[styles.wrapperView, { display: visible ? "flex" : "none" }]}
+        contentContainerStyle={styles.wrapperViewContent}
       >
         <View style={styles.header}>
           {mapDisplayed && (
@@ -508,7 +509,7 @@ export const Play = ({
             setRegion={setInitialMapRegion}
           />
         )}
-      </View>
+      </ScrollView>
 
       <DateTimePickerModal
         isVisible={dateTimePickerVisible !== false}
@@ -548,8 +549,36 @@ export const Play = ({
         onCancel={() => {
           setDateTimePickerVisible(false);
         }}
-        isDarkModeEnabled={true}
-        accentColor={colors.primary}
+        pickerContainerStyleIOS={{
+          backgroundColor: colors.secondary,
+        }}
+        buttonTextColorIOS={colors.primary}
+        textColor={"white"}
+        style={{
+          backgroundColor: colors.secondary,
+        }}
+        customCancelButtonIOS={(props) => (
+          <Pressable
+            style={({ pressed }) => ({
+              backgroundColor: pressed ? colors.secondary : colors.background,
+              padding: 15,
+              borderRadius: 10,
+            })}
+            onPress={() => {
+              setDateTimePickerVisible(false);
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 18,
+                color: colors.primary,
+                textAlign: "center",
+              }}
+            >
+              Cancel
+            </Text>
+          </Pressable>
+        )}
       />
     </React.Fragment>
   );
@@ -569,10 +598,13 @@ const makeStyles = (colors: MD3Colors) =>
       bottom: 0,
       height: "75%",
       width: "100%",
+    },
+    wrapperViewContent: {
+      flexGrow: 1,
       backgroundColor: colors.background,
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,
-      paddingTop: 20,
+      paddingVertical: 20,
     },
     header: {
       margin: 20,
