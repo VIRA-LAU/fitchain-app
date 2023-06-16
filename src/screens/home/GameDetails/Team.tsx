@@ -190,9 +190,11 @@ export const Team = ({
         )}
 
         {!playersLoading && (!players || players.length === 0) && (
-          <Text style={styles.placeholderText}>
-            There are no players on this team.
-          </Text>
+          <View style={styles.placeholder}>
+            <Text style={styles.placeholderText}>
+              There are no players on this team.
+            </Text>
+          </View>
         )}
       </View>
 
@@ -234,11 +236,13 @@ const makeStyles = (colors: MD3Colors) =>
     updatesView: {
       marginHorizontal: 20,
     },
-    placeholderText: {
+    placeholder: {
       height: 120,
+      justifyContent: "center",
+    },
+    placeholderText: {
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
       textAlign: "center",
-      textAlignVertical: "center",
     },
   });

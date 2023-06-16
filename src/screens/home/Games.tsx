@@ -255,17 +255,22 @@ const GameList = ({
       {isLoading && <BookingCardSkeleton />}
       {!isLoading && gameCards}
       {!isLoading && gameCards.length === 0 && (
-        <Text
+        <View
           style={{
             height: 100,
-            fontFamily: "Inter-Medium",
-            color: colors.tertiary,
-            textAlign: "center",
-            textAlignVertical: "center",
+            justifyContent: "center",
           }}
         >
-          You have no {type} {isFollowed && "followed "}games.
-        </Text>
+          <Text
+            style={{
+              fontFamily: "Inter-Medium",
+              color: colors.tertiary,
+              textAlign: "center",
+            }}
+          >
+            You have no {type} {isFollowed && "followed "}games.
+          </Text>
+        </View>
       )}
     </ScrollView>
   );

@@ -150,9 +150,11 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
         )}
       {!timeSlotsLoading &&
         (!filteredTimeSlots || filteredTimeSlots.length === 0) && (
-          <Text style={styles.placeholderText}>
-            There are no assigned time slots.
-          </Text>
+          <View style={styles.placeholder}>
+            <Text style={styles.placeholderText}>
+              There are no assigned time slots.
+            </Text>
+          </View>
         )}
     </ScrollView>
   );
@@ -189,11 +191,13 @@ const makeStyles = (colors: MD3Colors) =>
       marginBottom: 10,
       marginLeft: 10,
     },
-    placeholderText: {
+    placeholder: {
       height: 50,
+      justifyContent: "center",
+    },
+    placeholderText: {
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
       textAlign: "center",
-      textAlignVertical: "center",
     },
   });

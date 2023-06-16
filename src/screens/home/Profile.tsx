@@ -254,12 +254,14 @@ export const Profile = ({
                 <ActivityCard key={index} {...activity} />
               ))}
             {!activitiesLoading && (!activities || activities.length === 0) && (
-              <Text style={styles.placeholderText}>
-                {route.params?.firstName
-                  ? `${route.params.firstName} ${route.params.lastName} has `
-                  : "You have "}
-                no recent activities.
-              </Text>
+              <View style={styles.placeholder}>
+                <Text style={styles.placeholderText}>
+                  {route.params?.firstName
+                    ? `${route.params.firstName} ${route.params.lastName} has `
+                    : "You have "}
+                  no recent activities.
+                </Text>
+              </View>
             )}
           </View>
         </View>
@@ -382,12 +384,14 @@ const makeStyles = (
       borderColor: colors.secondary,
       borderBottomWidth: 1,
     },
-    placeholderText: {
+    placeholder: {
       height: 50,
+      justifyContent: "center",
+      marginBottom: -10,
+    },
+    placeholderText: {
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
       textAlign: "center",
-      textAlignVertical: "center",
-      marginBottom: -10,
     },
   });

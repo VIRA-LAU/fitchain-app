@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList } from "navigation";
@@ -63,9 +63,11 @@ export const VenueBranches = ({ navigation, route }: Props) => {
       backEnabled
     >
       {!isLoading && (!sortedBranches || sortedBranches.length === 0) && (
-        <Text style={styles.placeholderText}>
-          There are no branches that match your search.
-        </Text>
+        <View style={styles.placeholder}>
+          <Text style={styles.placeholderText}>
+            There are no branches that match your search.
+          </Text>
+        </View>
       )}
       <ScrollView contentContainerStyle={styles.wrapperView}>
         {isLoading && <BranchLocationSkeleton />}
@@ -108,11 +110,13 @@ const makeStyles = (colors: MD3Colors) =>
       marginVertical: 10,
       marginHorizontal: "3%",
     },
-    placeholderText: {
+    placeholder: {
       height: 150,
+      justifyContent: "center",
+    },
+    placeholderText: {
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
       textAlign: "center",
-      textAlignVertical: "center",
     },
   });

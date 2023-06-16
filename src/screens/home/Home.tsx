@@ -210,9 +210,11 @@ export const Home = ({ navigation, route }: Props) => {
             (!games ||
               (games.filter(({ type }: Game) => selectedSports[type]).length ===
                 0 && (
-                <Text style={styles.placeholderText}>
-                  You have no upcoming games.
-                </Text>
+                <View style={styles.placeholder}>
+                  <Text style={styles.placeholderText}>
+                    You have no upcoming games.
+                  </Text>
+                </View>
               )))}
         </View>
 
@@ -235,9 +237,11 @@ export const Home = ({ navigation, route }: Props) => {
           {!invitationsLoading &&
             !requestsLoading &&
             invitationsRequests.length === 0 && (
-              <Text style={styles.placeholderText}>
-                You have no pending invitations.
-              </Text>
+              <View style={styles.placeholder}>
+                <Text style={styles.placeholderText}>
+                  You have no pending invitations.
+                </Text>
+              </View>
             )}
         </View>
         <SectionTitle title="Venues" styles={styles} />
@@ -262,9 +266,11 @@ export const Home = ({ navigation, route }: Props) => {
           {!branchesLoading &&
             (!branchesVenues ||
               (branchesVenues.length === 0 && (
-                <Text style={styles.placeholderText}>
-                  There are no nearby venues.
-                </Text>
+                <View style={styles.placeholder}>
+                  <Text style={styles.placeholderText}>
+                    There are no nearby venues.
+                  </Text>
+                </View>
               )))}
         </View>
         <SectionTitle title="Bookings" styles={styles} />
@@ -280,9 +286,11 @@ export const Home = ({ navigation, route }: Props) => {
             (!bookings ||
               (bookings.filter(({ type }: Game) => selectedSports[type])
                 .length === 0 && (
-                <Text style={styles.placeholderText}>
-                  There are no nearby bookings.
-                </Text>
+                <View style={styles.placeholder}>
+                  <Text style={styles.placeholderText}>
+                    There are no nearby bookings.
+                  </Text>
+                </View>
               )))}
         </View>
         <SectionTitle title="Activities" styles={styles} />
@@ -298,9 +306,11 @@ export const Home = ({ navigation, route }: Props) => {
             (!activities ||
               activities.filter(({ type }) => selectedSports[type]).length ===
                 0) && (
-              <Text style={styles.placeholderText}>
-                You have no recent activities.
-              </Text>
+              <View style={styles.placeholder}>
+                <Text style={styles.placeholderText}>
+                  You have no recent activities.
+                </Text>
+              </View>
             )}
         </View>
       </ScrollView>
@@ -324,12 +334,13 @@ const makeStyles = (colors: MD3Colors) =>
       marginTop: 30,
       marginBottom: 20,
     },
-    placeholderText: {
+    placeholder: {
       height: 50,
+      justifyContent: "center",
+    },
+    placeholderText: {
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
       textAlign: "center",
-      textAlignVertical: "center",
-      marginBottom: -10,
     },
   });

@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -59,15 +60,9 @@ export const AppHeader = ({
   );
 
   return (
-    <View
-      style={[
-        styles.wrapperView,
-        Platform.OS === "ios"
-          ? {
-              paddingTop: 10,
-            }
-          : {},
-      ]}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={styles.wrapperView}
     >
       <View style={absolutePosition ? styles.headerAbsolute : styles.header}>
         <View style={styles.headerContent}>
@@ -80,7 +75,6 @@ export const AppHeader = ({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              paddingTop: Platform.OS === "ios" ? 20 : 0,
             }}
           >
             {backEnabled && (
@@ -99,7 +93,6 @@ export const AppHeader = ({
             )}
             {left}
           </View>
-          <View />
 
           <View style={styles.middleView}>
             {title && <Text style={styles.title}>{title}</Text>}
@@ -112,13 +105,7 @@ export const AppHeader = ({
             )}
             {middle}
           </View>
-          {right ? (
-            <View style={{ paddingTop: Platform.OS == "ios" ? 20 : 0 }}>
-              {right}
-            </View>
-          ) : (
-            <View />
-          )}
+          {right}
         </View>
         {searchBar && (
           <View style={styles.searchBarView}>
@@ -134,7 +121,7 @@ export const AppHeader = ({
         )}
       </View>
       <View style={{ flex: 1 }}>{children}</View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -155,6 +142,7 @@ const makeStyles = (
       backgroundColor: colors.secondary,
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
+      paddingTop: Platform.OS == "ios" ? 20 : 0,
     },
     headerAbsolute: {
       position: "absolute",
@@ -163,16 +151,17 @@ const makeStyles = (
       paddingBottom: 20,
       width: "100%",
       zIndex: 1,
+      paddingTop: Platform.OS == "ios" ? 20 : 0,
     },
     headerContent: {
       flexGrow: 1,
-      paddingTop: Platform.OS == "ios" ? 20 + SBHeight : SBHeight,
+      paddingTop: SBHeight,
       minHeight: 65 + SBHeight,
       paddingHorizontal: 20,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      paddingBottom: Platform.OS == "ios" ? 10 + SBHeight : 0,
+      paddingBottom: 0,
     },
     searchBarView: {
       borderWidth: 1,
@@ -201,7 +190,6 @@ const makeStyles = (
       top: SBHeight,
       alignItems: "center",
       justifyContent: "center",
-      paddingTop: Platform.OS == "ios" ? 20 : 0,
     },
     title: {
       color: darkMode ? "black" : "white",

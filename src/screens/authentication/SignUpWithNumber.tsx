@@ -90,6 +90,7 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
             defaultValue={phoneNumber}
             onChangeText={(text) => {
               setPhoneNumber(text);
+              scrollRef.current?.scrollToEnd();
             }}
           />
           <Button

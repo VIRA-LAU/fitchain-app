@@ -1,5 +1,5 @@
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import {
   AppHeader,
@@ -49,7 +49,7 @@ export const Venues = ({ navigation, route }: Props) => {
       searchBar
       setSearchBarText={setSearchBarText}
     >
-      <ScrollView style={styles.wrapperView}>
+      <ScrollView contentContainerStyle={styles.wrapperView}>
         {isLoading && <VenueCardSkeleton type="horizontal" />}
         {!isLoading &&
           filteredVenueBranches?.map((venueBranch: Branch, index: number) => (
@@ -62,9 +62,11 @@ export const Venues = ({ navigation, route }: Props) => {
           ))}
         {!isLoading &&
           (!filteredVenueBranches || filteredVenueBranches.length === 0) && (
-            <Text style={styles.placeholderText}>
-              There are no nearby venues.
-            </Text>
+            <View style={styles.placeholder}>
+              <Text style={styles.placeholderText}>
+                There are no nearby venues.
+              </Text>
+            </View>
           )}
       </ScrollView>
     </AppHeader>
@@ -74,13 +76,16 @@ export const Venues = ({ navigation, route }: Props) => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      margin: 20,
+      padding: 20,
+      paddingBottom: 40,
+    },
+    placeholder: {
+      height: 50,
+      justifyContent: "center",
     },
     placeholderText: {
-      height: 50,
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
       textAlign: "center",
-      textAlignVertical: "center",
     },
   });

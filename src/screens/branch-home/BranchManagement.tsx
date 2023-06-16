@@ -144,9 +144,11 @@ export const BranchManagement = ({
             ))}
           </View>
           {(!courtsInBranch || courtsInBranch.length === 0) && (
-            <Text style={styles.placeholderText}>
-              You have not assigned any courts yet.
-            </Text>
+            <View style={styles.placeholder}>
+              <Text style={styles.placeholderText}>
+                You have not assigned any courts yet.
+              </Text>
+            </View>
           )}
         </View>
       </ScrollView>
@@ -205,11 +207,13 @@ const makeStyles = (
       marginBottom: 15,
       textAlign: "center",
     },
-    placeholderText: {
+    placeholder: {
       height: 50,
+      justifyContent: "center",
+    },
+    placeholderText: {
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
       textAlign: "center",
-      textAlignVertical: "center",
     },
   });

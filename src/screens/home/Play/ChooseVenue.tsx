@@ -78,9 +78,11 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
         )}
         {!(branchesLoading || sortingLoading) &&
           (!sortedBranches || sortedBranches.length === 0) && (
-            <Text style={styles.placeholderText}>
-              There are no venue branches that match your search.
-            </Text>
+            <View style={styles.placeholder}>
+              <Text style={styles.placeholderText}>
+                There are no venue branches that match your search.
+              </Text>
+            </View>
           )}
         {!(branchesLoading || sortingLoading) &&
           sortedBranches?.map((venuesBranch: Branch, index: number) => (
@@ -117,11 +119,13 @@ const makeStyles = (colors: MD3Colors) =>
     wrapperView: {
       margin: 20,
     },
-    placeholderText: {
+    placeholder: {
       height: 100,
+      justifyContent: "center",
+    },
+    placeholderText: {
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
       textAlign: "center",
-      textAlignVertical: "center",
     },
   });

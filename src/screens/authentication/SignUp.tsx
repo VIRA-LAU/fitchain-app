@@ -76,11 +76,11 @@ export const SignUp = ({
 
   return (
     <AppHeader>
+      <Image
+        source={require("assets/images/signup/background.png")}
+        style={styles.background}
+      />
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
-        <Image
-          source={require("assets/images/signup/background.png")}
-          style={styles.background}
-        />
         <Image source={require("assets/images/Logo.png")} style={styles.logo} />
 
         <View style={styles.inputView}>
@@ -183,18 +183,19 @@ export const SignUp = ({
             <Text style={styles.buttonText}>Sign up with Apple</Text>
           </View>
 
-          <Button
-            textColor="black"
-            style={styles.buttonView}
-            icon={({ size, color }) => (
-              <OctIcon name="device-mobile" size={size} color={color} />
-            )}
-            onPress={() =>
-              navigation.push("SignUpWithNumber", { isVenue: false })
-            }
-          >
-            <Text style={styles.buttonText}>Sign up with Mobile Number</Text>
-          </Button>
+          <View style={styles.buttonView}>
+            <Button
+              textColor="black"
+              icon={({ size, color }) => (
+                <OctIcon name="device-mobile" size={size} color={color} />
+              )}
+              onPress={() =>
+                navigation.push("SignUpWithNumber", { isVenue: false })
+              }
+            >
+              <Text style={styles.buttonText}>Sign up with Mobile Number</Text>
+            </Button>
+          </View>
         </View>
         <View
           style={[styles.separatorView, { marginTop: 15, marginBottom: 15 }]}
@@ -203,16 +204,20 @@ export const SignUp = ({
           <Text style={[styles.h2, styles.separatorText]}>Venue Account</Text>
           <View style={styles.separator}></View>
         </View>
-        <Button
-          textColor={colors.primary}
-          style={{ width: "80%" }}
-          icon={({ size, color }) => (
-            <OctIcon name="organization" size={size} color={color} />
-          )}
-          onPress={() => navigation.push("SignUpWithNumber", { isVenue: true })}
-        >
-          <Text style={styles.buttonText}>Sign up as a Venue</Text>
-        </Button>
+        <View style={{ width: "80%" }}>
+          <Button
+            textColor={colors.primary}
+            style={{ flexGrow: 1 }}
+            icon={({ size, color }) => (
+              <OctIcon name="organization" size={size} color={color} />
+            )}
+            onPress={() =>
+              navigation.push("SignUpWithNumber", { isVenue: true })
+            }
+          >
+            <Text style={styles.buttonText}>Sign up as a Venue</Text>
+          </Button>
+        </View>
       </ScrollView>
     </AppHeader>
   );
@@ -224,7 +229,7 @@ const makeStyles = (fontScale: number, colors: MD3Colors) =>
       flexGrow: 1,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: "black",
+      paddingVertical: 20,
     },
     background: {
       position: "absolute",

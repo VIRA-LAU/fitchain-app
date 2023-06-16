@@ -210,20 +210,10 @@ export const SignUpWithNumberDetails = ({
               value={password}
               ref={passwordRef}
               onFocus={() => {
-                passwordRef.current?.measureInWindow((x, y) =>
-                  scrollRef.current?.scrollTo({
-                    y,
-                    animated: true,
-                  })
-                );
+                scrollRef.current?.scrollToEnd();
               }}
               onChangeText={(password) => {
-                passwordRef.current?.measureInWindow((x, y) =>
-                  scrollRef.current?.scrollTo({
-                    y,
-                    animated: true,
-                  })
-                );
+                scrollRef.current?.scrollToEnd();
                 checkPasswordValidity(password.trim());
               }}
             />

@@ -94,16 +94,17 @@ export const VenueDetails = ({ navigation, route }: Props) => {
                   </View>
                 </TouchableOpacity>
 
-                <Button
-                  icon={() => (
-                    <FeatherIcon name="thumbs-up" size={22} color={"white"} />
-                  )}
-                  style={{ borderRadius: 5, width: "50%" }}
-                  textColor={"white"}
-                  buttonColor={"transparent"}
-                >
-                  Follow Venue
-                </Button>
+                <View style={{ borderRadius: 5, width: "50%" }}>
+                  <Button
+                    icon={() => (
+                      <FeatherIcon name="thumbs-up" size={22} color={"white"} />
+                    )}
+                    textColor={"white"}
+                    buttonColor={"transparent"}
+                  >
+                    Follow Venue
+                  </Button>
+                </View>
               </View>
             )}
           </View>

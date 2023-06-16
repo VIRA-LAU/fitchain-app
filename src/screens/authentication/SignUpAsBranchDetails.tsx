@@ -270,16 +270,12 @@ export const SignUpAsVenueDetails = ({
                 value={password}
                 ref={passwordRef}
                 onFocus={() => {
-                  passwordRef.current?.measureInWindow((x, y) =>
-                    scrollRef.current?.scrollTo({
-                      y,
-                      animated: true,
-                    })
-                  );
+                  scrollRef.current?.scrollToEnd();
                 }}
-                onChangeText={(password) =>
-                  checkPasswordValidity(password.trim())
-                }
+                onChangeText={(password) => {
+                  checkPasswordValidity(password.trim());
+                  scrollRef.current?.scrollToEnd();
+                }}
               />
             </View>
             <Button

@@ -36,10 +36,7 @@ const CodeInput = ({
       ref={refs[index]}
       onFocus={() => {
         refs[index].current?.measureInWindow((x, y) =>
-          scrollRef.current?.scrollTo({
-            y,
-            animated: true,
-          })
+          scrollRef.current?.scrollToEnd()
         );
       }}
       onChangeText={(digit) => {
