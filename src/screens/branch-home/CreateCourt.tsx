@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   Pressable,
   TextInput,
+  useWindowDimensions,
 } from "react-native";
 import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -53,7 +54,8 @@ export const CreateCourt = ({
   existingInfo?: existingCourtType;
 }) => {
   const { colors } = useTheme();
-  const styles = makeStyles(colors);
+  const windowWidth = useWindowDimensions().width;
+  const styles = makeStyles(colors, windowWidth);
 
   const [name, setName] = useState<string>(existingInfo.name);
   const [price, setPrice] = useState<string>(existingInfo.price.toString());
@@ -370,7 +372,7 @@ export const CreateCourt = ({
   );
 };
 
-const makeStyles = (colors: MD3Colors) =>
+const makeStyles = (colors: MD3Colors, windowWidth: number) =>
   StyleSheet.create({
     backgroundView: {
       position: "absolute",
@@ -470,7 +472,8 @@ const makeStyles = (colors: MD3Colors) =>
     timeSlotView: {
       backgroundColor: colors.secondary,
       borderRadius: 20,
-      paddingHorizontal: 15,
+      width: 0.32 * (windowWidth - 40),
+      alignItems: "center",
       paddingVertical: 10,
       marginVertical: 5,
       borderWidth: 1,

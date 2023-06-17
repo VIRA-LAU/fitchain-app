@@ -21,6 +21,18 @@ export const BranchCourts = ({ navigation, route }: Props) => {
   const [pressedCourt, setPressedCourt] = useState<Court | null>(null);
   const [timeSlotVisible, setTimeSlotVisible] = useState<boolean>(false);
 
+  useEffect(() => {
+    selectedTimeSlots.sort((a, b) => {
+      if (a.startTime < b.startTime) {
+        return -1;
+      }
+      if (a.startTime < b.startTime) {
+        return 1;
+      }
+      return 0;
+    });
+  }, [JSON.stringify(selectedTimeSlots)]);
+
   return (
     <AppHeader
       absolutePosition={false}
@@ -43,7 +55,11 @@ export const BranchCourts = ({ navigation, route }: Props) => {
             if (bookingDetails && selectedTimeSlots)
               navigation.push("VenueBookingDetails", {
                 venueName: venueName,
+                courtName: pressedCourt!.name,
                 courtType: pressedCourt!.courtType,
+                courtRating: pressedCourt!.rating,
+                courtMaxPlayers: pressedCourt!.nbOfPlayers,
+                selectedTimeSlots,
                 price: pressedCourt!.price,
                 bookingDetails: {
                   ...bookingDetails,

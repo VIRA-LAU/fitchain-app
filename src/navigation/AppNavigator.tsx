@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList } from "./tabScreenOptions";
-import { GameType, Branch } from "src/types";
+import { GameType, Branch, TimeSlot } from "src/types";
 import { getData } from "src/utils/AsyncStorage";
 import { UserContext } from "src/utils";
 import { useUserDetailsQuery, useBranchByIdQuery } from "src/api";
@@ -27,7 +27,11 @@ export type HomeStackParamList = {
   };
   VenueBookingDetails: {
     venueName: string;
+    courtName: string;
     courtType: string;
+    courtRating: number;
+    courtMaxPlayers: number;
+    selectedTimeSlots: TimeSlot[];
     price: number;
     bookingDetails: {
       courtId: number;

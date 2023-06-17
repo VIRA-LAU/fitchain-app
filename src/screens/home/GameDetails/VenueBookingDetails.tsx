@@ -2,7 +2,6 @@ import {
   View,
   StyleSheet,
   Image,
-  Pressable,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
@@ -12,18 +11,48 @@ import { AppHeader } from "src/components";
 import Feather from "react-native-vector-icons/Feather";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
 import { HomeStackParamList } from "src/navigation";
 import { useCreateGameMutation } from "src/api";
+import { useState } from "react";
 
 type Props = StackScreenProps<HomeStackParamList, "VenueBookingDetails">;
 
 export const VenueBookingDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
-  const { venueName, courtType, price, bookingDetails } = route.params;
   const styles = makeStyles(colors);
 
+  const {
+    venueName,
+    courtName,
+    courtType,
+    courtRating,
+    courtMaxPlayers,
+    selectedTimeSlots,
+    price,
+    bookingDetails,
+  } = route.params;
+
   const { mutate: createGame, isLoading } = useCreateGameMutation();
+
+  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(
+    bookingDetails.nbOfPlayers
+  );
+
+  const dateStr = JSON.parse(bookingDetails.date);
+  var bookedHours = 0;
+
+  selectedTimeSlots.forEach((timeslot) => {
+    const startDate = new Date(
+      dateStr.substring(0, dateStr.indexOf("T") + 1) + timeslot.startTime
+    );
+    const endDate = new Date(
+      dateStr.substring(0, dateStr.indexOf("T") + 1) + timeslot.endTime
+    );
+    const timeDiff = (endDate.getTime() - startDate.getTime()) / 1000 / 3600;
+    bookedHours += timeDiff;
+  });
 
   return (
     <AppHeader
@@ -41,11 +70,15 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             />
             <View style={styles.headerContentInfo}>
               <Text style={{ color: "white", fontFamily: "Inter-SemiBold" }}>
-                {courtType}
+                {courtName}
               </Text>
-              <Text style={styles.headerContentText}>Outdoors(?)</Text>
-              <Text style={styles.headerContentText}>Grass floor(?)</Text>
-              <Text style={styles.headerContentText}>Air-Conditioned(?)</Text>
+              <Text style={styles.headerContentText}>{courtType}</Text>
+              <View style={styles.rating}>
+                <FeatherIcon name={`star`} color={colors.tertiary} size={14} />
+                <Text style={[styles.headerContentText, { marginLeft: 5 }]}>
+                  {courtRating.toFixed(1)}
+                </Text>
+              </View>
             </View>
             <Image
               source={require("assets/images/home/basketball-hub-icon.png")}
@@ -85,16 +118,35 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
             <Text style={styles.labelText}>How many players?</Text>
           </View>
           <View style={styles.contentIconView}>
-            <Feather name="minus-circle" color={colors.primary} size={24} />
+            <TouchableOpacity
+              onPress={() => {
+                if (numberOfPlayers > 1)
+                  setNumberOfPlayers((oldNum) => oldNum - 1);
+              }}
+            >
+              <Feather name="minus-circle" color={colors.primary} size={24} />
+            </TouchableOpacity>
             <Text
               style={[
                 styles.labelText,
-                { fontSize: 18, marginHorizontal: 10, color: "white" },
+                {
+                  fontSize: 18,
+                  width: 40,
+                  textAlign: "center",
+                  color: "white",
+                },
               ]}
             >
-              6
+              {numberOfPlayers}
             </Text>
-            <Feather name="plus-circle" color={colors.primary} size={24} />
+            <TouchableOpacity
+              onPress={() => {
+                if (numberOfPlayers < courtMaxPlayers)
+                  setNumberOfPlayers((oldNum) => oldNum + 1);
+              }}
+            >
+              <Feather name="plus-circle" color={colors.primary} size={24} />
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.contentView}>
@@ -111,7 +163,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
                   })
                   .slice(0, -6)}
               </Text>
-              <Feather name="edit-3" color={"white"} size={16} />
+              {/* <Feather name="edit-3" color={"white"} size={16} /> */}
             </View>
           </View>
           <View style={styles.contentRow}>
@@ -120,37 +172,37 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
               <Text style={[styles.valueText, { marginRight: 10 }]}>
                 {bookingDetails.startTime} - {bookingDetails.endTime}
               </Text>
-              <Feather name="edit-3" color={"white"} size={16} />
+              {/* <Feather name="edit-3" color={"white"} size={16} /> */}
             </View>
           </View>
         </View>
         <View style={styles.contentView}>
           <View style={styles.contentRow}>
-            <Text style={styles.labelText}>Venue Price</Text>
+            <Text style={styles.labelText}>Court Price</Text>
             <Text
               style={[
                 styles.valueText,
                 { marginRight: 10, color: colors.tertiary },
               ]}
             >
-              USD {price}
+              USD {price}/hr
             </Text>
           </View>
           <View style={styles.contentRow}>
-            <Text style={styles.labelText}>Service Price</Text>
+            <Text style={styles.labelText}>Booked Hours</Text>
             <Text
               style={[
                 styles.valueText,
                 { marginRight: 10, color: colors.tertiary },
               ]}
             >
-              USD ??
+              {bookedHours}
             </Text>
           </View>
           <View style={styles.contentRow}>
             <Text style={[styles.labelText, { color: "white" }]}>Total</Text>
             <Text style={[styles.valueText, { marginRight: 10 }]}>
-              USD {price}
+              USD {price * bookedHours}
             </Text>
           </View>
         </View>
@@ -165,7 +217,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
               activeOpacity={0.6}
               style={styles.paymentView}
               onPress={() => {
-                const bookingDate = new Date(JSON.parse(bookingDetails.date));
+                const bookingDate = new Date(dateStr);
                 createGame({
                   courtId: bookingDetails.courtId,
                   timeSlotIds: bookingDetails.timeSlotIds,
@@ -178,7 +230,9 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
                 <Text style={{ fontFamily: "Inter-Medium", fontSize: 10 }}>
                   TOTAL
                 </Text>
-                <Text style={{ fontFamily: "Inter-Medium" }}>USD 24.20</Text>
+                <Text style={{ fontFamily: "Inter-Medium" }}>
+                  USD {price * bookedHours}
+                </Text>
               </View>
               <Text style={{ fontFamily: "Inter-SemiBold" }}>
                 Continue To Payment
@@ -250,6 +304,10 @@ const makeStyles = (colors: MD3Colors) =>
     valueText: {
       fontFamily: "Inter-SemiBold",
       color: "white",
+    },
+    rating: {
+      flexDirection: "row",
+      alignItems: "center",
     },
     paymentViewWrapper: {
       marginTop: "auto",

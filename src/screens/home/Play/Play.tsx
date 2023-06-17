@@ -604,7 +604,7 @@ const makeStyles = (colors: MD3Colors) =>
       backgroundColor: colors.background,
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,
-      paddingVertical: 20,
+      paddingTop: 20,
     },
     header: {
       margin: 20,
