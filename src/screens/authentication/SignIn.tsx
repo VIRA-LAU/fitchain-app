@@ -15,9 +15,9 @@ import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIc
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { AppHeader } from "src/components";
 import { useLoginUserMutation } from "src/api";
-type Props = StackScreenProps<SignUpStackParamList, "SignUp">;
+type Props = StackScreenProps<SignUpStackParamList, "SignIn">;
 
-export const SignUp = ({
+export const SignIn = ({
   navigation,
   route,
   setSignedIn,
@@ -68,6 +68,12 @@ export const SignUp = ({
   useEffect(() => {
     if (error && error?.response?.data?.message === "CREDENTIALS_INCORRECT")
       setErrorMessage("Invalid email or password.");
+
+    if (error && error?.response?.data?.message === "EMAIL_NOT_VERIFIED")
+      navigation.push("VerifyEmail", {
+        userId: error.response.data.userId!,
+        isVenue: error.response.data.isVenue!,
+      });
   }, [error]);
 
   const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
@@ -81,7 +87,7 @@ export const SignUp = ({
         style={styles.background}
       />
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
-        <Image source={require("assets/images/Logo.png")} style={styles.logo} />
+        <Image source={require("assets/images/Logo.png")} />
 
         <View style={styles.inputView}>
           <Text variant="labelLarge" style={styles.h2}>
@@ -126,6 +132,7 @@ export const SignUp = ({
               selectionColor={colors.primary}
               secureTextEntry
               ref={passwordRef}
+              value={password}
               onChangeText={(password) => {
                 setPassword(password.trim());
                 setErrorMessage("");
@@ -185,15 +192,18 @@ export const SignUp = ({
 
           <View style={styles.buttonView}>
             <Button
+              style={{
+                minWidth: "100%",
+                minHeight: "100%",
+                borderRadius: 7,
+              }}
               textColor="black"
               icon={({ size, color }) => (
-                <OctIcon name="device-mobile" size={size} color={color} />
+                <OctIcon name="mail" size={size} color={color} />
               )}
-              onPress={() =>
-                navigation.push("SignUpWithNumber", { isVenue: false })
-              }
+              onPress={() => navigation.push("SignUpWithEmail")}
             >
-              <Text style={styles.buttonText}>Sign up with Mobile Number</Text>
+              <Text style={styles.buttonText}>Sign up with Email</Text>
             </Button>
           </View>
         </View>
@@ -207,13 +217,11 @@ export const SignUp = ({
         <View style={{ width: "80%" }}>
           <Button
             textColor={colors.primary}
-            style={{ flexGrow: 1 }}
+            style={{ flexGrow: 1, borderRadius: 7 }}
             icon={({ size, color }) => (
               <OctIcon name="organization" size={size} color={color} />
             )}
-            onPress={() =>
-              navigation.push("SignUpWithNumber", { isVenue: true })
-            }
+            onPress={() => navigation.push("SignUpAsBranch")}
           >
             <Text style={styles.buttonText}>Sign up as a Venue</Text>
           </Button>
@@ -229,15 +237,12 @@ const makeStyles = (fontScale: number, colors: MD3Colors) =>
       flexGrow: 1,
       alignItems: "center",
       justifyContent: "center",
-      paddingVertical: 20,
+      paddingVertical: "15%",
     },
     background: {
       position: "absolute",
       height: "100%",
       width: "100%",
-    },
-    logo: {
-      alignSelf: "center",
     },
     buttonsView: {
       marginTop: "4%",

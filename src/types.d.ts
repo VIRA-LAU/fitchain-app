@@ -106,8 +106,8 @@ export interface Branch {
   rating: number;
   managerFirstName: string;
   managerLastName: string;
-  managerEmail: string;
-  managerPhoneNumber: number;
+  email: string;
+  phoneNumber: number;
   hash: string;
 }
 

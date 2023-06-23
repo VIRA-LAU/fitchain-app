@@ -12,24 +12,16 @@ import { AppHeader, MapComponent } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Dispatch, SetStateAction, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useState } from "react";
 import { useCreateBranchMutation, useLocationNameQuery } from "src/api";
 import { LatLng, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
-type Props = StackScreenProps<SignUpStackParamList, "SignUpAsVenueDetails">;
+type Props = StackScreenProps<SignUpStackParamList, "SignUpAsBranch">;
 
-export const SignUpAsVenueDetails = ({
-  navigation,
-  route,
-  setSignedIn,
-}: {
-  navigation: Props["navigation"];
-  route: Props["route"];
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
-}) => {
+export const SignUpAsBranch = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -44,7 +36,7 @@ export const SignUpAsVenueDetails = ({
   const [locationDescription, setLocationDescription] = useState("");
   const [managerFirstName, setManagerFirstName] = useState("");
   const [managerLastName, setManagerLastName] = useState("");
-  const [managerEmail, setManagerEmail] = useState("");
+  const [email, setemail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [mapVisible, setMapVisible] = useState<boolean>(false);
 
@@ -52,7 +44,7 @@ export const SignUpAsVenueDetails = ({
     mutate: createBranch,
     isLoading: createBranchLoading,
     error,
-  } = useCreateBranchMutation(setSignedIn);
+  } = useCreateBranchMutation();
   const {
     data: autoLocationDescription,
     refetch: getAutoLocationDescription,
@@ -86,9 +78,9 @@ export const SignUpAsVenueDetails = ({
       setErrorMessage("Email already in use.");
   }, [error]);
 
-  const validateEmail = (managerEmail: string) => {
+  const validateEmail = (email: string) => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return reg.test(managerEmail);
+    return reg.test(email);
   };
 
   const signUp = () => {
@@ -96,20 +88,18 @@ export const SignUpAsVenueDetails = ({
       checkPasswordValidity(password) &&
       locationDescription.length > 0 &&
       branchLocation &&
-      validateEmail(managerEmail) &&
+      validateEmail(email) &&
       managerFirstName.length > 0 &&
       managerLastName.length > 0
     ) {
       let data = {
-        isVenue: true,
         venueId: 1,
         location: locationDescription,
         latitude: branchLocation.latitude,
         longitude: branchLocation.longitude,
         managerFirstName,
         managerLastName,
-        phoneNumber: route.params.phoneNumber,
-        managerEmail,
+        email,
         password,
       };
       setErrorMessage("");
@@ -152,10 +142,7 @@ export const SignUpAsVenueDetails = ({
   return (
     <AppHeader navigation={navigation} route={route} backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
-        <Image
-          source={require("assets/images/Logo-Icon.png")}
-          style={styles.logo}
-        />
+        <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
           Branch Account Details
         </Text>
@@ -172,6 +159,7 @@ export const SignUpAsVenueDetails = ({
                 style={{ marginHorizontal: 15 }}
               />
               <TextInput
+                value={managerFirstName}
                 style={styles.textInput}
                 placeholder={"Manager First Name"}
                 placeholderTextColor={"#a8a8a8"}
@@ -201,6 +189,7 @@ export const SignUpAsVenueDetails = ({
                 style={{ marginHorizontal: 15 }}
               />
               <TextInput
+                value={managerLastName}
                 style={styles.textInput}
                 placeholder={"Manager Last Name"}
                 placeholderTextColor={"#a8a8a8"}
@@ -231,8 +220,9 @@ export const SignUpAsVenueDetails = ({
                 style={{ marginHorizontal: 15 }}
               />
               <TextInput
+                value={email}
                 style={styles.textInput}
-                placeholder={"Venue Email"}
+                placeholder={"Branch Email"}
                 placeholderTextColor={"#a8a8a8"}
                 selectionColor={colors.primary}
                 textContentType="emailAddress"
@@ -249,7 +239,7 @@ export const SignUpAsVenueDetails = ({
                   );
                 }}
                 onChangeText={(text) => {
-                  setManagerEmail(text.trim());
+                  setemail(text.trim());
                   setErrorMessage("");
                 }}
               />
@@ -262,12 +252,12 @@ export const SignUpAsVenueDetails = ({
                 style={{ marginHorizontal: 15 }}
               />
               <TextInput
+                value={password}
                 style={styles.textInput}
                 placeholder={"Password"}
                 placeholderTextColor={"#a8a8a8"}
                 selectionColor={colors.primary}
                 secureTextEntry={true}
-                value={password}
                 ref={passwordRef}
                 onFocus={() => {
                   scrollRef.current?.scrollToEnd();
@@ -280,8 +270,9 @@ export const SignUpAsVenueDetails = ({
             </View>
             <Button
               icon={"map-marker-outline"}
-              style={{ marginTop: "7%" }}
+              style={{ marginTop: "7%", borderRadius: 7 }}
               onPress={() => {
+                setErrorMessage("");
                 setMapVisible(true);
               }}
             >
@@ -397,9 +388,8 @@ const makeStyles = (colors: MD3Colors) =>
       flexGrow: 1,
       backgroundColor: colors.background,
       alignItems: "center",
-    },
-    logo: {
-      marginTop: "25%",
+      justifyContent: "center",
+      paddingVertical: "5%",
     },
     titleText: {
       marginTop: "5%",
@@ -443,5 +433,6 @@ const makeStyles = (colors: MD3Colors) =>
       marginTop: "10%",
       width: "100%",
       flexGrow: 1,
+      marginBottom: "-5%",
     },
   });

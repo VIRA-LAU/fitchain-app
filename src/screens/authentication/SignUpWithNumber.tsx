@@ -32,7 +32,7 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
 
     //   });
     let code = generateCode();
-    navigation.push("VerifySignUpWithNumber", {
+    navigation.push("VerifyNumber", {
       code,
       phoneNumber,
       isVenue: route.params.isVenue,
@@ -44,10 +44,7 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
   return (
     <AppHeader navigation={navigation} route={route} backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
-        <Image
-          source={require("assets/images/Logo-Icon.png")}
-          style={styles.logo}
-        />
+        <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
           Welcome to Fitchain
         </Text>
@@ -112,10 +109,8 @@ const makeStyles = (colors: MD3Colors) =>
     wrapperView: {
       flexGrow: 1,
       alignItems: "center",
-      paddingBottom: 20,
-    },
-    logo: {
-      marginTop: "25%",
+      justifyContent: "center",
+      paddingVertical: "5%",
     },
     titleText: {
       marginTop: "5%",

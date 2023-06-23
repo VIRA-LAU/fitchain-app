@@ -9,12 +9,9 @@ import { Dispatch, SetStateAction, useRef } from "react";
 import { useState } from "react";
 import { useUpdateUserDataMutation } from "src/api";
 
-type Props = StackScreenProps<
-  SignUpStackParamList,
-  "SignUpWithNumberExtraDetails"
->;
+type Props = StackScreenProps<SignUpStackParamList, "SignUpExtraDetails">;
 
-export const SignUpWithNumberExtraDetails = ({
+export const SignUpExtraDetails = ({
   navigation,
   route,
   setSignedIn,
@@ -51,16 +48,13 @@ export const SignUpWithNumberExtraDetails = ({
   return (
     <AppHeader navigation={navigation} route={route} backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
-        <Image
-          source={require("assets/images/Logo-Icon.png")}
-          style={styles.logo}
-        />
+        <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
           You're almost there!
         </Text>
         <View style={styles.inputView}>
           <Text variant="labelLarge" style={styles.h2}>
-            Please provide the following information
+            Please provide the following information.
           </Text>
           <View style={styles.textInputView}>
             <MaterialCommunityIcon
@@ -174,10 +168,8 @@ const makeStyles = (colors: MD3Colors) =>
       flexGrow: 1,
       backgroundColor: colors.background,
       alignItems: "center",
-      paddingBottom: 20,
-    },
-    logo: {
-      marginTop: "25%",
+      justifyContent: "center",
+      paddingVertical: "5%",
     },
     titleText: {
       marginTop: "5%",

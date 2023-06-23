@@ -25,14 +25,28 @@ type BranchRes = Branch & {
 type Response = (UserRes | BranchRes) & { isVenue: boolean };
 
 const LoginUser = async (data: Request) => {
-  return await client.post("/auth/signin", data).then((res) => res.data);
+  return await client
+    .post("/auth/signin", data)
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error("login-mutation", error?.response?.data);
+      throw error;
+    });
 };
 
 export const useLoginUserMutation = (
   setSignedIn: React.Dispatch<React.SetStateAction<"player" | "venue" | null>>
 ) => {
   const { setUserData, setIsVenue, setVenueData } = useContext(UserContext);
-  return useMutation<Response, AxiosError<{ message: string }>, Request>({
+  return useMutation<
+    Response,
+    AxiosError<{
+      message: string;
+      userId?: number;
+      isVenue?: boolean;
+    }>,
+    Request
+  >({
     mutationFn: LoginUser,
     onSuccess: async (data) => {
       if (data.isVenue) {
@@ -43,7 +57,7 @@ export const useLoginUserMutation = (
           branchLocation: (data as BranchRes).branchLocation,
           managerFirstName: (data as BranchRes).managerFirstName,
           managerLastName: (data as BranchRes).managerLastName,
-          managerEmail: (data as BranchRes).managerEmail,
+          email: (data as BranchRes).email,
           token: (data as BranchRes).access_token,
         };
         setIsVenue(true);
@@ -56,7 +70,7 @@ export const useLoginUserMutation = (
           "branchLocation",
           "managerFirstName",
           "managerLastName",
-          "managerEmail",
+          "email",
           "token",
         ];
         const values = [
@@ -67,7 +81,7 @@ export const useLoginUserMutation = (
           (data as BranchRes).branchLocation,
           (data as BranchRes).managerFirstName,
           (data as BranchRes).managerLastName,
-          (data as BranchRes).managerEmail,
+          (data as BranchRes).email,
           (data as BranchRes).access_token,
         ];
         storeData(keys, values);

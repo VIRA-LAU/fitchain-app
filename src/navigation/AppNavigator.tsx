@@ -130,7 +130,7 @@ export const AppNavigator = () => {
         const branchLocation: string = await getData("branchLocation");
         const managerFirstName: string = await getData("managerFirstName");
         const managerLastName: string = await getData("managerLastName");
-        const managerEmail: string = await getData("managerEmail");
+        const email: string = await getData("email");
         const token: string = await getData("token");
         if (
           branchId &&
@@ -139,7 +139,7 @@ export const AppNavigator = () => {
           branchLocation &&
           managerFirstName &&
           managerLastName &&
-          managerEmail &&
+          email &&
           token
         ) {
           setVenueData({
@@ -149,7 +149,7 @@ export const AppNavigator = () => {
             branchLocation,
             managerFirstName,
             managerLastName,
-            managerEmail,
+            email,
             token,
           });
           setTokenFoundOnOpen(true);
@@ -193,7 +193,7 @@ export const AppNavigator = () => {
     return (
       <SignUpNavigator
         setSignedIn={setSignedIn}
-        storedEmail={userData?.email || venueData?.managerEmail}
+        storedEmail={userData?.email || venueData?.email}
         verifyLoading={verifyUserLoading || verifyVenueLoading}
       />
     );

@@ -3,35 +3,46 @@ import { StyleSheet, View, TextInput, Image, ScrollView } from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { Button, useTheme, Text } from "react-native-paper";
-import React, { useRef, useState } from "react";
+import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useVerifyBranchEmailMutation, useVerifyEmailMutation } from "src/api";
 
-type Props = StackScreenProps<SignUpStackParamList, "VerifySignUpWithNumber">;
+type Props = StackScreenProps<SignUpStackParamList, "VerifyEmail">;
 
 const CodeInput = ({
   index,
+  code,
   colors,
   styles,
   setCode,
+  setErrorMessage,
   refs,
   scrollRef,
 }: {
   index: number;
+  code: string[];
   colors: MD3Colors;
   styles: any;
-  setCode: React.Dispatch<React.SetStateAction<(number | null)[]>>;
+  setCode: React.Dispatch<React.SetStateAction<string[]>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
   refs: React.MutableRefObject<TextInput | null>[];
   scrollRef: React.MutableRefObject<ScrollView | null>;
 }) => {
   return (
     <TextInput
       key={index}
+      value={code[index]}
       selectionColor={colors.primary}
       maxLength={1}
-      keyboardType={"numeric"}
       textContentType={"oneTimeCode"}
       style={styles.codeInput}
-      placeholder="0"
+      placeholder="-"
       placeholderTextColor={colors.tertiary}
       ref={refs[index]}
       onFocus={() => {
@@ -39,13 +50,14 @@ const CodeInput = ({
           scrollRef.current?.scrollToEnd()
         );
       }}
-      onChangeText={(digit) => {
+      onChangeText={(character) => {
         setCode((code) =>
-          code.map((codeDigit, codeIndex) =>
-            index === codeIndex ? parseInt(digit) : codeDigit
+          code.map((codeCharacter, codeIndex) =>
+            index === codeIndex ? character.toUpperCase() : codeCharacter
           )
         );
-        if (!isNaN(parseInt(digit)))
+        setErrorMessage("");
+        if (character !== "")
           if (index < 3) refs[index + 1].current?.focus();
           else refs[index].current?.blur();
       }}
@@ -53,25 +65,33 @@ const CodeInput = ({
   );
 };
 
-export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
+export const VerifyEmail = ({
+  navigation,
+  route,
+  setSignedIn,
+}: {
+  navigation: Props["navigation"];
+  route: Props["route"];
+  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const [code, setCode] = useState<(number | null)[]>([null, null, null, null]);
-  const [correctCode, setCorrectCode] = useState(route.params.code);
-  const { isVenue } = route.params;
 
-  const verifyCode = () => {
-    if (code.join("").toString().match(correctCode)) {
-      if (isVenue)
-        navigation.push("SignUpAsVenueDetails", {
-          phoneNumber: route.params.phoneNumber,
-        });
-      else
-        navigation.push("SignUpWithNumberDetails", {
-          phoneNumber: route.params.phoneNumber,
-        });
-    }
-  };
+  const { userId, isVenue } = route.params;
+
+  const {
+    mutate: verifyUserEmail,
+    error: userError,
+    isLoading: userLoading,
+  } = useVerifyEmailMutation();
+  const {
+    mutate: verifyBranchEmail,
+    error: branchError,
+    isLoading: branchLoading,
+  } = useVerifyBranchEmailMutation(setSignedIn);
+
+  const [code, setCode] = useState<string[]>(["", "", "", ""]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
   const refs: React.MutableRefObject<TextInput | null>[] = [
@@ -81,58 +101,84 @@ export const VerifySignUpWithNumber = ({ navigation, route }: Props) => {
     useRef(null),
   ];
 
-  const generateCode = () => {
-    return Math.floor(1000 + Math.random() * 9000).toString();
-  };
-
-  const resendCode = () => {
-    let newCode = generateCode();
-    setCorrectCode(newCode);
-  };
+  useEffect(() => {
+    if (
+      (userError && userError?.response?.data?.message === "INCORRECT_CODE") ||
+      (branchError && branchError?.response?.data?.message === "INCORRECT_CODE")
+    )
+      setErrorMessage("The code you entered is incorrect.");
+  }, [userError, branchError]);
 
   return (
     <AppHeader navigation={navigation} route={route} backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
-        <Image
-          source={require("assets/images/Logo-Icon.png")}
-          style={styles.logo}
-        />
+        <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
           Welcome to Fitchain
         </Text>
         <View style={styles.inputView}>
           <Text variant="labelLarge" style={styles.h2}>
-            Please enter the code we sent you to your mobile number
+            Please enter the code we sent to your email.
           </Text>
           <View style={styles.codeView}>
             {[0, 1, 2, 3].map((index) => {
               return (
                 <CodeInput
                   key={index}
+                  code={code}
                   index={index}
                   colors={colors}
                   styles={styles}
                   setCode={setCode}
+                  setErrorMessage={setErrorMessage}
                   refs={refs}
                   scrollRef={scrollRef}
                 />
               );
             })}
           </View>
-          <Button onPress={() => resendCode()} style={styles.resendButton}>
-            Resend Code
-          </Button>
-          <Button
-            textColor={colors.background}
-            buttonColor={colors.primary}
-            style={styles.continueButton}
-            onPress={() => verifyCode()}
-          >
-            Continue
-          </Button>
-          <Text style={styles.placeholderText}>
-            {correctCode ? correctCode : "Code will appear here."}
-          </Text>
+          {errorMessage && (
+            <Text
+              variant="labelMedium"
+              style={{
+                color: "red",
+                textAlign: "center",
+                marginTop: "5%",
+                fontFamily: "Inter-SemiBold",
+              }}
+            >
+              {errorMessage}
+            </Text>
+          )}
+          <Button style={styles.resendButton}>Resend Code</Button>
+
+          {userLoading || branchLoading ? (
+            <ActivityIndicator style={{ marginTop: "10%" }} />
+          ) : (
+            <Button
+              textColor={colors.background}
+              buttonColor={colors.primary}
+              style={styles.continueButton}
+              onPress={() => {
+                if (code.indexOf("") !== -1) {
+                  setErrorMessage("Please enter the full code.");
+                } else {
+                  if (!isVenue)
+                    verifyUserEmail({
+                      code: code.join(""),
+                      userId,
+                    });
+                  else
+                    verifyBranchEmail({
+                      code: code.join(""),
+                      branchId: userId,
+                    });
+                }
+              }}
+            >
+              Continue
+            </Button>
+          )}
         </View>
       </ScrollView>
     </AppHeader>
@@ -145,10 +191,8 @@ const makeStyles = (colors: MD3Colors) =>
       flexGrow: 1,
       backgroundColor: colors.background,
       alignItems: "center",
-      paddingBottom: 20,
-    },
-    logo: {
-      marginTop: "25%",
+      justifyContent: "center",
+      paddingVertical: "5%",
     },
     titleText: {
       marginTop: "5%",

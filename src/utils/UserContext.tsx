@@ -7,7 +7,7 @@ export type VenueData = {
   branchLocation: string;
   managerFirstName: string;
   managerLastName: string;
-  managerEmail: string;
+  email: string;
   token: string;
 };
 

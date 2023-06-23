@@ -8,9 +8,9 @@ import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIc
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { useCreateUserMutation } from "src/api";
-type Props = StackScreenProps<SignUpStackParamList, "SignUpWithNumberDetails">;
+type Props = StackScreenProps<SignUpStackParamList, "SignUpWithEmail">;
 
-export const SignUpWithNumberDetails = ({
+export const SignUpWithEmail = ({
   navigation,
   route,
 }: {
@@ -46,7 +46,6 @@ export const SignUpWithNumberDetails = ({
       let data = {
         firstName,
         lastName,
-        phoneNumber: route.params.phoneNumber,
         email,
         password,
       };
@@ -93,10 +92,7 @@ export const SignUpWithNumberDetails = ({
   return (
     <AppHeader navigation={navigation} route={route} backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
-        <Image
-          source={require("assets/images/Logo-Icon.png")}
-          style={styles.logo}
-        />
+        <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
           Account Details
         </Text>
@@ -112,6 +108,7 @@ export const SignUpWithNumberDetails = ({
               style={{ marginHorizontal: 15 }}
             />
             <TextInput
+              value={firstName}
               style={styles.textInput}
               placeholder={"First Name"}
               placeholderTextColor={"#a8a8a8"}
@@ -141,6 +138,7 @@ export const SignUpWithNumberDetails = ({
               style={{ marginHorizontal: 15 }}
             />
             <TextInput
+              value={lastName}
               style={styles.textInput}
               placeholder={"Last Name"}
               placeholderTextColor={"#a8a8a8"}
@@ -171,6 +169,7 @@ export const SignUpWithNumberDetails = ({
               style={{ marginHorizontal: 15 }}
             />
             <TextInput
+              value={email}
               style={styles.textInput}
               placeholder={"Email"}
               placeholderTextColor={"#a8a8a8"}
@@ -255,10 +254,8 @@ const makeStyles = (colors: MD3Colors) =>
       flexGrow: 1,
       backgroundColor: colors.background,
       alignItems: "center",
-      paddingBottom: 20,
-    },
-    logo: {
-      marginTop: "25%",
+      justifyContent: "center",
+      paddingVertical: "5%",
     },
     titleText: {
       marginTop: "5%",
