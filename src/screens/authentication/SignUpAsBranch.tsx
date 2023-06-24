@@ -39,6 +39,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
   const [email, setemail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [mapVisible, setMapVisible] = useState<boolean>(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const {
     mutate: createBranch,
@@ -131,17 +132,22 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
     }
   };
 
+  const scrollOffset = 60;
   const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
-  const firstNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const lastNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
-  const locationDescRef: React.MutableRefObject<TextInput | null> =
-    useRef(null);
 
   return (
     <AppHeader navigation={navigation} route={route} backEnabled>
-      <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
+      <ScrollView
+        contentContainerStyle={styles.wrapperView}
+        ref={scrollRef}
+        onScroll={(event) => {
+          setScrollPosition(event.nativeEvent.contentOffset.y);
+        }}
+        scrollEventThrottle={8}
+      >
         <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
           Branch Account Details
@@ -164,17 +170,14 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                 placeholder={"Manager First Name"}
                 placeholderTextColor={"#a8a8a8"}
                 selectionColor={colors.primary}
-                onSubmitEditing={() => lastNameRef.current?.focus()}
-                blurOnSubmit={false}
-                ref={firstNameRef}
-                onFocus={() => {
-                  firstNameRef.current?.measureInWindow((x, y) =>
-                    scrollRef.current?.scrollTo({
-                      y,
-                      animated: true,
-                    })
-                  );
+                onSubmitEditing={() => {
+                  lastNameRef.current?.focus();
+                  scrollRef.current?.scrollTo({
+                    y: scrollPosition + scrollOffset,
+                    animated: true,
+                  });
                 }}
+                blurOnSubmit={false}
                 onChangeText={(text) => {
                   setManagerFirstName(text.trim());
                   setErrorMessage("");
@@ -194,17 +197,15 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                 placeholder={"Manager Last Name"}
                 placeholderTextColor={"#a8a8a8"}
                 selectionColor={colors.primary}
-                onSubmitEditing={() => emailRef.current?.focus()}
+                onSubmitEditing={() => {
+                  emailRef.current?.focus();
+                  scrollRef.current?.scrollTo({
+                    y: scrollPosition + scrollOffset,
+                    animated: true,
+                  });
+                }}
                 blurOnSubmit={false}
                 ref={lastNameRef}
-                onFocus={() => {
-                  lastNameRef.current?.measureInWindow((x, y) =>
-                    scrollRef.current?.scrollTo({
-                      y,
-                      animated: true,
-                    })
-                  );
-                }}
                 onChangeText={(text) => {
                   setManagerLastName(text.trim());
                   setErrorMessage("");
@@ -227,17 +228,15 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                 selectionColor={colors.primary}
                 textContentType="emailAddress"
                 autoCapitalize="none"
-                onSubmitEditing={() => passwordRef.current?.focus()}
+                onSubmitEditing={() => {
+                  passwordRef.current?.focus();
+                  scrollRef.current?.scrollTo({
+                    y: scrollPosition + scrollOffset,
+                    animated: true,
+                  });
+                }}
                 blurOnSubmit={false}
                 ref={emailRef}
-                onFocus={() => {
-                  emailRef.current?.measureInWindow((x, y) =>
-                    scrollRef.current?.scrollTo({
-                      y,
-                      animated: true,
-                    })
-                  );
-                }}
                 onChangeText={(text) => {
                   setemail(text.trim());
                   setErrorMessage("");
@@ -259,12 +258,8 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                 selectionColor={colors.primary}
                 secureTextEntry={true}
                 ref={passwordRef}
-                onFocus={() => {
-                  scrollRef.current?.scrollToEnd();
-                }}
                 onChangeText={(password) => {
                   checkPasswordValidity(password.trim());
-                  scrollRef.current?.scrollToEnd();
                 }}
               />
             </View>
@@ -296,21 +291,14 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                   value={locationDescription ?? autoLocationDescription}
                   onChangeText={(text) => {
                     setLocationDescription(text.trim());
-                    locationDescRef.current?.measureInWindow((x, y) =>
-                      scrollRef.current?.scrollTo({
-                        y,
-                        animated: true,
-                      })
-                    );
+                    scrollRef.current?.scrollToEnd({
+                      animated: true,
+                    });
                   }}
-                  ref={locationDescRef}
                   onFocus={() => {
-                    locationDescRef.current?.measureInWindow((x, y) =>
-                      scrollRef.current?.scrollTo({
-                        y,
-                        animated: true,
-                      })
-                    );
+                    scrollRef.current?.scrollToEnd({
+                      animated: true,
+                    });
                   }}
                   editable={
                     typeof autoLocationDescription !== "undefined" &&
@@ -333,7 +321,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
               </Text>
             )}
             {createBranchLoading ? (
-              <ActivityIndicator style={{ marginTop: "13%" }} />
+              <ActivityIndicator style={{ marginTop: "10%" }} />
             ) : (
               <Button
                 textColor={colors.background}

@@ -24,6 +24,7 @@ export const SignUpWithEmail = ({
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const {
     mutate: createUser,
@@ -83,15 +84,22 @@ export const SignUpWithEmail = ({
       setErrorMessage("Email already in use.");
   }, [error]);
 
+  const scrollOffset = 60;
   const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
-  const firstNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const lastNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
 
   return (
     <AppHeader navigation={navigation} route={route} backEnabled>
-      <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
+      <ScrollView
+        contentContainerStyle={styles.wrapperView}
+        ref={scrollRef}
+        onScroll={(event) => {
+          setScrollPosition(event.nativeEvent.contentOffset.y);
+        }}
+        scrollEventThrottle={8}
+      >
         <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
           Account Details
@@ -113,17 +121,14 @@ export const SignUpWithEmail = ({
               placeholder={"First Name"}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
-              onSubmitEditing={() => lastNameRef.current?.focus()}
-              blurOnSubmit={false}
-              ref={firstNameRef}
-              onFocus={() => {
-                firstNameRef.current?.measureInWindow((x, y) =>
-                  scrollRef.current?.scrollTo({
-                    y,
-                    animated: true,
-                  })
-                );
+              onSubmitEditing={() => {
+                lastNameRef.current?.focus();
+                scrollRef.current?.scrollTo({
+                  y: scrollPosition + scrollOffset,
+                  animated: true,
+                });
               }}
+              blurOnSubmit={false}
               onChangeText={(text) => {
                 setFirstName(text.trim());
                 setErrorMessage("");
@@ -143,17 +148,15 @@ export const SignUpWithEmail = ({
               placeholder={"Last Name"}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
-              onSubmitEditing={() => emailRef.current?.focus()}
+              onSubmitEditing={() => {
+                emailRef.current?.focus();
+                scrollRef.current?.scrollTo({
+                  y: scrollPosition + scrollOffset,
+                  animated: true,
+                });
+              }}
               blurOnSubmit={false}
               ref={lastNameRef}
-              onFocus={() => {
-                lastNameRef.current?.measureInWindow((x, y) =>
-                  scrollRef.current?.scrollTo({
-                    y,
-                    animated: true,
-                  })
-                );
-              }}
               onChangeText={(text) => {
                 setLastName(text.trim());
                 setErrorMessage("");
@@ -176,17 +179,14 @@ export const SignUpWithEmail = ({
               selectionColor={colors.primary}
               textContentType="emailAddress"
               autoCapitalize="none"
-              onSubmitEditing={() => passwordRef.current?.focus()}
+              onSubmitEditing={() => {
+                passwordRef.current?.focus();
+                scrollRef.current?.scrollToEnd({
+                  animated: true,
+                });
+              }}
               blurOnSubmit={false}
               ref={emailRef}
-              onFocus={() => {
-                emailRef.current?.measureInWindow((x, y) =>
-                  scrollRef.current?.scrollTo({
-                    y,
-                    animated: true,
-                  })
-                );
-              }}
               onChangeText={(text) => {
                 setEmail(text.trim());
                 setErrorMessage("");
@@ -208,12 +208,11 @@ export const SignUpWithEmail = ({
               secureTextEntry={true}
               value={password}
               ref={passwordRef}
-              onFocus={() => {
-                scrollRef.current?.scrollToEnd();
-              }}
               onChangeText={(password) => {
-                scrollRef.current?.scrollToEnd();
                 checkPasswordValidity(password.trim());
+                scrollRef.current?.scrollToEnd({
+                  animated: true,
+                });
               }}
             />
           </View>
@@ -231,7 +230,7 @@ export const SignUpWithEmail = ({
             </Text>
           )}
           {createUserLoading ? (
-            <ActivityIndicator style={{ marginTop: "13%" }} />
+            <ActivityIndicator style={{ marginTop: "10%" }} />
           ) : (
             <Button
               textColor={colors.background}

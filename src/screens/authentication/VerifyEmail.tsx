@@ -11,7 +11,11 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useVerifyBranchEmailMutation, useVerifyEmailMutation } from "src/api";
+import {
+  useResendEmailCodeMutation,
+  useVerifyBranchEmailMutation,
+  useVerifyEmailMutation,
+} from "src/api";
 
 type Props = StackScreenProps<SignUpStackParamList, "VerifyEmail">;
 
@@ -40,7 +44,6 @@ const CodeInput = ({
       value={code[index]}
       selectionColor={colors.primary}
       maxLength={1}
-      textContentType={"oneTimeCode"}
       style={styles.codeInput}
       placeholder="-"
       placeholderTextColor={colors.tertiary}
@@ -51,7 +54,7 @@ const CodeInput = ({
         );
       }}
       onChangeText={(character) => {
-        setCode((code) =>
+        setCode(
           code.map((codeCharacter, codeIndex) =>
             index === codeIndex ? character.toUpperCase() : codeCharacter
           )
@@ -89,6 +92,11 @@ export const VerifyEmail = ({
     error: branchError,
     isLoading: branchLoading,
   } = useVerifyBranchEmailMutation(setSignedIn);
+  const {
+    mutate: resendCode,
+    isSuccess: resendSuccess,
+    isLoading: resendLoading,
+  } = useResendEmailCodeMutation();
 
   const [code, setCode] = useState<string[]>(["", "", "", ""]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -118,7 +126,8 @@ export const VerifyEmail = ({
         </Text>
         <View style={styles.inputView}>
           <Text variant="labelLarge" style={styles.h2}>
-            Please enter the code we sent to your email.
+            Please enter the code we sent to your email.{"\n"}
+            (You may have to check your junk folder)
           </Text>
           <View style={styles.codeView}>
             {[0, 1, 2, 3].map((index) => {
@@ -150,7 +159,6 @@ export const VerifyEmail = ({
               {errorMessage}
             </Text>
           )}
-          <Button style={styles.resendButton}>Resend Code</Button>
 
           {userLoading || branchLoading ? (
             <ActivityIndicator style={{ marginTop: "10%" }} />
@@ -178,6 +186,36 @@ export const VerifyEmail = ({
             >
               Continue
             </Button>
+          )}
+
+          {resendLoading ? (
+            <ActivityIndicator style={{ marginTop: "7%" }} />
+          ) : (
+            <Button
+              style={styles.resendButton}
+              onPress={() => {
+                resendCode({
+                  userId,
+                  isVenue,
+                });
+              }}
+            >
+              Resend Code
+            </Button>
+          )}
+
+          {resendSuccess && (
+            <Text
+              variant="labelMedium"
+              style={{
+                color: "lightgreen",
+                textAlign: "center",
+                marginTop: "5%",
+                fontFamily: "Inter-Medium",
+              }}
+            >
+              New code sent.
+            </Text>
           )}
         </View>
       </ScrollView>
@@ -225,7 +263,7 @@ const makeStyles = (colors: MD3Colors) =>
     resendButton: { borderRadius: 6, marginTop: "5%" },
     continueButton: {
       borderRadius: 6,
-      marginTop: "5%",
+      marginTop: "7%",
       height: 50,
       justifyContent: "center",
     },

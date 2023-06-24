@@ -27,6 +27,7 @@ export const SignUpExtraDetails = ({
   const [description, setDescription] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const handleUpdateUserData = () => {
     let data: {
@@ -40,14 +41,21 @@ export const SignUpExtraDetails = ({
     updateUserData(data);
   };
 
+  const scrollOffset = 60;
   const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
-  const bioRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const heightRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const weightRef: React.MutableRefObject<TextInput | null> = useRef(null);
 
   return (
     <AppHeader navigation={navigation} route={route} backEnabled>
-      <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
+      <ScrollView
+        contentContainerStyle={styles.wrapperView}
+        ref={scrollRef}
+        onScroll={(event) => {
+          setScrollPosition(event.nativeEvent.contentOffset.y);
+        }}
+        scrollEventThrottle={8}
+      >
         <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
           You're almost there!
@@ -68,17 +76,14 @@ export const SignUpExtraDetails = ({
               placeholder={"Tell us a bit about yourself."}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
-              onSubmitEditing={() => heightRef.current?.focus()}
-              blurOnSubmit={false}
-              ref={bioRef}
-              onFocus={() => {
-                bioRef.current?.measureInWindow((x, y) =>
-                  scrollRef.current?.scrollTo({
-                    y,
-                    animated: true,
-                  })
-                );
+              onSubmitEditing={() => {
+                heightRef.current?.focus();
+                scrollRef.current?.scrollTo({
+                  y: scrollPosition + scrollOffset,
+                  animated: true,
+                });
               }}
+              blurOnSubmit={false}
               onChangeText={setDescription}
             />
           </View>
@@ -94,17 +99,15 @@ export const SignUpExtraDetails = ({
               placeholder={"Height"}
               placeholderTextColor={"#a8a8a8"}
               selectionColor={colors.primary}
-              onSubmitEditing={() => weightRef.current?.focus()}
+              onSubmitEditing={() => {
+                weightRef.current?.focus();
+                scrollRef.current?.scrollTo({
+                  y: scrollPosition + scrollOffset,
+                  animated: true,
+                });
+              }}
               blurOnSubmit={false}
               ref={heightRef}
-              onFocus={() => {
-                heightRef.current?.measureInWindow((x, y) =>
-                  scrollRef.current?.scrollTo({
-                    y,
-                    animated: true,
-                  })
-                );
-              }}
               onChangeText={setHeight}
             />
           </View>
@@ -124,19 +127,11 @@ export const SignUpExtraDetails = ({
               textContentType="emailAddress"
               autoCapitalize="none"
               ref={weightRef}
-              onFocus={() => {
-                weightRef.current?.measureInWindow((x, y) =>
-                  scrollRef.current?.scrollTo({
-                    y,
-                    animated: true,
-                  })
-                );
-              }}
               onChangeText={setWeight}
             />
           </View>
           {updateUserLoading && (
-            <ActivityIndicator style={{ marginTop: "13%" }} />
+            <ActivityIndicator style={{ marginTop: "10%" }} />
           )}
           {!updateUserLoading && (
             <Button
