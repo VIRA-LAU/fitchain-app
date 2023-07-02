@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Modal,
-  StyleSheet,
-  Pressable,
-  View,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { Modal, StyleSheet, View, TouchableOpacity } from "react-native";
 import { useTheme, Text } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";

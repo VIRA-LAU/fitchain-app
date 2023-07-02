@@ -7,6 +7,7 @@ import {
   Pressable,
   BackHandler,
   TouchableOpacity,
+  Modal,
 } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { HomeStackParamList } from "src/navigation";
@@ -41,6 +42,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const { userData } = useContext(UserContext);
 
   const [popupVisible, setPopupVisible] = useState<PopupType | null>(null);
+  const [recordingModalVisible, setRecordingModalVisible] =
+    useState<boolean>(false);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "Home", title: "Home" },
@@ -207,10 +210,10 @@ export const GameDetails = ({ navigation, route }: Props) => {
           game?.admin.id === userData?.userId ? (
             <TouchableOpacity
               onPress={() => {
-                setPopupVisible("recordVideo");
+                setRecordingModalVisible(true);
               }}
             >
-              <IonIcon name="videocam" color={"black"} size={24} />
+              <IonIcon name="ellipsis-horizontal" color={"black"} size={24} />
             </TouchableOpacity>
           ) : (
             <View />
@@ -222,6 +225,54 @@ export const GameDetails = ({ navigation, route }: Props) => {
         darkMode
       >
         <View style={styles.wrapperView}>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={recordingModalVisible}
+          >
+            <TouchableOpacity
+              style={styles.transparentView}
+              onPress={() => {
+                setRecordingModalVisible(false);
+              }}
+            />
+            <View style={styles.modalView}>
+              <TouchableOpacity
+                onPress={() => {
+                  setRecordingModalVisible(false);
+                  setPopupVisible("recordVideo");
+                }}
+              >
+                <View style={styles.selectionRow}>
+                  <Text
+                    variant="labelLarge"
+                    style={{
+                      color: "white",
+                    }}
+                  >
+                    Record Game
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setRecordingModalVisible(false);
+                  setPopupVisible("recordVideo");
+                }}
+              >
+                <View style={styles.selectionRow}>
+                  <Text
+                    variant="labelLarge"
+                    style={{
+                      color: "white",
+                    }}
+                  >
+                    Upload Video
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </Modal>
           {!isPrevious &&
             (gameDetailsLoading ||
             playerStatusLoading ||
@@ -456,5 +507,36 @@ const makeStyles = (colors: MD3Colors) =>
       borderRadius: 10,
       justifyContent: "center",
       alignItems: "center",
+    },
+    transparentView: {
+      position: "absolute",
+      height: "100%",
+      width: "100%",
+    },
+    modalView: {
+      width: 180,
+      marginTop: 65,
+      marginLeft: "auto",
+      marginRight: 5,
+      backgroundColor: colors.secondary,
+      borderRadius: 20,
+      paddingHorizontal: 25,
+      paddingVertical: 10,
+      borderColor: colors.tertiary,
+      borderWidth: 1,
+      shadowColor: "#000000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 10,
+    },
+    selectionRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginVertical: 7,
+      height: 40,
     },
   });

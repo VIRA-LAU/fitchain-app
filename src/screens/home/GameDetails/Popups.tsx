@@ -1,16 +1,9 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
-import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import {
-  useDeleteJoinRequestMutation,
-  useFollowGameMutation,
-  useJoinGameMutation,
-  useRespondToInviteMutation,
-  useStartStopRecording,
-  useUnfollowGameMutation,
-} from "src/api";
 import { Game, PlayerStatus } from "src/types";
+import { RecordGamePopup } from "./RecordGamePopup";
 
 export type PopupType =
   | "joinGame"
@@ -43,9 +36,6 @@ export const PopupContainer = ({
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-
-  const { mutate: startStopRecording, isLoading: recordLoading } =
-    useStartStopRecording(game?.id);
 
   if (popupVisible === "joinGame")
     return (
@@ -231,43 +221,9 @@ export const PopupContainer = ({
         style={styles.promptView}
         onPress={() => setPopupVisible(null)}
       >
-        <View style={styles.prompt}>
-          <Text style={styles.promptText}>Record a video from the court.</Text>
-          {recordLoading ? (
-            <ActivityIndicator style={{ marginBottom: 10 }} />
-          ) : !game?.isRecording ? (
-            <Button
-              buttonColor={colors.primary}
-              textColor={colors.background}
-              style={{
-                borderRadius: 5,
-                marginBottom: 10,
-                marginHorizontal: 20,
-              }}
-              onPress={() => {
-                startStopRecording({ recordingMode: "start" });
-              }}
-            >
-              Start Recording
-            </Button>
-          ) : (
-            <Button
-              buttonColor={colors.primary}
-              textColor={colors.background}
-              style={{
-                borderRadius: 5,
-                marginBottom: 10,
-                marginHorizontal: 20,
-              }}
-              onPress={() => {
-                startStopRecording({ recordingMode: "stop" });
-              }}
-            >
-              Stop Recording
-            </Button>
-          )}
-          <Button onPress={() => setPopupVisible(null)}>Cancel</Button>
-        </View>
+        <Pressable style={styles.prompt}>
+          <RecordGamePopup game={game} setPopupVisible={setPopupVisible} />
+        </Pressable>
       </Pressable>
     );
 };
