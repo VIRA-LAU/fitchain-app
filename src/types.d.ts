@@ -6,6 +6,7 @@ export interface User {
   email: string;
   phoneNumber: number;
   description: string;
+  profilePhotoUrl: string;
   gender: string;
   height: string;
   weight: string;

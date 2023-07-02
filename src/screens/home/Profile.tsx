@@ -18,15 +18,17 @@ import {
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Activity } from "src/types";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { UserContext } from "src/utils";
 import {
   useActivitiesQuery,
   useGameCountQuery,
+  useUpdateUserDataMutation,
   useUserDetailsQuery,
 } from "src/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackScreenProps } from "@react-navigation/stack";
+import * as ImagePicker from "expo-image-picker";
 
 type Props =
   | BottomTabScreenProps<BottomTabParamList>
@@ -58,6 +60,9 @@ export const Profile = ({
   const { data: activities, isLoading: activitiesLoading } = useActivitiesQuery(
     route.params?.playerId || userId
   );
+  const { mutate: updateUserData } = useUpdateUserDataMutation();
+
+  const [uploadImage, setUploadImage] = useState<string>();
 
   return (
     <AppHeader
@@ -90,10 +95,44 @@ export const Profile = ({
             style={styles.headerImage}
           />
           <View style={styles.headerContent}>
-            <Image
-              source={require("assets/images/home/profile-picture.png")}
-              style={styles.profilePicture}
-            />
+            <TouchableOpacity
+              onPress={async () => {
+                const result = await ImagePicker.launchImageLibraryAsync({
+                  mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                  allowsEditing: true,
+                });
+
+                if (!result.canceled) {
+                  setUploadImage(result.assets[0].uri);
+                  const formData = new FormData();
+
+                  let fileName = result.assets[0].uri.split("/").pop();
+                  let match = /\.(\w+)$/.exec(fileName!);
+                  let type = match ? `image/${match[1]}` : `image`;
+
+                  formData.append("image", {
+                    uri: result.assets[0].uri,
+                    name: `user-${userData?.userId}.${match ? match[1] : ""}`,
+                    type,
+                  });
+                  updateUserData(formData);
+                }
+              }}
+            >
+              <Image
+                source={
+                  userDetails?.profilePhotoUrl
+                    ? {
+                        uri:
+                          userDetails.profilePhotoUrl + "?" + userData?.token,
+                      }
+                    : uploadImage
+                    ? { uri: uploadImage }
+                    : require("assets/images/home/profile-picture.png")
+                }
+                style={styles.profilePicture}
+              />
+            </TouchableOpacity>
             {gameCountLoading ? (
               <Skeleton height={15} width={100} style={styles.headerText1} />
             ) : (
@@ -106,32 +145,6 @@ export const Profile = ({
             ) : (
               <Text style={styles.headerText2}>{userDetails?.description}</Text>
             )}
-            {/* <View style={styles.buttonsView}>
-              <Button
-                icon={() => (
-                  <IonIcon
-                    name={"basketball-outline"}
-                    size={26}
-                    color={colors.secondary}
-                  />
-                )}
-                style={{ borderRadius: 5, flex: 1 }}
-                textColor={colors.secondary}
-                buttonColor={colors.tertiary}
-              >
-                Invite To Play
-              </Button>
-              <Button
-                icon={() => (
-                  <FeatherIcon name="thumbs-up" size={22} color={"white"} />
-                )}
-                style={{ borderRadius: 5, flex: 1 }}
-                textColor={"white"}
-                buttonColor={"transparent"}
-              >
-                Follow Player
-              </Button>
-            </View> */}
           </View>
         </View>
         <View style={styles.contentView}>
@@ -294,6 +307,7 @@ const makeStyles = (
     profilePicture: {
       width: 0.33 * windowWidth,
       height: 0.33 * windowWidth,
+      borderRadius: 100,
       marginTop: (-0.33 * windowWidth) / 2,
     },
     buttonsView: {
