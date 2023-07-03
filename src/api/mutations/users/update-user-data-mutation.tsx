@@ -2,7 +2,7 @@ import client, { getHeader } from "../../client";
 import { useMutation, useQueryClient } from "react-query";
 import { UserContext, UserData } from "../../../utils/UserContext";
 import { User } from "src/types";
-import { useContext } from "react";
+import { useContext, Dispatch, SetStateAction } from "react";
 
 type Request =
   | {
@@ -31,7 +31,7 @@ const updateUserData = (userData: UserData) => async (data: Request) => {
 };
 
 export const useUpdateUserDataMutation = (
-  setSignedIn?: React.Dispatch<React.SetStateAction<"player" | "venue" | null>>
+  setSignedIn?: Dispatch<SetStateAction<"player" | "venue" | null>>
 ) => {
   const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
@@ -41,5 +41,6 @@ export const useUpdateUserDataMutation = (
       if (setSignedIn) setSignedIn("player");
       queryClient.refetchQueries(["user-details", userData?.userId]);
     },
+    retry: 4,
   });
 };

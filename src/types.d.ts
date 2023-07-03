@@ -7,6 +7,7 @@ export interface User {
   phoneNumber: number;
   description: string;
   profilePhotoUrl: string;
+  coverPhotoUrl: string;
   gender: string;
   height: string;
   weight: string;

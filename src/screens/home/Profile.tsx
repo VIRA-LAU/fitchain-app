@@ -6,6 +6,7 @@ import {
   useWindowDimensions,
   ScrollView,
   TouchableOpacity,
+  Modal,
 } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -18,7 +19,13 @@ import {
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Activity } from "src/types";
-import { Dispatch, SetStateAction, useContext, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { UserContext } from "src/utils";
 import {
   useActivitiesQuery,
@@ -29,6 +36,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackScreenProps } from "@react-navigation/stack";
 import * as ImagePicker from "expo-image-picker";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 type Props =
   | BottomTabScreenProps<BottomTabParamList>
@@ -44,11 +52,8 @@ export const Profile = ({
   setSignedIn?: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
   const { colors } = useTheme();
-  const styles = makeStyles(
-    colors,
-    useWindowDimensions().width,
-    useWindowDimensions().height
-  );
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const styles = makeStyles(colors, windowWidth, windowHeight);
 
   const { userData, setUserData } = useContext(UserContext);
   const { firstName, lastName, userId } = userData!;
@@ -60,9 +65,49 @@ export const Profile = ({
   const { data: activities, isLoading: activitiesLoading } = useActivitiesQuery(
     route.params?.playerId || userId
   );
-  const { mutate: updateUserData } = useUpdateUserDataMutation();
 
-  const [uploadImage, setUploadImage] = useState<string>();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [coverPhotoToUpload, setCoverPhotoToUpload] = useState<string>();
+  const [profilePhotoToUpload, setProfilePhotoToUpload] = useState<string>();
+
+  const { mutate: updateUserData, isSuccess: updateUserSuccess } =
+    useUpdateUserDataMutation();
+
+  const uploadImage = async (imageType: "profile" | "cover") => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+    });
+
+    if (!result.canceled) {
+      if (imageType === "profile")
+        setProfilePhotoToUpload(result.assets[0].uri);
+      else if (imageType === "cover")
+        setCoverPhotoToUpload(result.assets[0].uri);
+
+      const formData = new FormData();
+
+      let fileName = result.assets[0].uri.split("/").pop();
+      let match = /\.(\w+)$/.exec(fileName!);
+      let type = match ? `image/${match[1]}` : `image`;
+
+      formData.append("imageType", imageType);
+      formData.append("image", {
+        uri: result.assets[0].uri,
+        name: `user-${userData?.userId}.${match ? match[1] : ""}`,
+        type,
+      });
+      updateUserData(formData);
+    }
+  };
+
+  useEffect(() => {
+    if (updateUserSuccess) {
+      setCoverPhotoToUpload(undefined);
+      setProfilePhotoToUpload(undefined);
+    }
+  }, [updateUserSuccess]);
 
   return (
     <AppHeader
@@ -70,15 +115,24 @@ export const Profile = ({
       route={route}
       right={
         isUserProfile ? (
-          <TouchableOpacity
-            onPress={() => {
-              AsyncStorage.clear();
-              if (setSignedIn) setSignedIn(null);
-              setUserData(null);
-            }}
-          >
-            <IonIcon name="log-out-outline" color="white" size={24} />
-          </TouchableOpacity>
+          isEditing ? (
+            <TouchableOpacity
+              onPress={() => {
+                setIsEditing(false);
+                setModalVisible(false);
+              }}
+            >
+              <IonIcon name="checkmark" color={colors.primary} size={24} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(true);
+              }}
+            >
+              <IonIcon name="ellipsis-horizontal" color={"white"} size={24} />
+            </TouchableOpacity>
+          )
         ) : (
           <View />
         )
@@ -89,50 +143,121 @@ export const Profile = ({
       backEnabled
     >
       <ScrollView>
-        <View style={styles.headerView}>
-          <Image
-            source={require("assets/images/home/profile-background.png")}
-            style={styles.headerImage}
+        <Modal animationType="fade" transparent={true} visible={modalVisible}>
+          <TouchableOpacity
+            style={styles.transparentView}
+            onPress={() => {
+              setModalVisible(false);
+            }}
           />
-          <View style={styles.headerContent}>
+          <View style={styles.modalView}>
             <TouchableOpacity
-              onPress={async () => {
-                const result = await ImagePicker.launchImageLibraryAsync({
-                  mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                  allowsEditing: true,
-                });
-
-                if (!result.canceled) {
-                  setUploadImage(result.assets[0].uri);
-                  const formData = new FormData();
-
-                  let fileName = result.assets[0].uri.split("/").pop();
-                  let match = /\.(\w+)$/.exec(fileName!);
-                  let type = match ? `image/${match[1]}` : `image`;
-
-                  formData.append("image", {
-                    uri: result.assets[0].uri,
-                    name: `user-${userData?.userId}.${match ? match[1] : ""}`,
-                    type,
-                  });
-                  updateUserData(formData);
-                }
+              onPress={() => {
+                setIsEditing(true);
+                setModalVisible(false);
               }}
             >
+              <View style={styles.selectionRow}>
+                <Text
+                  variant="labelLarge"
+                  style={{
+                    color: "white",
+                  }}
+                >
+                  Edit Profile
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(false);
+                AsyncStorage.clear();
+                if (setSignedIn) setSignedIn(null);
+                setUserData(null);
+              }}
+            >
+              <View style={styles.selectionRow}>
+                <Text
+                  variant="labelLarge"
+                  style={{
+                    color: "white",
+                  }}
+                >
+                  Sign Out
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+        <View style={styles.headerView}>
+          <View>
+            <Image
+              source={
+                coverPhotoToUpload
+                  ? { uri: coverPhotoToUpload }
+                  : userDetails?.coverPhotoUrl
+                  ? {
+                      uri: userDetails.coverPhotoUrl,
+                    }
+                  : require("assets/images/home/profile-background.png")
+              }
+              style={styles.headerImage}
+            />
+            {isEditing && (
+              <TouchableOpacity
+                onPress={() => uploadImage("cover")}
+                activeOpacity={0.8}
+                style={[
+                  styles.editImage,
+                  {
+                    justifyContent: "flex-end",
+                    alignItems: "flex-end",
+                  },
+                ]}
+              >
+                <MaterialIcon
+                  name="image"
+                  size={28}
+                  color={colors.tertiary}
+                  style={{ marginRight: 20, marginBottom: 20 }}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+          <View style={styles.headerContent}>
+            <View>
               <Image
                 source={
-                  userDetails?.profilePhotoUrl
+                  profilePhotoToUpload
+                    ? { uri: profilePhotoToUpload }
+                    : userDetails?.profilePhotoUrl
                     ? {
-                        uri:
-                          userDetails.profilePhotoUrl + "?" + userData?.token,
+                        uri: userDetails.profilePhotoUrl,
                       }
-                    : uploadImage
-                    ? { uri: uploadImage }
                     : require("assets/images/home/profile-picture.png")
                 }
                 style={styles.profilePicture}
               />
-            </TouchableOpacity>
+              {isEditing && (
+                <TouchableOpacity
+                  onPress={() => uploadImage("profile")}
+                  activeOpacity={0.8}
+                  style={[
+                    styles.editImage,
+                    {
+                      top: (-0.33 * windowWidth) / 2,
+                      borderRadius: 100,
+                    },
+                  ]}
+                >
+                  <MaterialIcon
+                    name="camera-alt"
+                    size={28}
+                    color={colors.tertiary}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
             {gameCountLoading ? (
               <Skeleton height={15} width={100} style={styles.headerText1} />
             ) : (
@@ -407,5 +532,47 @@ const makeStyles = (
       fontFamily: "Inter-Medium",
       color: colors.tertiary,
       textAlign: "center",
+    },
+    transparentView: {
+      position: "absolute",
+      height: "100%",
+      width: "100%",
+    },
+    editImage: {
+      position: "absolute",
+      bottom: 0,
+      right: 0,
+      left: 0,
+      top: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    modalView: {
+      width: 180,
+      marginTop: 65,
+      marginLeft: "auto",
+      marginRight: 5,
+      backgroundColor: colors.secondary,
+      borderRadius: 20,
+      paddingHorizontal: 25,
+      paddingVertical: 10,
+      borderColor: colors.tertiary,
+      borderWidth: 1,
+      shadowColor: "#000000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 10,
+    },
+    selectionRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginVertical: 7,
+      height: 40,
     },
   });
