@@ -106,7 +106,7 @@ export const Home = ({ navigation, route }: Props) => {
         receivedRequests.map((request) => ({ type: "request", ...request }))
       );
 
-    const filtedResult = result.filter(
+    const filteredResult = result.filter(
       ({ game }: Invitation) => selectedSports[game.type]
     );
 
@@ -127,7 +127,8 @@ export const Home = ({ navigation, route }: Props) => {
           user={invReq.user?.firstName + " " + invReq.user?.lastName}
           game={invReq.game}
           isFirst={index === 0}
-          isLast={index === filtedResult.length - 1}
+          isLast={index === filteredResult.length - 1}
+          profilePhotoUrl={invReq.user?.profilePhotoUrl}
         />
       )
     );

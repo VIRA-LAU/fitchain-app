@@ -1,6 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
-import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Avatar,
+  Button,
+  Text,
+  useTheme,
+} from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList } from "navigation";
 import { AppHeader } from "src/components";
@@ -80,11 +86,30 @@ export const InviteUsers = ({ navigation, route }: Props) => {
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           {users.map((user, index) => (
             <View key={index} style={styles.user}>
-              <Image
-                source={require("assets/images/home/profile-picture.png")}
-                style={{ height: 45, width: 45, marginRight: 20 }}
-                resizeMode="contain"
-              />
+              <View
+                style={{
+                  marginRight: 15,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {user.profilePhotoUrl ? (
+                  <Avatar.Image
+                    size={45}
+                    source={{ uri: user.profilePhotoUrl }}
+                  />
+                ) : (
+                  <Avatar.Text
+                    label={`${user.firstName.charAt(0)}${user.lastName.charAt(
+                      0
+                    )}`}
+                    size={45}
+                    style={{
+                      backgroundColor: colors.secondary,
+                    }}
+                  />
+                )}
+              </View>
               <View>
                 <Text style={styles.name}>
                   {user.firstName} {user.lastName}

@@ -8,6 +8,7 @@ type Response = {
   firstName: string;
   lastName: string;
   rating: number;
+  profilePhotoUrl: string;
 };
 
 const getUsers = (userData: UserData) => async () => {

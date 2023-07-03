@@ -91,6 +91,8 @@ export type HomeStackParamList = {
     firstName: string;
     lastName: string;
     gameId: number;
+    profilePhotoUrl?: string;
+    coverPhotoUrl?: string;
   };
   PlayerProfile: {
     playerId: number;

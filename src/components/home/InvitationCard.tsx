@@ -11,7 +11,7 @@ import {
   View,
   Image,
 } from "react-native";
-import { useTheme, Button } from "react-native-paper";
+import { useTheme, Button, Avatar } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import EntypoIcon from "react-native-vector-icons/Entypo";
 import {
@@ -53,6 +53,7 @@ export const InvitationCard = ({
   game,
   isFirst,
   isLast,
+  profilePhotoUrl,
 }: {
   id: number;
   user: string;
@@ -60,6 +61,7 @@ export const InvitationCard = ({
   game: Game;
   isFirst: boolean;
   isLast: boolean;
+  profilePhotoUrl?: string;
 }) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
@@ -103,18 +105,29 @@ export const InvitationCard = ({
         style={styles.header}
       />
       <View style={styles.content}>
-        <Image
-          source={require("assets/images/home/profile-picture.png")}
-          style={styles.profilePicture}
-          resizeMode="contain"
-        />
+        <View style={styles.profilePicture}>
+          {profilePhotoUrl ? (
+            <Avatar.Image size={60} source={{ uri: profilePhotoUrl }} />
+          ) : (
+            <Avatar.Text
+              label={`${user.charAt(0)}${user
+                .substring(user.indexOf(" ") + 1)
+                .charAt(0)}`}
+              size={60}
+              style={{
+                backgroundColor: colors.background,
+              }}
+            />
+          )}
+        </View>
         <View style={{ maxWidth: 0.48 * width }}>
           <Text style={styles.greyText}>
             <Text style={styles.text}>{user}</Text>
             {type === "invitation"
               ? " invited you to play "
-              : " request to join "}
-            <Text style={styles.text}>{game.type}</Text> on{" "}
+              : " requested to join your "}
+            <Text style={styles.text}>{game.type}</Text>
+            {type === "request" ? " game " : " "}on{" "}
             <Text style={styles.text}>
               {game.date
                 .toLocaleDateString(undefined, {
@@ -130,57 +143,64 @@ export const InvitationCard = ({
             .
           </Text>
         </View>
-        <View style={styles.buttonsView}>
-          <Button
-            icon={"account-check-outline"}
-            style={{ borderRadius: 5, flex: 1 }}
-            textColor={colors.secondary}
-            buttonColor={colors.primary}
-            onPress={() => {
-              if (type === "request")
-                editJoinRequest({
-                  requestId: id,
-                  status: "APPROVED",
-                  gameId: game.id,
-                });
-              else
-                respondToInvite({
-                  invitationId: id,
-                  gameId: game.id,
-                  status: "APPROVED",
-                });
-            }}
-          >
-            Accept
-          </Button>
-          <Button
-            icon={{ source: "account-remove-outline", direction: "rtl" }}
-            style={{ borderRadius: 5, flex: 1 }}
-            textColor={"white"}
-            buttonColor={"transparent"}
-            onPress={() => {
-              if (type === "request")
-                editJoinRequest({
-                  requestId: id,
-                  status: "REJECTED",
-                  gameId: game.id,
-                });
-              else
-                respondToInvite({
-                  invitationId: id,
-                  gameId: game.id,
-                  status: "REJECTED",
-                });
-            }}
-          >
-            Decline
-          </Button>
-          <EntypoIcon
-            name="dots-three-horizontal"
-            color="white"
-            size={18}
-            onPress={() => navigation.push("GameDetails", { id: game.id })}
-          />
+        <View style={{ marginTop: "auto" }}>
+          <View style={styles.buttonsView}>
+            <Button
+              icon={"account-check-outline"}
+              style={{ borderRadius: 5, flex: 1 }}
+              textColor={colors.secondary}
+              buttonColor={colors.primary}
+              onPress={() => {
+                if (type === "request")
+                  editJoinRequest({
+                    requestId: id,
+                    status: "APPROVED",
+                    gameId: game.id,
+                  });
+                else
+                  respondToInvite({
+                    invitationId: id,
+                    gameId: game.id,
+                    status: "APPROVED",
+                  });
+              }}
+            >
+              Accept
+            </Button>
+            <Button
+              icon={{ source: "account-remove-outline", direction: "rtl" }}
+              style={{ borderRadius: 5, flex: 1 }}
+              textColor={"white"}
+              buttonColor={"transparent"}
+              onPress={() => {
+                if (type === "request")
+                  editJoinRequest({
+                    requestId: id,
+                    status: "REJECTED",
+                    gameId: game.id,
+                  });
+                else
+                  respondToInvite({
+                    invitationId: id,
+                    gameId: game.id,
+                    status: "REJECTED",
+                  });
+              }}
+            >
+              Decline
+            </Button>
+            <EntypoIcon
+              name="dots-three-horizontal"
+              color="white"
+              size={18}
+              onPress={() =>
+                navigation.push("GameDetails", {
+                  id: game.id,
+                  isPrevious: false,
+                })
+              }
+            />
+          </View>
         </View>
       </View>
     </View>
@@ -200,6 +220,7 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
       padding: 15,
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
+      flexGrow: 1,
     },
     header: {
       alignSelf: "center",
@@ -210,11 +231,11 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
     },
     profilePicture: {
       position: "absolute",
-      height: 60,
-      width: 60,
       top: -30,
       right: "7%",
       borderRadius: 50,
+      justifyContent: "center",
+      alignItems: "center",
     },
     text: {
       color: "white",

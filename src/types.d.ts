@@ -6,8 +6,8 @@ export interface User {
   email: string;
   phoneNumber: number;
   description: string;
-  profilePhotoUrl: string;
-  coverPhotoUrl: string;
+  profilePhotoUrl?: string;
+  coverPhotoUrl?: string;
   gender: string;
   height: string;
   weight: string;
@@ -56,10 +56,12 @@ export interface Invitation {
   user?: {
     firstName: string;
     lastName: string;
+    profilePhotoUrl?: string;
   };
   friend?: {
     firstName: string;
     lastName: string;
+    profilePhotoUrl?: string;
   };
   game: Game;
 }
@@ -132,8 +134,10 @@ export interface Activity {
 
 export interface GameUpdate {
   admin: {
+    id: number;
     firstName: string;
     lastName: string;
+    profilePhotoUrl: string;
   };
   createdAt: Date;
   winnerTeam: "HOME" | "AWAY";
@@ -143,12 +147,16 @@ export interface GameUpdate {
       createdAt: Date;
       status: "PENDING" | "APPROVED" | "REJECTED";
       user: {
+        id: number;
         firstName: string;
         lastName: string;
+        profilePhotoUrl: string;
       };
       friend: {
+        id: number;
         firstName: string;
         lastName: string;
+        profilePhotoUrl: string;
       };
     }
   ];
@@ -158,8 +166,10 @@ export interface GameUpdate {
       createdAt: Date;
       status: "PENDING" | "APPROVED" | "REJECTED";
       user: {
+        id: number;
         firstName: string;
         lastName: string;
+        profilePhotoUrl: string;
       };
     }
   ];
@@ -173,6 +183,8 @@ export interface TeamPlayer {
   lastName: string;
   rated: boolean;
   rating: number;
+  profilePhotoUrl?: string;
+  coverPhotoUrl?: string;
 }
 
 export interface PlayerStatus {

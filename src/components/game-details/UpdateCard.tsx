@@ -1,9 +1,18 @@
-import { Button, Text, useTheme } from "react-native-paper";
+import { Avatar, Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useEditJoinRequestMutation, usePlayerStatusQuery } from "src/api";
 import { Skeleton } from "../home";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { useContext } from "react";
+import { UserContext } from "src/utils";
 
 type textOptions =
   | "create"
@@ -25,11 +34,7 @@ export const UpdateCardSkeleton = () => {
 
   return (
     <View style={styles.wrapperView}>
-      <Image
-        source={require("assets/images/home/profile-picture.png")}
-        style={styles.profilePicture}
-        resizeMode="contain"
-      />
+      <Skeleton height={40} width={40} style={styles.profilePicture} />
       <View style={styles.contentView}>
         <Skeleton height={15} width={"80%"} />
         <Skeleton height={15} width={"40%"} style={{ marginTop: 5 }} />
@@ -42,19 +47,32 @@ export const UpdateCard = ({
   name,
   type,
   friendName,
+  profilePhotoUrl,
   requestId,
+  profileId,
   gameId,
   date,
 }: {
   name: string;
   type: textOptions;
   friendName?: string;
+  profilePhotoUrl?: string;
   requestId?: number;
+  profileId?: number;
   gameId: number;
   date: Date;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+  const { userData } = useContext(UserContext);
+
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<HomeStackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
 
   const { data: playerStatus } = usePlayerStatusQuery(gameId);
   const { mutate: editJoinRequest } = useEditJoinRequestMutation();
@@ -62,12 +80,42 @@ export const UpdateCard = ({
   if (!playerStatus) return <View />;
   else
     return (
-      <View style={styles.wrapperView}>
-        <Image
-          source={require("assets/images/home/profile-picture.png")}
-          style={styles.profilePicture}
-          resizeMode="contain"
-        />
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.wrapperView}
+        onPress={() => {
+          navigation.push("PlayerProfile", {
+            playerId: profileId!,
+            firstName: friendName
+              ? friendName.substring(0, friendName.indexOf(" "))
+              : name.substring(0, name.indexOf(" ")),
+            lastName: friendName
+              ? friendName.substring(friendName.indexOf(" ") + 1)
+              : name.substring(name.indexOf(" ") + 1),
+          });
+        }}
+      >
+        <View style={styles.profilePicture}>
+          {profilePhotoUrl ? (
+            <Avatar.Image size={40} source={{ uri: profilePhotoUrl }} />
+          ) : (
+            <Avatar.Text
+              label={
+                friendName
+                  ? `${friendName.charAt(0)}${friendName
+                      .substring(friendName.indexOf(" ") + 1)
+                      .charAt(0)}`
+                  : `${name.charAt(0)}${name
+                      .substring(name.indexOf(" ") + 1)
+                      .charAt(0)}`
+              }
+              size={40}
+              style={{
+                backgroundColor: colors.background,
+              }}
+            />
+          )}
+        </View>
         <View style={styles.contentView}>
           <View style={styles.textView}>
             <View>
@@ -147,7 +195,7 @@ export const UpdateCard = ({
               </View>
             )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
 };
 
@@ -160,10 +208,9 @@ const makeStyles = (colors: MD3Colors) =>
       marginBottom: 10,
     },
     profilePicture: {
-      height: 40,
-      width: 40,
       margin: 15,
       marginTop: 20,
+      borderRadius: 20,
     },
     contentView: {
       flex: 1,

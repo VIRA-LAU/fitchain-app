@@ -50,8 +50,10 @@ export const Team = ({
           key="created"
           type="create"
           name={`${gameUpdates.admin.firstName} ${gameUpdates.admin.lastName}`}
+          profilePhotoUrl={gameUpdates.admin.profilePhotoUrl}
           date={new Date(gameUpdates.createdAt)}
           gameId={game?.id}
+          profileId={gameUpdates.admin.id}
         />
       ),
       date: new Date(gameUpdates.createdAt),
@@ -69,8 +71,10 @@ export const Team = ({
                   : `${invitation.user.firstName} ${invitation.user.lastName}`
               }
               friendName={`${invitation.friend.firstName} ${invitation.friend.lastName}`}
+              profilePhotoUrl={invitation.friend.profilePhotoUrl}
               date={new Date(invitation.createdAt)}
               gameId={game?.id}
+              profileId={invitation.friend.id}
             />
           ),
           date: new Date(invitation.createdAt),
@@ -84,9 +88,11 @@ export const Team = ({
               key={`request-${index}`}
               type={request.status === "APPROVED" ? "join" : "join-request"}
               name={`${request.user.firstName} ${request.user.lastName}`}
+              profilePhotoUrl={request.user.profilePhotoUrl}
               date={new Date(request.createdAt)}
               requestId={request.id}
               gameId={game?.id}
+              profileId={request.user.id}
             />
           ),
           date: new Date(request.createdAt),

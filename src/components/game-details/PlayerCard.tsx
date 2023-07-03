@@ -12,7 +12,7 @@ import {
   useWindowDimensions,
   TouchableOpacity,
 } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Avatar, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
@@ -55,7 +55,16 @@ export const PlayerCardSkeleton = () => {
 
 export const PlayerCard = ({
   isActive = false,
-  player: { firstName, lastName, status, id, rated, rating },
+  player: {
+    firstName,
+    lastName,
+    status,
+    id,
+    rated,
+    rating,
+    profilePhotoUrl,
+    coverPhotoUrl,
+  },
   setActivePlayer,
   index,
   isPrevious,
@@ -94,6 +103,7 @@ export const PlayerCard = ({
 
   return (
     <TouchableOpacity
+      disabled={isActive}
       activeOpacity={id === userData?.userId ? 1 : 0.6}
       style={[
         styles.wrapperView,
@@ -102,17 +112,17 @@ export const PlayerCard = ({
           : { elevation: 10, opacity: 0.6 },
       ]}
       onPress={() => {
-        if (id !== userData?.userId)
-          navigation.push("PlayerProfile", {
-            playerId: id,
-            firstName,
-            lastName,
-          });
         setActivePlayer(index);
       }}
     >
       <Image
-        source={require("assets/images/home/profile-background.png")}
+        source={
+          coverPhotoUrl
+            ? {
+                uri: coverPhotoUrl,
+              }
+            : require("assets/images/home/profile-background.png")
+        }
         style={styles.header}
       />
       <View
@@ -123,11 +133,30 @@ export const PlayerCard = ({
           flexGrow: 1,
         }}
       >
-        <Image
-          source={require("assets/images/home/profile-picture.png")}
+        <TouchableOpacity
           style={styles.profilePicture}
-          resizeMode="contain"
-        />
+          activeOpacity={id === userData?.userId ? 1 : 0.6}
+          disabled={!isActive}
+          onPress={() => {
+            if (id !== userData?.userId)
+              navigation.push("PlayerProfile", {
+                playerId: id,
+                firstName,
+                lastName,
+              });
+          }}
+        >
+          {profilePhotoUrl ? (
+            <Avatar.Image source={{ uri: profilePhotoUrl }} />
+          ) : (
+            <Avatar.Text
+              label={`${firstName.charAt(0)}${lastName.charAt(0)}`}
+              style={{
+                backgroundColor: colors.background,
+              }}
+            />
+          )}
+        </TouchableOpacity>
         <Text style={styles.name}>
           {firstName} {lastName}
         </Text>
@@ -135,7 +164,8 @@ export const PlayerCard = ({
           <IonIcon name={"star"} color={"white"} />
           <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
         </View>
-        <View
+        <TouchableOpacity
+          disabled={rated || id == userData?.userId}
           style={[
             styles.statusView,
             {
@@ -149,39 +179,37 @@ export const PlayerCard = ({
                   : 1,
             },
           ]}
+          onPress={() =>
+            navigation.push("RatePlayer", {
+              playerId: id,
+              firstName,
+              lastName,
+              gameId,
+              profilePhotoUrl,
+              coverPhotoUrl,
+            })
+          }
         >
           {isPrevious ? (
             isInGame && (
-              <TouchableOpacity
-                disabled={rated || id == userData?.userId}
-                onPress={() =>
-                  navigation.push("RatePlayer", {
-                    playerId: id,
-                    firstName,
-                    lastName,
-                    gameId: gameId,
-                  })
-                }
+              <Text
+                style={[
+                  styles.statusText,
+                  {
+                    color:
+                      rated || userData?.userId == id
+                        ? colors.background
+                        : colors.tertiary,
+                  },
+                ]}
               >
-                <Text
-                  style={[
-                    styles.statusText,
-                    {
-                      color:
-                        rated || userData?.userId == id
-                          ? colors.background
-                          : colors.tertiary,
-                    },
-                  ]}
-                >
-                  {id == userData?.userId ? "You" : rated ? "Rated" : "Rate"}
-                </Text>
-              </TouchableOpacity>
+                {id == userData?.userId ? "You" : rated ? "Rated" : "Rate"}
+              </Text>
             )
           ) : (
             <Text style={[styles.statusText]}>{displayedStatus}</Text>
           )}
-        </View>
+        </TouchableOpacity>
         <IonIcon
           name="ellipsis-horizontal"
           color={"white"}
@@ -214,7 +242,9 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       height: "55%",
       top: "-27.5%",
       aspectRatio: 1,
-      borderRadius: 50,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     },
     name: {
       color: "white",

@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { Image, StyleSheet, useWindowDimensions, View } from "react-native";
-import { Button, Text, useTheme } from "react-native-paper";
+import { Avatar, Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList } from "navigation";
 import { AppHeader, RateCriteria } from "src/components";
@@ -12,12 +12,17 @@ type Props = StackScreenProps<HomeStackParamList, "RatePlayer">;
 
 export const RatePlayer = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
-  const styles = makeStyles(
-    colors,
-    useWindowDimensions().width,
-    useWindowDimensions().height
-  );
-  const { playerId, firstName, lastName, gameId } = route.params;
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+  const styles = makeStyles(colors, windowWidth, windowHeight);
+  const {
+    playerId,
+    firstName,
+    lastName,
+    gameId,
+    profilePhotoUrl,
+    coverPhotoUrl,
+  } = route.params;
+
   const { mutate: createRating } = useCreateRatingMutation();
 
   const [ratings, setRatings] = useState({
@@ -56,14 +61,35 @@ export const RatePlayer = ({ navigation, route }: Props) => {
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.headerView}>
           <Image
-            source={require("assets/images/home/profile-background.png")}
+            source={
+              coverPhotoUrl
+                ? {
+                    uri: coverPhotoUrl,
+                  }
+                : require("assets/images/home/profile-background.png")
+            }
             style={styles.headerImage}
           />
-          <View style={styles.headerContent}>
-            <Image
-              source={require("assets/images/home/profile-picture.png")}
-              style={styles.profilePicture}
-            />
+          <View
+            style={{
+              marginTop: (-0.33 * windowWidth) / 2,
+              alignSelf: "center",
+            }}
+          >
+            {profilePhotoUrl ? (
+              <Avatar.Image
+                source={{ uri: profilePhotoUrl }}
+                size={0.33 * windowWidth}
+              />
+            ) : (
+              <Avatar.Text
+                label={`${firstName.charAt(0)}${lastName.charAt(0)}`}
+                style={{
+                  backgroundColor: colors.secondary,
+                }}
+                size={0.33 * windowWidth}
+              />
+            )}
           </View>
         </View>
         <View style={{ alignItems: "center", marginTop: 25, flexGrow: 1 }}>
@@ -146,14 +172,6 @@ const makeStyles = (
       opacity: 0.5,
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
-    },
-    headerContent: {
-      alignItems: "center",
-    },
-    profilePicture: {
-      width: 0.33 * windowWidth,
-      height: 0.33 * windowWidth,
-      marginTop: (-0.33 * windowWidth) / 2,
     },
     buttonsView: {
       flexDirection: "row",

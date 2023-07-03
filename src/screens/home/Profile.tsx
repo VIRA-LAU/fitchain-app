@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Avatar, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
   ActivityCard,
@@ -122,7 +122,11 @@ export const Profile = ({
                 setModalVisible(false);
               }}
             >
-              <IonIcon name="checkmark" color={colors.primary} size={24} />
+              <IonIcon
+                name="checkmark-sharp"
+                color={colors.primary}
+                size={24}
+              />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -225,19 +229,32 @@ export const Profile = ({
             )}
           </View>
           <View style={styles.headerContent}>
-            <View>
-              <Image
-                source={
-                  profilePhotoToUpload
-                    ? { uri: profilePhotoToUpload }
-                    : userDetails?.profilePhotoUrl
-                    ? {
-                        uri: userDetails.profilePhotoUrl,
-                      }
-                    : require("assets/images/home/profile-picture.png")
-                }
-                style={styles.profilePicture}
-              />
+            <View
+              style={{
+                marginTop: (-0.33 * windowWidth) / 2,
+              }}
+            >
+              {profilePhotoToUpload ? (
+                <Avatar.Image
+                  source={{ uri: profilePhotoToUpload }}
+                  size={0.33 * windowWidth}
+                />
+              ) : userDetails?.profilePhotoUrl ? (
+                <Avatar.Image
+                  source={{ uri: userDetails.profilePhotoUrl }}
+                  size={0.33 * windowWidth}
+                />
+              ) : (
+                <Avatar.Text
+                  label={`${userDetails?.firstName.charAt(
+                    0
+                  )}${userDetails?.lastName.charAt(0)}`}
+                  style={{
+                    backgroundColor: colors.background,
+                  }}
+                  size={0.33 * windowWidth}
+                />
+              )}
               {isEditing && (
                 <TouchableOpacity
                   onPress={() => uploadImage("profile")}
@@ -245,7 +262,6 @@ export const Profile = ({
                   style={[
                     styles.editImage,
                     {
-                      top: (-0.33 * windowWidth) / 2,
                       borderRadius: 100,
                     },
                   ]}
@@ -428,12 +444,6 @@ const makeStyles = (
     },
     headerContent: {
       alignItems: "center",
-    },
-    profilePicture: {
-      width: 0.33 * windowWidth,
-      height: 0.33 * windowWidth,
-      borderRadius: 100,
-      marginTop: (-0.33 * windowWidth) / 2,
     },
     buttonsView: {
       flexDirection: "row",
