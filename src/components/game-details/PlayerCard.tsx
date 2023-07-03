@@ -34,7 +34,7 @@ export const PlayerCardSkeleton = () => {
     >
       <Skeleton style={styles.header} />
       <View style={{ alignItems: "center", paddingTop: 40 }}>
-        <Skeleton style={styles.profilePicture} />
+        <Skeleton style={[styles.profilePicture, { borderRadius: 100 }]} />
         <Skeleton height={20} width={100} style={styles.name} />
         <View style={[styles.ratingView, { marginTop: 8 }]}>
           <IonIcon name={"star"} color={"white"} />
@@ -147,10 +147,15 @@ export const PlayerCard = ({
           }}
         >
           {profilePhotoUrl ? (
-            <Avatar.Image source={{ uri: profilePhotoUrl }} />
+            <Avatar.Image
+              source={{ uri: profilePhotoUrl }}
+              style={{ backgroundColor: colors.background }}
+            />
           ) : (
             <Avatar.Text
-              label={`${firstName.charAt(0)}${lastName.charAt(0)}`}
+              label={
+                firstName ? `${firstName.charAt(0)}${lastName.charAt(0)}` : ""
+              }
               style={{
                 backgroundColor: colors.background,
               }}
@@ -165,7 +170,7 @@ export const PlayerCard = ({
           <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
         </View>
         <TouchableOpacity
-          disabled={rated || id == userData?.userId}
+          disabled={!isPrevious || rated || id === userData?.userId}
           style={[
             styles.statusView,
             {

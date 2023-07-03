@@ -19,7 +19,7 @@ export const BookingCardSkeleton = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   return (
-    <View style={styles.wrapper}>
+    <View style={[styles.wrapper, { height: 108 }]}>
       <View style={styles.leftImageView}>
         <Skeleton style={styles.leftImage} />
       </View>
@@ -135,6 +135,7 @@ const makeStyles = (colors: MD3Colors) =>
       justifyContent: "flex-end",
       borderRadius: 10,
       marginBottom: 10,
+      paddingLeft: 55,
     },
     content: {
       padding: 15,
@@ -146,7 +147,10 @@ const makeStyles = (colors: MD3Colors) =>
     },
     leftImageView: {
       width: 55,
-      height: 108,
+      left: 0,
+      top: 0,
+      bottom: 0,
+      position: "absolute",
       borderTopLeftRadius: 10,
       borderBottomLeftRadius: 10,
       overflow: "hidden",

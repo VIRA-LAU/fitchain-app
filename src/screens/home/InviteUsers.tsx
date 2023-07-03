@@ -97,12 +97,17 @@ export const InviteUsers = ({ navigation, route }: Props) => {
                   <Avatar.Image
                     size={45}
                     source={{ uri: user.profilePhotoUrl }}
+                    style={{ backgroundColor: colors.secondary }}
                   />
                 ) : (
                   <Avatar.Text
-                    label={`${user.firstName.charAt(0)}${user.lastName.charAt(
-                      0
-                    )}`}
+                    label={
+                      user.firstName
+                        ? `${user.firstName.charAt(0)}${user.lastName.charAt(
+                            0
+                          )}`
+                        : ""
+                    }
                     size={45}
                     style={{
                       backgroundColor: colors.secondary,

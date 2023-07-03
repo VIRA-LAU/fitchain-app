@@ -97,7 +97,11 @@ export const UpdateCard = ({
       >
         <View style={styles.profilePicture}>
           {profilePhotoUrl ? (
-            <Avatar.Image size={40} source={{ uri: profilePhotoUrl }} />
+            <Avatar.Image
+              size={40}
+              source={{ uri: profilePhotoUrl }}
+              style={{ backgroundColor: colors.background }}
+            />
           ) : (
             <Avatar.Text
               label={
@@ -105,9 +109,11 @@ export const UpdateCard = ({
                   ? `${friendName.charAt(0)}${friendName
                       .substring(friendName.indexOf(" ") + 1)
                       .charAt(0)}`
-                  : `${name.charAt(0)}${name
+                  : name
+                  ? `${name.charAt(0)}${name
                       .substring(name.indexOf(" ") + 1)
                       .charAt(0)}`
+                  : ""
               }
               size={40}
               style={{

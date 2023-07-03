@@ -207,7 +207,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
         backEnabled
         title={game?.type}
         right={
-          game?.admin.id === userData?.userId ? (
+          game?.admin.id === userData?.userId && !isPrevious ? (
             <TouchableOpacity
               onPress={() => {
                 setRecordingModalVisible(true);

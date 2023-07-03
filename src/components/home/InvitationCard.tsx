@@ -107,12 +107,20 @@ export const InvitationCard = ({
       <View style={styles.content}>
         <View style={styles.profilePicture}>
           {profilePhotoUrl ? (
-            <Avatar.Image size={60} source={{ uri: profilePhotoUrl }} />
+            <Avatar.Image
+              size={60}
+              source={{ uri: profilePhotoUrl }}
+              style={{ backgroundColor: colors.background }}
+            />
           ) : (
             <Avatar.Text
-              label={`${user.charAt(0)}${user
-                .substring(user.indexOf(" ") + 1)
-                .charAt(0)}`}
+              label={
+                user
+                  ? `${user.charAt(0)}${user
+                      .substring(user.indexOf(" ") + 1)
+                      .charAt(0)}`
+                  : ""
+              }
               size={60}
               style={{
                 backgroundColor: colors.background,

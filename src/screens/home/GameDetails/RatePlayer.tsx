@@ -80,10 +80,13 @@ export const RatePlayer = ({ navigation, route }: Props) => {
               <Avatar.Image
                 source={{ uri: profilePhotoUrl }}
                 size={0.33 * windowWidth}
+                style={{ backgroundColor: colors.secondary }}
               />
             ) : (
               <Avatar.Text
-                label={`${firstName.charAt(0)}${lastName.charAt(0)}`}
+                label={
+                  firstName ? `${firstName.charAt(0)}${lastName.charAt(0)}` : ""
+                }
                 style={{
                   backgroundColor: colors.secondary,
                 }}
@@ -117,13 +120,16 @@ export const RatePlayer = ({ navigation, route }: Props) => {
               onRatingChange={handleChangeRating}
             ></RateCriteria>
           </View>
-          <Button
-            style={styles.rateButton}
-            textColor={colors.secondary}
-            onPress={() => handleRatePlayer()}
-          >
-            Rate Player
-          </Button>
+
+          <View style={styles.rateButtonView}>
+            <Button
+              style={styles.rateButton}
+              textColor={colors.secondary}
+              onPress={() => handleRatePlayer()}
+            >
+              Rate Player
+            </Button>
+          </View>
         </View>
       </ScrollView>
     </AppHeader>
@@ -136,12 +142,16 @@ const makeStyles = (
   windowHeight: number
 ) =>
   StyleSheet.create({
-    rateButton: {
-      backgroundColor: colors.primary,
-      borderRadius: 5,
+    rateButtonView: {
       marginTop: "auto",
       marginBottom: 20,
       width: "95%",
+    },
+    rateButton: {
+      backgroundColor: colors.primary,
+      borderRadius: 5,
+      marginTop: 20,
+      flexGrow: 1,
     },
     rateCriteria: {
       marginTop: 20,

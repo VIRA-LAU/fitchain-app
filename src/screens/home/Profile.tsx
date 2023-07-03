@@ -238,17 +238,23 @@ export const Profile = ({
                 <Avatar.Image
                   source={{ uri: profilePhotoToUpload }}
                   size={0.33 * windowWidth}
+                  style={{ backgroundColor: colors.background }}
                 />
               ) : userDetails?.profilePhotoUrl ? (
                 <Avatar.Image
                   source={{ uri: userDetails.profilePhotoUrl }}
                   size={0.33 * windowWidth}
+                  style={{ backgroundColor: colors.background }}
                 />
               ) : (
                 <Avatar.Text
-                  label={`${userDetails?.firstName.charAt(
-                    0
-                  )}${userDetails?.lastName.charAt(0)}`}
+                  label={
+                    userDetails?.firstName
+                      ? `${userDetails?.firstName.charAt(
+                          0
+                        )}${userDetails?.lastName.charAt(0)}`
+                      : ""
+                  }
                   style={{
                     backgroundColor: colors.background,
                   }}

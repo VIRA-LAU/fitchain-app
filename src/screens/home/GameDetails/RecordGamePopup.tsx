@@ -1,5 +1,11 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
-import { View, StyleSheet, useWindowDimensions, Pressable } from "react-native";
+import {
+  View,
+  StyleSheet,
+  useWindowDimensions,
+  Pressable,
+  Platform,
+} from "react-native";
 import {
   ActivityIndicator,
   Button,
@@ -22,8 +28,8 @@ export const RecordGamePopup = ({
   setPopupVisible: Dispatch<SetStateAction<PopupType | null>>;
 }) => {
   const { colors } = useTheme();
-  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-  const styles = makeStyles(colors, windowHeight);
+  const { width: windowWidth } = useWindowDimensions();
+  const styles = makeStyles(colors);
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -44,106 +50,101 @@ export const RecordGamePopup = ({
 
   const renderScene = () => {
     const route = routes[index];
-    switch (route.key) {
-      case "Phone":
-        return (
-          <View style={{ paddingHorizontal: 25, marginTop: 10 }}>
-            <View style={styles.selectView}>
-              <Text style={{ color: "white", fontFamily: "Inter-Medium" }}>
-                Upload While Recording
-              </Text>
-              <Switch
-                trackColor={{ false: colors.secondary, true: colors.tertiary }}
-                thumbColor={
-                  uploadWhileRecording ? colors.primary : colors.tertiary
-                }
-                onValueChange={() =>
-                  setUploadWhileRecording(!uploadWhileRecording)
-                }
-                value={uploadWhileRecording}
-              />
-            </View>
+    return route.key === "Phone" ? (
+      <View
+        style={{
+          paddingHorizontal: 25,
+          marginTop: 10,
+        }}
+      >
+        <View style={styles.selectView}>
+          <Text style={{ color: "white", fontFamily: "Inter-Medium" }}>
+            Upload While Recording
+          </Text>
+          <Switch
+            trackColor={{ false: colors.secondary, true: colors.tertiary }}
+            thumbColor={uploadWhileRecording ? colors.primary : colors.tertiary}
+            onValueChange={() => setUploadWhileRecording(!uploadWhileRecording)}
+            value={uploadWhileRecording}
+          />
+        </View>
 
-            <View style={styles.selectView}>
-              <Text style={{ color: "white", fontFamily: "Inter-Medium" }}>
-                Show Modified Video
-              </Text>
-              <Switch
-                trackColor={{ false: colors.secondary, true: colors.tertiary }}
-                thumbColor={showModifiedVid ? colors.primary : colors.tertiary}
-                onValueChange={() => setShowModifiedVid(!showModifiedVid)}
-                value={showModifiedVid}
-              />
-            </View>
-          </View>
-        );
-      case "Court":
-        return (
-          <View style={{ paddingTop: 20 }}>
-            <Text style={styles.promptText}>Select court camera.</Text>
-            <View style={{ marginHorizontal: 20, marginBottom: 20, zIndex: 1 }}>
-              <DropDownPicker
-                open={dropDownOpen}
-                value={dropDownValue}
-                items={dropDownItems}
-                setOpen={setDropDownOpen}
-                setValue={setDropDownValue}
-                setItems={setDropDownItems}
-                style={{
-                  backgroundColor: colors.secondary,
-                  borderColor: "transparent",
-                }}
-                dropDownContainerStyle={{
-                  backgroundColor: colors.secondary,
-                  borderColor: "transparent",
-                }}
-                theme="DARK"
-                textStyle={{ color: "white", fontFamily: "Inter-Medium" }}
-              />
-            </View>
-            {recordLoading ? (
-              <ActivityIndicator style={{ marginBottom: 10 }} />
-            ) : !game?.isRecording ? (
-              <Button
-                buttonColor={colors.primary}
-                textColor={colors.background}
-                style={{
-                  borderRadius: 5,
-                  marginBottom: 10,
-                  marginHorizontal: 20,
-                }}
-                onPress={
-                  dropDownValue !== null
-                    ? () => {
-                        startStopRecording({ recordingMode: "start" });
-                      }
-                    : undefined
-                }
-              >
-                Start Recording
-              </Button>
-            ) : (
-              <Button
-                buttonColor={colors.primary}
-                textColor={colors.background}
-                style={{
-                  borderRadius: 5,
-                  marginBottom: 10,
-                  marginHorizontal: 20,
-                }}
-                onPress={() => {
-                  startStopRecording({ recordingMode: "stop" });
-                }}
-              >
-                Stop Recording
-              </Button>
-            )}
-            <Button onPress={() => setPopupVisible(null)}>Cancel</Button>
-          </View>
-        );
-      default:
-        return null;
-    }
+        <View style={styles.selectView}>
+          <Text style={{ color: "white", fontFamily: "Inter-Medium" }}>
+            Show Modified Video
+          </Text>
+          <Switch
+            trackColor={{ false: colors.secondary, true: colors.tertiary }}
+            thumbColor={showModifiedVid ? colors.primary : colors.tertiary}
+            onValueChange={() => setShowModifiedVid(!showModifiedVid)}
+            value={showModifiedVid}
+          />
+        </View>
+      </View>
+    ) : (
+      <View style={{ paddingTop: 20 }}>
+        <Text style={styles.promptText}>Select court camera.</Text>
+        <View style={{ marginHorizontal: 20, marginBottom: 20, zIndex: 1 }}>
+          <DropDownPicker
+            open={dropDownOpen}
+            value={dropDownValue}
+            items={dropDownItems}
+            setOpen={setDropDownOpen}
+            setValue={setDropDownValue}
+            setItems={setDropDownItems}
+            placeholder="Select Camera"
+            style={{
+              backgroundColor: colors.secondary,
+              borderColor: "transparent",
+            }}
+            dropDownContainerStyle={{
+              backgroundColor: colors.secondary,
+              borderColor: "transparent",
+            }}
+            theme="DARK"
+            textStyle={{ color: "white", fontFamily: "Inter-Medium" }}
+          />
+        </View>
+        {recordLoading ? (
+          <ActivityIndicator style={{ marginBottom: 10 }} />
+        ) : !game?.isRecording ? (
+          <Button
+            buttonColor={colors.primary}
+            textColor={colors.background}
+            style={{
+              borderRadius: 5,
+              marginBottom: 10,
+              marginHorizontal: 20,
+            }}
+            onPress={
+              dropDownValue !== null
+                ? () => {
+                    startStopRecording({ recordingMode: "start" });
+                  }
+                : undefined
+            }
+          >
+            Start Recording
+          </Button>
+        ) : (
+          <Button
+            buttonColor={colors.primary}
+            textColor={colors.background}
+            style={{
+              borderRadius: 5,
+              marginBottom: 10,
+              marginHorizontal: 20,
+            }}
+            onPress={() => {
+              startStopRecording({ recordingMode: "stop" });
+            }}
+          >
+            Stop Recording
+          </Button>
+        )}
+        <Button onPress={() => setPopupVisible(null)}>Cancel</Button>
+      </View>
+    );
   };
 
   const renderTabBar = (props: TabBarProps<any>) => (
@@ -198,17 +199,16 @@ export const RecordGamePopup = ({
         renderTabBar={renderTabBar}
         renderScene={renderScene}
         onIndexChange={setIndex}
-        initialLayout={{ width: windowWidth }}
         swipeEnabled={false}
       />
     </View>
   );
 };
 
-const makeStyles = (colors: MD3Colors, windowHeight: number) =>
+const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      minHeight: 0.5 * windowHeight,
+      minHeight: 330,
     },
     promptText: {
       fontFamily: "Inter-Medium",
@@ -230,5 +230,6 @@ const makeStyles = (colors: MD3Colors, windowHeight: number) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
+      marginVertical: Platform.OS == "ios" ? 7 : 0,
     },
   });
