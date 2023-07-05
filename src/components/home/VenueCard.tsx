@@ -102,7 +102,11 @@ export const VenueCard = ({
       }}
     >
       <Image
-        source={require("assets/images/home/basketball-hub.png")}
+        source={
+          venueBranch?.coverPhotoUrl
+            ? { uri: venueBranch.coverPhotoUrl }
+            : require("assets/images/home/basketball-hub.png")
+        }
         style={styles.image}
       />
       <View style={styles.content}>

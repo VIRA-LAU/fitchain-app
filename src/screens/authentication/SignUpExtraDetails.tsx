@@ -7,7 +7,7 @@ import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Dispatch, SetStateAction, useRef } from "react";
 import { useState } from "react";
-import { useUpdateUserDataMutation } from "src/api";
+import { useUpdateUserMutation } from "src/api";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUpExtraDetails">;
 
@@ -21,7 +21,7 @@ export const SignUpExtraDetails = ({
   setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
   const { mutate: updateUserData, isLoading: updateUserLoading } =
-    useUpdateUserDataMutation(setSignedIn);
+    useUpdateUserMutation(setSignedIn);
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [description, setDescription] = useState("");

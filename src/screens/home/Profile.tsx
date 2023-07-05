@@ -30,7 +30,7 @@ import { UserContext } from "src/utils";
 import {
   useActivitiesQuery,
   useGameCountQuery,
-  useUpdateUserDataMutation,
+  useUpdateUserMutation,
   useUserDetailsQuery,
 } from "src/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -72,7 +72,7 @@ export const Profile = ({
   const [profilePhotoToUpload, setProfilePhotoToUpload] = useState<string>();
 
   const { mutate: updateUserData, isSuccess: updateUserSuccess } =
-    useUpdateUserDataMutation();
+    useUpdateUserMutation();
 
   const uploadImage = async (imageType: "profile" | "cover") => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -92,8 +92,7 @@ export const Profile = ({
       let match = /\.(\w+)$/.exec(fileName!);
       let type = match ? `image/${match[1]}` : `image`;
 
-      formData.append("imageType", imageType);
-      formData.append("image", {
+      formData.append(`${imageType}Photo`, {
         uri: result.assets[0].uri,
         name: `user-${userData?.userId}.${match ? match[1] : ""}`,
         type,

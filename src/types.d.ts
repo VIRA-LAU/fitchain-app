@@ -105,7 +105,8 @@ export interface Branch {
     id: number;
     name: string;
   };
-  photoDirectoryURL: string;
+  photoDirectoryUrl: string;
+  coverPhotoUrl: string;
   courts: Court[];
   rating: number;
   managerFirstName: string;

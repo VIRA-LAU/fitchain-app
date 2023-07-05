@@ -12,7 +12,7 @@ type Request =
     }
   | FormData;
 
-const updateUserData = (userData: UserData) => async (data: Request) => {
+const updateUser = (userData: UserData) => async (data: Request) => {
   const authHeader = getHeader(userData);
   const headers = {
     ...authHeader.headers,
@@ -30,13 +30,13 @@ const updateUserData = (userData: UserData) => async (data: Request) => {
     });
 };
 
-export const useUpdateUserDataMutation = (
+export const useUpdateUserMutation = (
   setSignedIn?: Dispatch<SetStateAction<"player" | "venue" | null>>
 ) => {
   const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
   return useMutation<User, unknown, Request>({
-    mutationFn: updateUserData(userData!),
+    mutationFn: updateUser(userData!),
     onSuccess: () => {
       if (setSignedIn) setSignedIn("player");
       queryClient.refetchQueries(["user-details", userData?.userId]);
