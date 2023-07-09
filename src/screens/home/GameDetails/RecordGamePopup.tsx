@@ -1,11 +1,5 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
-import {
-  View,
-  StyleSheet,
-  useWindowDimensions,
-  Pressable,
-  Platform,
-} from "react-native";
+import { View, StyleSheet, useWindowDimensions, Pressable } from "react-native";
 import {
   ActivityIndicator,
   Button,
@@ -230,6 +224,6 @@ const makeStyles = (colors: MD3Colors) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      marginVertical: Platform.OS == "ios" ? 7 : 0,
+      marginVertical: 7,
     },
   });

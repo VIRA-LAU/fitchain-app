@@ -106,7 +106,7 @@ export const VerifyEmail = ({
       (userError && userError?.response?.data?.message === "INCORRECT_CODE") ||
       (branchError && branchError?.response?.data?.message === "INCORRECT_CODE")
     )
-      setErrorMessage("The code you entered is incorrect.");
+      setErrorMessage("The code you entered is invalid or has expired.");
   }, [userError, branchError]);
 
   return (
