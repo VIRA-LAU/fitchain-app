@@ -4,13 +4,7 @@ import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   useResendEmailCodeMutation,
   useVerifyBranchEmailMutation,
@@ -71,16 +65,14 @@ const CodeInput = ({
 export const VerifyEmail = ({
   navigation,
   route,
-  setSignedIn,
 }: {
   navigation: Props["navigation"];
   route: Props["route"];
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { userId, isVenue } = route.params;
+  const { userId, isBranch } = route.params;
 
   const {
     mutate: verifyUserEmail,
@@ -91,7 +83,7 @@ export const VerifyEmail = ({
     mutate: verifyBranchEmail,
     error: branchError,
     isLoading: branchLoading,
-  } = useVerifyBranchEmailMutation(setSignedIn);
+  } = useVerifyBranchEmailMutation();
   const {
     mutate: resendCode,
     isSuccess: resendSuccess,
@@ -171,7 +163,7 @@ export const VerifyEmail = ({
                 if (code.indexOf("") !== -1) {
                   setErrorMessage("Please enter the full code.");
                 } else {
-                  if (!isVenue)
+                  if (!isBranch)
                     verifyUserEmail({
                       code: code.join(""),
                       userId,
@@ -196,7 +188,7 @@ export const VerifyEmail = ({
               onPress={() => {
                 resendCode({
                   userId,
-                  isVenue,
+                  isBranch,
                 });
               }}
             >

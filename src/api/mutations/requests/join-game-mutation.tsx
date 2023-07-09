@@ -1,7 +1,5 @@
-import client, { getHeader } from "../../client";
+import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
-import { UserContext, UserData } from "../../../utils/UserContext";
-import { useContext } from "react";
 
 type Request = {
   gameId: number;
@@ -14,11 +12,10 @@ type Response = {
   team: string;
 };
 
-const joinGame = (userData: UserData) => async (data: Request) => {
-  const header = getHeader(userData);
+const joinGame = async (data: Request) => {
   return await client
-    .post("/gamerequests", data, header)
-    .then((res) => res.data)
+    .post("/gamerequests", data)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("join-game-mutation", e);
       throw new Error(e);
@@ -26,11 +23,10 @@ const joinGame = (userData: UserData) => async (data: Request) => {
 };
 
 export const useJoinGameMutation = () => {
-  const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
 
   return useMutation<Response, unknown, Request>({
-    mutationFn: joinGame(userData!),
+    mutationFn: joinGame,
     onSuccess: (data) => {
       queryClient.setQueryData(["playerStatus", data.gameId], {
         hasRequestedtoJoin: "PENDING",

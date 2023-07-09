@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, createContext } from "react";
 
-export type VenueData = {
+export type BranchData = {
   branchId: number;
   venueId: number;
   venueName: string;
@@ -20,19 +20,15 @@ export type UserData = {
 };
 
 export type ContextProps = {
-  readonly isVenue: boolean;
-  readonly setIsVenue: Dispatch<SetStateAction<boolean>>;
   readonly userData: UserData | null;
   readonly setUserData: Dispatch<SetStateAction<UserData | null>>;
-  readonly venueData: VenueData | null;
-  readonly setVenueData: Dispatch<SetStateAction<VenueData | null>>;
+  readonly branchData: BranchData | null;
+  readonly setBranchData: Dispatch<SetStateAction<BranchData | null>>;
 };
 
 export const UserContext = createContext<ContextProps>({
-  isVenue: false,
-  setIsVenue: () => {},
   userData: null,
   setUserData: () => {},
-  venueData: null,
-  setVenueData: () => {},
+  branchData: null,
+  setBranchData: () => {},
 });

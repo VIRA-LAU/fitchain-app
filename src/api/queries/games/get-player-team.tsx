@@ -1,18 +1,14 @@
 import { useQuery } from "react-query";
-import { UserContext, UserData } from "src/utils";
-import client, { getHeader } from "../../client";
-import { TeamPlayer } from "src/types";
-import { useContext } from "react";
+import client from "../../client";
 
 type Response = {
   team: "HOME" | "AWAY" | "none";
 };
-const getPlayerTeamQuery = (userData: UserData, gameId: number) => async () => {
-  const header = getHeader(userData);
+const getPlayerTeamQuery = (gameId: number) => async () => {
   if (gameId)
     return await client
-      .get(`/games/getTeam?gameId=${gameId}`, header)
-      .then((res) => res.data)
+      .get(`/games/getTeam?gameId=${gameId}`)
+      .then((res) => res?.data)
       .catch((e) => {
         console.error("player-team-query", e);
         throw new Error(e);
@@ -20,9 +16,5 @@ const getPlayerTeamQuery = (userData: UserData, gameId: number) => async () => {
 };
 
 export const useGetPlayerTeamQuery = (id: number) => {
-  const { userData } = useContext(UserContext);
-  return useQuery<Response>(
-    ["player-team", id],
-    getPlayerTeamQuery(userData!, id)
-  );
+  return useQuery<Response>(["player-team", id], getPlayerTeamQuery(id));
 };

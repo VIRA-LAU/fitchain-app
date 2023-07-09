@@ -1,7 +1,5 @@
-import client, { getHeader } from "../../client";
+import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
-import { UserContext, UserData } from "../../../utils/UserContext";
-import { useContext } from "react";
 import { GameRequest } from "src/types";
 
 type Request = {
@@ -10,11 +8,10 @@ type Request = {
   gameId: number;
 };
 
-const editJoinRequest = (userData: UserData) => async (data: Request) => {
-  const header = getHeader(userData);
+const editJoinRequest = async (data: Request) => {
   return await client
-    .patch(`/gamerequests/${data.requestId}`, { status: data.status }, header)
-    .then((res) => res.data)
+    .patch(`/gamerequests/${data.requestId}`, { status: data.status })
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("edit-join-request-mutation", e);
       throw new Error(e);
@@ -22,11 +19,10 @@ const editJoinRequest = (userData: UserData) => async (data: Request) => {
 };
 
 export const useEditJoinRequestMutation = () => {
-  const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
 
   return useMutation<GameRequest, unknown, Request>({
-    mutationFn: editJoinRequest(userData!),
+    mutationFn: editJoinRequest,
     onSuccess: (data, variables) => {
       queryClient.refetchQueries("received-requests");
       queryClient.refetchQueries(["game-players", variables.gameId]);

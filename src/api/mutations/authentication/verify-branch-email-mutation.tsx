@@ -1,5 +1,5 @@
-import client from "../../client";
-import { Dispatch, SetStateAction, useContext } from "react";
+import client, { setHeaderAndInterceptors } from "../../client";
+import { useContext } from "react";
 import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
 import { Branch } from "src/types";
@@ -14,17 +14,15 @@ type Request = {
 const verifyBranchEmail = async (data: Request) => {
   return await client
     .patch("/auth/verifyEmail/branch", data)
-    .then((res) => res.data)
+    .then((res) => res?.data)
     .catch((error) => {
       console.error("verify-branch-email-mutation", error.response?.data);
       throw error;
     });
 };
 
-export const useVerifyBranchEmailMutation = (
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>
-) => {
-  const { setVenueData, setIsVenue } = useContext(UserContext);
+export const useVerifyBranchEmailMutation = () => {
+  const { setBranchData, setUserData } = useContext(UserContext);
   return useMutation<
     Branch & {
       branchId: number;
@@ -48,10 +46,14 @@ export const useVerifyBranchEmailMutation = (
         email: data.email,
         token: data.access_token,
       };
-      setIsVenue(true);
-      setVenueData(fetchedInfo);
+      setHeaderAndInterceptors({
+        branchData: fetchedInfo,
+        setBranchData,
+        setUserData,
+      });
+      setBranchData(fetchedInfo);
       const keys = [
-        "isVenue",
+        "isBranch",
         "branchId",
         "venueId",
         "venueName",
@@ -73,7 +75,6 @@ export const useVerifyBranchEmailMutation = (
         data.access_token,
       ];
       storeData(keys, values);
-      setSignedIn("venue");
     },
   });
 };

@@ -46,10 +46,8 @@ export const Profile = ({
   navigation,
   route,
   isUserProfile = false,
-  setSignedIn,
 }: Props & {
   isUserProfile?: boolean;
-  setSignedIn?: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
   const { colors } = useTheme();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
@@ -175,7 +173,6 @@ export const Profile = ({
               onPress={() => {
                 setModalVisible(false);
                 AsyncStorage.clear();
-                if (setSignedIn) setSignedIn(null);
                 setUserData(null);
               }}
             >

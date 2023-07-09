@@ -35,7 +35,7 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
     navigation.push("VerifyNumber", {
       code,
       phoneNumber,
-      isVenue: route.params.isVenue,
+      isBranch: route.params.isBranch,
     });
   };
 

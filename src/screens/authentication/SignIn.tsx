@@ -12,7 +12,7 @@ import { SignUpStackParamList } from "navigation";
 import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AppHeader } from "src/components";
 import { useLoginUserMutation } from "src/api";
 type Props = StackScreenProps<SignUpStackParamList, "SignIn">;
@@ -20,20 +20,14 @@ type Props = StackScreenProps<SignUpStackParamList, "SignIn">;
 export const SignIn = ({
   navigation,
   route,
-  setSignedIn,
-  storedEmail,
-  verifyLoading,
 }: {
   navigation: Props["navigation"];
   route: Props["route"];
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
-  storedEmail: string | undefined;
-  verifyLoading: boolean;
 }) => {
   const { fontScale } = useWindowDimensions();
   const { colors } = useTheme();
   const styles = makeStyles(fontScale, colors);
-  const [email, setEmail] = useState<string | undefined>(storedEmail);
+  const [email, setEmail] = useState<string | undefined>();
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -41,7 +35,7 @@ export const SignIn = ({
     mutate: loginUser,
     isLoading: loginLoading,
     error,
-  } = useLoginUserMutation(setSignedIn);
+  } = useLoginUserMutation();
 
   const validateEmail = (email: string) => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -62,17 +56,13 @@ export const SignIn = ({
   };
 
   useEffect(() => {
-    setEmail(storedEmail);
-  }, [storedEmail]);
-
-  useEffect(() => {
     if (error && error?.response?.data?.message === "CREDENTIALS_INCORRECT")
       setErrorMessage("Invalid email or password.");
 
     if (error && error?.response?.data?.message === "EMAIL_NOT_VERIFIED")
       navigation.push("VerifyEmail", {
         userId: error.response.data.userId!,
-        isVenue: error.response.data.isVenue!,
+        isBranch: error.response.data.isBranch!,
       });
   }, [error]);
 
@@ -152,7 +142,7 @@ export const SignIn = ({
               {errorMessage}
             </Text>
           )}
-          {loginLoading || verifyLoading ? (
+          {loginLoading ? (
             <ActivityIndicator style={{ marginTop: 15, marginBottom: 20 }} />
           ) : (
             <Button

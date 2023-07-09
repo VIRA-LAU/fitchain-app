@@ -1,5 +1,4 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import { Dispatch, SetStateAction } from "react";
 import {
   SignIn,
   SignUpWithNumber,
@@ -9,54 +8,34 @@ import {
   SignUpAsBranch,
   VerifyEmail,
 } from "screens";
+import { UserData } from "src/utils";
 
 export type SignUpStackParamList = {
   SignIn: undefined;
-  SignUpWithNumber: { isVenue: boolean };
-  VerifyEmail: { userId: number; isVenue: boolean };
+  SignUpWithNumber: { isBranch: boolean };
+  VerifyEmail: { userId: number; isBranch: boolean };
   VerifyNumber: {
     code: string;
     phoneNumber: string;
-    isVenue: boolean;
+    isBranch: boolean;
   };
   SignUpWithEmail: undefined;
-  SignUpExtraDetails: undefined;
+  SignUpExtraDetails: { userData: UserData };
   SignUpAsBranch: undefined;
 };
 
 const Stack = createStackNavigator<SignUpStackParamList>();
 
-export const SignUpNavigator = ({
-  setSignedIn,
-  storedEmail,
-  verifyLoading,
-}: {
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
-  storedEmail: string | undefined;
-  verifyLoading: boolean;
-}) => (
+export const SignUpNavigator = () => (
   <Stack.Navigator
     initialRouteName="SignIn"
     screenOptions={{ headerShown: false }}
   >
-    <Stack.Screen name="SignIn">
-      {(props) => (
-        <SignIn
-          {...props}
-          setSignedIn={setSignedIn}
-          storedEmail={storedEmail}
-          verifyLoading={verifyLoading}
-        />
-      )}
-    </Stack.Screen>
+    <Stack.Screen name="SignIn" component={SignIn} />
     <Stack.Screen name="SignUpWithEmail" component={SignUpWithEmail} />
     <Stack.Screen name="SignUpAsBranch" component={SignUpAsBranch} />
-    <Stack.Screen name="VerifyEmail">
-      {(props) => <VerifyEmail {...props} setSignedIn={setSignedIn} />}
-    </Stack.Screen>
-    <Stack.Screen name="SignUpExtraDetails">
-      {(props) => <SignUpExtraDetails {...props} setSignedIn={setSignedIn} />}
-    </Stack.Screen>
+    <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+    <Stack.Screen name="SignUpExtraDetails" component={SignUpExtraDetails} />
     <Stack.Screen name="SignUpWithNumber" component={SignUpWithNumber} />
     <Stack.Screen name="VerifyNumber" component={VerifyNumber} />
   </Stack.Navigator>

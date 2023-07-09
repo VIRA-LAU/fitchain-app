@@ -1,7 +1,6 @@
-import client, { getHeader } from "../../client";
+import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
-import { UserContext, UserData } from "../../../utils/UserContext";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 type Request = {
   gameId: number;
@@ -17,11 +16,10 @@ type Response = {
   status: string;
 };
 
-const invitePlayer = (userData: UserData) => async (data: Request) => {
-  const header = getHeader(userData);
+const invitePlayer = async (data: Request) => {
   return await client
-    .post("/invitations", data, header)
-    .then((res) => res.data)
+    .post("/invitations", data)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("invite-player-mutation", e);
       throw new Error(e);
@@ -31,11 +29,10 @@ const invitePlayer = (userData: UserData) => async (data: Request) => {
 export const useInvitePlayerMutation = (
   setLoadingIndex: Dispatch<SetStateAction<number | null>>
 ) => {
-  const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
 
   return useMutation<Response, unknown, Request>({
-    mutationFn: invitePlayer(userData!),
+    mutationFn: invitePlayer,
     onMutate: (variables) => {
       setLoadingIndex(variables.friendId);
     },

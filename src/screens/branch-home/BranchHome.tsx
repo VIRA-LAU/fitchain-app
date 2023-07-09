@@ -24,7 +24,7 @@ type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 export const BranchHome = ({ navigation, route }: Props & {}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const { venueData } = useContext(UserContext);
+  const { branchData } = useContext(UserContext);
 
   const [selectedDate, setSelectedDate] = useState<string>(
     `${new Date().getFullYear()}-${("0" + (new Date().getMonth() + 1)).slice(
@@ -39,11 +39,11 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
   });
 
   const { data: bookings } = useBookingsInBranchQuery(
-    venueData?.branchId,
+    branchData?.branchId,
     selectedDate
   );
   const { data: timeSlots, isLoading: timeSlotsLoading } =
-    useTimeSlotsInBranchQuery(venueData?.branchId);
+    useTimeSlotsInBranchQuery(branchData?.branchId);
 
   const allSlots = useMemo(() => {
     const occupiedTimeSlots = (timeSlots as TimeSlotsResponse[])?.filter(
@@ -102,7 +102,7 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
         }}
       >
         <Text variant="titleLarge" style={{ color: colors.tertiary }}>
-          Hi, {venueData?.managerFirstName}
+          Hi, {branchData?.managerFirstName}
         </Text>
         <SportTypeDropdown
           selectedSports={selectedSports}
@@ -111,9 +111,9 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
         />
       </View>
       <Text variant="headlineLarge" style={styles.venueName}>
-        {venueData?.venueName}
+        {branchData?.venueName}
       </Text>
-      <Text style={styles.location}>{venueData?.branchLocation}</Text>
+      <Text style={styles.location}>{branchData?.branchLocation}</Text>
       <View style={styles.calendarView}>
         <Text style={[styles.myCalendar]}>My Calendar</Text>
         <CalendarPicker

@@ -1,6 +1,6 @@
-import client, { getHeader } from "../../client";
+import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
-import { UserContext, VenueData } from "../../../utils/UserContext";
+import { UserContext } from "../../../utils/UserContext";
 import { Branch } from "src/types";
 import { useContext } from "react";
 
@@ -10,10 +10,8 @@ type Request =
     }
   | FormData;
 
-const updateBranch = (venueData: VenueData) => async (data: Request) => {
-  const authHeader = getHeader(venueData);
+const updateBranch = async (data: Request) => {
   const headers = {
-    ...authHeader.headers,
     "Content-Type":
       data instanceof FormData ? "multipart/form-data" : "application/json",
   };
@@ -21,7 +19,7 @@ const updateBranch = (venueData: VenueData) => async (data: Request) => {
     .patch("/branches", data, {
       headers,
     })
-    .then((res) => res.data)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("update-user-mutation", e);
       throw new Error(e);
@@ -29,12 +27,12 @@ const updateBranch = (venueData: VenueData) => async (data: Request) => {
 };
 
 export const useUpdateBranchMutation = () => {
-  const { venueData } = useContext(UserContext);
+  const { branchData } = useContext(UserContext);
   const queryClient = useQueryClient();
   return useMutation<Branch, unknown, Request>({
-    mutationFn: updateBranch(venueData!),
+    mutationFn: updateBranch,
     onSuccess: () => {
-      queryClient.refetchQueries(["branch-by-id", venueData?.branchId]);
+      queryClient.refetchQueries(["branch-by-id", branchData?.branchId]);
     },
     retry: 4,
   });

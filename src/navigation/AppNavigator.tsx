@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList } from "./tabScreenOptions";
 import { GameType, Branch, TimeSlot } from "src/types";
 import { getData } from "src/utils/AsyncStorage";
 import { UserContext } from "src/utils";
-import { useUserDetailsQuery, useBranchByIdQuery } from "src/api";
 import { HomeNavigator } from "./HomeNavigator";
-import { VenueHomeNavigator } from "./BranchHomeNavigator";
+import { BranchHomeNavigator } from "./BranchHomeNavigator";
 import { LatLng } from "react-native-maps";
+import { setHeaderAndInterceptors } from "src/api/client";
 
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
@@ -102,30 +102,13 @@ export type HomeStackParamList = {
 };
 
 export const AppNavigator = () => {
-  const { userData, venueData, setUserData, setVenueData } =
+  const { userData, branchData, setUserData, setBranchData } =
     useContext(UserContext);
 
-  const [signedIn, setSignedIn] = useState<"player" | "venue" | null>(null);
-  const [tokenFoundOnOpen, setTokenFoundOnOpen] = useState<boolean>(false);
-  const { refetch: verifyUserToken, isLoading: verifyUserLoading } =
-    useUserDetailsQuery(
-      userData?.userId,
-      false,
-      setSignedIn,
-      setTokenFoundOnOpen
-    );
-  const { refetch: verifyVenueToken, isLoading: verifyVenueLoading } =
-    useBranchByIdQuery(
-      venueData?.branchId,
-      false,
-      setSignedIn,
-      setTokenFoundOnOpen
-    );
-
-  const getToken = async () => {
-    const isVenue: boolean = await getData("isVenue");
-    if (typeof isVenue !== "undefined") {
-      if (isVenue) {
+  const getLocalData = async () => {
+    const isBranch: boolean = await getData("isBranch");
+    if (typeof isBranch !== "undefined") {
+      if (isBranch) {
         const branchId: number = await getData("branchId");
         const venueId: number = await getData("venueId");
         const venueName: string = await getData("venueName");
@@ -144,7 +127,7 @@ export const AppNavigator = () => {
           email &&
           token
         ) {
-          setVenueData({
+          let localData = {
             branchId,
             venueId,
             venueName,
@@ -153,8 +136,13 @@ export const AppNavigator = () => {
             managerLastName,
             email,
             token,
+          };
+          setHeaderAndInterceptors({
+            branchData: localData,
+            setBranchData,
+            setUserData,
           });
-          setTokenFoundOnOpen(true);
+          setBranchData(localData);
         }
       } else {
         const firstName: string = await getData("firstName");
@@ -163,40 +151,29 @@ export const AppNavigator = () => {
         const userId: number = await getData("userId");
         const token: string = await getData("token");
         if (firstName && lastName && email && userId && token) {
-          setUserData({
+          let localData = {
             userId,
             firstName,
             lastName,
             email,
             token,
+          };
+          setHeaderAndInterceptors({
+            userData: localData,
+            setUserData,
+            setBranchData,
           });
-          setTokenFoundOnOpen(true);
+          setUserData(localData);
         }
       }
     }
   };
 
   useEffect(() => {
-    getToken();
+    getLocalData();
   }, []);
 
-  useEffect(() => {
-    if (userData && tokenFoundOnOpen) verifyUserToken();
-  }, [JSON.stringify(userData), tokenFoundOnOpen]);
-
-  useEffect(() => {
-    if (venueData && tokenFoundOnOpen) verifyVenueToken();
-  }, [JSON.stringify(venueData), tokenFoundOnOpen]);
-
-  if (signedIn === "player") return <HomeNavigator setSignedIn={setSignedIn} />;
-  else if (signedIn === "venue")
-    return <VenueHomeNavigator setSignedIn={setSignedIn} />;
-  else
-    return (
-      <SignUpNavigator
-        setSignedIn={setSignedIn}
-        storedEmail={userData?.email || venueData?.email}
-        verifyLoading={verifyUserLoading || verifyVenueLoading}
-      />
-    );
+  if (userData) return <HomeNavigator />;
+  else if (branchData) return <BranchHomeNavigator />;
+  else return <SignUpNavigator />;
 };

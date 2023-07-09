@@ -3,13 +3,13 @@ import { useMutation } from "react-query";
 
 type Request = {
   userId: number;
-  isVenue: boolean;
+  isBranch: boolean;
 };
 
 const resendEmailCode = async (data: Request) => {
   return await client
     .patch("/auth/resendEmailCode", data)
-    .then((res) => res.data)
+    .then((res) => res?.data)
     .catch((error) => {
       console.error("resend-email-code-mutation", error?.response?.data);
       throw error;

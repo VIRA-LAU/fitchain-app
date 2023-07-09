@@ -135,15 +135,13 @@ export const PlayerCard = ({
       >
         <TouchableOpacity
           style={styles.profilePicture}
-          activeOpacity={id === userData?.userId ? 1 : 0.6}
           disabled={!isActive}
           onPress={() => {
-            if (id !== userData?.userId)
-              navigation.push("PlayerProfile", {
-                playerId: id,
-                firstName,
-                lastName,
-              });
+            navigation.push("PlayerProfile", {
+              playerId: id,
+              firstName,
+              lastName,
+            });
           }}
         >
           {profilePhotoUrl ? (

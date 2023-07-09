@@ -5,25 +5,32 @@ import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Dispatch, SetStateAction, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { useState } from "react";
 import { useUpdateUserMutation } from "src/api";
+import { UserContext } from "src/utils";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignUpExtraDetails">;
 
 export const SignUpExtraDetails = ({
   navigation,
   route,
-  setSignedIn,
 }: {
   navigation: Props["navigation"];
   route: Props["route"];
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
 }) => {
-  const { mutate: updateUserData, isLoading: updateUserLoading } =
-    useUpdateUserMutation(setSignedIn);
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+
+  const { userData: passedUserData } = route.params;
+  const { setUserData } = useContext(UserContext);
+
+  const {
+    mutate: updateUserData,
+    isLoading: updateUserLoading,
+    isSuccess: updateUserDataSuccess,
+  } = useUpdateUserMutation();
+
   const [description, setDescription] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
@@ -40,6 +47,10 @@ export const SignUpExtraDetails = ({
     if (!isNaN(parseInt(weight))) data["weight"] = parseInt(weight);
     updateUserData(data);
   };
+
+  useEffect(() => {
+    if (updateUserDataSuccess) setUserData(passedUserData);
+  }, [updateUserDataSuccess]);
 
   const scrollOffset = 60;
   const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
@@ -146,7 +157,9 @@ export const SignUpExtraDetails = ({
           {!updateUserLoading && (
             <Button
               style={styles.getStartedButton}
-              onPress={() => setSignedIn("player")}
+              onPress={() => {
+                setUserData(passedUserData);
+              }}
             >
               Skip
             </Button>

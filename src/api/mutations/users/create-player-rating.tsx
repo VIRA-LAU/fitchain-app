@@ -1,7 +1,5 @@
-import client, { getHeader } from "../../client";
+import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
-import { UserContext, UserData } from "../../../utils/UserContext";
-import { useContext } from "react";
 import {
   CompositeNavigationProp,
   useNavigation,
@@ -18,11 +16,10 @@ type Request = {
   gameId: number;
   playerId: number;
 };
-const createRating = (userData: UserData) => async (data: Request) => {
-  const header = getHeader(userData);
+const createRating = async (data: Request) => {
   return await client
-    .post("/users/rate", data, header)
-    .then((res) => res.data)
+    .post("/users/rate", data)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("create-game-mutation", e.response.data);
       throw new Error(e.message);
@@ -30,7 +27,6 @@ const createRating = (userData: UserData) => async (data: Request) => {
 };
 
 export const useCreateRatingMutation = () => {
-  const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
   const navigation =
     useNavigation<
@@ -40,7 +36,7 @@ export const useCreateRatingMutation = () => {
       >
     >();
   return useMutation<unknown, unknown, Request>({
-    mutationFn: createRating(userData!),
+    mutationFn: createRating,
     onSuccess: (data, variables) => {
       queryClient.refetchQueries(["game-players", variables.gameId]);
       navigation.goBack();

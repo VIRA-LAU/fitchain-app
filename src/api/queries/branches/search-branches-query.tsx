@@ -1,9 +1,7 @@
-import { useContext } from "react";
 import { useQuery } from "react-query";
 import queryBuilder from "src/api/queryBuilder";
 import { GameType, Branch } from "src/types";
-import { UserContext, UserData } from "src/utils";
-import client, { getHeader } from "../../client";
+import client from "../../client";
 
 type Props = {
   date: string;
@@ -14,12 +12,11 @@ type Props = {
   nbOfPlayers?: number;
 };
 
-const searchBranches = (userData: UserData, params: Props) => async () => {
-  const header = getHeader(userData);
+const searchBranches = (params: Props) => async () => {
   const endpoint = `/branches/search${queryBuilder(params)}`;
   return await client
-    .get(endpoint, header)
-    .then((res) => res.data)
+    .get(endpoint)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("search-branches-query", e);
       throw new Error(e);
@@ -27,9 +24,8 @@ const searchBranches = (userData: UserData, params: Props) => async () => {
 };
 
 export const useSearchBranchesQuery = (params: Props) => {
-  const { userData } = useContext(UserContext);
   return useQuery<Branch[]>(
     ["search-branches", params],
-    searchBranches(userData!, params)
+    searchBranches(params)
   );
 };

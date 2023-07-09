@@ -14,7 +14,7 @@ type Request = {
 const createUser = async (data: Request) => {
   return await client
     .post("/auth/signup/user", data)
-    .then((res) => res.data)
+    .then((res) => res?.data)
     .catch((error) => {
       console.error("signup-mutation", error?.response?.data);
       throw error;
@@ -27,7 +27,7 @@ export const useCreateUserMutation = () => {
     mutationFn: createUser,
     onSuccess: async (data) => {
       navigation.navigate("VerifyEmail", {
-        isVenue: false,
+        isBranch: false,
         userId: data,
       });
     },

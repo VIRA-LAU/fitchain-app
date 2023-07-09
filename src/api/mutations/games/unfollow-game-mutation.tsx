@@ -1,17 +1,14 @@
-import client, { getHeader } from "../../client";
+import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
-import { UserContext, UserData } from "../../../utils/UserContext";
-import { useContext } from "react";
 
 type Request = {
   gameId: number;
 };
 
-const unfollowGame = (userData: UserData) => async (data: Request) => {
-  const header = getHeader(userData);
+const unfollowGame = async (data: Request) => {
   return await client
-    .delete(`/games/followed?gameId=${data.gameId}`, header)
-    .then((res) => res.data)
+    .delete(`/games/followed?gameId=${data.gameId}`)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("unfollow-game-mutation", e);
       throw new Error(e);
@@ -19,12 +16,11 @@ const unfollowGame = (userData: UserData) => async (data: Request) => {
 };
 
 export const useUnfollowGameMutation = () => {
-  const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
 
   return useMutation<unknown, unknown, Request>({
-    mutationFn: unfollowGame(userData!),
-    onSuccess: (data) => {
+    mutationFn: unfollowGame,
+    onSuccess: () => {
       queryClient.refetchQueries(["followed-games"]);
     },
   });

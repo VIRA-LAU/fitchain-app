@@ -58,11 +58,11 @@ export const VerifyNumber = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const [code, setCode] = useState<(number | null)[]>([null, null, null, null]);
   const [correctCode, setCorrectCode] = useState(route.params.code);
-  const { isVenue } = route.params;
+  const { isBranch } = route.params;
 
   const verifyCode = () => {
     if (code.join("").toString().match(correctCode)) {
-      if (isVenue) navigation.push("SignUpAsBranch");
+      if (isBranch) navigation.push("SignUpAsBranch");
       else navigation.push("SignUpWithEmail");
     }
   };

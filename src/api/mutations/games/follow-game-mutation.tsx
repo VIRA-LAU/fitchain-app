@@ -1,7 +1,5 @@
-import client, { getHeader } from "../../client";
+import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
-import { UserContext, UserData } from "../../../utils/UserContext";
-import { useContext } from "react";
 
 type Request = {
   gameId: number;
@@ -13,11 +11,10 @@ type Response = {
   userId: number;
 };
 
-const followGame = (userData: UserData) => async (data: Request) => {
-  const header = getHeader(userData);
+const followGame = async (data: Request) => {
   return await client
-    .post("/games/followed", data, header)
-    .then((res) => res.data)
+    .post("/games/followed", data)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("follow-game-mutation", e);
       throw new Error(e);
@@ -25,11 +22,10 @@ const followGame = (userData: UserData) => async (data: Request) => {
 };
 
 export const useFollowGameMutation = () => {
-  const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
 
   return useMutation<Response, unknown, Request>({
-    mutationFn: followGame(userData!),
+    mutationFn: followGame,
     onSuccess: () => {
       queryClient.refetchQueries(["followed-games"]);
     },

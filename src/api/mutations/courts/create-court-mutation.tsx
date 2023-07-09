@@ -1,6 +1,6 @@
-import client, { getHeader } from "../../client";
+import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
-import { UserContext, VenueData } from "../../../utils/UserContext";
+import { UserContext } from "../../../utils/UserContext";
 import { useContext } from "react";
 import { Court, GameType } from "src/types";
 
@@ -12,11 +12,10 @@ type Request = {
   timeSlots: number[];
 };
 
-const createCourt = (venueData: VenueData) => async (data: Request) => {
-  const header = getHeader(venueData);
+const createCourt = async (data: Request) => {
   return await client
-    .post("/courts", data, header)
-    .then((res) => res.data)
+    .post("/courts", data)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("create-court-mutation", e);
       throw new Error(e);
@@ -24,13 +23,13 @@ const createCourt = (venueData: VenueData) => async (data: Request) => {
 };
 
 export const useCreateCourtMutation = (completeCreate: Function) => {
-  const { venueData } = useContext(UserContext);
+  const { branchData } = useContext(UserContext);
   const queryClient = useQueryClient();
   return useMutation<Court, unknown, Request>({
-    mutationFn: createCourt(venueData!),
+    mutationFn: createCourt,
     onSuccess: () => {
-      queryClient.refetchQueries(["courts-in-branch", venueData?.branchId]);
-      queryClient.refetchQueries(["timeSlots-in-branch", venueData?.branchId]);
+      queryClient.refetchQueries(["courts-in-branch", branchData?.branchId]);
+      queryClient.refetchQueries(["timeSlots-in-branch", branchData?.branchId]);
       completeCreate();
     },
   });

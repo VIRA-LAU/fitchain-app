@@ -18,7 +18,7 @@ type Request = {
 const createBranch = async (data: Request) => {
   return await client
     .post("/auth/signup/branch", data)
-    .then((res) => res.data)
+    .then((res) => res?.data)
     .catch((error) => {
       console.error("branch-signup-mutation", error);
       console.error(error.response?.data);
@@ -32,7 +32,7 @@ export const useCreateBranchMutation = () => {
     mutationFn: createBranch,
     onSuccess: async (data) => {
       navigation.navigate("VerifyEmail", {
-        isVenue: true,
+        isBranch: true,
         userId: data,
       });
     },

@@ -37,31 +37,29 @@ type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 export const BranchManagement = ({
   navigation,
   route,
-  setSignedIn,
   setCreateCourtVisible,
   setCourtInfo,
 }: Props & {
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
   setCreateCourtVisible: Dispatch<SetStateAction<"create" | "edit" | false>>;
   setCourtInfo: Dispatch<SetStateAction<existingCourtType | undefined>>;
 }) => {
   const { colors } = useTheme();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const styles = makeStyles(colors, windowWidth, windowHeight);
-  const { venueData, setVenueData } = useContext(UserContext);
+  const { branchData, setBranchData } = useContext(UserContext);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [coverPhotoToUpload, setCoverPhotoToUpload] = useState<string>();
 
   const { data: branchDetails, isLoading: branchDetailsLoading } =
-    useBranchByIdQuery(venueData?.branchId);
+    useBranchByIdQuery(branchData?.branchId);
 
   const { data: venueDetails, isLoading: venueDetailsLoading } =
-    useVenueByIdQuery(venueData?.venueId);
+    useVenueByIdQuery(branchData?.venueId);
 
   const { data: courtsInBranch, isLoading: courtsLoading } =
-    useCourtsInBranchQuery(venueData?.branchId);
+    useCourtsInBranchQuery(branchData?.branchId);
 
   const { mutate: updateBranch } = useUpdateBranchMutation();
 
@@ -82,7 +80,7 @@ export const BranchManagement = ({
 
       formData.append("coverPhoto", {
         uri: result.assets[0].uri,
-        name: `branch-${venueData?.branchId}.${match ? match[1] : ""}`,
+        name: `branch-${branchData?.branchId}.${match ? match[1] : ""}`,
         type,
       });
       updateBranch(formData);
@@ -113,7 +111,7 @@ export const BranchManagement = ({
           </TouchableOpacity>
         )
       }
-      title={venueData?.venueName}
+      title={branchData?.venueName}
       backEnabled
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}>
@@ -146,8 +144,7 @@ export const BranchManagement = ({
               onPress={() => {
                 setModalVisible(false);
                 AsyncStorage.clear();
-                if (setSignedIn) setSignedIn(null);
-                setVenueData(null);
+                setBranchData(null);
               }}
             >
               <View style={styles.selectionRow}>
@@ -222,7 +219,7 @@ export const BranchManagement = ({
             <BranchLocation
               type="branch"
               branch={{
-                venueName: venueData?.venueName!,
+                venueName: branchData?.venueName!,
                 latitude: branchDetails.latitude,
                 longitude: branchDetails.longitude,
                 location: branchDetails.location,
@@ -245,7 +242,7 @@ export const BranchManagement = ({
                 price={court.price}
                 rating={court.rating}
                 type={court.courtType}
-                venueName={venueData?.venueName!}
+                venueName={branchData?.venueName!}
                 onPress={() => {
                   setCourtInfo({
                     courtId: court.id,

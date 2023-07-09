@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useWindowDimensions,
   View,
@@ -33,11 +33,7 @@ import * as Location from "expo-location";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const BottomTabNavigator = ({
-  setSignedIn,
-}: {
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
-}) => {
+const BottomTabNavigator = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, useWindowDimensions().width);
   const [playScreenVisible, setPlayScreenVisible] = useState<boolean>(false);
@@ -86,9 +82,7 @@ const BottomTabNavigator = ({
         <Tab.Screen name="Venues" component={Venues} />
         <Tab.Screen
           name="Profile"
-          children={(props) => (
-            <Profile {...props} setSignedIn={setSignedIn} isUserProfile />
-          )}
+          children={(props) => <Profile {...props} isUserProfile />}
         />
       </Tab.Navigator>
       <View
@@ -118,17 +112,11 @@ const BottomTabNavigator = ({
   );
 };
 
-export const HomeNavigator = ({
-  setSignedIn,
-}: {
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
-}) => {
+export const HomeNavigator = () => {
   const Stack = createStackNavigator<HomeStackParamList>();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="BottomBar">
-        {(props) => <BottomTabNavigator {...props} setSignedIn={setSignedIn} />}
-      </Stack.Screen>
+      <Stack.Screen name="BottomBar" component={BottomTabNavigator} />
       <Stack.Screen
         name="VenueBookingDetails"
         component={VenueBookingDetails}

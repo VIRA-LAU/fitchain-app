@@ -1,7 +1,5 @@
-import client, { getHeader } from "../../client";
+import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
-import { UserContext, UserData } from "../../../utils/UserContext";
-import { useContext } from "react";
 import { Invitation } from "src/types";
 
 type Request = {
@@ -10,11 +8,10 @@ type Request = {
   gameId: number;
 };
 
-const respondToInvite = (userData: UserData) => async (data: Request) => {
-  const header = getHeader(userData);
+const respondToInvite = async (data: Request) => {
   return await client
-    .patch(`/invitations/${data.invitationId}`, { status: data.status }, header)
-    .then((res) => res.data)
+    .patch(`/invitations/${data.invitationId}`, { status: data.status })
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("respond-to-invite-mutation", e);
       throw new Error(e);
@@ -24,11 +21,10 @@ const respondToInvite = (userData: UserData) => async (data: Request) => {
 export const useRespondToInviteMutation = (
   setJoinDisabled?: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
 
   return useMutation<Invitation, unknown, Request>({
-    mutationFn: respondToInvite(userData!),
+    mutationFn: respondToInvite,
     onSuccess: (data, variables) => {
       if (setJoinDisabled) setJoinDisabled(false);
       queryClient.refetchQueries("invitations");

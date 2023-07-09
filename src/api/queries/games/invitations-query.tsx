@@ -2,13 +2,12 @@ import { useContext } from "react";
 import { useQuery } from "react-query";
 import { Invitation } from "src/types";
 import { UserContext, UserData } from "src/utils";
-import client, { getHeader } from "../../client";
+import client from "../../client";
 
 const getInvitations = (userData: UserData) => async () => {
-  const header = getHeader(userData);
   return await client
-    .get(`/invitations/received?userId=${userData?.userId}`, header)
-    .then((res) => res.data)
+    .get(`/invitations/received?userId=${userData?.userId}`)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("invitations-query", e);
       throw new Error(e);

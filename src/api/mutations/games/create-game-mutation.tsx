@@ -1,7 +1,5 @@
-import client, { getHeader } from "../../client";
+import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
-import { UserContext, UserData } from "../../../utils/UserContext";
-import { useContext } from "react";
 import { GameType } from "src/types";
 import {
   CompositeNavigationProp,
@@ -18,11 +16,10 @@ type Request = {
   type: GameType;
 };
 
-const createGame = (userData: UserData) => async (data: Request) => {
-  const header = getHeader(userData);
+const createGame = async (data: Request) => {
   return await client
-    .post("/games", data, header)
-    .then((res) => res.data)
+    .post("/games", data)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("create-game-mutation", e);
       throw new Error(e);
@@ -30,7 +27,6 @@ const createGame = (userData: UserData) => async (data: Request) => {
 };
 
 export const useCreateGameMutation = () => {
-  const { userData } = useContext(UserContext);
   const queryClient = useQueryClient();
   const navigation =
     useNavigation<
@@ -40,7 +36,7 @@ export const useCreateGameMutation = () => {
       >
     >();
   return useMutation<unknown, unknown, Request>({
-    mutationFn: createGame(userData!),
+    mutationFn: createGame,
     onSuccess: () => {
       queryClient.refetchQueries(["games"]);
       queryClient.refetchQueries(["bookings"]);

@@ -1,4 +1,4 @@
-import client from "../../client";
+import client, { setHeaderAndInterceptors } from "../../client";
 import { useContext } from "react";
 import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
@@ -22,34 +22,32 @@ type BranchRes = Branch & {
   branchLocation: string;
   access_token: string;
 };
-type Response = (UserRes | BranchRes) & { isVenue: boolean };
+type Response = (UserRes | BranchRes) & { isBranch: boolean };
 
 const LoginUser = async (data: Request) => {
   return await client
     .post("/auth/signin", data)
-    .then((res) => res.data)
+    .then((res) => res?.data)
     .catch((error) => {
       console.error("login-mutation", error?.response?.data);
       throw error;
     });
 };
 
-export const useLoginUserMutation = (
-  setSignedIn: React.Dispatch<React.SetStateAction<"player" | "venue" | null>>
-) => {
-  const { setUserData, setIsVenue, setVenueData } = useContext(UserContext);
+export const useLoginUserMutation = () => {
+  const { setUserData, setBranchData } = useContext(UserContext);
   return useMutation<
     Response,
     AxiosError<{
       message: string;
       userId?: number;
-      isVenue?: boolean;
+      isBranch?: boolean;
     }>,
     Request
   >({
     mutationFn: LoginUser,
     onSuccess: async (data) => {
-      if (data.isVenue) {
+      if (data.isBranch) {
         let fetchedInfo = {
           branchId: (data as BranchRes).branchId,
           venueId: (data as BranchRes).venueId,
@@ -60,10 +58,14 @@ export const useLoginUserMutation = (
           email: (data as BranchRes).email,
           token: (data as BranchRes).access_token,
         };
-        setIsVenue(true);
-        setVenueData(fetchedInfo);
+        setHeaderAndInterceptors({
+          branchData: fetchedInfo,
+          setBranchData,
+          setUserData,
+        });
+        setBranchData(fetchedInfo);
         const keys = [
-          "isVenue",
+          "isBranch",
           "branchId",
           "venueId",
           "venueName",
@@ -85,7 +87,6 @@ export const useLoginUserMutation = (
           (data as BranchRes).access_token,
         ];
         storeData(keys, values);
-        setSignedIn("venue");
       } else {
         let fetchedInfo = {
           userId: (data as UserRes).userId,
@@ -94,9 +95,14 @@ export const useLoginUserMutation = (
           email: (data as UserRes).email,
           token: (data as UserRes).access_token,
         };
+        setHeaderAndInterceptors({
+          userData: fetchedInfo,
+          setUserData,
+          setBranchData,
+        });
         setUserData(fetchedInfo);
         const keys = [
-          "isVenue",
+          "isBranch",
           "userId",
           "firstName",
           "lastName",
@@ -112,7 +118,6 @@ export const useLoginUserMutation = (
           (data as UserRes).access_token,
         ];
         storeData(keys, values);
-        setSignedIn("player");
       }
     },
   });

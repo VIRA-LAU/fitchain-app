@@ -1,12 +1,12 @@
-import client from "../../client";
-import { useContext } from "react";
+import client, { setHeaderAndInterceptors } from "../../client";
 import { useMutation } from "react-query";
-import { UserContext } from "src/utils";
 import { User } from "src/types";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SignUpStackParamList } from "src/navigation";
 import { storeData } from "src/utils/AsyncStorage";
 import { AxiosError } from "axios";
+import { useContext } from "react";
+import { UserContext } from "src/utils";
 
 type Request = {
   userId: number;
@@ -16,7 +16,7 @@ type Request = {
 const verifyEmail = async (data: Request) => {
   return await client
     .patch("/auth/verifyEmail/user", data)
-    .then((res) => res.data)
+    .then((res) => res?.data)
     .catch((error) => {
       console.error("verify-email-mutation", error?.response?.data);
       throw error;
@@ -24,8 +24,8 @@ const verifyEmail = async (data: Request) => {
 };
 
 export const useVerifyEmailMutation = () => {
-  const { setUserData } = useContext(UserContext);
   const navigation = useNavigation<NavigationProp<SignUpStackParamList>>();
+  const { setUserData, setBranchData } = useContext(UserContext);
   return useMutation<
     User & {
       userId: number;
@@ -43,9 +43,8 @@ export const useVerifyEmailMutation = () => {
         email: data.email,
         token: data.access_token,
       };
-      setUserData(fetchedInfo);
       const keys = [
-        "isVenue",
+        "isBranch",
         "userId",
         "firstName",
         "lastName",
@@ -61,7 +60,12 @@ export const useVerifyEmailMutation = () => {
         data.access_token,
       ];
       storeData(keys, values);
-      navigation.navigate("SignUpExtraDetails");
+      setHeaderAndInterceptors({
+        userData: fetchedInfo,
+        setUserData,
+        setBranchData,
+      });
+      navigation.navigate("SignUpExtraDetails", { userData: fetchedInfo });
     },
   });
 };

@@ -1,15 +1,11 @@
 import { useQuery } from "react-query";
-import { UserContext, UserData } from "src/utils";
-import client, { getHeader } from "../../client";
+import client from "../../client";
 import { Game } from "src/types";
-import { useContext } from "react";
 
-const getGameById = (userData: UserData, id: number) => async () => {
-  const header = getHeader(userData);
-
+const getGameById = (id: number) => async () => {
   return await client
-    .get(`/games/${id}`, header)
-    .then((res) => res.data)
+    .get(`/games/${id}`)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("game-by-id-query", e);
       throw new Error(e);
@@ -17,6 +13,5 @@ const getGameById = (userData: UserData, id: number) => async () => {
 };
 
 export const useGameByIdQuery = (id: number) => {
-  const { userData } = useContext(UserContext);
-  return useQuery<Game>(["games", id], getGameById(userData!, id));
+  return useQuery<Game>(["games", id], getGameById(id));
 };

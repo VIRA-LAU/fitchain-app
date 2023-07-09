@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BackHandler, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
@@ -14,11 +14,7 @@ import * as Location from "expo-location";
 
 const Tab = createBottomTabNavigator<VenueBottomTabParamList>();
 
-const BottomTabNavigator = ({
-  setSignedIn,
-}: {
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
-}) => {
+const BottomTabNavigator = () => {
   const [createCourtVisible, setCreateCourtVisible] = useState<
     "create" | "edit" | false
   >(false);
@@ -60,7 +56,6 @@ const BottomTabNavigator = ({
           children={(props) => (
             <BranchManagement
               {...props}
-              setSignedIn={setSignedIn}
               setCreateCourtVisible={setCreateCourtVisible}
               setCourtInfo={setCourtInfo}
             />
@@ -76,17 +71,11 @@ const BottomTabNavigator = ({
   );
 };
 
-export const VenueHomeNavigator = ({
-  setSignedIn,
-}: {
-  setSignedIn: Dispatch<SetStateAction<"player" | "venue" | null>>;
-}) => {
+export const BranchHomeNavigator = () => {
   const Stack = createStackNavigator<HomeStackParamList>();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="BottomBar">
-        {(props) => <BottomTabNavigator {...props} setSignedIn={setSignedIn} />}
-      </Stack.Screen>
+      <Stack.Screen name="BottomBar" component={BottomTabNavigator} />
     </Stack.Navigator>
   );
 };

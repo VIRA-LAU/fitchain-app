@@ -1,9 +1,7 @@
-import { useContext } from "react";
 import { useQuery } from "react-query";
 import queryBuilder from "src/api/queryBuilder";
 import { Game, GameType } from "src/types";
-import { UserContext, UserData } from "src/utils";
-import client, { getHeader } from "../../client";
+import client from "../../client";
 
 type Props = {
   gameType: GameType;
@@ -13,11 +11,10 @@ type Props = {
   endTime?: string;
 };
 
-const searchGames = (userData: UserData, params?: Props) => async () => {
-  const header = getHeader(userData);
+const searchGames = (params?: Props) => async () => {
   return await client
-    .get(`/games/search${queryBuilder(params)}`, header)
-    .then((res) => res.data)
+    .get(`/games/search${queryBuilder(params)}`)
+    .then((res) => res?.data)
     .catch((e) => {
       console.error("search-games-query", e);
       throw new Error(e);
@@ -25,9 +22,7 @@ const searchGames = (userData: UserData, params?: Props) => async () => {
 };
 
 export const useSearchGamesQuery = (params?: Props) => {
-  const { userData } = useContext(UserContext);
-
-  return useQuery<Game[]>(["games", params], searchGames(userData!, params), {
+  return useQuery<Game[]>(["games", params], searchGames(params), {
     select: (games) =>
       games.map((game) => ({ ...game, date: new Date(game.date) })),
   });

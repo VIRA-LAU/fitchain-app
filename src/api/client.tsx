@@ -1,8 +1,11 @@
 import axios, { AxiosInstance } from "axios";
-import { UserData, VenueData } from "src/utils";
 import { API_URL } from "@dotenv";
+import { UserData, BranchData } from "src/utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Dispatch, SetStateAction } from "react";
 
 let client: AxiosInstance;
+var resInterceptor: number;
 
 if (API_URL) {
   // Local URL for development
@@ -18,10 +21,32 @@ if (API_URL) {
 
 export default client;
 
-export function getHeader(userData: UserData | VenueData) {
-  return {
-    headers: {
-      Authorization: `Bearer ${userData?.token}`,
-    },
-  };
-}
+export const setHeaderAndInterceptors = ({
+  userData,
+  branchData,
+  setUserData,
+  setBranchData,
+}: {
+  userData?: UserData;
+  branchData?: BranchData;
+  setUserData: Dispatch<SetStateAction<UserData | null>>;
+  setBranchData: Dispatch<SetStateAction<BranchData | null>>;
+}) => {
+  client.defaults.headers.common["Authorization"] = `Bearer ${
+    userData?.token || branchData?.token
+  }`;
+
+  if (resInterceptor) client.interceptors.response.eject(resInterceptor);
+
+  resInterceptor = client.interceptors.response.use(
+    (res) => res,
+    (err) => {
+      if (err?.response?.status === 401) {
+        AsyncStorage.clear();
+        client.defaults.headers.common["Authorization"] = null;
+        setUserData(null);
+        setBranchData(null);
+      } else throw err;
+    }
+  );
+};
