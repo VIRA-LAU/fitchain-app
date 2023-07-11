@@ -1,4 +1,4 @@
-import client, { setHeaderAndInterceptors } from "../../client";
+import client from "../../client";
 import { useContext } from "react";
 import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
@@ -58,11 +58,6 @@ export const useLoginUserMutation = () => {
           email: (data as BranchRes).email,
           token: (data as BranchRes).access_token,
         };
-        setHeaderAndInterceptors({
-          branchData: fetchedInfo,
-          setBranchData,
-          setUserData,
-        });
         setBranchData(fetchedInfo);
         const keys = [
           "isBranch",
@@ -95,11 +90,6 @@ export const useLoginUserMutation = () => {
           email: (data as UserRes).email,
           token: (data as UserRes).access_token,
         };
-        setHeaderAndInterceptors({
-          userData: fetchedInfo,
-          setUserData,
-          setBranchData,
-        });
         setUserData(fetchedInfo);
         const keys = [
           "isBranch",

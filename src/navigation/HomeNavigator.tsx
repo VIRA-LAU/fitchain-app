@@ -33,6 +33,7 @@ import * as Location from "expo-location";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
+// TODO: Separate bottom tab navigator as a component for reusability
 const BottomTabNavigator = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, useWindowDimensions().width);

@@ -8,7 +8,6 @@ import { UserContext } from "src/utils";
 import { HomeNavigator } from "./HomeNavigator";
 import { BranchHomeNavigator } from "./BranchHomeNavigator";
 import { LatLng } from "react-native-maps";
-import { setHeaderAndInterceptors } from "src/api/client";
 
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
@@ -127,7 +126,7 @@ export const AppNavigator = () => {
           email &&
           token
         ) {
-          let localData = {
+          setBranchData({
             branchId,
             venueId,
             venueName,
@@ -136,13 +135,7 @@ export const AppNavigator = () => {
             managerLastName,
             email,
             token,
-          };
-          setHeaderAndInterceptors({
-            branchData: localData,
-            setBranchData,
-            setUserData,
           });
-          setBranchData(localData);
         }
       } else {
         const firstName: string = await getData("firstName");
@@ -151,19 +144,13 @@ export const AppNavigator = () => {
         const userId: number = await getData("userId");
         const token: string = await getData("token");
         if (firstName && lastName && email && userId && token) {
-          let localData = {
+          setUserData({
             userId,
             firstName,
             lastName,
             email,
             token,
-          };
-          setHeaderAndInterceptors({
-            userData: localData,
-            setUserData,
-            setBranchData,
           });
-          setUserData(localData);
         }
       }
     }

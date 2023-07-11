@@ -10,19 +10,47 @@ import { AppNavigator } from "navigation";
 import { useFonts } from "expo-font/build/FontHooks";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { UserContext, UserData, BranchData } from "src/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { en, registerTranslation } from "react-native-paper-dates";
+import client from "src/api/client";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 registerTranslation("en", en);
 function AppContent() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [branchData, setBranchData] = useState<BranchData | null>(null);
 
-  const value = {
+  useEffect(() => {
+    client.interceptors.response.use(
+      (res) => res,
+      (err) => {
+        if (err?.response?.status === 401) {
+          AsyncStorage.clear();
+          client.defaults.headers.common["Authorization"] = null;
+          setUserData(null);
+          setBranchData(null);
+        } else throw err;
+      }
+    );
+  });
+
+  const userContext = {
     userData,
-    setUserData,
     branchData,
-    setBranchData,
+    setUserData: (userData: UserData) => {
+      if (userData !== null)
+        client.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${userData.token}`;
+      setUserData(userData);
+    },
+    setBranchData: (branchData: BranchData) => {
+      if (branchData !== null)
+        client.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${branchData.token}`;
+      setBranchData(branchData);
+    },
   };
 
   const fontConfig = {
@@ -53,7 +81,7 @@ function AppContent() {
     fonts: configureFonts({ config: fontConfig }),
   };
   return (
-    <UserContext.Provider value={value}>
+    <UserContext.Provider value={userContext}>
       <PaperProvider theme={theme}>
         <NavigationContainer theme={DarkTheme}>
           <StatusBar

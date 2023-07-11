@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, createContext } from "react";
+import { createContext } from "react";
 
 export type BranchData = {
   branchId: number;
@@ -21,9 +21,9 @@ export type UserData = {
 
 export type ContextProps = {
   readonly userData: UserData | null;
-  readonly setUserData: Dispatch<SetStateAction<UserData | null>>;
+  readonly setUserData: (userData: UserData) => void;
   readonly branchData: BranchData | null;
-  readonly setBranchData: Dispatch<SetStateAction<BranchData | null>>;
+  readonly setBranchData: (userData: BranchData) => void;
 };
 
 export const UserContext = createContext<ContextProps>({

@@ -1,4 +1,4 @@
-import client, { setHeaderAndInterceptors } from "../../client";
+import client from "../../client";
 import { useContext } from "react";
 import { useMutation } from "react-query";
 import { UserContext } from "src/utils";
@@ -22,7 +22,7 @@ const verifyBranchEmail = async (data: Request) => {
 };
 
 export const useVerifyBranchEmailMutation = () => {
-  const { setBranchData, setUserData } = useContext(UserContext);
+  const { setBranchData } = useContext(UserContext);
   return useMutation<
     Branch & {
       branchId: number;
@@ -46,11 +46,6 @@ export const useVerifyBranchEmailMutation = () => {
         email: data.email,
         token: data.access_token,
       };
-      setHeaderAndInterceptors({
-        branchData: fetchedInfo,
-        setBranchData,
-        setUserData,
-      });
       setBranchData(fetchedInfo);
       const keys = [
         "isBranch",
