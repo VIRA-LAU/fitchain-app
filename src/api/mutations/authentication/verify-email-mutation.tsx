@@ -3,7 +3,7 @@ import { useMutation } from "react-query";
 import { User } from "src/types";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SignUpStackParamList } from "src/navigation";
-import { storeData } from "src/utils/AsyncStorage";
+import { storeData } from "src/utils";
 import { AxiosError } from "axios";
 
 type Request = {

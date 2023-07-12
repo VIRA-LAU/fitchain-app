@@ -21,9 +21,9 @@ export type UserData = {
 
 export type ContextProps = {
   readonly userData: UserData | null;
-  readonly setUserData: (userData: UserData) => void;
+  readonly setUserData: (userData: UserData | null) => void;
   readonly branchData: BranchData | null;
-  readonly setBranchData: (userData: BranchData) => void;
+  readonly setBranchData: (userData: BranchData | null) => void;
 };
 
 export const UserContext = createContext<ContextProps>({

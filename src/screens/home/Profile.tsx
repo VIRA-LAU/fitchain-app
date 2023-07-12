@@ -14,28 +14,21 @@ import {
   ActivityCard,
   ActivityCardSkeleton,
   AppHeader,
+  GalleryPermissionDialog,
   Skeleton,
 } from "src/components";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Activity } from "src/types";
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { UserContext } from "src/utils";
+import { useContext, useEffect, useState } from "react";
+import { UserContext, uploadImage } from "src/utils";
 import {
   useActivitiesQuery,
   useGameCountQuery,
   useUpdateUserMutation,
   useUserDetailsQuery,
 } from "src/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackScreenProps } from "@react-navigation/stack";
-import * as ImagePicker from "expo-image-picker";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 type Props =
@@ -49,7 +42,8 @@ export const Profile = ({
 }: Props & {
   isUserProfile?: boolean;
 }) => {
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const styles = makeStyles(colors, windowWidth, windowHeight);
 
@@ -65,39 +59,13 @@ export const Profile = ({
   );
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [permissionDialogVisible, setPermissionDialogVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [coverPhotoToUpload, setCoverPhotoToUpload] = useState<string>();
   const [profilePhotoToUpload, setProfilePhotoToUpload] = useState<string>();
 
   const { mutate: updateUserData, isSuccess: updateUserSuccess } =
     useUpdateUserMutation();
-
-  const uploadImage = async (imageType: "profile" | "cover") => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-    });
-
-    if (!result.canceled) {
-      if (imageType === "profile")
-        setProfilePhotoToUpload(result.assets[0].uri);
-      else if (imageType === "cover")
-        setCoverPhotoToUpload(result.assets[0].uri);
-
-      const formData = new FormData();
-
-      let fileName = result.assets[0].uri.split("/").pop();
-      let match = /\.(\w+)$/.exec(fileName!);
-      let type = match ? `image/${match[1]}` : `image`;
-
-      formData.append(`${imageType}Photo`, {
-        uri: result.assets[0].uri,
-        name: `user-${userData?.userId}.${match ? match[1] : ""}`,
-        type,
-      });
-      updateUserData(formData);
-    }
-  };
 
   useEffect(() => {
     if (updateUserSuccess) {
@@ -144,6 +112,10 @@ export const Profile = ({
       backEnabled
     >
       <ScrollView>
+        <GalleryPermissionDialog
+          visible={permissionDialogVisible}
+          setVisible={setPermissionDialogVisible}
+        />
         <Modal animationType="fade" transparent={true} visible={modalVisible}>
           <TouchableOpacity
             style={styles.transparentView}
@@ -172,7 +144,6 @@ export const Profile = ({
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(false);
-                AsyncStorage.clear();
                 setUserData(null);
               }}
             >
@@ -205,7 +176,16 @@ export const Profile = ({
             />
             {isEditing && (
               <TouchableOpacity
-                onPress={() => uploadImage("cover")}
+                onPress={() =>
+                  uploadImage(
+                    "user",
+                    "cover",
+                    userData?.userId,
+                    setPermissionDialogVisible,
+                    setCoverPhotoToUpload,
+                    updateUserData
+                  )
+                }
                 activeOpacity={0.8}
                 style={[
                   styles.editImage,
@@ -259,7 +239,16 @@ export const Profile = ({
               )}
               {isEditing && (
                 <TouchableOpacity
-                  onPress={() => uploadImage("profile")}
+                  onPress={() =>
+                    uploadImage(
+                      "user",
+                      "profile",
+                      userData?.userId,
+                      setPermissionDialogVisible,
+                      setProfilePhotoToUpload,
+                      updateUserData
+                    )
+                  }
                   activeOpacity={0.8}
                   style={[
                     styles.editImage,

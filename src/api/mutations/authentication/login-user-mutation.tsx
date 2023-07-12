@@ -1,9 +1,8 @@
 import client from "../../client";
 import { useContext } from "react";
 import { useMutation } from "react-query";
-import { UserContext } from "src/utils";
+import { UserContext, storeData } from "src/utils";
 import { Branch, User } from "src/types";
-import { storeData } from "src/utils/AsyncStorage";
 import { AxiosError } from "axios";
 
 type Request = {

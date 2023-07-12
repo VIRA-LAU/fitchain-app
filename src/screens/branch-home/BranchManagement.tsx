@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { Dispatch, SetStateAction, useContext, useState } from "react";
 import {
@@ -13,7 +12,7 @@ import {
 import { IconButton, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { VenueBottomTabParamList } from "src/navigation";
-import { UserContext } from "src/utils";
+import { UserContext, uploadImage } from "src/utils";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import {
   useBranchByIdQuery,
@@ -26,6 +25,7 @@ import {
   BranchLocation,
   BranchLocationSkeleton,
   CourtCard,
+  GalleryPermissionDialog,
   Skeleton,
 } from "src/components";
 import { existingCourtType } from "./CreateCourt";
@@ -43,12 +43,14 @@ export const BranchManagement = ({
   setCreateCourtVisible: Dispatch<SetStateAction<"create" | "edit" | false>>;
   setCourtInfo: Dispatch<SetStateAction<existingCourtType | undefined>>;
 }) => {
-  const { colors } = useTheme();
+  const theme = useTheme();
+  const { colors } = theme;
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const styles = makeStyles(colors, windowWidth, windowHeight);
   const { branchData, setBranchData } = useContext(UserContext);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [permissionDialogVisible, setPermissionDialogVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [coverPhotoToUpload, setCoverPhotoToUpload] = useState<string>();
 
@@ -58,34 +60,9 @@ export const BranchManagement = ({
   const { data: venueDetails, isLoading: venueDetailsLoading } =
     useVenueByIdQuery(branchData?.venueId);
 
-  const { data: courtsInBranch, isLoading: courtsLoading } =
-    useCourtsInBranchQuery(branchData?.branchId);
+  const { data: courtsInBranch } = useCourtsInBranchQuery(branchData?.branchId);
 
   const { mutate: updateBranch } = useUpdateBranchMutation();
-
-  const uploadImage = async (imageType: "cover") => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-    });
-
-    if (!result.canceled) {
-      if (imageType === "cover") setCoverPhotoToUpload(result.assets[0].uri);
-
-      const formData = new FormData();
-
-      let fileName = result.assets[0].uri.split("/").pop();
-      let match = /\.(\w+)$/.exec(fileName!);
-      let type = match ? `image/${match[1]}` : `image`;
-
-      formData.append("coverPhoto", {
-        uri: result.assets[0].uri,
-        name: `branch-${branchData?.branchId}.${match ? match[1] : ""}`,
-        type,
-      });
-      updateBranch(formData);
-    }
-  };
 
   return (
     <AppHeader
@@ -115,6 +92,10 @@ export const BranchManagement = ({
       backEnabled
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}>
+        <GalleryPermissionDialog
+          visible={permissionDialogVisible}
+          setVisible={setPermissionDialogVisible}
+        />
         <Modal animationType="fade" transparent={true} visible={modalVisible}>
           <TouchableOpacity
             style={styles.transparentView}
@@ -143,7 +124,6 @@ export const BranchManagement = ({
             <TouchableOpacity
               onPress={() => {
                 setModalVisible(false);
-                AsyncStorage.clear();
                 setBranchData(null);
               }}
             >
@@ -176,7 +156,16 @@ export const BranchManagement = ({
             />
             {isEditing && (
               <TouchableOpacity
-                onPress={() => uploadImage("cover")}
+                onPress={() =>
+                  uploadImage(
+                    "branch",
+                    "cover",
+                    branchData?.branchId,
+                    setPermissionDialogVisible,
+                    setCoverPhotoToUpload,
+                    updateBranch
+                  )
+                }
                 activeOpacity={0.8}
                 style={[
                   styles.editImage,

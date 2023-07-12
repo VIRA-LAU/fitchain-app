@@ -16,9 +16,17 @@ import client from "src/api/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 registerTranslation("en", en);
-function AppContent() {
+
+export default function App() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [branchData, setBranchData] = useState<BranchData | null>(null);
+
+  const [fontsLoaded] = useFonts({
+    "Inter-SemiBold": require("assets/fonts/Inter-SemiBold.ttf"),
+    "Inter-Medium": require("assets/fonts/Inter-Medium.ttf"),
+  });
+
+  const queryClient = new QueryClient();
 
   useEffect(() => {
     client.interceptors.response.use(
@@ -32,26 +40,32 @@ function AppContent() {
         } else throw err;
       }
     );
-  });
+  }, []);
 
   const userContext = {
     userData,
     branchData,
-    setUserData: (userData: UserData) => {
-      if (userData !== null)
+    setUserData: (userData: UserData | null) => {
+      if (userData)
         client.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${userData.token}`;
+      else AsyncStorage.clear();
       setUserData(userData);
     },
-    setBranchData: (branchData: BranchData) => {
-      if (branchData !== null)
+    setBranchData: (branchData: BranchData | null) => {
+      if (branchData)
         client.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${branchData.token}`;
+      else AsyncStorage.clear();
       setBranchData(branchData);
     },
   };
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const fontConfig = {
     headlineSmall: {
@@ -77,38 +91,26 @@ function AppContent() {
       secondary: "#3b3a42",
       tertiary: "#9e9e9e",
       background: "#2e2d36",
+      elevation: {
+        level3: "#3b3a42",
+      },
     },
     fonts: configureFonts({ config: fontConfig }),
   };
   return (
     <UserContext.Provider value={userContext}>
-      <PaperProvider theme={theme}>
-        <NavigationContainer theme={DarkTheme}>
-          <StatusBar
-            barStyle={"light-content"}
-            backgroundColor={"transparent"}
-            translucent
-          />
-          <AppNavigator />
-        </NavigationContainer>
-      </PaperProvider>
+      <QueryClientProvider client={queryClient}>
+        <PaperProvider theme={theme}>
+          <NavigationContainer theme={DarkTheme}>
+            <StatusBar
+              barStyle={"light-content"}
+              backgroundColor={"transparent"}
+              translucent
+            />
+            <AppNavigator />
+          </NavigationContainer>
+        </PaperProvider>
+      </QueryClientProvider>
     </UserContext.Provider>
-  );
-}
-
-export default function App() {
-  const [fontsLoaded] = useFonts({
-    "Inter-SemiBold": require("assets/fonts/Inter-SemiBold.ttf"),
-    "Inter-Medium": require("assets/fonts/Inter-Medium.ttf"),
-  });
-  const queryClient = new QueryClient();
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AppContent />
-    </QueryClientProvider>
   );
 }
