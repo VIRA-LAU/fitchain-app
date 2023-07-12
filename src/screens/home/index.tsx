@@ -1,11 +1,9 @@
 export * from "./Home";
 export * from "./Games";
-export * from "./Venues";
+export * from "./Branches";
 export * from "./Profile";
 export * from "./Play";
-export * from "./VenueDetails";
-export * from "./VenueBranches";
-export * from "./BranchCourts";
+export * from "./BranchDetails";
 export * from "./InviteUsers";
 
 export * from "./GameDetails/GameDetails";

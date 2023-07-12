@@ -208,6 +208,7 @@ export const BranchManagement = ({
             <BranchLocation
               type="branch"
               branch={{
+                id: branchData?.branchId!,
                 venueName: branchData?.venueName!,
                 latitude: branchDetails.latitude,
                 longitude: branchDetails.longitude,

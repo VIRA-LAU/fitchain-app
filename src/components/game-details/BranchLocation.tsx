@@ -4,7 +4,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Image, StyleSheet, View, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
@@ -50,12 +50,11 @@ export const BranchLocation = ({
   court,
   branch,
   team,
-  isPressable = false,
-  playScreenBookingDetails,
 }: {
   type: "branch" | "court";
   court?: Court;
   branch?: {
+    id: number;
     venueName: string;
     location: string;
     courts: Court[];
@@ -64,24 +63,9 @@ export const BranchLocation = ({
     longitude: number;
   };
   team?: "Home" | "Away";
-  isPressable?: boolean;
-  playScreenBookingDetails?: {
-    date: string;
-    startTime?: string;
-    endTime?: string;
-    gameType: GameType;
-    nbOfPlayers: number;
-  };
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const navigation =
-    useNavigation<
-      CompositeNavigationProp<
-        StackNavigationProp<HomeStackParamList>,
-        BottomTabNavigationProp<BottomTabParamList>
-      >
-    >();
   let courtsStr = "";
   let prices = "null";
   if (branch) {
@@ -102,20 +86,7 @@ export const BranchLocation = ({
   }
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.6}
-      style={[styles.wrapperView]}
-      onPress={() => {
-        if (isPressable && branch)
-          navigation.push("BranchCourts", {
-            courts: branch.courts,
-            venueName: branch.venueName,
-            branchLocation: branch.location,
-            bookingDetails: playScreenBookingDetails,
-          });
-      }}
-      disabled={!isPressable || !branch}
-    >
+    <View style={[styles.wrapperView]}>
       <View style={styles.background}>
         {branch && (
           <MiniMapComponent
@@ -195,7 +166,7 @@ export const BranchLocation = ({
           </View>
         )}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -205,7 +176,6 @@ const makeStyles = (colors: MD3Colors) =>
       borderRadius: 10,
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 10,
       width: "100%",
     },
     background: {

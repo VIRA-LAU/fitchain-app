@@ -8,31 +8,35 @@ import {
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { AppHeader, BranchLocation, Skeleton } from "src/components";
+import {
+  AppHeader,
+  BranchLocation,
+  BranchLocationSkeleton,
+  Skeleton,
+} from "src/components";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
-import { useVenueByIdQuery } from "src/api";
+import { useBranchByIdQuery } from "src/api";
 import { useState } from "react";
 import { Play } from "./Play";
 
-type Props = StackScreenProps<HomeStackParamList, "VenueDetails">;
+type Props = StackScreenProps<HomeStackParamList, "BranchDetails">;
 
-export const VenueDetails = ({ navigation, route }: Props) => {
+export const BranchDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const styles = makeStyles(colors, windowWidth, windowHeight);
 
-  const { id, isPlayScreen, playScreenBranch, playScreenBookingDetails } =
-    route.params;
-  const { data: venue, isLoading } = useVenueByIdQuery(id);
+  const { id, playScreenBookingDetails } = route.params;
+
+  const { data: branch, isLoading } = useBranchByIdQuery(id);
 
   const [playScreenVisible, setPlayScreenVisible] = useState<boolean>(false);
   const courtPrices: number[] = [];
-  venue?.branches.forEach((branch) => {
-    branch.courts.forEach((court) => courtPrices.push(court.price));
-  });
+  branch?.courts.forEach((court) => courtPrices.push(court.price));
+
   const pricesStr =
     courtPrices.length > 0
       ? courtPrices.length === 1
@@ -47,13 +51,19 @@ export const VenueDetails = ({ navigation, route }: Props) => {
     <AppHeader
       navigation={navigation}
       route={route}
-      title={venue?.name}
+      title={branch?.venue.name}
       backEnabled
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.headerView}>
           <Image
-            source={require("assets/images/home/basketball-hub.png")}
+            source={
+              branch?.coverPhotoUrl
+                ? {
+                    uri: branch.coverPhotoUrl,
+                  }
+                : require("assets/images/home/basketball-hub.png")
+            }
             style={styles.headerImage}
           />
           <View style={styles.headerContent}>
@@ -64,9 +74,9 @@ export const VenueDetails = ({ navigation, route }: Props) => {
             {isLoading ? (
               <Skeleton height={20} width={180} style={styles.headerText} />
             ) : (
-              <Text style={styles.headerText}>{venue?.description}</Text>
+              <Text style={styles.headerText}>{branch?.venue.description}</Text>
             )}
-            {!isPlayScreen && (
+            {!playScreenBookingDetails && (
               <View style={styles.buttonsView}>
                 <TouchableOpacity
                   activeOpacity={0.6}
@@ -109,6 +119,31 @@ export const VenueDetails = ({ navigation, route }: Props) => {
           </View>
         </View>
         <View style={styles.contentView}>
+          <View>
+            <Text
+              variant="labelLarge"
+              style={{ color: colors.tertiary, marginBottom: 20 }}
+            >
+              Branch
+            </Text>
+            {isLoading ? (
+              <BranchLocationSkeleton />
+            ) : (
+              <BranchLocation
+                type="branch"
+                branch={{
+                  id: branch!.id,
+                  location: branch!.location,
+                  courts: branch!.courts,
+                  rating: branch!.rating,
+                  venueName: branch!.venue.name,
+                  latitude: branch!.latitude,
+                  longitude: branch!.longitude,
+                }}
+              />
+            )}
+          </View>
+          <View style={[styles.divider, { marginVertical: 20 }]} />
           <Text variant="labelLarge" style={{ color: colors.tertiary }}>
             Teams
           </Text>
@@ -135,28 +170,6 @@ export const VenueDetails = ({ navigation, route }: Props) => {
               </View>
             </View>
           </View>
-          <View style={styles.divider} />
-          {!isPlayScreen && (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginVertical: 20,
-              }}
-            >
-              <Text variant="labelLarge" style={{ color: colors.tertiary }}>
-                Requests (2)
-              </Text>
-
-              <FeatherIcon
-                name="chevron-right"
-                color={colors.tertiary}
-                size={20}
-                style={{ marginLeft: "auto" }}
-              />
-            </View>
-          )}
           <View style={styles.divider} />
           <Text
             variant="labelLarge"
@@ -210,55 +223,16 @@ export const VenueDetails = ({ navigation, route }: Props) => {
               <Text style={styles.uploadPhotoText}>Upload Photo</Text>
             </View>
           </ScrollView>
-          {!isPlayScreen && (
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginVertical: 20,
-                }}
-              >
-                <View style={styles.divider} />
-                <Text variant="labelLarge" style={{ color: colors.tertiary }}>
-                  Branches
-                </Text>
-
-                <FeatherIcon
-                  name="chevron-right"
-                  color={colors.tertiary}
-                  size={20}
-                  style={{ marginLeft: "auto" }}
-                />
-              </View>
-              {venue?.branches.map((branch, index: number) => (
-                <BranchLocation
-                  key={index}
-                  type="branch"
-                  branch={{
-                    location: branch.location,
-                    courts: branch.courts,
-                    rating: branch.rating,
-                    venueName: venue.name,
-                    latitude: branch.latitude,
-                    longitude: branch.longitude,
-                  }}
-                />
-              ))}
-              <Text style={styles.viewAll}>View All</Text>
-            </View>
-          )}
-          {isPlayScreen && (
+          {playScreenBookingDetails && (
             <View style={styles.bookCourtPressableView}>
               <TouchableOpacity
                 activeOpacity={0.6}
                 style={styles.bookCourtPressable}
                 onPress={() => {
-                  navigation.push("BranchCourts", {
-                    branchLocation: playScreenBranch!.location,
-                    courts: playScreenBranch!.courts,
-                    venueName: venue!.name,
+                  navigation.push("ChooseCourt", {
+                    branchId: branch!.id,
+                    branchLocation: branch!.location,
+                    venueName: branch!.venue!.name,
                     bookingDetails: playScreenBookingDetails!,
                   });
                 }}
@@ -287,8 +261,9 @@ export const VenueDetails = ({ navigation, route }: Props) => {
       <Play
         visible={playScreenVisible}
         setVisible={setPlayScreenVisible}
-        venueId={id}
-        venueName={venue?.name}
+        branchId={id}
+        branchLocation={branch?.location}
+        venueName={branch?.venue.name}
       />
     </AppHeader>
   );
@@ -368,6 +343,7 @@ const makeStyles = (
     teamsView: {
       flexDirection: "row",
       alignItems: "center",
+      marginBottom: 10,
     },
     rating: {
       fontFamily: "Inter-SemiBold",
@@ -405,7 +381,7 @@ const makeStyles = (
     },
     photosView: {
       flexDirection: "row",
-      marginTop: 20,
+      marginVertical: 20,
       marginHorizontal: -20,
       maxHeight: 0.25 * windowHeight,
     },
@@ -431,12 +407,6 @@ const makeStyles = (
       marginLeft: 5,
       fontFamily: "Inter-Medium",
       fontSize: 12,
-    },
-    viewAll: {
-      color: colors.tertiary,
-      marginVertical: 10,
-      fontFamily: "Inter-Medium",
-      alignSelf: "center",
     },
     divider: {
       borderColor: colors.secondary,

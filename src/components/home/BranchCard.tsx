@@ -14,7 +14,7 @@ import { Skeleton } from "./Skeleton";
 
 type styleOptions = "vertical" | "horizontal" | "focused";
 
-export const VenueCardSkeleton = ({ type }: { type: styleOptions }) => {
+export const BranchCardSkeleton = ({ type }: { type: styleOptions }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, type === "horizontal", type === "focused");
 
@@ -49,19 +49,17 @@ export const VenueCardSkeleton = ({ type }: { type: styleOptions }) => {
   );
 };
 
-export const VenueCard = ({
+export const BranchCard = ({
   type,
   promoted = true,
-  venueBranch,
-  isPlayScreen = false,
+  branch,
   playScreenBookingDetails,
   isFirst,
   isLast,
 }: {
   type: styleOptions;
   promoted?: boolean;
-  venueBranch: Branch;
-  isPlayScreen?: boolean;
+  branch: Branch;
   playScreenBookingDetails?: {
     date: string;
     startTime?: string;
@@ -91,20 +89,16 @@ export const VenueCard = ({
         isLast ? { marginRight: 20 } : {},
       ]}
       onPress={() => {
-        navigation.push("VenueDetails", {
-          id: venueBranch.venue.id,
-          isPlayScreen,
-          playScreenBranch: isPlayScreen ? venueBranch : null,
-          playScreenBookingDetails: isPlayScreen
-            ? playScreenBookingDetails!
-            : null,
+        navigation.push("BranchDetails", {
+          id: branch.id,
+          playScreenBookingDetails,
         });
       }}
     >
       <Image
         source={
-          venueBranch?.coverPhotoUrl
-            ? { uri: venueBranch.coverPhotoUrl }
+          branch?.coverPhotoUrl
+            ? { uri: branch.coverPhotoUrl }
             : require("assets/images/home/basketball-hub.png")
         }
         style={styles.image}
@@ -120,15 +114,15 @@ export const VenueCard = ({
           style={{ width: 35, height: 35, aspectRatio: 1 }}
         />
         <View style={styles.textView}>
-          <Text style={styles.title}>{venueBranch.venue.name}</Text>
+          <Text style={styles.title}>{branch.venue.name}</Text>
           <View style={styles.ratingView}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <IonIcon name={"star"} color={colors.primary} />
-              <Text style={styles.rating}>{venueBranch.rating}</Text>
+              <Text style={styles.rating}>{branch.rating}</Text>
             </View>
             <Text style={styles.location}>
               {type !== "horizontal" && " • "}
-              {venueBranch.location}
+              {branch.location}
             </Text>
           </View>
         </View>

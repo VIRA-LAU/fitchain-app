@@ -52,12 +52,14 @@ const timeFormatter = (date: Date, hourMode: "12" | "24" = "12") => {
 export const Play = ({
   visible,
   setVisible,
-  venueId = undefined,
-  venueName = undefined,
+  branchId,
+  branchLocation,
+  venueName,
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
-  venueId?: number;
+  branchId?: number;
+  branchLocation?: string;
   venueName?: string;
 }) => {
   const { colors } = useTheme();
@@ -156,7 +158,7 @@ export const Play = ({
             </TouchableOpacity>
           )}
           <Text style={styles.title}>
-            {!venueId && "Find or "}Create a Game
+            {!branchId && "Find or "}Create a Game
           </Text>
           <TouchableOpacity
             style={{ position: "absolute", right: 0 }}
@@ -251,7 +253,7 @@ export const Play = ({
                 />
               </TouchableOpacity>
             </ScrollView>
-            {!venueId && (
+            {!branchId && (
               <View style={styles.contentView}>
                 <View style={styles.contentIconView}>
                   <IonIcon
@@ -434,8 +436,8 @@ export const Play = ({
                   searchDate && searchLocationMarker && searchLocationName
                     ? () => {
                         setVisible(false);
-                        if (!venueId)
-                          navigation.push("ChooseVenue", {
+                        if (!branchId)
+                          navigation.push("ChooseBranch", {
                             date: JSON.stringify(searchDate),
                             gameType,
                             location: searchLocationMarker,
@@ -449,35 +451,37 @@ export const Play = ({
                             nbOfPlayers: numberOfPlayers,
                           });
                         else {
-                          navigation.push("VenueBranches", {
-                            date: JSON.stringify(searchDate),
-                            gameType,
-                            location: searchLocationMarker,
-                            startTime: startTimeDate
-                              ? timeFormatter(startTimeDate, "24")
-                              : undefined,
-                            endTime: endTimeDate
-                              ? timeFormatter(endTimeDate, "24")
-                              : undefined,
-                            venueName: venueName!,
-                            id: venueId,
-                            nbOfPlayers: numberOfPlayers,
+                          navigation.push("ChooseCourt", {
+                            branchId,
+                            venueName,
+                            branchLocation,
+                            bookingDetails: {
+                              date: JSON.stringify(searchDate),
+                              nbOfPlayers: numberOfPlayers,
+                              startTime: startTimeDate
+                                ? timeFormatter(startTimeDate, "24")
+                                : undefined,
+                              endTime: endTimeDate
+                                ? timeFormatter(endTimeDate, "24")
+                                : undefined,
+                              gameType,
+                            },
                           });
                         }
                       }
                     : undefined
                 }
               >
-                {venueId ? "Find a Branch" : "Find Venue"}
+                {branchId ? "Find a Court" : "Find Venue"}
               </Button>
-              {!venueId && (
+              {!branchId && (
                 <Button
                   buttonColor={colors.primary}
                   textColor={"black"}
                   style={{ borderRadius: 5, width: "100%", marginTop: 15 }}
                   onPress={() => {
                     setVisible(false);
-                    if (!venueId && searchLocationMarker && searchLocationName)
+                    if (!branchId && searchLocationMarker && searchLocationName)
                       navigation.push("ChooseGame", {
                         date: searchDate
                           ? JSON.stringify(searchDate)

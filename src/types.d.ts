@@ -96,15 +96,22 @@ export interface Court {
   };
 }
 
+export interface Venue {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  description: string;
+  branches: Branch[];
+  rating: number;
+}
+
 export interface Branch {
   id: number;
   location: string;
   latitude: number;
   longitude: number;
-  venue: {
-    id: number;
-    name: string;
-  };
+  venue: Venue;
   photoDirectoryUrl: string;
   coverPhotoUrl: string;
   courts: Court[];
@@ -114,16 +121,6 @@ export interface Branch {
   email: string;
   phoneNumber: number;
   hash: string;
-}
-
-export interface Venue {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  description: string;
-  branches: Branch[];
-  rating: number;
 }
 
 export interface Activity {

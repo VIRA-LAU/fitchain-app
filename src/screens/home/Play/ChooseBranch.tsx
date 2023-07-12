@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { HomeStackParamList } from "navigation";
-import { AppHeader, VenueCard, VenueCardSkeleton } from "src/components";
+import { AppHeader, BranchCard, BranchCardSkeleton } from "src/components";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-gesture-handler";
 import {
@@ -12,9 +12,9 @@ import {
 } from "src/api";
 import { Branch } from "src/types";
 
-type Props = StackScreenProps<HomeStackParamList, "ChooseVenue">;
+type Props = StackScreenProps<HomeStackParamList, "ChooseBranch">;
 
-export const ChooseVenue = ({ navigation, route }: Props) => {
+export const ChooseBranch = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -52,7 +52,7 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
       absolutePosition={false}
       navigation={navigation}
       route={route}
-      title={"Choose Venue Branch"}
+      title={"Choose a Venue"}
       backEnabled
     >
       <ScrollView contentContainerStyle={styles.wrapperView}>
@@ -74,24 +74,23 @@ export const ChooseVenue = ({ navigation, route }: Props) => {
           </Text>
         </View>
         {(branchesLoading || sortingLoading) && (
-          <VenueCardSkeleton type="horizontal" />
+          <BranchCardSkeleton type="horizontal" />
         )}
         {!(branchesLoading || sortingLoading) &&
           (!sortedBranches || sortedBranches.length === 0) && (
             <View style={styles.placeholder}>
               <Text style={styles.placeholderText}>
-                There are no venue branches that match your search.
+                There are no branches that match your search.
               </Text>
             </View>
           )}
         {!(branchesLoading || sortingLoading) &&
-          sortedBranches?.map((venuesBranch: Branch, index: number) => (
-            <VenueCard
+          sortedBranches?.map((branch: Branch, index: number) => (
+            <BranchCard
               key={index}
               type="horizontal"
-              venueBranch={venuesBranch}
+              branch={branch}
               promoted={false}
-              isPlayScreen
               playScreenBookingDetails={{
                 date: dateStr,
                 startTime,

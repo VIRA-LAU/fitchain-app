@@ -4,8 +4,8 @@ import { Text, useTheme } from "react-native-paper";
 import {
   AppHeader,
   SportTypeDropdown,
-  VenueCard,
-  VenueCardSkeleton,
+  BranchCard,
+  BranchCardSkeleton,
 } from "src/components";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList } from "src/navigation";
@@ -16,11 +16,11 @@ import { Branch } from "src/types";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
-export const Venues = ({ navigation, route }: Props) => {
+export const Branches = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { data: venueBranches, isLoading } = useBranchesQuery();
+  const { data: branches, isLoading } = useBranchesQuery();
 
   const [searchBarText, setSearchBarText] = useState<string>("");
   const [selectedSports, setSelectedSports] = useState({
@@ -29,8 +29,8 @@ export const Venues = ({ navigation, route }: Props) => {
     Tennis: true,
   });
 
-  const filteredVenueBranches = venueBranches?.filter((venueBranch) =>
-    venueBranch.venue.name.toLowerCase().includes(searchBarText.toLowerCase())
+  const filteredBranches = branches?.filter((branch) =>
+    branch.venue.name.toLowerCase().includes(searchBarText.toLowerCase())
   );
 
   return (
@@ -50,24 +50,23 @@ export const Venues = ({ navigation, route }: Props) => {
       setSearchBarText={setSearchBarText}
     >
       <ScrollView contentContainerStyle={styles.wrapperView}>
-        {isLoading && <VenueCardSkeleton type="horizontal" />}
+        {isLoading && <BranchCardSkeleton type="horizontal" />}
         {!isLoading &&
-          filteredVenueBranches?.map((venueBranch: Branch, index: number) => (
-            <VenueCard
+          filteredBranches?.map((branch: Branch, index: number) => (
+            <BranchCard
               key={index}
               type="horizontal"
               promoted={false}
-              venueBranch={venueBranch}
+              branch={branch}
             />
           ))}
-        {!isLoading &&
-          (!filteredVenueBranches || filteredVenueBranches.length === 0) && (
-            <View style={styles.placeholder}>
-              <Text style={styles.placeholderText}>
-                There are no nearby venues.
-              </Text>
-            </View>
-          )}
+        {!isLoading && (!filteredBranches || filteredBranches.length === 0) && (
+          <View style={styles.placeholder}>
+            <Text style={styles.placeholderText}>
+              There are no nearby venues.
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </AppHeader>
   );

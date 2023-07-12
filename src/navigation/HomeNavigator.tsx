@@ -17,11 +17,10 @@ import {
   Play,
   Profile,
   VenueBookingDetails,
-  VenueBranches,
-  VenueDetails,
-  Venues,
-  BranchCourts,
-  ChooseVenue,
+  BranchDetails,
+  Branches,
+  ChooseCourt,
+  ChooseBranch,
   ChooseGame,
   RatePlayer,
 } from "screens";
@@ -80,7 +79,7 @@ const BottomTabNavigator = () => {
             },
           }}
         />
-        <Tab.Screen name="Venues" component={Venues} />
+        <Tab.Screen name="Venues" component={Branches} />
         <Tab.Screen
           name="Profile"
           children={(props) => <Profile {...props} isUserProfile />}
@@ -123,10 +122,9 @@ export const HomeNavigator = () => {
         component={VenueBookingDetails}
       />
       <Stack.Screen name="GameDetails" component={GameDetails} />
-      <Stack.Screen name="VenueDetails" component={VenueDetails} />
-      <Stack.Screen name="VenueBranches" component={VenueBranches} />
-      <Stack.Screen name="BranchCourts" component={BranchCourts} />
-      <Stack.Screen name="ChooseVenue" component={ChooseVenue} />
+      <Stack.Screen name="BranchDetails" component={BranchDetails} />
+      <Stack.Screen name="ChooseBranch" component={ChooseBranch} />
+      <Stack.Screen name="ChooseCourt" component={ChooseCourt} />
       <Stack.Screen name="ChooseGame" component={ChooseGame} />
       <Stack.Screen name="InviteUsers" component={InviteUsers} />
       <Stack.Screen name="RatePlayer" component={RatePlayer} />

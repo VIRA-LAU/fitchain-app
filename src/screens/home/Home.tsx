@@ -8,11 +8,11 @@ import {
   ActivityCard,
   BookingCard,
   InvitationCard,
-  VenueCard,
+  BranchCard,
   SportTypeDropdown,
   BookingCardSkeleton,
   UpcomingGameCardSkeleton,
-  VenueCardSkeleton,
+  BranchCardSkeleton,
   InvitationCardSkeleton,
   ActivityCardSkeleton,
 } from "components";
@@ -51,7 +51,7 @@ export const Home = ({ navigation, route }: Props) => {
   const { userData } = useContext(UserContext);
 
   const {
-    data: branchesVenues,
+    data: branches,
     isFetching: branchesLoading,
     refetch: refetchBranches,
   } = useBranchesQuery();
@@ -252,21 +252,21 @@ export const Home = ({ navigation, route }: Props) => {
             showsHorizontalScrollIndicator={false}
             horizontal
           >
-            {branchesLoading && <VenueCardSkeleton type="vertical" />}
+            {branchesLoading && <BranchCardSkeleton type="vertical" />}
             {!branchesLoading &&
-              branchesVenues?.map((venuesBranch: Branch, index: number) => (
-                <VenueCard
+              branches?.map((branch: Branch, index: number) => (
+                <BranchCard
                   key={index}
                   type="vertical"
-                  venueBranch={venuesBranch}
+                  branch={branch}
                   isFirst={index === 0}
-                  isLast={index === branchesVenues.length - 1}
+                  isLast={index === branches.length - 1}
                 />
               ))}
           </ScrollView>
           {!branchesLoading &&
-            (!branchesVenues ||
-              (branchesVenues.length === 0 && (
+            (!branches ||
+              (branches.length === 0 && (
                 <View style={styles.placeholder}>
                   <Text style={styles.placeholderText}>
                     There are no nearby venues.

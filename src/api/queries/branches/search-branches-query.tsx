@@ -8,7 +8,7 @@ type Props = {
   gameType: GameType;
   startTime?: string;
   endTime?: string;
-  venueId?: number;
+  branchId?: number;
   nbOfPlayers?: number;
 };
 

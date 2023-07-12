@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { SignUpNavigator } from "./SignUpNavigator";
 import { BottomTabParamList } from "./tabScreenOptions";
-import { GameType, Branch, TimeSlot } from "src/types";
+import { GameType, TimeSlot } from "src/types";
 import { UserContext, getData } from "src/utils";
 import { HomeNavigator } from "./HomeNavigator";
 import { BranchHomeNavigator } from "./BranchHomeNavigator";
@@ -11,10 +11,8 @@ import { LatLng } from "react-native-maps";
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
   GameDetails: { id: number; isPrevious: boolean };
-  VenueDetails: {
+  BranchDetails: {
     id: number;
-    isPlayScreen: boolean;
-    playScreenBranch: Branch | null;
     playScreenBookingDetails?: {
       date: string;
       nbOfPlayers: number;
@@ -41,29 +39,7 @@ export type HomeStackParamList = {
       gameType: GameType;
     };
   };
-  VenueBranches: {
-    id: number;
-    venueName: string;
-    gameType: GameType;
-    nbOfPlayers: number;
-    date: string;
-    location: LatLng;
-    startTime?: string;
-    endTime?: string;
-  };
-  BranchCourts: {
-    venueName: string;
-    courts: Branch["courts"];
-    branchLocation: string;
-    bookingDetails?: {
-      date: string;
-      nbOfPlayers: number;
-      startTime?: string;
-      endTime?: string;
-      gameType: GameType;
-    };
-  };
-  ChooseVenue: {
+  ChooseBranch: {
     gameType: GameType;
     nbOfPlayers: number;
     date: string;
@@ -71,6 +47,18 @@ export type HomeStackParamList = {
     locationName: string;
     startTime?: string;
     endTime?: string;
+  };
+  ChooseCourt: {
+    venueName?: string;
+    branchId: number;
+    branchLocation?: string;
+    bookingDetails?: {
+      date: string;
+      nbOfPlayers: number;
+      startTime?: string;
+      endTime?: string;
+      gameType: GameType;
+    };
   };
   ChooseGame: {
     gameType: GameType;
