@@ -116,9 +116,17 @@ export const GameDetails = ({ navigation, route }: Props) => {
           <Team
             name={"Home"}
             game={game}
-            players={players?.filter(
-              ({ team, status }) => team === "HOME" && status !== "REJECTED"
-            )}
+            players={
+              isPrevious
+                ? players?.filter(
+                    ({ team, status }) =>
+                      team === "HOME" && status === "APPROVED"
+                  )
+                : players?.filter(
+                    ({ team, status }) =>
+                      team === "HOME" && status !== "REJECTED"
+                  )
+            }
             gameDetailsLoading={gameDetailsLoading}
             playersLoading={playersLoading}
             isPrevious={isPrevious}
@@ -131,9 +139,17 @@ export const GameDetails = ({ navigation, route }: Props) => {
           <Team
             name={"Away"}
             game={game}
-            players={players?.filter(
-              ({ team, status }) => team === "AWAY" && status !== "REJECTED"
-            )}
+            players={
+              isPrevious
+                ? players?.filter(
+                    ({ team, status }) =>
+                      team === "AWAY" && status === "APPROVED"
+                  )
+                : players?.filter(
+                    ({ team, status }) =>
+                      team === "AWAY" && status !== "REJECTED"
+                  )
+            }
             gameDetailsLoading={gameDetailsLoading}
             playersLoading={playersLoading}
             isPrevious={isPrevious}

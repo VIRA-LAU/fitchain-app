@@ -5,11 +5,12 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SignUpStackParamList } from "src/navigation";
 
 type Request = {
-  venueId: number;
   location: string;
   latitude: number;
   longitude: number;
+  venueName: string;
   email: string;
+  description: string;
   managerFirstName: string;
   managerLastName: string;
   password: string;

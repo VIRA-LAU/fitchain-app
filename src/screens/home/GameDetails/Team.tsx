@@ -239,7 +239,12 @@ export const Team = ({
         {gameDetailsLoading ? (
           <BranchLocationSkeleton />
         ) : (
-          <BranchLocation type="court" court={game?.court} team={name} />
+          <BranchLocation
+            type="court"
+            court={game?.court}
+            team={name}
+            pressable
+          />
         )}
       </View>
       <View style={styles.divider} />

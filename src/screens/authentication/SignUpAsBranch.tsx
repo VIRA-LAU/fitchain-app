@@ -25,21 +25,24 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
+  const [venueName, setVenueName] = useState("");
+  const [managerFirstName, setManagerFirstName] = useState("");
+  const [managerLastName, setManagerLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [description, setDescription] = useState("");
   const [password, setPassword] = useState("");
   const [branchLocation, setBranchLocation] = useState<LatLng>();
+  const [locationDescription, setLocationDescription] = useState("");
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [mapVisible, setMapVisible] = useState<boolean>(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
   const [mapRegion, setMapRegion] = useState<Region>({
     latitude: 33.895462996463095,
     longitude: 35.5006168037653,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
-  const [locationDescription, setLocationDescription] = useState("");
-  const [managerFirstName, setManagerFirstName] = useState("");
-  const [managerLastName, setManagerLastName] = useState("");
-  const [email, setemail] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [mapVisible, setMapVisible] = useState<boolean>(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
 
   const {
     mutate: createBranch,
@@ -90,18 +93,20 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
       locationDescription.length > 0 &&
       branchLocation &&
       validateEmail(email) &&
+      venueName.trim().length > 0 &&
       managerFirstName.length > 0 &&
       managerLastName.length > 0
     ) {
       let data = {
-        venueId: 1,
-        location: locationDescription,
-        latitude: branchLocation.latitude,
-        longitude: branchLocation.longitude,
+        venueName: venueName.trim(),
         managerFirstName,
         managerLastName,
         email,
+        description: description.trim(),
         password,
+        location: locationDescription,
+        latitude: branchLocation.latitude,
+        longitude: branchLocation.longitude,
       };
       setErrorMessage("");
       createBranch(data);
@@ -134,8 +139,10 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
 
   const scrollOffset = 60;
   const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
+  const firstNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const lastNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
+  const descriptionRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
 
   return (
@@ -159,6 +166,33 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
             </Text>
             <View style={styles.textInputView}>
               <MaterialCommunityIcon
+                name={"home-account"}
+                size={20}
+                color={"#c9c9c9"}
+                style={{ marginHorizontal: 15 }}
+              />
+              <TextInput
+                value={venueName}
+                style={styles.textInput}
+                placeholder={"Venue Name"}
+                placeholderTextColor={"#a8a8a8"}
+                selectionColor={colors.primary}
+                onSubmitEditing={() => {
+                  firstNameRef.current?.focus();
+                  scrollRef.current?.scrollTo({
+                    y: scrollPosition + scrollOffset,
+                    animated: true,
+                  });
+                }}
+                blurOnSubmit={false}
+                onChangeText={(text) => {
+                  setVenueName(text);
+                  setErrorMessage("");
+                }}
+              />
+            </View>
+            <View style={styles.textInputView}>
+              <MaterialCommunityIcon
                 name={"account-outline"}
                 size={20}
                 color={"#c9c9c9"}
@@ -178,6 +212,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                   });
                 }}
                 blurOnSubmit={false}
+                ref={firstNameRef}
                 onChangeText={(text) => {
                   setManagerFirstName(text.trim());
                   setErrorMessage("");
@@ -212,7 +247,6 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                 }}
               />
             </View>
-
             <View style={styles.textInputView}>
               <MaterialCommunityIcon
                 name={"email-outline"}
@@ -229,7 +263,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                 textContentType="emailAddress"
                 autoCapitalize="none"
                 onSubmitEditing={() => {
-                  passwordRef.current?.focus();
+                  descriptionRef.current?.focus();
                   scrollRef.current?.scrollTo({
                     y: scrollPosition + scrollOffset,
                     animated: true,
@@ -238,7 +272,35 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                 blurOnSubmit={false}
                 ref={emailRef}
                 onChangeText={(text) => {
-                  setemail(text.trim());
+                  setEmail(text.trim());
+                  setErrorMessage("");
+                }}
+              />
+            </View>
+            <View style={styles.textInputView}>
+              <MaterialCommunityIcon
+                name={"text-box-outline"}
+                size={20}
+                color={"#c9c9c9"}
+                style={{ marginHorizontal: 15 }}
+              />
+              <TextInput
+                value={description}
+                style={styles.textInput}
+                placeholder={"Branch Description (Optional)"}
+                placeholderTextColor={"#a8a8a8"}
+                selectionColor={colors.primary}
+                onSubmitEditing={() => {
+                  passwordRef.current?.focus();
+                  scrollRef.current?.scrollTo({
+                    y: scrollPosition + scrollOffset,
+                    animated: true,
+                  });
+                }}
+                blurOnSubmit={false}
+                ref={descriptionRef}
+                onChangeText={(text) => {
+                  setDescription(text);
                   setErrorMessage("");
                 }}
               />
@@ -285,7 +347,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                 />
                 <TextInput
                   style={styles.textInput}
-                  placeholder={"Location Description"}
+                  placeholder={"Location Name"}
                   placeholderTextColor={"#a8a8a8"}
                   selectionColor={colors.primary}
                   value={locationDescription ?? autoLocationDescription}

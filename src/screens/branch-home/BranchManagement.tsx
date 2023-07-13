@@ -15,7 +15,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { Avatar, IconButton, Text, useTheme } from "react-native-paper";
+import { IconButton, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { VenueBottomTabParamList } from "src/navigation";
 import { UserContext, uploadImage } from "src/utils";
@@ -230,6 +230,7 @@ export const BranchManagement = ({
                         fontSize: 16,
                         color: "white",
                         textAlign: "center",
+                        margin: 10,
                       }}
                     >
                       {branchData?.venueName}

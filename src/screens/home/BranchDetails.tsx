@@ -94,6 +94,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                         fontSize: 16,
                         color: "white",
                         textAlign: "center",
+                        margin: 10,
                       }}
                     >
                       {branch?.venue.name}

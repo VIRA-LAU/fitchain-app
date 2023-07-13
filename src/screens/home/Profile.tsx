@@ -272,7 +272,11 @@ export const Profile = ({
             {userDetailsLoading ? (
               <Skeleton height={20} width={150} style={styles.headerText2} />
             ) : (
-              <Text style={styles.headerText2}>{userDetails?.description}</Text>
+              userDetails?.description && (
+                <Text style={styles.headerText2}>
+                  {userDetails?.description}
+                </Text>
+              )
             )}
           </View>
         </View>
@@ -443,12 +447,13 @@ const makeStyles = (
       fontFamily: "Inter-SemiBold",
       color: colors.tertiary,
       marginTop: 15,
+      marginBottom: 20,
     },
     headerText2: {
       fontFamily: "Inter-Medium",
       lineHeight: 20,
       color: "white",
-      marginTop: 10,
+      marginTop: -10,
       marginBottom: 20,
       textAlign: "center",
     },

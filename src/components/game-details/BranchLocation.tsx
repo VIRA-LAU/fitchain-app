@@ -4,11 +4,11 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
-import { Court, GameType } from "src/types";
+import { Court } from "src/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { MiniMapComponent, Skeleton } from "../home";
 
@@ -50,6 +50,7 @@ export const BranchLocation = ({
   court,
   branch,
   team,
+  pressable = false,
 }: {
   type: "branch" | "court";
   court?: Court;
@@ -64,6 +65,7 @@ export const BranchLocation = ({
     profilePhotoUrl?: string;
   };
   team?: "Home" | "Away";
+  pressable?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -86,8 +88,23 @@ export const BranchLocation = ({
         : "None";
   }
 
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<HomeStackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
+
   return (
-    <View style={[styles.wrapperView]}>
+    <TouchableOpacity
+      style={[styles.wrapperView]}
+      disabled={!pressable}
+      activeOpacity={0.8}
+      onPress={() => {
+        navigation.push("BranchDetails", { id: court!.branchId });
+      }}
+    >
       <View style={styles.background}>
         {branch && (
           <MiniMapComponent
@@ -171,7 +188,7 @@ export const BranchLocation = ({
           </View>
         )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
