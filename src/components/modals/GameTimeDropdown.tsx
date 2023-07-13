@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Modal, StyleSheet, View, TouchableOpacity } from "react-native";
 import { useTheme, Text } from "react-native-paper";
-import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
+import { modalStyles } from "./SelectionModal";
 
-export const DurationDropdown = ({
+export const GameTimeDropdown = ({
   index,
   setIndex,
 }: {
@@ -12,7 +12,7 @@ export const DurationDropdown = ({
   setIndex: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const { colors } = useTheme();
-  const styles = makeStyles(colors);
+  const mStyles = modalStyles(colors);
 
   const durations = ["Upcoming Games", "Previous Games"];
   const [modalVisible, setModalVisible] = useState(false);
@@ -34,12 +34,21 @@ export const DurationDropdown = ({
       </TouchableOpacity>
       <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <TouchableOpacity
-          style={styles.transparentView}
+          style={mStyles.transparentView}
           onPress={() => {
             setModalVisible(false);
           }}
         />
-        <View style={styles.modalView}>
+        <View
+          style={[
+            mStyles.modalView,
+            {
+              width: 250,
+              marginLeft: "auto",
+              marginRight: "auto",
+            },
+          ]}
+        >
           {durations.map((duration, localIndex) => {
             return (
               <TouchableOpacity
@@ -76,45 +85,19 @@ export const DurationDropdown = ({
   );
 };
 
-const makeStyles = (colors: MD3Colors) =>
-  StyleSheet.create({
-    dropDownButton: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    title: {
-      color: "white",
-      fontFamily: "Inter-SemiBold",
-    },
-    transparentView: {
-      position: "absolute",
-      height: "100%",
-      width: "100%",
-    },
-    modalView: {
-      width: 250,
-      marginTop: 75,
-      marginLeft: "auto",
-      marginRight: "auto",
-      backgroundColor: colors.secondary,
-      borderRadius: 20,
-      paddingHorizontal: 30,
-      paddingVertical: 15,
-      borderColor: colors.tertiary,
-      borderWidth: 1,
-      shadowColor: "#000000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 10,
-    },
-    selectionRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginVertical: 10,
-      height: 30,
-    },
-  });
+const styles = StyleSheet.create({
+  dropDownButton: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  title: {
+    color: "white",
+    fontFamily: "Inter-SemiBold",
+  },
+  selectionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+    height: 30,
+  },
+});

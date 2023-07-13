@@ -1,16 +1,9 @@
 import React, { useState } from "react";
-import {
-  Modal,
-  StyleSheet,
-  Pressable,
-  View,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { Modal, StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { useTheme, Text } from "react-native-paper";
-import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { GameType } from "src/types";
+import { modalStyles } from "./SelectionModal";
 
 export type SportSelection = {
   Basketball: boolean;
@@ -49,7 +42,7 @@ export const SportTypeDropdown = ({
   position?: "right" | "left";
 }) => {
   const { colors } = useTheme();
-  const styles = makeStyles(colors);
+  const mStyles = modalStyles(colors);
 
   const sports = (absolute = false): SportOption[] => [
     {
@@ -115,21 +108,24 @@ export const SportTypeDropdown = ({
       </TouchableOpacity>
       <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <TouchableOpacity
-          style={styles.transparentView}
+          style={mStyles.transparentView}
           onPress={() => {
             setModalVisible(false);
           }}
         />
         <View
           style={[
-            styles.modalView,
+            mStyles.modalView,
+            {
+              width: 250,
+            },
             position === "left"
               ? {
-                  marginLeft: 15,
+                  marginLeft: 5,
                 }
               : {
                   marginLeft: "auto",
-                  marginRight: 15,
+                  marginRight: 5,
                   marginTop: 80,
                 },
           ]}
@@ -168,39 +164,15 @@ export const SportTypeDropdown = ({
   );
 };
 
-const makeStyles = (colors: MD3Colors) =>
-  StyleSheet.create({
-    dropDownButton: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    gameIcon: { marginRight: 10, width: 35, aspectRatio: 1 },
-    transparentView: {
-      position: "absolute",
-      height: "100%",
-      width: "100%",
-    },
-    modalView: {
-      width: 250,
-      marginTop: 70,
-      backgroundColor: colors.secondary,
-      borderRadius: 20,
-      paddingHorizontal: 20,
-      paddingVertical: 15,
-      borderColor: colors.tertiary,
-      borderWidth: 1,
-      shadowColor: "#000000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 10,
-    },
-    sportRowView: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginVertical: 10,
-    },
-  });
+const styles = StyleSheet.create({
+  dropDownButton: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  gameIcon: { marginRight: 10, width: 35, aspectRatio: 1 },
+  sportRowView: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+});

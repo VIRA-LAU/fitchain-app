@@ -2,14 +2,13 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { Modal, ScrollView, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { useSortGamesByLocationQuery, useSearchGamesQuery } from "src/api";
-import { AppHeader, BookingCard } from "src/components";
+import { AppHeader, BookingCard, SortByModal } from "src/components";
 import { HomeStackParamList } from "src/navigation";
 import { Game } from "src/types";
 import { DayHeader } from "../Games";
 import { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import FeatherIcon from "react-native-vector-icons/Feather";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 type Props = StackScreenProps<HomeStackParamList, "ChooseGame">;
@@ -125,65 +124,12 @@ export const ChooseGame = ({ navigation, route }: Props) => {
       }
       backEnabled
     >
-      <Modal animationType="fade" transparent={true} visible={modalVisible}>
-        <TouchableOpacity
-          style={styles.transparentView}
-          onPress={() => {
-            setModalVisible(false);
-          }}
-        />
-        <View style={styles.modalView}>
-          <Text style={styles.modalTitle}>Sort By</Text>
-          <TouchableOpacity
-            onPress={() => {
-              setSortOption("date");
-            }}
-          >
-            <View style={styles.selectionRow}>
-              <Text
-                variant="labelLarge"
-                style={{
-                  color: "white",
-                }}
-              >
-                Date
-              </Text>
-              {sortOption === "date" && (
-                <FeatherIcon
-                  name="check"
-                  color={"white"}
-                  size={26}
-                  style={{ marginLeft: "auto" }}
-                />
-              )}
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setSortOption("location");
-            }}
-          >
-            <View style={styles.selectionRow}>
-              <Text
-                variant="labelLarge"
-                style={{
-                  color: "white",
-                }}
-              >
-                Location
-              </Text>
-              {sortOption === "location" && (
-                <FeatherIcon
-                  name="check"
-                  color={"white"}
-                  size={26}
-                  style={{ marginLeft: "auto" }}
-                />
-              )}
-            </View>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+      <SortByModal
+        visible={modalVisible}
+        setVisible={setModalVisible}
+        sortOption={sortOption}
+        setSortOption={setSortOption}
+      />
       <ScrollView
         contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20 }}
       >
@@ -218,43 +164,6 @@ export const ChooseGame = ({ navigation, route }: Props) => {
 
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
-    transparentView: {
-      position: "absolute",
-      height: "100%",
-      width: "100%",
-    },
-    modalView: {
-      width: 180,
-      marginTop: 75,
-      marginLeft: "auto",
-      marginRight: 10,
-      backgroundColor: colors.secondary,
-      borderRadius: 20,
-      paddingHorizontal: 25,
-      paddingVertical: 10,
-      borderColor: colors.tertiary,
-      borderWidth: 1,
-      shadowColor: "#000000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 10,
-    },
-    modalTitle: {
-      fontFamily: "Inter-Medium",
-      marginTop: 10,
-      marginBottom: 7,
-      color: colors.tertiary,
-    },
-    selectionRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginVertical: 7,
-      height: 30,
-    },
     placeholder: {
       height: 100,
       justifyContent: "center",

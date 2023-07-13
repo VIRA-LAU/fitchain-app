@@ -2,7 +2,6 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { Dispatch, SetStateAction, useContext, useState } from "react";
 import {
   Image,
-  Modal,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -26,10 +25,10 @@ import {
   BranchLocationSkeleton,
   CourtCard,
   GalleryPermissionDialog,
+  SelectionModal,
   Skeleton,
 } from "src/components";
 import { existingCourtType } from "./CreateCourt";
-import * as ImagePicker from "expo-image-picker";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
@@ -96,50 +95,26 @@ export const BranchManagement = ({
           visible={permissionDialogVisible}
           setVisible={setPermissionDialogVisible}
         />
-        <Modal animationType="fade" transparent={true} visible={modalVisible}>
-          <TouchableOpacity
-            style={styles.transparentView}
-            onPress={() => {
-              setModalVisible(false);
-            }}
-          />
-          <View style={styles.modalView}>
-            <TouchableOpacity
-              onPress={() => {
-                setIsEditing(true);
+        <SelectionModal
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          options={[
+            {
+              text: "Edit Branch",
+              onPress: () => {
                 setModalVisible(false);
-              }}
-            >
-              <View style={styles.selectionRow}>
-                <Text
-                  variant="labelLarge"
-                  style={{
-                    color: "white",
-                  }}
-                >
-                  Edit Branch
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
+                setIsEditing(true);
+              },
+            },
+            {
+              text: "Sign Out",
+              onPress: () => {
                 setModalVisible(false);
                 setBranchData(null);
-              }}
-            >
-              <View style={styles.selectionRow}>
-                <Text
-                  variant="labelLarge"
-                  style={{
-                    color: "white",
-                  }}
-                >
-                  Sign Out
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+              },
+            },
+          ]}
+        />
         <View style={styles.headerView}>
           <View>
             <Image
@@ -322,11 +297,6 @@ const makeStyles = (
       color: colors.tertiary,
       textAlign: "center",
     },
-    transparentView: {
-      position: "absolute",
-      height: "100%",
-      width: "100%",
-    },
     editImage: {
       position: "absolute",
       bottom: 0,
@@ -337,31 +307,5 @@ const makeStyles = (
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-    },
-    modalView: {
-      width: 180,
-      marginTop: 65,
-      marginLeft: "auto",
-      marginRight: 5,
-      backgroundColor: colors.secondary,
-      borderRadius: 20,
-      paddingHorizontal: 25,
-      paddingVertical: 10,
-      borderColor: colors.tertiary,
-      borderWidth: 1,
-      shadowColor: "#000000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 10,
-    },
-    selectionRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginVertical: 7,
-      height: 40,
     },
   });

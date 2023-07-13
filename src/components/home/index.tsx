@@ -4,6 +4,5 @@ export * from "./InvitationCard";
 export * from "./UpcomingGameCard";
 export * from "./BranchCard";
 export * from "./TimeSlotPicker";
-export * from "./SportTypeDropdown";
 export * from "./MapComponent";
 export * from "./Skeleton";

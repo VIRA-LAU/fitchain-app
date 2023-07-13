@@ -15,7 +15,7 @@ import {
   AppHeader,
   BookingCard,
   BookingCardSkeleton,
-  DurationDropdown,
+  GameTimeDropdown,
   SportSelection,
   SportTypeDropdown,
 } from "components";
@@ -366,7 +366,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
       route={route}
       right={<IonIcon name="search-outline" color="white" size={24} />}
       middle={
-        <DurationDropdown index={durationIndex} setIndex={setDurationIndex} />
+        <GameTimeDropdown index={durationIndex} setIndex={setDurationIndex} />
       }
       left={
         <SportTypeDropdown
