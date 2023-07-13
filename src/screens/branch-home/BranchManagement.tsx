@@ -1,6 +1,13 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { Dispatch, SetStateAction, useContext, useState } from "react";
 import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import {
+  BackHandler,
   Image,
   ScrollView,
   StyleSheet,
@@ -8,7 +15,7 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { IconButton, Text, useTheme } from "react-native-paper";
+import { Avatar, IconButton, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { VenueBottomTabParamList } from "src/navigation";
 import { UserContext, uploadImage } from "src/utils";
@@ -52,6 +59,7 @@ export const BranchManagement = ({
   const [permissionDialogVisible, setPermissionDialogVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [coverPhotoToUpload, setCoverPhotoToUpload] = useState<string>();
+  const [profilePhotoToUpload, setProfilePhotoToUpload] = useState<string>();
 
   const { data: branchDetails, isLoading: branchDetailsLoading } =
     useBranchByIdQuery(branchData?.branchId);
@@ -63,28 +71,49 @@ export const BranchManagement = ({
 
   const { mutate: updateBranch } = useUpdateBranchMutation();
 
+  useEffect(() => {
+    const handleBack = () => {
+      if (isEditing) {
+        setIsEditing(false);
+        return true;
+      } else return false;
+    };
+    BackHandler.addEventListener("hardwareBackPress", handleBack);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBack);
+    };
+  }, [isEditing]);
+
   return (
     <AppHeader
       navigation={navigation}
       route={route}
       right={
-        isEditing ? (
-          <TouchableOpacity
-            onPress={() => {
-              setIsEditing(false);
-              setModalVisible(false);
-            }}
-          >
-            <IonIcon name="checkmark-sharp" color={colors.primary} size={24} />
-          </TouchableOpacity>
+        !branchDetailsLoading ? (
+          isEditing ? (
+            <TouchableOpacity
+              onPress={() => {
+                setIsEditing(false);
+                setModalVisible(false);
+              }}
+            >
+              <IonIcon
+                name="checkmark-sharp"
+                color={colors.primary}
+                size={24}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(true);
+              }}
+            >
+              <IonIcon name="ellipsis-horizontal" color={"white"} size={24} />
+            </TouchableOpacity>
+          )
         ) : (
-          <TouchableOpacity
-            onPress={() => {
-              setModalVisible(true);
-            }}
-          >
-            <IonIcon name="ellipsis-horizontal" color={"white"} size={24} />
-          </TouchableOpacity>
+          <View />
         )
       }
       title={branchData?.venueName}
@@ -117,18 +146,27 @@ export const BranchManagement = ({
         />
         <View style={styles.headerView}>
           <View>
-            <Image
-              source={
-                coverPhotoToUpload
-                  ? { uri: coverPhotoToUpload }
-                  : branchDetails?.coverPhotoUrl
-                  ? {
-                      uri: branchDetails.coverPhotoUrl,
-                    }
-                  : require("assets/images/home/basketball-hub.png")
-              }
-              style={styles.headerImage}
-            />
+            {!branchDetailsLoading ? (
+              <Image
+                source={
+                  coverPhotoToUpload
+                    ? { uri: coverPhotoToUpload }
+                    : branchDetails?.coverPhotoUrl
+                    ? {
+                        uri: branchDetails.coverPhotoUrl,
+                      }
+                    : require("assets/images/home/basketball-hub.png")
+                }
+                style={styles.headerImage}
+              />
+            ) : (
+              <View
+                style={[
+                  styles.headerImage,
+                  { backgroundColor: colors.background },
+                ]}
+              />
+            )}
             {isEditing && (
               <TouchableOpacity
                 onPress={() =>
@@ -160,10 +198,70 @@ export const BranchManagement = ({
             )}
           </View>
           <View style={styles.headerContent}>
-            <Image
-              source={require("assets/images/home/basketball-hub-icon.png")}
-              style={styles.clubIcon}
-            />
+            <View
+              style={{
+                marginTop: (-0.33 * windowWidth) / 2,
+              }}
+            >
+              {!branchDetailsLoading ? (
+                profilePhotoToUpload ? (
+                  <Image
+                    source={{ uri: profilePhotoToUpload }}
+                    style={styles.profilePhoto}
+                  />
+                ) : branchDetails?.profilePhotoUrl ? (
+                  <Image
+                    source={{ uri: branchDetails.profilePhotoUrl }}
+                    style={styles.profilePhoto}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      ...styles.profilePhoto,
+                      backgroundColor: colors.background,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 100,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "Inter-Medium",
+                        fontSize: 16,
+                        color: "white",
+                        textAlign: "center",
+                      }}
+                    >
+                      {branchData?.venueName}
+                    </Text>
+                  </View>
+                )
+              ) : (
+                <View style={styles.profilePhoto} />
+              )}
+              {isEditing && (
+                <TouchableOpacity
+                  onPress={() =>
+                    uploadImage(
+                      "branch",
+                      "profile",
+                      branchData?.branchId,
+                      setPermissionDialogVisible,
+                      setProfilePhotoToUpload,
+                      updateBranch
+                    )
+                  }
+                  activeOpacity={0.8}
+                  style={styles.editImage}
+                >
+                  <MaterialIcon
+                    name="camera-alt"
+                    size={28}
+                    color={colors.tertiary}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
             {venueDetailsLoading ? (
               <Skeleton height={20} width={180} style={styles.headerText} />
             ) : (
@@ -190,6 +288,7 @@ export const BranchManagement = ({
                 location: branchDetails.location,
                 courts: branchDetails.courts,
                 rating: branchDetails.rating,
+                profilePhotoUrl: branchDetails.profilePhotoUrl,
               }}
             />
           )}
@@ -275,17 +374,16 @@ const makeStyles = (
     headerContent: {
       alignItems: "center",
     },
-    clubIcon: {
+    profilePhoto: {
+      backgroundColor: "transparent",
       width: 0.33 * windowWidth,
-      height: 0.33 * windowWidth,
-      marginTop: (-0.33 * windowWidth) / 2,
+      aspectRatio: 1,
     },
     headerText: {
       fontFamily: "Inter-Medium",
       lineHeight: 20,
       color: "white",
-      marginTop: 5,
-      marginBottom: 15,
+      marginVertical: 15,
       textAlign: "center",
     },
     placeholder: {

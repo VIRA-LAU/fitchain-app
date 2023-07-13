@@ -110,7 +110,7 @@ export const InvitationCard = ({
             <Avatar.Image
               size={60}
               source={{ uri: profilePhotoUrl }}
-              style={{ backgroundColor: colors.background }}
+              style={{ backgroundColor: "transparent" }}
             />
           ) : (
             <Avatar.Text
@@ -121,6 +121,7 @@ export const InvitationCard = ({
                       .charAt(0)}`
                   : ""
               }
+              labelStyle={{ fontFamily: "Inter-Medium" }}
               size={60}
               style={{
                 backgroundColor: colors.background,

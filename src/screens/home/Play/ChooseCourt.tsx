@@ -16,7 +16,13 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { branchId, venueName, branchLocation, bookingDetails } = route.params;
+  const {
+    branchId,
+    venueName,
+    branchLocation,
+    bookingDetails,
+    profilePhotoUrl,
+  } = route.params;
 
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<TimeSlot[]>([]);
   const [pressedCourt, setPressedCourt] = useState<Court | null>(null);
@@ -28,13 +34,11 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
     (date.getMonth() + 1)
   ).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
 
-  const { data: branches, isLoading: branchesLoading } = useSearchBranchesQuery(
-    {
-      ...bookingDetails!,
-      date: searchDate,
-      branchId,
-    }
-  );
+  const { data: branches } = useSearchBranchesQuery({
+    ...bookingDetails!,
+    date: searchDate,
+    branchId,
+  });
 
   useEffect(() => {
     selectedTimeSlots.sort((a, b) => {
@@ -68,7 +72,7 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
           setSelectedTimeSlots={setSelectedTimeSlots}
           onPress={() => {
             if (bookingDetails && selectedTimeSlots)
-              navigation.push("VenueBookingDetails", {
+              navigation.push("BookingPayment", {
                 venueName: venueName!,
                 courtName: pressedCourt!.name,
                 courtType: pressedCourt!.courtType,
@@ -84,6 +88,7 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
                     selectedTimeSlots[selectedTimeSlots.length - 1].endTime,
                   courtId: pressedCourt!.id,
                 },
+                profilePhotoUrl,
               });
           }}
         />

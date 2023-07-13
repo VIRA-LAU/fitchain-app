@@ -109,10 +109,14 @@ export const BranchCard = ({
             <Text style={styles.promoted}>Promoted</Text>
           </View>
         )}
-        <Image
-          source={require("assets/images/home/basketball-hub-icon.png")}
-          style={{ width: 35, height: 35, aspectRatio: 1 }}
-        />
+        {branch?.profilePhotoUrl && (
+          <Image
+            source={{
+              uri: branch?.profilePhotoUrl,
+            }}
+            style={{ width: 35, aspectRatio: 1 }}
+          />
+        )}
         <View style={styles.textView}>
           <Text style={styles.title}>{branch.venue.name}</Text>
           <View style={styles.ratingView}>
@@ -143,6 +147,7 @@ const makeStyles = (
       marginHorizontal: isHorizontal || isFocused ? 0 : 5,
       marginBottom: isHorizontal || isFocused ? 20 : 0,
       borderRadius: 10,
+      minWidth: isHorizontal ? "auto" : 200,
     },
     image: {
       height: isHorizontal ? "100%" : 128,

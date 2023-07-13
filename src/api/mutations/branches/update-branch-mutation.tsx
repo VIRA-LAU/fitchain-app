@@ -21,7 +21,7 @@ const updateBranch = async (data: Request) => {
     })
     .then((res) => res?.data)
     .catch((e) => {
-      console.error("update-user-mutation", e);
+      console.error("update-branch-mutation", e?.response.data);
       throw new Error(e);
     });
 };

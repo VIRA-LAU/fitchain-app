@@ -67,10 +67,43 @@ export const BranchDetails = ({ navigation, route }: Props) => {
             style={styles.headerImage}
           />
           <View style={styles.headerContent}>
-            <Image
-              source={require("assets/images/home/basketball-hub-icon.png")}
-              style={styles.clubIcon}
-            />
+            <View
+              style={{
+                marginTop: (-0.33 * windowWidth) / 2,
+              }}
+            >
+              {!isLoading ? (
+                branch?.profilePhotoUrl ? (
+                  <Image
+                    source={{ uri: branch.profilePhotoUrl }}
+                    style={styles.profilePhoto}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      ...styles.profilePhoto,
+                      backgroundColor: colors.background,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: 100,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "Inter-Medium",
+                        fontSize: 16,
+                        color: "white",
+                        textAlign: "center",
+                      }}
+                    >
+                      {branch?.venue.name}
+                    </Text>
+                  </View>
+                )
+              ) : (
+                <View style={styles.profilePhoto} />
+              )}
+            </View>
             {isLoading ? (
               <Skeleton height={20} width={180} style={styles.headerText} />
             ) : (
@@ -139,6 +172,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                   venueName: branch!.venue.name,
                   latitude: branch!.latitude,
                   longitude: branch!.longitude,
+                  profilePhotoUrl: branch!.profilePhotoUrl,
                 }}
               />
             )}
@@ -234,6 +268,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                     branchLocation: branch!.location,
                     venueName: branch!.venue!.name,
                     bookingDetails: playScreenBookingDetails!,
+                    profilePhotoUrl: branch!.profilePhotoUrl,
                   });
                 }}
               >
@@ -263,6 +298,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
         setVisible={setPlayScreenVisible}
         branchId={id}
         branchLocation={branch?.location}
+        branchProfilePhotoUrl={branch?.profilePhotoUrl}
         venueName={branch?.venue.name}
       />
     </AppHeader>
@@ -290,17 +326,16 @@ const makeStyles = (
     headerContent: {
       alignItems: "center",
     },
-    clubIcon: {
+    profilePhoto: {
+      backgroundColor: "transparent",
       width: 0.33 * windowWidth,
-      height: 0.33 * windowWidth,
-      marginTop: (-0.33 * windowWidth) / 2,
+      aspectRatio: 1,
     },
     headerText: {
       fontFamily: "Inter-Medium",
       lineHeight: 20,
       color: "white",
-      marginTop: 5,
-      marginBottom: 15,
+      marginVertical: 15,
       textAlign: "center",
     },
     buttonsView: {

@@ -90,6 +90,7 @@ export interface Court {
     location: string;
     latitude: number;
     longitude: number;
+    profilePhotoUrl: string;
     venue: {
       name: string;
     };
@@ -113,6 +114,7 @@ export interface Branch {
   longitude: number;
   venue: Venue;
   photoDirectoryUrl: string;
+  profilePhotoUrl: string;
   coverPhotoUrl: string;
   courts: Court[];
   rating: number;

@@ -11,6 +11,22 @@ import { LatLng } from "react-native-maps";
 export type HomeStackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
   GameDetails: { id: number; isPrevious: boolean };
+  InviteUsers: {
+    gameId: number;
+  };
+  PlayerProfile: {
+    playerId: number;
+    firstName: string;
+    lastName: string;
+  };
+  RatePlayer: {
+    playerId: number;
+    firstName: string;
+    lastName: string;
+    gameId: number;
+    profilePhotoUrl?: string;
+    coverPhotoUrl?: string;
+  };
   BranchDetails: {
     id: number;
     playScreenBookingDetails?: {
@@ -20,24 +36,6 @@ export type HomeStackParamList = {
       endTime?: string;
       gameType: GameType;
     } | null;
-  };
-  VenueBookingDetails: {
-    venueName: string;
-    courtName: string;
-    courtType: string;
-    courtRating: number;
-    courtMaxPlayers: number;
-    selectedTimeSlots: TimeSlot[];
-    price: number;
-    bookingDetails: {
-      courtId: number;
-      date: string;
-      nbOfPlayers: number;
-      timeSlotIds: number[];
-      startTime?: string;
-      endTime?: string;
-      gameType: GameType;
-    };
   };
   ChooseBranch: {
     gameType: GameType;
@@ -59,6 +57,7 @@ export type HomeStackParamList = {
       endTime?: string;
       gameType: GameType;
     };
+    profilePhotoUrl?: string;
   };
   ChooseGame: {
     gameType: GameType;
@@ -69,21 +68,24 @@ export type HomeStackParamList = {
     startTime?: string;
     endTime?: string;
   };
-  InviteUsers: {
-    gameId: number;
-  };
-  RatePlayer: {
-    playerId: number;
-    firstName: string;
-    lastName: string;
-    gameId: number;
+  BookingPayment: {
+    venueName: string;
+    courtName: string;
+    courtType: string;
+    courtRating: number;
+    courtMaxPlayers: number;
+    selectedTimeSlots: TimeSlot[];
+    price: number;
+    bookingDetails: {
+      courtId: number;
+      date: string;
+      nbOfPlayers: number;
+      timeSlotIds: number[];
+      startTime?: string;
+      endTime?: string;
+      gameType: GameType;
+    };
     profilePhotoUrl?: string;
-    coverPhotoUrl?: string;
-  };
-  PlayerProfile: {
-    playerId: number;
-    firstName: string;
-    lastName: string;
   };
 };
 

@@ -16,7 +16,7 @@ import {
   InviteUsers,
   Play,
   Profile,
-  VenueBookingDetails,
+  BookingPayment,
   BranchDetails,
   Branches,
   ChooseCourt,
@@ -117,10 +117,7 @@ export const HomeNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="BottomBar" component={BottomTabNavigator} />
-      <Stack.Screen
-        name="VenueBookingDetails"
-        component={VenueBookingDetails}
-      />
+      <Stack.Screen name="BookingPayment" component={BookingPayment} />
       <Stack.Screen name="GameDetails" component={GameDetails} />
       <Stack.Screen name="BranchDetails" component={BranchDetails} />
       <Stack.Screen name="ChooseBranch" component={ChooseBranch} />

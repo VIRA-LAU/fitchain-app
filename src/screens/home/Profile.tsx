@@ -6,6 +6,7 @@ import {
   useWindowDimensions,
   ScrollView,
   TouchableOpacity,
+  BackHandler,
 } from "react-native";
 import { Avatar, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -68,18 +69,24 @@ export const Profile = ({
     useUpdateUserMutation();
 
   useEffect(() => {
-    if (updateUserSuccess) {
-      setCoverPhotoToUpload(undefined);
-      setProfilePhotoToUpload(undefined);
-    }
-  }, [updateUserSuccess]);
+    const handleBack = () => {
+      if (isEditing) {
+        setIsEditing(false);
+        return true;
+      } else return false;
+    };
+    BackHandler.addEventListener("hardwareBackPress", handleBack);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBack);
+    };
+  }, [isEditing]);
 
   return (
     <AppHeader
       navigation={navigation}
       route={route}
       right={
-        isUserProfile ? (
+        isUserProfile && !userDetailsLoading ? (
           isEditing ? (
             <TouchableOpacity
               onPress={() => {
@@ -138,18 +145,27 @@ export const Profile = ({
         />
         <View style={styles.headerView}>
           <View>
-            <Image
-              source={
-                coverPhotoToUpload
-                  ? { uri: coverPhotoToUpload }
-                  : userDetails?.coverPhotoUrl
-                  ? {
-                      uri: userDetails.coverPhotoUrl,
-                    }
-                  : require("assets/images/home/profile-background.png")
-              }
-              style={styles.headerImage}
-            />
+            {!userDetailsLoading ? (
+              <Image
+                source={
+                  coverPhotoToUpload
+                    ? { uri: coverPhotoToUpload }
+                    : userDetails?.coverPhotoUrl
+                    ? {
+                        uri: userDetails.coverPhotoUrl,
+                      }
+                    : require("assets/images/home/profile-background.png")
+                }
+                style={styles.headerImage}
+              />
+            ) : (
+              <View
+                style={[
+                  styles.headerImage,
+                  { backgroundColor: colors.background },
+                ]}
+              />
+            )}
             {isEditing && (
               <TouchableOpacity
                 onPress={() =>
@@ -186,32 +202,37 @@ export const Profile = ({
                 marginTop: (-0.33 * windowWidth) / 2,
               }}
             >
-              {profilePhotoToUpload ? (
-                <Avatar.Image
-                  source={{ uri: profilePhotoToUpload }}
-                  size={0.33 * windowWidth}
-                  style={{ backgroundColor: colors.background }}
-                />
-              ) : userDetails?.profilePhotoUrl ? (
-                <Avatar.Image
-                  source={{ uri: userDetails.profilePhotoUrl }}
-                  size={0.33 * windowWidth}
-                  style={{ backgroundColor: colors.background }}
-                />
+              {!userDetailsLoading ? (
+                profilePhotoToUpload ? (
+                  <Avatar.Image
+                    source={{ uri: profilePhotoToUpload }}
+                    size={0.33 * windowWidth}
+                    style={{ backgroundColor: "transparent" }}
+                  />
+                ) : userDetails?.profilePhotoUrl ? (
+                  <Avatar.Image
+                    source={{ uri: userDetails.profilePhotoUrl }}
+                    size={0.33 * windowWidth}
+                    style={{ backgroundColor: "transparent" }}
+                  />
+                ) : (
+                  <Avatar.Text
+                    label={
+                      userDetails?.firstName
+                        ? `${userDetails?.firstName.charAt(
+                            0
+                          )}${userDetails?.lastName.charAt(0)}`
+                        : ""
+                    }
+                    labelStyle={{ fontFamily: "Inter-Medium", fontSize: 60 }}
+                    style={{
+                      backgroundColor: colors.background,
+                    }}
+                    size={0.33 * windowWidth}
+                  />
+                )
               ) : (
-                <Avatar.Text
-                  label={
-                    userDetails?.firstName
-                      ? `${userDetails?.firstName.charAt(
-                          0
-                        )}${userDetails?.lastName.charAt(0)}`
-                      : ""
-                  }
-                  style={{
-                    backgroundColor: colors.background,
-                  }}
-                  size={0.33 * windowWidth}
-                />
+                <View style={{ width: 0.33 * windowWidth, aspectRatio: 1 }} />
               )}
               {isEditing && (
                 <TouchableOpacity

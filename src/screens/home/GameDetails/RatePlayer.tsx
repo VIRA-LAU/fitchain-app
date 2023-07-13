@@ -80,13 +80,14 @@ export const RatePlayer = ({ navigation, route }: Props) => {
               <Avatar.Image
                 source={{ uri: profilePhotoUrl }}
                 size={0.33 * windowWidth}
-                style={{ backgroundColor: colors.secondary }}
+                style={{ backgroundColor: "transparent" }}
               />
             ) : (
               <Avatar.Text
                 label={
                   firstName ? `${firstName.charAt(0)}${lastName.charAt(0)}` : ""
                 }
+                labelStyle={{ fontFamily: "Inter-Medium" }}
                 style={{
                   backgroundColor: colors.secondary,
                 }}

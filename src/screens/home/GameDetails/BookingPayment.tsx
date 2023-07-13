@@ -17,9 +17,9 @@ import { HomeStackParamList } from "src/navigation";
 import { useCreateGameMutation } from "src/api";
 import { useState } from "react";
 
-type Props = StackScreenProps<HomeStackParamList, "VenueBookingDetails">;
+type Props = StackScreenProps<HomeStackParamList, "BookingPayment">;
 
-export const VenueBookingDetails = ({ navigation, route }: Props) => {
+export const BookingPayment = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -32,6 +32,7 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
     selectedTimeSlots,
     price,
     bookingDetails,
+    profilePhotoUrl,
   } = route.params;
 
   const { mutate: createGame, isLoading } = useCreateGameMutation();
@@ -80,11 +81,19 @@ export const VenueBookingDetails = ({ navigation, route }: Props) => {
                 </Text>
               </View>
             </View>
-            <Image
-              source={require("assets/images/home/basketball-hub-icon.png")}
-              resizeMode={"contain"}
-              style={{ flex: 1, height: "50%", marginLeft: "auto" }}
-            />
+            {profilePhotoUrl && (
+              <Image
+                source={{
+                  uri: profilePhotoUrl,
+                }}
+                resizeMode="contain"
+                style={{
+                  flex: 1,
+                  height: "50%",
+                  marginLeft: "auto",
+                }}
+              />
+            )}
           </View>
           <View style={styles.directionsView}>
             <MatComIcon name="arrow-right-top" color="white" size={24} />

@@ -167,13 +167,14 @@ export const PlayerCard = ({
           {profilePhotoUrl ? (
             <Avatar.Image
               source={{ uri: profilePhotoUrl }}
-              style={{ backgroundColor: colors.background }}
+              style={{ backgroundColor: "transparent" }}
             />
           ) : (
             <Avatar.Text
               label={
                 firstName ? `${firstName.charAt(0)}${lastName.charAt(0)}` : ""
               }
+              labelStyle={{ fontFamily: "Inter-Medium", fontSize: 28 }}
               style={{
                 backgroundColor: colors.background,
               }}

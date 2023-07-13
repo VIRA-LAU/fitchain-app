@@ -11,8 +11,6 @@ import {
 import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
-import { useContext } from "react";
-import { UserContext } from "src/utils";
 
 type textOptions =
   | "create"
@@ -64,7 +62,6 @@ export const UpdateCard = ({
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const { userData } = useContext(UserContext);
 
   const navigation =
     useNavigation<
@@ -100,7 +97,7 @@ export const UpdateCard = ({
             <Avatar.Image
               size={40}
               source={{ uri: profilePhotoUrl }}
-              style={{ backgroundColor: colors.background }}
+              style={{ backgroundColor: "transparent" }}
             />
           ) : (
             <Avatar.Text
@@ -115,6 +112,7 @@ export const UpdateCard = ({
                       .charAt(0)}`
                   : ""
               }
+              labelStyle={{ fontFamily: "Inter-Medium", fontSize: 16 }}
               size={40}
               style={{
                 backgroundColor: colors.background,

@@ -108,6 +108,7 @@ export const InviteUsers = ({ navigation, route }: Props) => {
                           )}`
                         : ""
                     }
+                    labelStyle={{ fontFamily: "Inter-Medium", fontSize: 20 }}
                     size={45}
                     style={{
                       backgroundColor: colors.secondary,

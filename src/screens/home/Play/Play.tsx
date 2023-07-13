@@ -55,12 +55,14 @@ export const Play = ({
   branchId,
   branchLocation,
   venueName,
+  branchProfilePhotoUrl,
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
   branchId?: number;
   branchLocation?: string;
   venueName?: string;
+  branchProfilePhotoUrl?: string;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -466,6 +468,7 @@ export const Play = ({
                                 : undefined,
                               gameType,
                             },
+                            profilePhotoUrl: branchProfilePhotoUrl,
                           });
                         }
                       }

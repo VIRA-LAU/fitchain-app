@@ -21,8 +21,8 @@ export const BranchLocationSkeleton = () => {
       <Skeleton style={styles.background} />
       <View style={styles.dataView}>
         <View style={styles.headerView}>
-          <Skeleton style={{ width: 35, aspectRatio: 1 }} />
-          <View style={styles.titleView}>
+          <Skeleton style={{ width: 35, aspectRatio: 1, marginRight: 10 }} />
+          <View>
             <Skeleton height={15} width={120} style={styles.title} />
             <Skeleton
               height={15}
@@ -61,6 +61,7 @@ export const BranchLocation = ({
     rating: number;
     latitude: number;
     longitude: number;
+    profilePhotoUrl?: string;
   };
   team?: "Home" | "Away";
 }) => {
@@ -107,11 +108,15 @@ export const BranchLocation = ({
       </View>
       <View style={styles.dataView}>
         <View style={styles.headerView}>
-          <Image
-            source={require("assets/images/home/basketball-hub-icon.png")}
-            style={{ width: 35, aspectRatio: 1 }}
-          />
-          <View style={styles.titleView}>
+          {(branch?.profilePhotoUrl || court?.branch.profilePhotoUrl) && (
+            <Image
+              source={{
+                uri: branch?.profilePhotoUrl || court?.branch.profilePhotoUrl,
+              }}
+              style={{ width: 35, aspectRatio: 1, marginRight: 10 }}
+            />
+          )}
+          <View>
             <Text style={styles.title}>
               {type === "court" ? court?.branch.venue.name : branch?.location}
             </Text>
@@ -196,7 +201,6 @@ const makeStyles = (colors: MD3Colors) =>
       alignItems: "center",
       paddingVertical: 5,
     },
-    titleView: { marginLeft: 10 },
     icon: {
       flex: 1,
       alignItems: "center",
