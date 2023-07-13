@@ -1,4 +1,10 @@
-import { Image, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
@@ -13,7 +19,7 @@ import {
 } from "components";
 import { Game, PlayerStatus, TeamPlayer } from "src/types";
 import { useUpdatesQuery } from "src/api";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
 export const Team = ({
   name,
@@ -23,6 +29,7 @@ export const Team = ({
   playersLoading,
   isPrevious,
   playerStatus,
+  teamIndex,
 }: {
   name: "Home" | "Away";
   game?: Game;
@@ -31,15 +38,21 @@ export const Team = ({
   playersLoading: boolean;
   isPrevious: boolean;
   playerStatus?: PlayerStatus;
+  teamIndex: number;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+  const windowWidth = useWindowDimensions().width;
 
   const { data: gameUpdates, isFetching: updatesLoading } = useUpdatesQuery(
     game?.id
   );
 
-  const [activePlayer, setActivePlayer] = useState<number>(0);
+  const [scrollViewOffset, setScrollViewOffset] = useState<number>(0);
+
+  useEffect(() => {
+    setScrollViewOffset(0);
+  }, [teamIndex]);
 
   let updateCards: { card: ReactNode; date: Date }[] = [];
 
@@ -102,6 +115,8 @@ export const Team = ({
       (a, b) => b.date.getTime() - a.date.getTime()
     );
   }
+
+  const scrollRef = useRef(null);
 
   return (
     <ScrollView style={{ backgroundColor: colors.background }}>
@@ -175,21 +190,32 @@ export const Team = ({
             style={styles.playerCardView}
             contentContainerStyle={{
               alignItems: "center",
-              paddingHorizontal: 20,
             }}
+            ref={scrollRef}
             showsHorizontalScrollIndicator={false}
             horizontal
+            scrollEventThrottle={8}
+            onScroll={(event) => {
+              let offset =
+                event.nativeEvent.contentOffset.x / (0.2 * windowWidth);
+              if (offset < 0) offset = 0;
+              else if (offset > players.length - 1) offset = players.length - 1;
+              else offset = Math.floor(offset);
+              if (offset !== scrollViewOffset) setScrollViewOffset(offset);
+            }}
           >
             {players.map((player: TeamPlayer, index: number) => (
               <PlayerCard
                 key={index}
                 player={player}
-                isActive={index === activePlayer}
-                index={index}
-                setActivePlayer={setActivePlayer}
+                isActive={index === scrollViewOffset}
                 isPrevious={isPrevious}
                 gameId={game?.id}
                 playerStatus={playerStatus}
+                isFirst={index === 0}
+                isLast={index === players.length - 1}
+                index={index}
+                scrollRef={scrollRef}
               />
             ))}
           </ScrollView>

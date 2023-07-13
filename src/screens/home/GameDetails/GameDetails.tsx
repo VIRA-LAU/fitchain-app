@@ -123,6 +123,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             playersLoading={playersLoading}
             isPrevious={isPrevious}
             playerStatus={playerStatus}
+            teamIndex={index}
           />
         );
       case "Away":
@@ -137,6 +138,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             playersLoading={playersLoading}
             isPrevious={isPrevious}
             playerStatus={playerStatus}
+            teamIndex={index}
           />
         );
       default:
@@ -151,7 +153,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
         backgroundColor: colors.secondary,
         borderRadius: 10,
         marginHorizontal: 20,
-        marginTop: 10,
+        marginVertical: 10,
       }}
       renderTabBarItem={({ route }) => {
         let isActive = route.key === props.navigationState.routes[index].key;

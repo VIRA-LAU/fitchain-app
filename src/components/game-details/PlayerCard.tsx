@@ -4,7 +4,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { useContext } from "react";
+import { MutableRefObject, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -19,6 +19,7 @@ import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { PlayerStatus, TeamPlayer } from "src/types";
 import { UserContext } from "src/utils";
 import { Skeleton } from "../home";
+import { ScrollView } from "react-native-gesture-handler";
 
 export const PlayerCardSkeleton = () => {
   const { colors } = useTheme();
@@ -29,7 +30,13 @@ export const PlayerCardSkeleton = () => {
     <View
       style={[
         styles.wrapperView,
-        { elevation: 15, transform: [{ scale: 1.1 }], zIndex: 2 },
+        {
+          elevation: 15,
+          transform: [{ scale: 1.1 }],
+          zIndex: 2,
+          marginLeft: "auto",
+          marginRight: "auto",
+        },
       ]}
     >
       <Skeleton style={styles.header} />
@@ -65,19 +72,23 @@ export const PlayerCard = ({
     profilePhotoUrl,
     coverPhotoUrl,
   },
-  setActivePlayer,
-  index,
   isPrevious,
   gameId,
   playerStatus,
+  isFirst,
+  isLast,
+  index,
+  scrollRef,
 }: {
   isActive?: boolean;
   player: TeamPlayer;
-  setActivePlayer: React.Dispatch<React.SetStateAction<number>>;
-  index: number;
   isPrevious: boolean;
   gameId: number;
   playerStatus?: PlayerStatus;
+  isFirst: boolean;
+  isLast: boolean;
+  index: number;
+  scrollRef: MutableRefObject<ScrollView | null>;
 }) => {
   const { colors } = useTheme();
   const windowWidth = useWindowDimensions().width;
@@ -103,17 +114,36 @@ export const PlayerCard = ({
 
   return (
     <TouchableOpacity
-      disabled={isActive}
-      activeOpacity={id === userData?.userId ? 1 : 0.6}
+      activeOpacity={isActive ? 0.8 : 0.6}
       style={[
         styles.wrapperView,
         isActive
-          ? { elevation: 15, transform: [{ scale: 1.1 }], zIndex: 2 }
+          ? {
+              elevation: 15,
+              transform: [{ scale: 1.1 }],
+              zIndex: 2,
+            }
           : { elevation: 10, opacity: 0.6 },
+        isFirst && {
+          marginLeft: windowWidth / 2 - 0.2 * windowWidth,
+        },
+        isLast && {
+          marginRight: windowWidth / 2 - 0.2 * windowWidth,
+        },
       ]}
-      onPress={() => {
-        setActivePlayer(index);
-      }}
+      onPress={
+        isActive
+          ? () => {
+              navigation.push("PlayerProfile", {
+                playerId: id,
+                firstName,
+                lastName,
+              });
+            }
+          : () => {
+              scrollRef.current?.scrollTo({ x: index * 0.4 * windowWidth });
+            }
+      }
     >
       <Image
         source={
@@ -133,17 +163,7 @@ export const PlayerCard = ({
           flexGrow: 1,
         }}
       >
-        <TouchableOpacity
-          style={styles.profilePicture}
-          disabled={!isActive}
-          onPress={() => {
-            navigation.push("PlayerProfile", {
-              playerId: id,
-              firstName,
-              lastName,
-            });
-          }}
-        >
+        <View style={styles.profilePicture}>
           {profilePhotoUrl ? (
             <Avatar.Image
               source={{ uri: profilePhotoUrl }}
@@ -159,7 +179,7 @@ export const PlayerCard = ({
               }}
             />
           )}
-        </TouchableOpacity>
+        </View>
         <Text style={styles.name}>
           {firstName} {lastName}
         </Text>
