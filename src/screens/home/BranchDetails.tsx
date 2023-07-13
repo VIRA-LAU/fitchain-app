@@ -12,6 +12,7 @@ import {
   AppHeader,
   BranchLocation,
   BranchLocationSkeleton,
+  ImageList,
   Skeleton,
 } from "src/components";
 import { HomeStackParamList } from "src/navigation";
@@ -21,6 +22,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { useBranchByIdQuery } from "src/api";
 import { useState } from "react";
 import { Play } from "./Play";
+import ImageView from "react-native-image-viewing";
 
 type Props = StackScreenProps<HomeStackParamList, "BranchDetails">;
 
@@ -34,6 +36,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
   const { data: branch, isLoading } = useBranchByIdQuery(id);
 
   const [playScreenVisible, setPlayScreenVisible] = useState<boolean>(false);
+
   const courtPrices: number[] = [];
   branch?.courts.forEach((court) => courtPrices.push(court.price));
 
@@ -107,8 +110,10 @@ export const BranchDetails = ({ navigation, route }: Props) => {
             </View>
             {isLoading ? (
               <Skeleton height={20} width={180} style={styles.headerText} />
-            ) : (
+            ) : branch?.venue.description ? (
               <Text style={styles.headerText}>{branch?.venue.description}</Text>
+            ) : (
+              <View style={{ marginVertical: 15 }} />
             )}
             {!playScreenBookingDetails && (
               <View style={styles.buttonsView}>
@@ -206,58 +211,9 @@ export const BranchDetails = ({ navigation, route }: Props) => {
             </View>
           </View>
           <View style={styles.divider} />
-          <Text
-            variant="labelLarge"
-            style={{ color: colors.tertiary, marginTop: 20 }}
-          >
-            Photos
-          </Text>
-          <ScrollView
-            style={styles.photosView}
-            showsHorizontalScrollIndicator={false}
-            horizontal
-          >
-            <Image
-              source={require("assets/images/home/profile-background.png")}
-              resizeMode={"contain"}
-              style={{
-                height: 0.25 * windowHeight,
-                width: 0.25 * windowHeight,
-                marginLeft: 20,
-              }}
-            />
-            <View style={styles.smallPhotosView}>
-              <Image
-                source={require("assets/images/home/profile-background.png")}
-                resizeMode={"contain"}
-                style={{
-                  height: "48%",
-                  aspectRatio: 1,
-                }}
-              />
-              <Image
-                source={require("assets/images/home/profile-background.png")}
-                resizeMode={"contain"}
-                style={{
-                  height: "48%",
-                  aspectRatio: 1,
-                }}
-              />
-            </View>
-            <Image
-              source={require("assets/images/home/profile-background.png")}
-              resizeMode={"contain"}
-              style={{
-                height: 0.25 * windowHeight,
-                width: 0.25 * windowHeight,
-                marginRight: 20,
-              }}
-            />
-            <View style={styles.uploadPhoto}>
-              <IonIcon name="camera-outline" color={"white"} size={20} />
-              <Text style={styles.uploadPhotoText}>Upload Photo</Text>
-            </View>
-          </ScrollView>
+          {branch?.branchPhotoUrl && (
+            <ImageList images={branch.branchPhotoUrl} />
+          )}
           {playScreenBookingDetails && (
             <View style={styles.bookCourtPressableView}>
               <TouchableOpacity
@@ -414,35 +370,6 @@ const makeStyles = (
       backgroundColor: colors.tertiary,
       height: "100%",
       borderRadius: 5,
-    },
-    photosView: {
-      flexDirection: "row",
-      marginVertical: 20,
-      marginHorizontal: -20,
-      maxHeight: 0.25 * windowHeight,
-    },
-    smallPhotosView: {
-      height: 0.25 * windowHeight,
-      flexDirection: "column",
-      marginHorizontal: 10,
-      justifyContent: "space-between",
-    },
-    uploadPhoto: {
-      position: "absolute",
-      bottom: 5,
-      left: 25,
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: colors.secondary,
-      opacity: 0.9,
-      padding: 7.5,
-      borderRadius: 10,
-    },
-    uploadPhotoText: {
-      color: "white",
-      marginLeft: 5,
-      fontFamily: "Inter-Medium",
-      fontSize: 12,
     },
     divider: {
       borderColor: colors.secondary,

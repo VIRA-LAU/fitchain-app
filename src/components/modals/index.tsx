@@ -1,4 +1,4 @@
-export * from "./GalleryPermissionDialog";
+export * from "./Dialogs";
 export * from "./GameTimeDropdown";
 export * from "./SportTypeDropdown";
 export * from "./SelectionModal";

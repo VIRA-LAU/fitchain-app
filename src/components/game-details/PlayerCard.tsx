@@ -11,6 +11,7 @@ import {
   Image,
   useWindowDimensions,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { Avatar, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -19,7 +20,6 @@ import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { PlayerStatus, TeamPlayer } from "src/types";
 import { UserContext } from "src/utils";
 import { Skeleton } from "../home";
-import { ScrollView } from "react-native-gesture-handler";
 
 export const PlayerCardSkeleton = () => {
   const { colors } = useTheme();

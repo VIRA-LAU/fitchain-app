@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Fragment, Dispatch, SetStateAction } from "react";
 import {
   View,
   StyleSheet,
@@ -32,7 +32,7 @@ export const TimeSlotPicker = ({
   const styles = makeStyles(colors, height, width);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Pressable
         style={[styles.backgroundView, { display: visible ? "flex" : "none" }]}
         onPress={() => {
@@ -98,7 +98,7 @@ export const TimeSlotPicker = ({
           Continue
         </Button>
       </View>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

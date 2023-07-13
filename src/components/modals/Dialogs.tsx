@@ -7,6 +7,27 @@ export const GalleryPermissionDialog = ({
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
+}) => (
+  <GenericDialog
+    visible={visible}
+    setVisible={setVisible}
+    title="Allow Gallery Access"
+    text={
+      "Please allow FitChain to access your gallery from your mobile settings to be able to upload photos."
+    }
+  />
+);
+
+export const GenericDialog = ({
+  visible,
+  setVisible,
+  title,
+  text,
+}: {
+  visible: boolean;
+  setVisible: Dispatch<SetStateAction<boolean>>;
+  title: string;
+  text: string;
 }) => {
   const theme = useTheme();
   return (
@@ -18,13 +39,10 @@ export const GalleryPermissionDialog = ({
         }}
         theme={theme}
       >
-        <Dialog.Title style={{ color: "white" }}>
-          Allow Gallery Access
-        </Dialog.Title>
+        <Dialog.Title style={{ color: "white" }}>{title}</Dialog.Title>
         <Dialog.Content>
           <Text variant="bodyMedium" style={{ color: "white" }}>
-            Please allow FitChain to access your gallery from your mobile
-            settings to be able to upload photos.
+            {text}
           </Text>
         </Dialog.Content>
         <Dialog.Actions>
@@ -33,7 +51,7 @@ export const GalleryPermissionDialog = ({
               setVisible(false);
             }}
           >
-            Done
+            Close
           </Button>
         </Dialog.Actions>
       </Dialog>

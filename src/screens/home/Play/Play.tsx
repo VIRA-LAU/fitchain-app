@@ -4,6 +4,7 @@ import React, {
   SetStateAction,
   useMemo,
   useEffect,
+  Fragment,
 } from "react";
 import {
   StyleSheet,
@@ -136,7 +137,7 @@ export const Play = ({
     >();
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Pressable
         style={[styles.backgroundView, { display: visible ? "flex" : "none" }]}
         onPress={() => {
@@ -587,7 +588,7 @@ export const Play = ({
           </Pressable>
         )}
       />
-    </React.Fragment>
+    </Fragment>
   );
 };
 

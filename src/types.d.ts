@@ -116,6 +116,7 @@ export interface Branch {
   photoDirectoryUrl: string;
   profilePhotoUrl: string;
   coverPhotoUrl: string;
+  branchPhotoUrl: string;
   courts: Court[];
   rating: number;
   managerFirstName: string;

@@ -116,7 +116,7 @@ export const Team = ({
     );
   }
 
-  const scrollRef = useRef(null);
+  const scrollRef = useRef<ScrollView | null>(null);
 
   return (
     <ScrollView style={{ backgroundColor: colors.background }}>
@@ -196,11 +196,8 @@ export const Team = ({
             horizontal
             scrollEventThrottle={8}
             onScroll={(event) => {
-              let offset =
-                event.nativeEvent.contentOffset.x / (0.2 * windowWidth);
-              if (offset < 0) offset = 0;
-              else if (offset > players.length - 1) offset = players.length - 1;
-              else offset = Math.floor(offset);
+              let offset = event.nativeEvent.contentOffset.x;
+              offset = Math.round(offset / (0.4 * windowWidth));
               if (offset !== scrollViewOffset) setScrollViewOffset(offset);
             }}
           >

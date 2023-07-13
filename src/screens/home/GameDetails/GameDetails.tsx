@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useContext,
+  Fragment,
+} from "react";
 import { AppHeader, Skeleton } from "src/components";
 import {
   View,
@@ -205,7 +211,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
   );
 
   return (
-    <React.Fragment>
+    <Fragment>
       {popupVisible && (
         <PopupContainer
           game={game}
@@ -493,7 +499,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
           </View>
         </View>
       </AppHeader>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

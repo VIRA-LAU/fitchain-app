@@ -32,8 +32,10 @@ import {
   BranchLocationSkeleton,
   CourtCard,
   GalleryPermissionDialog,
+  ImageList,
   SelectionModal,
   Skeleton,
+  UploadPhotosButton,
 } from "src/components";
 import { existingCourtType } from "./CreateCourt";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
@@ -60,6 +62,7 @@ export const BranchManagement = ({
   const [isEditing, setIsEditing] = useState(false);
   const [coverPhotoToUpload, setCoverPhotoToUpload] = useState<string>();
   const [profilePhotoToUpload, setProfilePhotoToUpload] = useState<string>();
+  const [branchPhotosToUpload, setBranchPhotosToUpload] = useState<string>();
 
   const { data: branchDetails, isLoading: branchDetailsLoading } =
     useBranchByIdQuery(branchData?.branchId);
@@ -84,6 +87,9 @@ export const BranchManagement = ({
     };
   }, [isEditing]);
 
+  useEffect(() => {
+    setBranchPhotosToUpload(undefined);
+  }, [branchDetails?.branchPhotoUrl]);
   return (
     <AppHeader
       navigation={navigation}
@@ -265,8 +271,10 @@ export const BranchManagement = ({
             </View>
             {venueDetailsLoading ? (
               <Skeleton height={20} width={180} style={styles.headerText} />
-            ) : (
+            ) : venueDetails?.description ? (
               <Text style={styles.headerText}>{venueDetails?.description}</Text>
+            ) : (
+              <View style={{ marginVertical: 15 }} />
             )}
           </View>
         </View>
@@ -275,7 +283,7 @@ export const BranchManagement = ({
             variant="labelLarge"
             style={{ color: colors.tertiary, marginBottom: 20 }}
           >
-            Your Branch
+            Branch
           </Text>
           {branchDetailsLoading && <BranchLocationSkeleton />}
           {branchDetails && (
@@ -297,7 +305,7 @@ export const BranchManagement = ({
             variant="labelLarge"
             style={{ color: colors.tertiary, marginVertical: 20 }}
           >
-            Your Courts
+            Courts
           </Text>
           <View style={{ marginHorizontal: -20 }}>
             {courtsInBranch?.map((court, index: number) => (
@@ -332,6 +340,44 @@ export const BranchManagement = ({
             </View>
           )}
         </View>
+        {!branchDetailsLoading &&
+        (branchPhotosToUpload || branchDetails?.branchPhotoUrl) ? (
+          <View style={{ marginHorizontal: 20 }}>
+            <ImageList
+              images={[
+                ...(branchDetails?.branchPhotoUrl
+                  ? branchDetails.branchPhotoUrl.split(",")
+                  : []),
+                ...(branchPhotosToUpload
+                  ? branchPhotosToUpload.split(",")
+                  : []),
+              ].join(",")}
+              editable
+              setBranchPhotosToUpload={setBranchPhotosToUpload}
+            />
+          </View>
+        ) : (
+          <View
+            style={{
+              marginTop: 20,
+              marginHorizontal: 20,
+            }}
+          >
+            <Text
+              variant="labelLarge"
+              style={{
+                color: colors.tertiary,
+              }}
+            >
+              Photos
+            </Text>
+            <UploadPhotosButton
+              position="relative"
+              setTempPhotoToUpload={setBranchPhotosToUpload}
+              selectionLimit={5}
+            />
+          </View>
+        )}
       </ScrollView>
       <IconButton
         icon={"plus"}

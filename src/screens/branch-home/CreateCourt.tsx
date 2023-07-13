@@ -4,6 +4,8 @@ import React, {
   useEffect,
   useRef,
   useState,
+  Fragment,
+  MutableRefObject,
 } from "react";
 import {
   StyleSheet,
@@ -87,7 +89,7 @@ export const CreateCourt = ({
       setVisible(false);
     });
 
-  const priceRef: React.MutableRefObject<TextInput | null> = useRef(null);
+  const priceRef: MutableRefObject<TextInput | null> = useRef(null);
 
   useEffect(() => {
     if (existingInfo && visible === "edit") {
@@ -100,7 +102,7 @@ export const CreateCourt = ({
   }, [visible, JSON.stringify(existingInfo)]);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Pressable
         style={[styles.backgroundView, { display: visible ? "flex" : "none" }]}
         onPress={() => {
@@ -368,7 +370,7 @@ export const CreateCourt = ({
           )}
         </View>
       </View>
-    </React.Fragment>
+    </Fragment>
   );
 };
 
