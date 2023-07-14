@@ -29,6 +29,7 @@ export const uploadImage = async (
     allowsEditing: !isMultiple,
     allowsMultipleSelection: isMultiple,
     selectionLimit,
+    quality: 1,
   });
 
   if (!result.canceled) {

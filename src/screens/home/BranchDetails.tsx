@@ -58,16 +58,25 @@ export const BranchDetails = ({ navigation, route }: Props) => {
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.headerView}>
-          <Image
-            source={
-              branch?.coverPhotoUrl
-                ? {
-                    uri: branch.coverPhotoUrl,
-                  }
-                : require("assets/images/home/basketball-hub.png")
-            }
-            style={styles.headerImage}
-          />
+          {!isLoading ? (
+            <Image
+              source={
+                branch?.coverPhotoUrl
+                  ? {
+                      uri: branch.coverPhotoUrl,
+                    }
+                  : require("assets/images/home/basketball-hub.png")
+              }
+              style={styles.headerImage}
+            />
+          ) : (
+            <View
+              style={[
+                styles.headerImage,
+                { backgroundColor: colors.background },
+              ]}
+            />
+          )}
           <View style={styles.headerContent}>
             <View
               style={{
@@ -104,7 +113,12 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                   </View>
                 )
               ) : (
-                <View style={styles.profilePhoto} />
+                <Skeleton
+                  style={{
+                    width: 0.33 * windowWidth,
+                    aspectRatio: 1,
+                  }}
+                />
               )}
             </View>
             {isLoading ? (
@@ -112,7 +126,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
             ) : branch?.venue.description ? (
               <Text style={styles.headerText}>{branch?.venue.description}</Text>
             ) : (
-              <View style={{ marginVertical: 15 }} />
+              <View style={{ marginBottom: 15 }} />
             )}
             {!playScreenBookingDetails && (
               <View style={styles.buttonsView}>
