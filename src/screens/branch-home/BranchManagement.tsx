@@ -35,7 +35,6 @@ import {
   ImageList,
   SelectionModal,
   Skeleton,
-  UploadPhotosButton,
 } from "src/components";
 import { existingCourtType } from "./CreateCourt";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
@@ -62,7 +61,6 @@ export const BranchManagement = ({
   const [isEditing, setIsEditing] = useState(false);
   const [coverPhotoToUpload, setCoverPhotoToUpload] = useState<string>();
   const [profilePhotoToUpload, setProfilePhotoToUpload] = useState<string>();
-  const [branchPhotosToUpload, setBranchPhotosToUpload] = useState<string>();
 
   const { data: branchDetails, isLoading: branchDetailsLoading } =
     useBranchByIdQuery(branchData?.branchId);
@@ -72,7 +70,8 @@ export const BranchManagement = ({
 
   const { data: courtsInBranch } = useCourtsInBranchQuery(branchData?.branchId);
 
-  const { mutate: updateBranch } = useUpdateBranchMutation();
+  const { mutate: updateBranch, isLoading: updateLoading } =
+    useUpdateBranchMutation();
 
   useEffect(() => {
     const handleBack = () => {
@@ -87,9 +86,6 @@ export const BranchManagement = ({
     };
   }, [isEditing]);
 
-  useEffect(() => {
-    setBranchPhotosToUpload(undefined);
-  }, [branchDetails?.branchPhotoUrl]);
   return (
     <AppHeader
       navigation={navigation}
@@ -244,7 +240,12 @@ export const BranchManagement = ({
                   </View>
                 )
               ) : (
-                <View style={styles.profilePhoto} />
+                <Skeleton
+                  style={{
+                    width: 0.33 * windowWidth,
+                    aspectRatio: 1,
+                  }}
+                />
               )}
               {isEditing && (
                 <TouchableOpacity
@@ -286,7 +287,7 @@ export const BranchManagement = ({
             Branch
           </Text>
           {branchDetailsLoading && <BranchLocationSkeleton />}
-          {branchDetails && (
+          {!branchDetailsLoading && branchDetails && (
             <BranchLocation
               type="branch"
               branch={{
@@ -340,44 +341,13 @@ export const BranchManagement = ({
             </View>
           )}
         </View>
-        {!branchDetailsLoading &&
-        (branchPhotosToUpload || branchDetails?.branchPhotoUrl) ? (
-          <View style={{ marginHorizontal: 20 }}>
-            <ImageList
-              images={[
-                ...(branchDetails?.branchPhotoUrl
-                  ? branchDetails.branchPhotoUrl.split(",")
-                  : []),
-                ...(branchPhotosToUpload
-                  ? branchPhotosToUpload.split(",")
-                  : []),
-              ].join(",")}
-              editable
-              setBranchPhotosToUpload={setBranchPhotosToUpload}
-            />
-          </View>
-        ) : (
-          <View
-            style={{
-              marginTop: 20,
-              marginHorizontal: 20,
-            }}
-          >
-            <Text
-              variant="labelLarge"
-              style={{
-                color: colors.tertiary,
-              }}
-            >
-              Photos
-            </Text>
-            <UploadPhotosButton
-              position="relative"
-              setTempPhotoToUpload={setBranchPhotosToUpload}
-              selectionLimit={5}
-            />
-          </View>
-        )}
+        <View style={{ marginHorizontal: 20 }}>
+          <ImageList
+            images={branchDetails?.branchPhotoUrl}
+            isLoading={branchDetailsLoading || updateLoading}
+            editable
+          />
+        </View>
       </ScrollView>
       <IconButton
         icon={"plus"}

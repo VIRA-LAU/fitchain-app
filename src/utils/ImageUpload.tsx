@@ -6,7 +6,9 @@ export const uploadImage = async (
   imageType: "profile" | "cover",
   userId: number | undefined,
   setPermissionDialogVisible: Dispatch<SetStateAction<boolean>>,
-  setTempPhotoToUpload: Dispatch<SetStateAction<string | undefined>>,
+  setTempPhotoToUpload:
+    | Dispatch<SetStateAction<string | undefined>>
+    | undefined,
   mutate: (formData: FormData) => void,
   isMultiple: boolean = false,
   selectionLimit: number = 1,
@@ -33,7 +35,7 @@ export const uploadImage = async (
     const formData = new FormData();
 
     if (!isMultiple) {
-      setTempPhotoToUpload(result.assets[0].uri);
+      if (setTempPhotoToUpload) setTempPhotoToUpload(result.assets[0].uri);
 
       let fileName = result.assets[0].uri.split("/").pop();
       let match = /\.(\w+)$/.exec(fileName!);
@@ -49,7 +51,8 @@ export const uploadImage = async (
         setSelectionLimitDialogVisible!(true);
         return;
       }
-      setTempPhotoToUpload(result.assets.map((asset) => asset.uri).join(","));
+      if (setTempPhotoToUpload)
+        setTempPhotoToUpload(result.assets.map((asset) => asset.uri).join(","));
 
       const isoDate = new Date().toISOString();
       result.assets.forEach((asset, index) => {

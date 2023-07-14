@@ -1,10 +1,4 @@
-import {
-  Dispatch,
-  Fragment,
-  SetStateAction,
-  useContext,
-  useState,
-} from "react";
+import { Fragment, useContext, useState } from "react";
 import {
   Image,
   TouchableOpacity,
@@ -12,20 +6,29 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScrollView } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import ImageView from "react-native-image-viewing";
 import { UserContext, uploadImage } from "src/utils";
 import { GalleryPermissionDialog, GenericDialog } from "../modals";
-import { useUpdateBranchMutation } from "src/api";
+import { useDeleteBranchPhotoMutation, useUpdateBranchMutation } from "src/api";
+import { Skeleton } from "../home";
+import { UseMutateFunction } from "react-query";
+import { Branch } from "src/types";
 
-export const UploadPhotosButton = ({
+type Request =
+  | {
+      description?: string;
+    }
+  | FormData;
+
+const UploadPhotosButton = ({
   position,
-  setTempPhotoToUpload,
+  updateBranch,
   selectionLimit,
 }: {
   position: "relative" | "absolute";
-  setTempPhotoToUpload: Dispatch<SetStateAction<string | undefined>>;
+  updateBranch: UseMutateFunction<Branch, unknown, Request, unknown>;
   selectionLimit: number;
 }) => {
   const { colors } = useTheme();
@@ -34,8 +37,6 @@ export const UploadPhotosButton = ({
   const [permissionDialogVisible, setPermissionDialogVisible] = useState(false);
   const [selectionLimitDialogVisible, setSelectionLimitDialogVisible] =
     useState(false);
-
-  const { mutate: updateBranch } = useUpdateBranchMutation();
 
   return (
     <Fragment>
@@ -65,7 +66,7 @@ export const UploadPhotosButton = ({
             "profile",
             branchData!.branchId,
             setPermissionDialogVisible,
-            setTempPhotoToUpload,
+            undefined,
             updateBranch,
             true,
             selectionLimit,
@@ -99,22 +100,9 @@ export const UploadPhotosButton = ({
   );
 };
 
-export const ImageList = ({
-  images,
-  editable = false,
-  setBranchPhotosToUpload,
-}: {
-  images: string;
-  editable?: boolean;
-  setBranchPhotosToUpload?: Dispatch<SetStateAction<string | undefined>>;
-}) => {
+export const ImageListSkeleton = () => {
   const { colors } = useTheme();
-  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-
-  const [imageViewVisible, setImageViewVisible] = useState<number | null>(null);
-
-  const imageArr = images.split(",").map((imageUri) => ({ uri: imageUri }));
-
+  const { height: windowHeight } = useWindowDimensions();
   return (
     <View style={{ marginTop: 20 }}>
       <Text variant="labelLarge" style={{ color: colors.tertiary }}>
@@ -130,29 +118,97 @@ export const ImageList = ({
         showsHorizontalScrollIndicator={false}
         horizontal
       >
-        {imageArr.map((imageUri, index) => (
-          <TouchableOpacity
-            key={index}
-            activeOpacity={0.8}
+        {[0, 1].map((imageSkeleton) => (
+          <View
+            key={imageSkeleton}
             style={{
               height: 0.25 * windowHeight,
               width: 0.25 * windowHeight,
-              marginLeft: index === 0 ? 20 : 5,
-              marginRight: index === imageArr.length - 1 ? 20 : 5,
+              marginLeft: imageSkeleton === 0 ? 20 : 5,
+              marginRight: imageSkeleton === 1 ? 20 : 5,
             }}
-            onPress={() => setImageViewVisible(index)}
           >
-            <Image
-              source={imageUri}
+            <Skeleton
               style={{ height: "100%", width: "100%", borderRadius: 10 }}
             />
-          </TouchableOpacity>
+          </View>
         ))}
       </ScrollView>
-      {editable && imageArr.length < 5 && (
+    </View>
+  );
+};
+
+export const ImageList = ({
+  images,
+  isLoading,
+  editable = false,
+}: {
+  images?: string;
+  isLoading: boolean;
+  editable?: boolean;
+}) => {
+  const { colors } = useTheme();
+  const { height: windowHeight } = useWindowDimensions();
+
+  const [imageViewVisible, setImageViewVisible] = useState<number | null>(null);
+
+  const { mutate: updateBranch, isLoading: updateLoading } =
+    useUpdateBranchMutation();
+  const { mutate: deletePhoto, isLoading: deleteLoading } =
+    useDeleteBranchPhotoMutation();
+
+  const imageArr = (images ? images.split(",") : []).map((imageUri) => ({
+    uri: imageUri,
+  }));
+
+  if (isLoading || updateLoading || deleteLoading) return <ImageListSkeleton />;
+  else if (imageArr.length === 0 && !editable) return <View />;
+  return (
+    <View style={{ marginTop: 20 }}>
+      <Text variant="labelLarge" style={{ color: colors.tertiary }}>
+        Photos
+      </Text>
+      {imageArr.length > 0 ? (
+        <ScrollView
+          style={{
+            flexDirection: "row",
+            marginVertical: 20,
+            marginHorizontal: -20,
+            maxHeight: 0.25 * windowHeight,
+          }}
+          showsHorizontalScrollIndicator={false}
+          horizontal
+        >
+          {imageArr.map((imageUri, index) => (
+            <TouchableOpacity
+              key={index}
+              activeOpacity={0.8}
+              style={{
+                height: 0.25 * windowHeight,
+                width: 0.25 * windowHeight,
+                marginLeft: index === 0 ? 20 : 5,
+                marginRight: index === imageArr.length - 1 ? 20 : 5,
+              }}
+              onPress={() => setImageViewVisible(index)}
+            >
+              <Image
+                source={imageUri}
+                style={{ height: "100%", width: "100%", borderRadius: 10 }}
+              />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      ) : (
+        <UploadPhotosButton
+          position="relative"
+          updateBranch={updateBranch}
+          selectionLimit={5}
+        />
+      )}
+      {editable && imageArr.length > 0 && imageArr.length < 5 && (
         <UploadPhotosButton
           position="absolute"
-          setTempPhotoToUpload={setBranchPhotosToUpload!}
+          updateBranch={updateBranch}
           selectionLimit={5 - imageArr.length}
         />
       )}
@@ -162,15 +218,24 @@ export const ImageList = ({
         visible={imageViewVisible !== null}
         onRequestClose={() => setImageViewVisible(null)}
         backgroundColor={colors.background}
-        // FooterComponent={({ imageIndex }) => {
-        //   if (editable)
-        //     return (
-        //       <View>
-        //         <Text style={{ color: "white" }}>Delete placeholder</Text>
-        //       </View>
-        //     );
-        //   else return <View />;
-        // }}
+        FooterComponent={({ imageIndex }) => {
+          if (editable)
+            return (
+              <Button
+                buttonColor="darkred"
+                labelStyle={{ color: "white" }}
+                style={{ borderRadius: 7, margin: 10 }}
+                onPress={() => {
+                  const image = imageArr[imageIndex].uri.split("/").pop()!;
+                  deletePhoto(image?.substring(0, image.indexOf("?")));
+                  setImageViewVisible(null);
+                }}
+              >
+                Delete Photo
+              </Button>
+            );
+          else return <View />;
+        }}
       />
     </View>
   );

@@ -22,7 +22,6 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { useBranchByIdQuery } from "src/api";
 import { useState } from "react";
 import { Play } from "./Play";
-import ImageView from "react-native-image-viewing";
 
 type Props = StackScreenProps<HomeStackParamList, "BranchDetails">;
 
@@ -211,9 +210,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
             </View>
           </View>
           <View style={styles.divider} />
-          {branch?.branchPhotoUrl && (
-            <ImageList images={branch.branchPhotoUrl} />
-          )}
+          <ImageList images={branch?.branchPhotoUrl} isLoading={isLoading} />
           {playScreenBookingDetails && (
             <View style={styles.bookCourtPressableView}>
               <TouchableOpacity
