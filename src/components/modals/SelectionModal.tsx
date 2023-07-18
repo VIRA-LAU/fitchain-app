@@ -66,7 +66,7 @@ export const modalStyles = (colors: MD3Colors) =>
       width: "100%",
     },
     modalView: {
-      marginTop: 65,
+      marginTop: 67,
       backgroundColor: colors.secondary,
       borderRadius: 20,
       paddingHorizontal: 25,

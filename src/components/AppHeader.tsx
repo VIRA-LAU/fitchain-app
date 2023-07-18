@@ -13,6 +13,7 @@ import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import { Dispatch, SetStateAction, useRef } from "react";
 
 const sportBackground = {
   Basketball: <Image source={require("assets/images/home/basketball.png")} />,
@@ -30,7 +31,9 @@ export const AppHeader = ({
   middle,
   left,
   searchBar,
-  setSearchBarText = () => {},
+  searchBarText,
+  setSearchBarVisible,
+  setSearchBarText,
   backEnabled = false,
   darkMode = false,
   backgroundImage,
@@ -45,7 +48,9 @@ export const AppHeader = ({
   middle?: JSX.Element;
   left?: JSX.Element;
   searchBar?: boolean;
-  setSearchBarText?: React.Dispatch<React.SetStateAction<string>>;
+  searchBarText?: string;
+  setSearchBarVisible?: Dispatch<SetStateAction<boolean>>;
+  setSearchBarText?: Dispatch<SetStateAction<string>>;
   backEnabled?: boolean;
   darkMode?: boolean;
   backgroundImage?: "Basketball" | "Football" | "Tennis";
@@ -58,11 +63,10 @@ export const AppHeader = ({
     StatusBar.currentHeight as number
   );
 
+  const searchBarRef = useRef<TextInput>(null);
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={styles.wrapperView}
-    >
+    <KeyboardAvoidingView behavior={"padding"} style={styles.wrapperView}>
       <View style={absolutePosition ? styles.headerAbsolute : styles.header}>
         <View style={styles.headerContent}>
           {backgroundImage && (
@@ -111,12 +115,33 @@ export const AppHeader = ({
           <View style={styles.searchBarView}>
             <TextInput
               style={styles.searchBar}
+              ref={searchBarRef}
+              value={searchBarText}
+              autoFocus={typeof setSearchBarVisible !== "undefined"}
               placeholder="Search..."
               placeholderTextColor={colors.tertiary}
               cursorColor={colors.primary}
               onChangeText={setSearchBarText}
+              onBlur={() => {
+                if (setSearchBarVisible && !searchBarText)
+                  setSearchBarVisible(false);
+              }}
             />
-            <IonIcon name="search-outline" color="white" size={20} />
+            <TouchableOpacity
+              activeOpacity={0.6}
+              disabled={searchBarText === ""}
+              onPress={() => {
+                if (setSearchBarText) setSearchBarText("");
+                searchBarRef.current?.blur();
+                if (setSearchBarVisible) setSearchBarVisible(false);
+              }}
+            >
+              <IonIcon
+                name={searchBarText ? "close-outline" : "search-outline"}
+                color="white"
+                size={20}
+              />
+            </TouchableOpacity>
           </View>
         )}
       </View>

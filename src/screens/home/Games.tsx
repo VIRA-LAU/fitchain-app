@@ -7,6 +7,7 @@ import {
   View,
   Pressable,
   RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -30,10 +31,12 @@ import { Game } from "src/types";
 import { QueryObserverResult } from "react-query";
 
 type NavigationProps = BottomTabScreenProps<BottomTabParamList>;
-type Props = {
+
+type GameListProps = {
   selectedSports: SportSelection;
   type: "upcoming" | "previous";
   isFollowedGames: boolean;
+  searchBarText: string;
 };
 
 export const DayHeader = ({ day }: { day: string }) => {
@@ -48,7 +51,7 @@ export const DayHeader = ({ day }: { day: string }) => {
   );
 };
 
-const AllGames = (props: Props) => {
+const AllGames = (props: GameListProps) => {
   const {
     data: allGames,
     refetch,
@@ -67,7 +70,7 @@ const AllGames = (props: Props) => {
   );
 };
 
-const FollowedGames = (props: Props) => {
+const FollowedGames = (props: GameListProps) => {
   const {
     data: followedGames,
     refetch: refetchFollowedGames,
@@ -115,12 +118,13 @@ const FollowedGames = (props: Props) => {
 const GameList = ({
   selectedSports,
   type,
+  searchBarText,
   games,
   isFollowed,
   refetch,
   isFetching,
   isLoading,
-}: Props & {
+}: GameListProps & {
   games?: Game[];
   isFollowed: boolean;
   refetch: (() => Promise<QueryObserverResult<Game[], unknown>>) | (() => void);
@@ -132,86 +136,97 @@ const GameList = ({
   const gameCards: JSX.Element[] = [];
   const dayHeaders: string[] = [];
 
+  const filteredGames = games?.filter((game) => {
+    const s = searchBarText.toLowerCase().trim();
+    return (
+      selectedSports[game.type] &&
+      (game.admin.firstName.toLowerCase().includes(s) ||
+        game.admin.lastName.toLowerCase().includes(s) ||
+        `${game.admin.firstName.toLowerCase()} ${game.admin.lastName.toLowerCase()}`.includes(
+          s
+        ) ||
+        game.court.branch.location.toLowerCase().includes(s) ||
+        game.court.branch.venue.name.toLowerCase().includes(s) ||
+        game.type.toLowerCase().includes(s))
+    );
+  });
+
   if (type === "upcoming")
-    games
-      ?.filter((game) => selectedSports[game.type])
-      .forEach((game: Game, index: number) => {
-        const gameDate = new Date(
-          game.date
-            .toISOString()
-            .substring(0, game.date.toISOString().indexOf("T"))
-        );
-        const todayDate = new Date(
-          today.toISOString().substring(0, today.toISOString().indexOf("T"))
-        );
-        const dayDiff =
-          (gameDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
+    filteredGames?.forEach((game: Game, index: number) => {
+      const gameDate = new Date(
+        game.date
+          .toISOString()
+          .substring(0, game.date.toISOString().indexOf("T"))
+      );
+      const todayDate = new Date(
+        today.toISOString().substring(0, today.toISOString().indexOf("T"))
+      );
+      const dayDiff =
+        (gameDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
 
-        if (dayDiff === 1 && !dayHeaders.includes("tomorrow")) {
-          dayHeaders.push("tomorrow");
-          gameCards.push(<DayHeader key={"tomorrow"} day="Tomorrow" />);
-        } else if (
-          dayDiff > 1 &&
-          dayDiff <= 7 &&
-          !dayHeaders.includes("this-week")
-        ) {
-          dayHeaders.push("this-week");
-          gameCards.push(<DayHeader key={"this-week"} day="This Week" />);
-        } else if (
-          dayDiff > 7 &&
-          dayDiff <= 30 &&
-          !dayHeaders.includes("this-month")
-        ) {
-          dayHeaders.push("this-month");
-          gameCards.push(<DayHeader key={"this-month"} day="This Month" />);
-        } else if (dayDiff > 30 && !dayHeaders.includes("future")) {
-          dayHeaders.push("future");
-          gameCards.push(<DayHeader key={"future"} day="In the Future" />);
-        }
+      if (dayDiff === 1 && !dayHeaders.includes("tomorrow")) {
+        dayHeaders.push("tomorrow");
+        gameCards.push(<DayHeader key={"tomorrow"} day="Tomorrow" />);
+      } else if (
+        dayDiff > 1 &&
+        dayDiff <= 7 &&
+        !dayHeaders.includes("this-week")
+      ) {
+        dayHeaders.push("this-week");
+        gameCards.push(<DayHeader key={"this-week"} day="This Week" />);
+      } else if (
+        dayDiff > 7 &&
+        dayDiff <= 30 &&
+        !dayHeaders.includes("this-month")
+      ) {
+        dayHeaders.push("this-month");
+        gameCards.push(<DayHeader key={"this-month"} day="This Month" />);
+      } else if (dayDiff > 30 && !dayHeaders.includes("future")) {
+        dayHeaders.push("future");
+        gameCards.push(<DayHeader key={"future"} day="In the Future" />);
+      }
 
-        gameCards.push(
-          <BookingCard key={index} booking={game} isPrevious={false} />
-        );
-      });
+      gameCards.push(
+        <BookingCard key={index} booking={game} isPrevious={false} />
+      );
+    });
   else
-    games
-      ?.filter((game) => selectedSports[game.type])
-      .forEach((game: Game, index: number) => {
-        const gameDate = new Date(
-          game.date
-            .toISOString()
-            .substring(0, game.date.toISOString().indexOf("T"))
-        );
-        const todayDate = new Date(
-          today.toISOString().substring(0, today.toISOString().indexOf("T"))
-        );
-        const dayDiff =
-          -(gameDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
+    filteredGames?.forEach((game: Game, index: number) => {
+      const gameDate = new Date(
+        game.date
+          .toISOString()
+          .substring(0, game.date.toISOString().indexOf("T"))
+      );
+      const todayDate = new Date(
+        today.toISOString().substring(0, today.toISOString().indexOf("T"))
+      );
+      const dayDiff =
+        -(gameDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24);
 
-        if (dayDiff === 1 && !dayHeaders.includes("yesterday")) {
-          dayHeaders.push("yesterday");
-          gameCards.push(<DayHeader key={"yesterday"} day="Yesterday" />);
-        } else if (
-          dayDiff > 1 &&
-          dayDiff <= 7 &&
-          !dayHeaders.includes("last-week")
-        ) {
-          dayHeaders.push("last-week");
-          gameCards.push(<DayHeader key={"last-week"} day="Last Week" />);
-        } else if (
-          dayDiff > 7 &&
-          dayDiff <= 30 &&
-          !dayHeaders.includes("last-month")
-        ) {
-          dayHeaders.push("last-month");
-          gameCards.push(<DayHeader key={"last-month"} day="Last Month" />);
-        } else if (dayDiff > 30 && !dayHeaders.includes("past")) {
-          dayHeaders.push("past");
-          gameCards.push(<DayHeader key={"past"} day="In the Past" />);
-        }
+      if (dayDiff === 1 && !dayHeaders.includes("yesterday")) {
+        dayHeaders.push("yesterday");
+        gameCards.push(<DayHeader key={"yesterday"} day="Yesterday" />);
+      } else if (
+        dayDiff > 1 &&
+        dayDiff <= 7 &&
+        !dayHeaders.includes("last-week")
+      ) {
+        dayHeaders.push("last-week");
+        gameCards.push(<DayHeader key={"last-week"} day="Last Week" />);
+      } else if (
+        dayDiff > 7 &&
+        dayDiff <= 30 &&
+        !dayHeaders.includes("last-month")
+      ) {
+        dayHeaders.push("last-month");
+        gameCards.push(<DayHeader key={"last-month"} day="Last Month" />);
+      } else if (dayDiff > 30 && !dayHeaders.includes("past")) {
+        dayHeaders.push("past");
+        gameCards.push(<DayHeader key={"past"} day="In the Past" />);
+      }
 
-        gameCards.push(<BookingCard key={index} booking={game} isPrevious />);
-      });
+      gameCards.push(<BookingCard key={index} booking={game} isPrevious />);
+    });
 
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
@@ -277,6 +292,10 @@ const GameList = ({
 };
 
 export const Games = ({ navigation, route }: NavigationProps) => {
+  const { colors } = useTheme();
+  const styles = makeStyles(colors);
+  const windowWidth = useWindowDimensions().width;
+
   const [index, setIndex] = useState(0);
   const [durationIndex, setDurationIndex] = useState(0);
   const [routes] = useState([
@@ -284,15 +303,14 @@ export const Games = ({ navigation, route }: NavigationProps) => {
     { key: "AllGames", title: "All Games" },
   ]);
 
-  const { colors } = useTheme();
-  const styles = makeStyles(colors);
-  const windowWidth = useWindowDimensions().width;
-
   const [selectedSports, setSelectedSports] = useState({
     Basketball: true,
     Football: true,
     Tennis: true,
   });
+
+  const [searchBarVisible, setSearchBarVisible] = useState(false);
+  const [searchBarText, setSearchBarText] = useState<string>("");
 
   const renderScene = () => {
     const route = routes[index];
@@ -303,6 +321,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
             type={durationIndex === 0 ? "upcoming" : "previous"}
             selectedSports={selectedSports}
             isFollowedGames={true}
+            searchBarText={searchBarText}
           />
         );
       case "AllGames":
@@ -311,6 +330,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
             type={durationIndex === 0 ? "upcoming" : "previous"}
             selectedSports={selectedSports}
             isFollowedGames={false}
+            searchBarText={searchBarText}
           />
         );
       default:
@@ -364,7 +384,20 @@ export const Games = ({ navigation, route }: NavigationProps) => {
       absolutePosition={false}
       navigation={navigation}
       route={route}
-      right={<IonIcon name="search-outline" color="white" size={24} />}
+      searchBar={searchBarVisible}
+      searchBarText={searchBarText}
+      setSearchBarText={setSearchBarText}
+      setSearchBarVisible={setSearchBarVisible}
+      right={
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => {
+            setSearchBarVisible(true);
+          }}
+        >
+          <IonIcon name="search-outline" color="white" size={24} />
+        </TouchableOpacity>
+      }
       middle={
         <GameTimeDropdown index={durationIndex} setIndex={setDurationIndex} />
       }

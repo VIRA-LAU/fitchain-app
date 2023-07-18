@@ -27,7 +27,7 @@ import {
 import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { GameType } from "src/types";
+import { Branch, GameType } from "src/types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { MapComponent } from "src/components";
 import { LatLng, Region } from "react-native-maps";
@@ -53,17 +53,11 @@ const timeFormatter = (date: Date, hourMode: "12" | "24" = "12") => {
 export const Play = ({
   visible,
   setVisible,
-  branchId,
-  branchLocation,
-  venueName,
-  branchProfilePhotoUrl,
+  branch,
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
-  branchId?: number;
-  branchLocation?: string;
-  venueName?: string;
-  branchProfilePhotoUrl?: string;
+  branch?: Branch;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -71,6 +65,10 @@ export const Play = ({
   const [dateTimePickerVisible, setDateTimePickerVisible] = useState<
     "date" | "startTime" | "endTime" | false
   >(false);
+
+  useEffect(() => {
+    if (branch) setGameType(branch?.courts[0].courtType);
+  }, [JSON.stringify(branch)]);
 
   const [searchDate, setSearchDate] = useState<Date | null>(null);
   const [startTimeDate, setStartTimeDate] = useState<Date | null>(null);
@@ -160,9 +158,7 @@ export const Play = ({
               <MaterialIcon name="arrow-back" color={"white"} size={24} />
             </TouchableOpacity>
           )}
-          <Text style={styles.title}>
-            {!branchId && "Find or "}Create a Game
-          </Text>
+          <Text style={styles.title}>{!branch && "Find or "}Create a Game</Text>
           <TouchableOpacity
             style={{ position: "absolute", right: 0 }}
             onPress={() => {
@@ -180,83 +176,95 @@ export const Play = ({
               showsHorizontalScrollIndicator={false}
               horizontal
             >
-              <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={() => {
-                  setGameType("Basketball");
-                }}
-                style={[
-                  styles.sportType,
-                  { marginLeft: 20 },
-                  gameType === "Basketball"
-                    ? { borderColor: colors.primary }
-                    : {},
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.sportText,
-                    gameType === "Basketball" ? { color: colors.primary } : {},
-                  ]}
-                >
-                  Basketball
-                </Text>
-                <Image
-                  source={require("assets/images/home/basketball.png")}
-                  style={{ width: 30, height: 30 }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={() => {
-                  setGameType("Football");
-                }}
-                style={[
-                  styles.sportType,
-                  gameType === "Football"
-                    ? { borderColor: colors.primary }
-                    : {},
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.sportText,
-                    gameType === "Football" ? { color: colors.primary } : {},
-                  ]}
-                >
-                  Football
-                </Text>
-                <Image
-                  source={require("assets/images/home/football.png")}
-                  style={{ width: 30, height: 30 }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={() => {
-                  setGameType("Tennis");
-                }}
-                style={[
-                  styles.sportType,
-                  { marginRight: 20 },
-                  gameType === "Tennis" ? { borderColor: colors.primary } : {},
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.sportText,
-                    gameType === "Tennis" ? { color: colors.primary } : {},
-                  ]}
-                >
-                  Tennis
-                </Text>
-                <Image
-                  source={require("assets/images/home/tennis.png")}
-                  style={{ width: 30, height: 30 }}
-                />
-              </TouchableOpacity>
+              <View style={{ flexDirection: "row", marginHorizontal: 15 }}>
+                {branch?.courts.findIndex(
+                  (court) => court.courtType === "Basketball"
+                ) !== -1 && (
+                  <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      setGameType("Basketball");
+                    }}
+                    style={[
+                      styles.sportType,
+                      gameType === "Basketball" && {
+                        borderColor: colors.primary,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.sportText,
+                        gameType === "Basketball" && { color: colors.primary },
+                      ]}
+                    >
+                      Basketball
+                    </Text>
+                    <Image
+                      source={require("assets/images/home/basketball.png")}
+                      style={{ width: 30, height: 30 }}
+                    />
+                  </TouchableOpacity>
+                )}
+                {branch?.courts.findIndex(
+                  (court) => court.courtType === "Football"
+                ) !== -1 && (
+                  <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      setGameType("Football");
+                    }}
+                    style={[
+                      styles.sportType,
+                      gameType === "Football" && {
+                        borderColor: colors.primary,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.sportText,
+                        gameType === "Football" && { color: colors.primary },
+                      ]}
+                    >
+                      Football
+                    </Text>
+                    <Image
+                      source={require("assets/images/home/football.png")}
+                      style={{ width: 30, height: 30 }}
+                    />
+                  </TouchableOpacity>
+                )}
+                {branch?.courts.findIndex(
+                  (court) => court.courtType === "Tennis"
+                ) !== -1 && (
+                  <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      setGameType("Tennis");
+                    }}
+                    style={[
+                      styles.sportType,
+                      gameType === "Tennis" && { borderColor: colors.primary },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.sportText,
+                        gameType === "Tennis" && { color: colors.primary },
+                      ]}
+                    >
+                      Tennis
+                    </Text>
+                    <Image
+                      source={require("assets/images/home/tennis.png")}
+                      style={{ width: 30, height: 30 }}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
             </ScrollView>
-            {!branchId && (
+            {!branch && (
               <View style={styles.contentView}>
                 <View style={styles.contentIconView}>
                   <IonIcon
@@ -439,7 +447,7 @@ export const Play = ({
                   searchDate && searchLocationMarker && searchLocationName
                     ? () => {
                         setVisible(false);
-                        if (!branchId)
+                        if (!branch)
                           navigation.push("ChooseBranch", {
                             date: JSON.stringify(searchDate),
                             gameType,
@@ -455,9 +463,9 @@ export const Play = ({
                           });
                         else {
                           navigation.push("ChooseCourt", {
-                            branchId,
-                            venueName,
-                            branchLocation,
+                            branchId: branch.id,
+                            venueName: branch.venue.name,
+                            branchLocation: branch.location,
                             bookingDetails: {
                               date: JSON.stringify(searchDate),
                               nbOfPlayers: numberOfPlayers,
@@ -469,23 +477,23 @@ export const Play = ({
                                 : undefined,
                               gameType,
                             },
-                            profilePhotoUrl: branchProfilePhotoUrl,
+                            profilePhotoUrl: branch.profilePhotoUrl,
                           });
                         }
                       }
                     : undefined
                 }
               >
-                {branchId ? "Find a Court" : "Find Venue"}
+                {branch ? "Find a Court" : "Find Venue"}
               </Button>
-              {!branchId && (
+              {!branch && (
                 <Button
                   buttonColor={colors.primary}
                   textColor={"black"}
                   style={{ borderRadius: 5, width: "100%", marginTop: 15 }}
                   onPress={() => {
                     setVisible(false);
-                    if (!branchId && searchLocationMarker && searchLocationName)
+                    if (!branch && searchLocationMarker && searchLocationName)
                       navigation.push("ChooseGame", {
                         date: searchDate
                           ? JSON.stringify(searchDate)

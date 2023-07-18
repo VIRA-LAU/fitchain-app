@@ -264,10 +264,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
       <Play
         visible={playScreenVisible}
         setVisible={setPlayScreenVisible}
-        branchId={id}
-        branchLocation={branch?.location}
-        branchProfilePhotoUrl={branch?.profilePhotoUrl}
-        venueName={branch?.venue.name}
+        branch={branch}
       />
     </AppHeader>
   );

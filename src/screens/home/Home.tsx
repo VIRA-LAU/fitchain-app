@@ -168,6 +168,10 @@ export const Home = ({ navigation, route }: Props) => {
     refetchActivities();
   };
 
+  const filteredBranches = branches?.filter((branch) =>
+    branch.courts.map((court) => selectedSports[court.courtType]).includes(true)
+  );
+
   return (
     <AppHeader
       absolutePosition={false}
@@ -249,24 +253,25 @@ export const Home = ({ navigation, route }: Props) => {
         <View>
           <ScrollView
             style={{ flexDirection: "row", marginHorizontal: -20 }}
+            contentContainerStyle={{ minWidth: "100%" }}
             showsHorizontalScrollIndicator={false}
             horizontal
           >
             {branchesLoading && <BranchCardSkeleton type="vertical" />}
             {!branchesLoading &&
-              branches?.map((branch: Branch, index: number) => (
+              filteredBranches?.map((branch: Branch, index: number) => (
                 <BranchCard
                   key={index}
                   type="vertical"
                   branch={branch}
                   isFirst={index === 0}
-                  isLast={index === branches.length - 1}
+                  isLast={index === filteredBranches.length - 1}
                 />
               ))}
           </ScrollView>
           {!branchesLoading &&
-            (!branches ||
-              (branches.length === 0 && (
+            (!filteredBranches ||
+              (filteredBranches?.length === 0 && (
                 <View style={styles.placeholder}>
                   <Text style={styles.placeholderText}>
                     There are no nearby venues.

@@ -9,7 +9,6 @@ import {
 } from "src/components";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList } from "src/navigation";
-import IonIcon from "react-native-vector-icons/Ionicons";
 import { useBranchesQuery } from "src/api";
 import { useState } from "react";
 import { Branch } from "src/types";
@@ -29,8 +28,12 @@ export const Branches = ({ navigation, route }: Props) => {
     Tennis: true,
   });
 
-  const filteredBranches = branches?.filter((branch) =>
-    branch.venue.name.toLowerCase().includes(searchBarText.toLowerCase())
+  const filteredBranches = branches?.filter(
+    (branch) =>
+      branch.venue.name.toLowerCase().includes(searchBarText.toLowerCase()) &&
+      branch.courts
+        .map((court) => selectedSports[court.courtType])
+        .includes(true)
   );
 
   return (
@@ -38,7 +41,6 @@ export const Branches = ({ navigation, route }: Props) => {
       absolutePosition={false}
       navigation={navigation}
       route={route}
-      right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
       title={"Venues"}
       left={
         <SportTypeDropdown
@@ -47,6 +49,7 @@ export const Branches = ({ navigation, route }: Props) => {
         />
       }
       searchBar
+      searchBarText={searchBarText}
       setSearchBarText={setSearchBarText}
     >
       <ScrollView contentContainerStyle={styles.wrapperView}>
