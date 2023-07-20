@@ -2,13 +2,13 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { Image, StyleSheet, useWindowDimensions, View } from "react-native";
 import { Avatar, Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { HomeStackParamList } from "navigation";
+import { StackParamList } from "navigation";
 import { AppHeader, RateCriteria } from "src/components";
 import { ScrollView } from "react-native-gesture-handler";
 import { useState } from "react";
 import { useCreateRatingMutation } from "src/api";
 
-type Props = StackScreenProps<HomeStackParamList, "RatePlayer">;
+type Props = StackScreenProps<StackParamList, "RatePlayer">;
 
 export const RatePlayer = ({ navigation, route }: Props) => {
   const { colors } = useTheme();

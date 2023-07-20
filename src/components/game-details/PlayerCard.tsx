@@ -16,7 +16,7 @@ import {
 import { Avatar, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { BottomTabParamList, StackParamList } from "src/navigation";
 import { PlayerStatus, TeamPlayer } from "src/types";
 import { UserContext } from "src/utils";
 import { Skeleton } from "../home";
@@ -101,7 +101,7 @@ export const PlayerCard = ({
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<HomeStackParamList>,
+        StackNavigationProp<StackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

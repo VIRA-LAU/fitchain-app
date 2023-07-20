@@ -10,7 +10,7 @@ import {
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { BottomTabParamList, StackParamList } from "src/navigation";
 
 type textOptions =
   | "create"
@@ -66,7 +66,7 @@ export const UpdateCard = ({
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<HomeStackParamList>,
+        StackNavigationProp<StackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

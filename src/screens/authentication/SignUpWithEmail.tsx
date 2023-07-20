@@ -102,7 +102,7 @@ export const SignUpWithEmail = ({
       >
         <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
-          Account Details
+          Welcome to FitChain
         </Text>
         <View style={styles.inputView}>
           <Text variant="labelLarge" style={styles.h2}>

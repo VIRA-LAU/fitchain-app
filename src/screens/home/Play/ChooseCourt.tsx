@@ -2,7 +2,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { StyleSheet } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { HomeStackParamList } from "navigation";
+import { StackParamList } from "navigation";
 import { AppHeader } from "src/components";
 import { ScrollView } from "react-native-gesture-handler";
 import { CourtCard, TimeSlotPicker } from "src/components";
@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Court, TimeSlot } from "src/types";
 import { useSearchBranchesQuery } from "src/api";
 
-type Props = StackScreenProps<HomeStackParamList, "ChooseCourt">;
+type Props = StackScreenProps<StackParamList, "ChooseCourt">;
 
 export const ChooseCourt = ({ navigation, route }: Props) => {
   const { colors } = useTheme();

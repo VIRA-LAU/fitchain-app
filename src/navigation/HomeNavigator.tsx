@@ -27,7 +27,7 @@ import {
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { HomeStackParamList } from "./AppNavigator";
+import { StackParamList } from "./Authenticator";
 import * as Location from "expo-location";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -113,7 +113,7 @@ const BottomTabNavigator = () => {
 };
 
 export const HomeNavigator = () => {
-  const Stack = createStackNavigator<HomeStackParamList>();
+  const Stack = createStackNavigator<StackParamList>();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="BottomBar" component={BottomTabNavigator} />

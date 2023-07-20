@@ -8,7 +8,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { BottomTabParamList, StackParamList } from "src/navigation";
 import { GameType, Branch } from "src/types";
 import { Skeleton } from "./Skeleton";
 
@@ -75,7 +75,7 @@ export const BranchCard = ({
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<HomeStackParamList>,
+        StackNavigationProp<StackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

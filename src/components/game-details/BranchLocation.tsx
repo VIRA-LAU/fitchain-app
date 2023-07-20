@@ -7,7 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { BottomTabParamList, HomeStackParamList } from "navigation";
+import { BottomTabParamList, StackParamList } from "navigation";
 import { Court } from "src/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { MiniMapComponent, Skeleton } from "../home";
@@ -91,7 +91,7 @@ export const BranchLocation = ({
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<HomeStackParamList>,
+        StackNavigationProp<StackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

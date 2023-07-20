@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
-import { HomeStackParamList } from "src/navigation";
+import { StackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
@@ -37,7 +37,7 @@ import {
 import { PopupContainer, PopupType } from "./Popups";
 import { UserContext } from "src/utils";
 
-type Props = StackScreenProps<HomeStackParamList, "GameDetails">;
+type Props = StackScreenProps<StackParamList, "GameDetails">;
 
 export const GameDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();

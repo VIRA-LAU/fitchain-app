@@ -9,7 +9,7 @@ import {
   existingCourtType,
 } from "screens";
 import { VenueBottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
-import { HomeStackParamList } from "./AppNavigator";
+import { StackParamList } from "./Authenticator";
 import * as Location from "expo-location";
 
 const Tab = createBottomTabNavigator<VenueBottomTabParamList>();
@@ -72,7 +72,7 @@ const BottomTabNavigator = () => {
 };
 
 export const BranchHomeNavigator = () => {
-  const Stack = createStackNavigator<HomeStackParamList>();
+  const Stack = createStackNavigator<StackParamList>();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="BottomBar" component={BottomTabNavigator} />

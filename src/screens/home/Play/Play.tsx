@@ -25,7 +25,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { BottomTabParamList, StackParamList } from "src/navigation";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { Branch, GameType } from "src/types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -89,14 +89,16 @@ export const Play = ({
 
   useEffect(() => {
     const getUserLocation = async () => {
-      let location = await Location.getCurrentPositionAsync();
-      setSearchLocationMarker(location.coords);
-      setInitialMapRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
+      let location = await Location.getLastKnownPositionAsync();
+      if (location) {
+        setSearchLocationMarker(location.coords);
+        setInitialMapRegion({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+      } else setSearchLocationMarker(initialMapRegion);
     };
     getUserLocation();
   }, []);
@@ -129,7 +131,7 @@ export const Play = ({
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<HomeStackParamList>,
+        StackNavigationProp<StackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

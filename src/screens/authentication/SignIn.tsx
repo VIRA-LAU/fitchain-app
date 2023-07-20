@@ -143,7 +143,7 @@ export const SignIn = ({
             </Text>
           )}
           {loginLoading ? (
-            <ActivityIndicator style={{ marginTop: 15, marginBottom: 20 }} />
+            <ActivityIndicator style={{ marginTop: 25 }} />
           ) : (
             <Button
               textColor={colors.background}
@@ -154,6 +154,14 @@ export const SignIn = ({
               Sign In
             </Button>
           )}
+          <Button
+            style={{ borderRadius: 6, marginTop: "3%", marginBottom: 10 }}
+            onPress={() => {
+              navigation.push("ForgotPassword");
+            }}
+          >
+            Forgot password?
+          </Button>
         </View>
         <View style={styles.separatorView}>
           <View style={styles.separator}></View>
@@ -289,7 +297,6 @@ const makeStyles = (fontScale: number, colors: MD3Colors) =>
       borderRadius: 6,
       marginTop: "5%",
       justifyContent: "center",
-      marginBottom: 20,
     },
     separatorView: {
       flexDirection: "row",

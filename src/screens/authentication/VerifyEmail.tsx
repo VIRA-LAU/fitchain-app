@@ -114,7 +114,7 @@ export const VerifyEmail = ({
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
         <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
-          Welcome to Fitchain
+          Verify your Email
         </Text>
         <View style={styles.inputView}>
           <Text variant="labelLarge" style={styles.h2}>
@@ -258,12 +258,5 @@ const makeStyles = (colors: MD3Colors) =>
       marginTop: "7%",
       height: 50,
       justifyContent: "center",
-    },
-    placeholderText: {
-      height: 50,
-      fontFamily: "Inter-Medium",
-      color: colors.tertiary,
-      textAlign: "center",
-      textAlignVertical: "center",
     },
   });

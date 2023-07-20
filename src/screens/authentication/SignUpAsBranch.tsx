@@ -157,7 +157,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
       >
         <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
-          Branch Account Details
+          Welcome to FitChain
         </Text>
         {!mapVisible ? (
           <View style={styles.inputView}>

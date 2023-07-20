@@ -15,7 +15,7 @@ import {
   ImageList,
   Skeleton,
 } from "src/components";
-import { HomeStackParamList } from "src/navigation";
+import { StackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -23,7 +23,7 @@ import { useBranchByIdQuery } from "src/api";
 import { useState } from "react";
 import { Play } from "./Play";
 
-type Props = StackScreenProps<HomeStackParamList, "BranchDetails">;
+type Props = StackScreenProps<StackParamList, "BranchDetails">;
 
 export const BranchDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();

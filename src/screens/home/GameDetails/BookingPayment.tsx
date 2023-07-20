@@ -13,11 +13,11 @@ import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
-import { HomeStackParamList } from "src/navigation";
+import { StackParamList } from "src/navigation";
 import { useCreateGameMutation } from "src/api";
 import { useState } from "react";
 
-type Props = StackScreenProps<HomeStackParamList, "BookingPayment">;
+type Props = StackScreenProps<StackParamList, "BookingPayment">;
 
 export const BookingPayment = ({ navigation, route }: Props) => {
   const { colors } = useTheme();

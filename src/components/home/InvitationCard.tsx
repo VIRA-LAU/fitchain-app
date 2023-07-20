@@ -18,7 +18,7 @@ import {
   useEditJoinRequestMutation,
   useRespondToInviteMutation,
 } from "src/api";
-import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { BottomTabParamList, StackParamList } from "src/navigation";
 import { Game } from "src/types";
 import { Skeleton } from "./Skeleton";
 
@@ -78,7 +78,7 @@ export const InvitationCard = ({
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<HomeStackParamList>,
+        StackNavigationProp<StackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { HomeStackParamList, BottomTabParamList } from "src/navigation";
+import { StackParamList, BottomTabParamList } from "src/navigation";
 import {
   CompositeNavigationProp,
   useNavigation,
@@ -48,7 +48,7 @@ export const UpcomingGameCard = ({ game }: { game: Game }) => {
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<HomeStackParamList>,
+        StackNavigationProp<StackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

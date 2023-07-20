@@ -6,7 +6,7 @@ import {
 } from "react-native-paper";
 import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "react-native";
-import { AppNavigator } from "navigation";
+import { Authenticator } from "navigation";
 import { useFonts } from "expo-font/build/FontHooks";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { UserContext, UserData, BranchData } from "src/utils";
@@ -107,7 +107,7 @@ export default function App() {
               backgroundColor={"transparent"}
               translucent
             />
-            <AppNavigator />
+            <Authenticator />
           </NavigationContainer>
         </PaperProvider>
       </QueryClientProvider>

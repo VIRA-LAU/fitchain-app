@@ -8,7 +8,7 @@ import {
   useTheme,
 } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { HomeStackParamList } from "navigation";
+import { StackParamList } from "navigation";
 import { AppHeader } from "src/components";
 import { ScrollView } from "react-native-gesture-handler";
 import {
@@ -20,7 +20,7 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
 import React, { useState } from "react";
 
-type Props = StackScreenProps<HomeStackParamList, "InviteUsers">;
+type Props = StackScreenProps<StackParamList, "InviteUsers">;
 
 export const InviteUsers = ({ navigation, route }: Props) => {
   const { colors } = useTheme();

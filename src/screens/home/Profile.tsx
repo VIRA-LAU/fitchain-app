@@ -18,7 +18,7 @@ import {
   SelectionModal,
   Skeleton,
 } from "src/components";
-import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { BottomTabParamList, StackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Activity } from "src/types";
 import { useContext, useEffect, useState } from "react";
@@ -34,7 +34,7 @@ import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
 type Props =
   | BottomTabScreenProps<BottomTabParamList>
-  | StackScreenProps<HomeStackParamList, "PlayerProfile">;
+  | StackScreenProps<StackParamList, "PlayerProfile">;
 
 export const Profile = ({
   navigation,

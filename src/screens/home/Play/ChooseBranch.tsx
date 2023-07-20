@@ -2,7 +2,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { HomeStackParamList } from "navigation";
+import { StackParamList } from "navigation";
 import { AppHeader, BranchCard, BranchCardSkeleton } from "src/components";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-gesture-handler";
@@ -12,7 +12,7 @@ import {
 } from "src/api";
 import { Branch } from "src/types";
 
-type Props = StackScreenProps<HomeStackParamList, "ChooseBranch">;
+type Props = StackScreenProps<StackParamList, "ChooseBranch">;
 
 export const ChooseBranch = ({ navigation, route }: Props) => {
   const { colors } = useTheme();

@@ -9,7 +9,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import { BottomTabParamList, HomeStackParamList } from "src/navigation";
+import { BottomTabParamList, StackParamList } from "src/navigation";
 import { Activity } from "src/types";
 import { Skeleton } from "./Skeleton";
 
@@ -55,7 +55,7 @@ export const ActivityCard = ({ gameId, date, type, isWinner }: Activity) => {
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<HomeStackParamList>,
+        StackNavigationProp<StackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

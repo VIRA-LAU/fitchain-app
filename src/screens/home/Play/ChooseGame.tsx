@@ -3,7 +3,7 @@ import { Modal, ScrollView, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { useSortGamesByLocationQuery, useSearchGamesQuery } from "src/api";
 import { AppHeader, BookingCard, SortByModal } from "src/components";
-import { HomeStackParamList } from "src/navigation";
+import { StackParamList } from "src/navigation";
 import { Game } from "src/types";
 import { DayHeader } from "../Games";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import { TouchableOpacity } from "react-native";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
-type Props = StackScreenProps<HomeStackParamList, "ChooseGame">;
+type Props = StackScreenProps<StackParamList, "ChooseGame">;
 
 export const ChooseGame = ({ navigation, route }: Props) => {
   const { colors } = useTheme();

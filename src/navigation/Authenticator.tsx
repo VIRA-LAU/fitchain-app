@@ -8,7 +8,7 @@ import { HomeNavigator } from "./HomeNavigator";
 import { BranchHomeNavigator } from "./BranchHomeNavigator";
 import { LatLng } from "react-native-maps";
 
-export type HomeStackParamList = {
+export type StackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
   GameDetails: { id: number; isPrevious: boolean };
   InviteUsers: {
@@ -89,7 +89,7 @@ export type HomeStackParamList = {
   };
 };
 
-export const AppNavigator = () => {
+export const Authenticator = () => {
   const { userData, branchData, setUserData, setBranchData } =
     useContext(UserContext);
 
