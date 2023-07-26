@@ -50,141 +50,156 @@ export const InviteUsers = ({ navigation, route }: Props) => {
     >
       <View style={styles.wrapper}>
         <View style={styles.teams}>
-          <Button
-            buttonColor={
-              selectedTeam === "Home" ? colors.primary : colors.tertiary
-            }
-            textColor={colors.secondary}
-            style={{ flex: 1, borderRadius: 5, marginRight: 10 }}
-            onPress={
-              selectedTeam === "Home"
-                ? undefined
-                : () => {
-                    setSelectedTeam("Home");
-                  }
-            }
-          >
-            Home
-          </Button>
-          <Button
-            buttonColor={
-              selectedTeam === "Away" ? colors.primary : colors.tertiary
-            }
-            textColor={colors.secondary}
-            style={{ flex: 1, borderRadius: 5 }}
-            onPress={
-              selectedTeam === "Away"
-                ? undefined
-                : () => {
-                    setSelectedTeam("Away");
-                  }
-            }
-          >
-            Away
-          </Button>
+          <View style={{ flexGrow: 1, marginRight: 10 }}>
+            <Button
+              buttonColor={
+                selectedTeam === "Home" ? colors.primary : colors.tertiary
+              }
+              textColor={colors.secondary}
+              style={{ borderRadius: 5 }}
+              onPress={
+                selectedTeam === "Home"
+                  ? undefined
+                  : () => {
+                      setSelectedTeam("Home");
+                    }
+              }
+            >
+              Home
+            </Button>
+          </View>
+          <View style={{ flexGrow: 1 }}>
+            <Button
+              buttonColor={
+                selectedTeam === "Away" ? colors.primary : colors.tertiary
+              }
+              textColor={colors.secondary}
+              style={{ borderRadius: 5 }}
+              onPress={
+                selectedTeam === "Away"
+                  ? undefined
+                  : () => {
+                      setSelectedTeam("Away");
+                    }
+              }
+            >
+              Away
+            </Button>
+          </View>
         </View>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          {users.map((user, index) => (
-            <View key={index} style={styles.user}>
-              <View
-                style={{
-                  marginRight: 15,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                {user.profilePhotoUrl ? (
-                  <Avatar.Image
-                    size={45}
-                    source={{ uri: user.profilePhotoUrl }}
-                    style={{ backgroundColor: colors.secondary }}
-                  />
-                ) : (
-                  <Avatar.Text
-                    label={
-                      user.firstName
-                        ? `${user.firstName.charAt(0)}${user.lastName.charAt(
-                            0
-                          )}`
-                        : ""
-                    }
-                    labelStyle={{ fontFamily: "Inter-Medium", fontSize: 20 }}
-                    size={45}
-                    style={{
-                      backgroundColor: colors.secondary,
-                    }}
-                  />
-                )}
-              </View>
-              <View>
-                <Text style={styles.name}>
-                  {user.firstName} {user.lastName}
-                </Text>
-
+          {users.map((user, index) => {
+            var playerIndex = existingPlayers.findIndex(
+              (player) => player.id === user.id
+            );
+            if (
+              playerIndex !== -1 &&
+              existingPlayers[playerIndex].status === "REJECTED"
+            )
+              playerIndex = -1;
+            return (
+              <View key={index} style={styles.user}>
                 <View
                   style={{
-                    flexDirection: "row",
+                    marginRight: 15,
+                    justifyContent: "center",
                     alignItems: "center",
-                    marginTop: 5,
                   }}
                 >
-                  <IonIcon name={"star-outline"} color={"white"} size={14} />
-                  <Text style={[styles.name, { fontSize: 14, marginLeft: 10 }]}>
-                    {user.rating ? user.rating : 0}
-                  </Text>
+                  {user.profilePhotoUrl ? (
+                    <Avatar.Image
+                      size={45}
+                      source={{ uri: user.profilePhotoUrl }}
+                      style={{ backgroundColor: colors.secondary }}
+                    />
+                  ) : (
+                    <Avatar.Text
+                      label={
+                        user.firstName
+                          ? `${user.firstName.charAt(0)}${user.lastName.charAt(
+                              0
+                            )}`
+                          : ""
+                      }
+                      labelStyle={{ fontFamily: "Inter-Medium", fontSize: 20 }}
+                      size={45}
+                      style={{
+                        backgroundColor: colors.secondary,
+                      }}
+                    />
+                  )}
                 </View>
-              </View>
-              {existingPlayers.findIndex((player) => player.id === user.id) ===
-              -1 ? (
-                loadingIndex === user.id ? (
-                  <ActivityIndicator
+                <View>
+                  <Text style={styles.name}>
+                    {user.firstName} {user.lastName}
+                  </Text>
+
+                  <View
                     style={{
-                      marginLeft: "auto",
-                      marginRight: 30,
-                    }}
-                  />
-                ) : (
-                  <TouchableOpacity
-                    activeOpacity={0.6}
-                    style={styles.inviteView}
-                    onPress={() => {
-                      invitePlayer({
-                        gameId,
-                        friendId: user.id,
-                        team: selectedTeam.toUpperCase() as "HOME" | "AWAY",
-                      });
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginTop: 5,
                     }}
                   >
+                    <IonIcon name={"star-outline"} color={"white"} size={14} />
+                    <Text
+                      style={[styles.name, { fontSize: 14, marginLeft: 10 }]}
+                    >
+                      {user.rating ? user.rating : 0}
+                    </Text>
+                  </View>
+                </View>
+                {playerIndex === -1 ? (
+                  loadingIndex === user.id ? (
+                    <ActivityIndicator
+                      style={{
+                        marginLeft: "auto",
+                        marginRight: 30,
+                      }}
+                    />
+                  ) : (
+                    <TouchableOpacity
+                      activeOpacity={0.6}
+                      style={styles.inviteView}
+                      onPress={() => {
+                        invitePlayer({
+                          gameId,
+                          friendId: user.id,
+                          team: selectedTeam.toUpperCase() as "HOME" | "AWAY",
+                        });
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: "Inter-Medium",
+                          color: "white",
+                        }}
+                      >
+                        Invite
+                      </Text>
+                    </TouchableOpacity>
+                  )
+                ) : (
+                  <View style={styles.invitedView}>
+                    <Feather
+                      name="user-check"
+                      size={18}
+                      color={colors.tertiary}
+                    />
                     <Text
                       style={{
                         fontFamily: "Inter-Medium",
-                        color: "white",
+                        color: colors.tertiary,
+                        marginLeft: 10,
                       }}
                     >
-                      Invite
+                      Invited
                     </Text>
-                  </TouchableOpacity>
-                )
-              ) : (
-                <View style={styles.invitedView}>
-                  <Feather
-                    name="user-check"
-                    size={18}
-                    color={colors.tertiary}
-                  />
-                  <Text
-                    style={{
-                      fontFamily: "Inter-Medium",
-                      color: colors.tertiary,
-                      marginLeft: 10,
-                    }}
-                  >
-                    Invited
-                  </Text>
-                </View>
-              )}
-            </View>
-          ))}
+                  </View>
+                )}
+              </View>
+            );
+          })}
         </ScrollView>
       </View>
     </AppHeader>

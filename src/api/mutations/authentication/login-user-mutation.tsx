@@ -4,10 +4,12 @@ import { useMutation } from "react-query";
 import { UserContext, storeData } from "src/utils";
 import { Branch, User } from "src/types";
 import { AxiosError } from "axios";
+import { notificationsToken } from "src/utils/NotificationService";
 
 type Request = {
   email: string;
   password: string;
+  notificationsToken: string | undefined;
 };
 
 type UserRes = User & {
@@ -108,6 +110,9 @@ export const useLoginUserMutation = () => {
         ];
         storeData(keys, values);
       }
+    },
+    onMutate: (variables) => {
+      if (notificationsToken) variables.notificationsToken = notificationsToken;
     },
   });
 };

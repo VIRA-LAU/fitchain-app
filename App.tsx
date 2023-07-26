@@ -1,3 +1,4 @@
+// @ts-nocheck
 import "react-native-gesture-handler";
 import {
   configureFonts,
@@ -5,7 +6,7 @@ import {
   Provider as PaperProvider,
 } from "react-native-paper";
 import { DarkTheme, NavigationContainer } from "@react-navigation/native";
-import { StatusBar } from "react-native";
+import { Linking, StatusBar } from "react-native";
 import { Authenticator } from "navigation";
 import { useFonts } from "expo-font/build/FontHooks";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -14,6 +15,8 @@ import { useEffect, useState } from "react";
 import { en, registerTranslation } from "react-native-paper-dates";
 import client from "src/api/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NotificationService } from "src/utils/NotificationService";
+import * as Notifications from "expo-notifications";
 
 registerTranslation("en", en);
 
@@ -101,7 +104,58 @@ export default function App() {
     <UserContext.Provider value={userContext}>
       <QueryClientProvider client={queryClient}>
         <PaperProvider theme={theme}>
-          <NavigationContainer theme={DarkTheme}>
+          <NavigationContainer
+            theme={DarkTheme}
+            linking={{
+              config: {
+                screens: {
+                  BottomBar: {
+                    screens: {
+                      Home: "home",
+                    },
+                  },
+                  GameDetails: "game/:id",
+                },
+              },
+              prefixes: [""],
+              async getInitialURL() {
+                const url = await Linking.getInitialURL();
+                if (url != null) return url;
+
+                const response =
+                  await Notifications.getLastNotificationResponseAsync();
+                return response?.notification.request.content.data.url;
+              },
+              subscribe(listener) {
+                const onReceiveURL = ({ url }: { url: string }) => {
+                  return listener(url);
+                };
+
+                const eventListenerSubscription = Linking.addEventListener(
+                  "url",
+                  onReceiveURL
+                );
+
+                const subscription =
+                  Notifications.addNotificationResponseReceivedListener(
+                    (response) => {
+                      const url =
+                        response.notification.request.content.data.url;
+                      if (url === "home") {
+                        queryClient.refetchQueries(["received-requests"]);
+                        queryClient.refetchQueries(["invitations"]);
+                      }
+                      listener(url);
+                    }
+                  );
+
+                return () => {
+                  eventListenerSubscription.remove();
+                  subscription.remove();
+                };
+              },
+            }}
+          >
             <StatusBar
               barStyle={"light-content"}
               backgroundColor={"transparent"}

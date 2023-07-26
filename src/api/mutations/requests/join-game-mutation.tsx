@@ -27,16 +27,16 @@ export const useJoinGameMutation = () => {
 
   return useMutation<Response, unknown, Request>({
     mutationFn: joinGame,
-    onSuccess: (data) => {
-      queryClient.setQueryData(["playerStatus", data.gameId], {
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(["playerStatus", variables.gameId], {
         hasRequestedtoJoin: "PENDING",
         hasBeenInvited: false,
         isAdmin: false,
       });
-      queryClient.refetchQueries(["playerStatus", data.gameId]);
+      queryClient.refetchQueries(["playerStatus", variables.gameId]);
       queryClient.refetchQueries(["games"]);
-      queryClient.refetchQueries(["game-players", data.gameId]);
-      queryClient.refetchQueries(["updates", data.gameId]);
+      queryClient.refetchQueries(["game-players", variables.gameId]);
+      queryClient.refetchQueries(["updates", variables.gameId]);
     },
   });
 };

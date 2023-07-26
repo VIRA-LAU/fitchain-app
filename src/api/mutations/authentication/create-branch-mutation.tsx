@@ -3,6 +3,7 @@ import { useMutation } from "react-query";
 import { AxiosError } from "axios";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SignUpStackParamList } from "src/navigation";
+import { notificationsToken } from "src/utils/NotificationService";
 
 type Request = {
   location: string;
@@ -14,6 +15,7 @@ type Request = {
   managerFirstName: string;
   managerLastName: string;
   password: string;
+  notificationsToken: string | undefined;
 };
 
 const createBranch = async (data: Request) => {
@@ -36,6 +38,9 @@ export const useCreateBranchMutation = () => {
         isBranch: true,
         userId: data,
       });
+    },
+    onMutate: (variables) => {
+      if (notificationsToken) variables.notificationsToken = notificationsToken;
     },
   });
 };

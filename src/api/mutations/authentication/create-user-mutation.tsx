@@ -3,12 +3,14 @@ import { useMutation } from "react-query";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SignUpStackParamList } from "src/navigation";
 import { AxiosError } from "axios";
+import { notificationsToken } from "src/utils/NotificationService";
 
 type Request = {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
+  notificationsToken?: string;
 };
 
 const createUser = async (data: Request) => {
@@ -30,6 +32,9 @@ export const useCreateUserMutation = () => {
         isBranch: false,
         userId: data,
       });
+    },
+    onMutate: (variables) => {
+      if (notificationsToken) variables.notificationsToken = notificationsToken;
     },
   });
 };

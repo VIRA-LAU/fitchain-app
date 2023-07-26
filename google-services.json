@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "698326062704",
+    "project_id": "fitchain-app",
+    "storage_bucket": "fitchain-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:698326062704:android:d27188cf6503230166c6b5",
+        "android_client_info": {
+          "package_name": "com.fitchain.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "698326062704-eq7kheaa6pptdoq8qhbdvf35tm6nngis.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrV6r4nheQpiB3rMOD7lwaqg3C2BkhWWM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "698326062704-eq7kheaa6pptdoq8qhbdvf35tm6nngis.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

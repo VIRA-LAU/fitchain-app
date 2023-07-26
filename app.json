@@ -17,9 +17,7 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/4396245c-91e4-4255-ab4c-236cd04253dc"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "buildNumber": "6",
       "supportsTablet": true,
@@ -44,7 +42,8 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
       ],
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./src/assets/images/Logo-Icon.png"
@@ -59,6 +58,12 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow FitChain to use your location."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./src/assets/images/Logo-Icon.png"
         }
       ]
     ],
