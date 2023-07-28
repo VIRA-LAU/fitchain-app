@@ -11,6 +11,7 @@ import {
 import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList, StackParamList } from "src/navigation";
+import { PlayerStatus } from "src/types";
 
 type textOptions =
   | "create"
@@ -50,6 +51,7 @@ export const UpdateCard = ({
   profileId,
   gameId,
   date,
+  playerStatus,
 }: {
   name: string;
   type: textOptions;
@@ -59,6 +61,7 @@ export const UpdateCard = ({
   profileId?: number;
   gameId: number;
   date: Date;
+  playerStatus?: PlayerStatus;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -71,7 +74,6 @@ export const UpdateCard = ({
       >
     >();
 
-  const { data: playerStatus } = usePlayerStatusQuery(gameId);
   const { mutate: editJoinRequest } = useEditJoinRequestMutation();
 
   if (!playerStatus) return <View />;

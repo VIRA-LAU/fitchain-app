@@ -7,7 +7,10 @@ import {
   BackHandler,
   TouchableOpacity,
 } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  StackScreenProps,
+  createStackNavigator,
+} from "@react-navigation/stack";
 import { Text, useTheme } from "react-native-paper";
 import {
   GameDetails,
@@ -29,14 +32,20 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { StackParamList } from "./Authenticator";
 import * as Location from "expo-location";
+import * as Notifications from "expo-notifications";
+import { useQueryClient } from "react-query";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
+type Props = StackScreenProps<StackParamList, "BottomBar">;
 
 // TODO: Separate bottom tab navigator as a component for reusability
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, useWindowDimensions().width);
   const [playScreenVisible, setPlayScreenVisible] = useState<boolean>(false);
+  const [permissionReady, setPermissionReady] = useState<boolean>(false);
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const handleBack = () => {
@@ -54,12 +63,34 @@ const BottomTabNavigator = () => {
   useEffect(() => {
     const requestLocationPermission = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
+      setPermissionReady(true);
       if (status !== "granted") {
         console.error("Permission to access location was denied");
         return;
       }
     };
     requestLocationPermission();
+
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const url = response.notification.request.content.data.url as string;
+        if (url === "home") {
+          queryClient.refetchQueries("received-requests");
+          queryClient.refetchQueries("invitations");
+          navigation.navigate("BottomBar", { screen: "Home" });
+        } else if (url.includes("game")) {
+          const gameId = parseInt(url.split("/").pop()!);
+          navigation.push("GameDetails", {
+            id: gameId,
+            isPrevious: false,
+          });
+        }
+      }
+    );
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   return (
@@ -107,7 +138,9 @@ const BottomTabNavigator = () => {
           <Text style={styles.playText}>Play</Text>
         </TouchableOpacity>
       </View>
-      <Play visible={playScreenVisible} setVisible={setPlayScreenVisible} />
+      {permissionReady && (
+        <Play visible={playScreenVisible} setVisible={setPlayScreenVisible} />
+      )}
     </View>
   );
 };

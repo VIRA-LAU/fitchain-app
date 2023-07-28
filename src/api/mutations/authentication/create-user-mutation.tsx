@@ -3,7 +3,7 @@ import { useMutation } from "react-query";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SignUpStackParamList } from "src/navigation";
 import { AxiosError } from "axios";
-import { notificationsToken } from "src/utils/NotificationService";
+import { getExpoPushTokenAsync } from "expo-notifications";
 
 type Request = {
   firstName: string;
@@ -33,7 +33,8 @@ export const useCreateUserMutation = () => {
         userId: data,
       });
     },
-    onMutate: (variables) => {
+    onMutate: async (variables) => {
+      const notificationsToken = (await getExpoPushTokenAsync()).data;
       if (notificationsToken) variables.notificationsToken = notificationsToken;
     },
   });

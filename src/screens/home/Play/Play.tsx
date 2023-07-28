@@ -285,20 +285,12 @@ export const Play = ({
                     ]}
                   >
                     Nearby:{" "}
-                    {!searchLocationMarker ||
-                    !searchLocationName ||
-                    !initialMapRegion
-                      ? "Loading..."
-                      : searchLocationName}
+                    {!searchLocationName ? "Loading..." : searchLocationName}
                   </Text>
                 </View>
                 <TouchableOpacity
                   onPress={() => setMapDisplayed(true)}
-                  disabled={
-                    !searchLocationMarker ||
-                    !searchLocationName ||
-                    !initialMapRegion
-                  }
+                  disabled={!searchLocationName}
                   style={{ justifyContent: "center" }}
                 >
                   <Text

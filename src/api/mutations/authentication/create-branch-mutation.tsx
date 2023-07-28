@@ -3,7 +3,7 @@ import { useMutation } from "react-query";
 import { AxiosError } from "axios";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { SignUpStackParamList } from "src/navigation";
-import { notificationsToken } from "src/utils/NotificationService";
+import { getExpoPushTokenAsync } from "expo-notifications";
 
 type Request = {
   location: string;
@@ -39,7 +39,8 @@ export const useCreateBranchMutation = () => {
         userId: data,
       });
     },
-    onMutate: (variables) => {
+    onMutate: async (variables) => {
+      const notificationsToken = (await getExpoPushTokenAsync()).data;
       if (notificationsToken) variables.notificationsToken = notificationsToken;
     },
   });

@@ -7,7 +7,6 @@ import { UserContext, getData } from "src/utils";
 import { HomeNavigator } from "./HomeNavigator";
 import { BranchHomeNavigator } from "./BranchHomeNavigator";
 import { LatLng } from "react-native-maps";
-import { NotificationService } from "src/utils/NotificationService";
 
 export type StackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
@@ -150,15 +149,7 @@ export const Authenticator = () => {
     getLocalData();
   }, []);
 
-  if (userData)
-    return (
-      <NotificationService>
-        <HomeNavigator />
-      </NotificationService>
-    );
-  else if (branchData)
-    <NotificationService>
-      <BranchHomeNavigator />
-    </NotificationService>;
+  if (userData) return <HomeNavigator />;
+  else if (branchData) return <BranchHomeNavigator />;
   else return <SignUpNavigator />;
 };

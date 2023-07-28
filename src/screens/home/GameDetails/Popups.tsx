@@ -43,7 +43,7 @@ export const PopupContainer = ({
         style={styles.promptView}
         onPress={() => setPopupVisible(null)}
       >
-        <View style={[styles.prompt, { paddingBottom: 20 }]}>
+        <Pressable style={[styles.prompt, { paddingBottom: 20 }]}>
           <Text style={styles.promptText}>Choose Team</Text>
           <View
             style={{
@@ -95,7 +95,7 @@ export const PopupContainer = ({
               <Text style={styles.promptTeamText}>Away</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </Pressable>
       </Pressable>
     );
   else if (popupVisible === "cancelJoinGame")
@@ -104,7 +104,7 @@ export const PopupContainer = ({
         style={styles.promptView}
         onPress={() => setPopupVisible(null)}
       >
-        <View style={styles.prompt}>
+        <Pressable style={styles.prompt}>
           <Text style={styles.promptText}>
             Are you sure you want to{" "}
             {playerStatus?.hasRequestedtoJoin === "APPROVED" ||
@@ -151,7 +151,7 @@ export const PopupContainer = ({
             Yes
           </Button>
           <Button onPress={() => setPopupVisible(null)}>No</Button>
-        </View>
+        </Pressable>
       </Pressable>
     );
   else if (popupVisible === "respondToInvitation")
@@ -160,7 +160,7 @@ export const PopupContainer = ({
         style={styles.promptView}
         onPress={() => setPopupVisible(null)}
       >
-        <View style={styles.prompt}>
+        <Pressable style={styles.prompt}>
           <Text style={styles.promptText}>
             Would you like to join this game?
           </Text>
@@ -212,7 +212,7 @@ export const PopupContainer = ({
             No
           </Button>
           <Button onPress={() => setPopupVisible(null)}>Later</Button>
-        </View>
+        </Pressable>
       </Pressable>
     );
   else

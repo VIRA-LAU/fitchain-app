@@ -4,7 +4,7 @@ import { useMutation } from "react-query";
 import { UserContext, storeData } from "src/utils";
 import { Branch, User } from "src/types";
 import { AxiosError } from "axios";
-import { notificationsToken } from "src/utils/NotificationService";
+import { getExpoPushTokenAsync } from "expo-notifications";
 
 type Request = {
   email: string;
@@ -111,7 +111,8 @@ export const useLoginUserMutation = () => {
         storeData(keys, values);
       }
     },
-    onMutate: (variables) => {
+    onMutate: async (variables) => {
+      const notificationsToken = (await getExpoPushTokenAsync()).data;
       if (notificationsToken) variables.notificationsToken = notificationsToken;
     },
   });

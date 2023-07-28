@@ -67,6 +67,7 @@ export const Team = ({
           date={new Date(gameUpdates.createdAt)}
           gameId={game?.id}
           profileId={gameUpdates.admin.id}
+          playerStatus={playerStatus}
         />
       ),
       date: new Date(gameUpdates.createdAt),
@@ -88,6 +89,7 @@ export const Team = ({
               date={new Date(invitation.createdAt)}
               gameId={game?.id}
               profileId={invitation.friend.id}
+              playerStatus={playerStatus}
             />
           ),
           date: new Date(invitation.createdAt),
@@ -106,6 +108,7 @@ export const Team = ({
               requestId={request.id}
               gameId={game?.id}
               profileId={request.user.id}
+              playerStatus={playerStatus}
             />
           ),
           date: new Date(request.createdAt),
