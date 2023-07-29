@@ -13,6 +13,7 @@ import {
   Pressable,
   BackHandler,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParamList } from "src/navigation";
@@ -321,7 +322,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                         day: "numeric",
                         year: "numeric",
                       })
-                      .slice(0, -6)}
+                      .slice(0, Platform.OS === "ios" ? -5 : -6)}
                   </Text>
                   <Text
                     variant="labelLarge"

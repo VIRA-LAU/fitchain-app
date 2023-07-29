@@ -10,6 +10,7 @@ import {
   useWindowDimensions,
   View,
   Image,
+  Platform,
 } from "react-native";
 import { useTheme, Button, Avatar } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -145,7 +146,7 @@ export const InvitationCard = ({
                   day: "numeric",
                   year: "numeric",
                 })
-                .slice(0, -6)}
+                .slice(0, Platform.OS === "ios" ? -5 : -6)}
               , {timeString}
             </Text>
             , at <Text style={styles.text}>{game.court.branch.venue.name}</Text>

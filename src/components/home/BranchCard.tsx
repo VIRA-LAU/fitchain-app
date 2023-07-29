@@ -62,8 +62,7 @@ export const BranchCard = ({
   branch: Branch;
   playScreenBookingDetails?: {
     date: string;
-    startTime?: string;
-    endTime?: string;
+    time?: number[];
     gameType: GameType;
     nbOfPlayers: number;
   };

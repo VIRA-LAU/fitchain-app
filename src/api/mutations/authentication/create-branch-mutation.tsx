@@ -15,7 +15,7 @@ type Request = {
   managerFirstName: string;
   managerLastName: string;
   password: string;
-  notificationsToken: string | undefined;
+  notificationsToken?: string;
 };
 
 const createBranch = async (data: Request) => {

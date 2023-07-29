@@ -28,6 +28,7 @@ import {
   useTimeSlotsQuery,
   useUpdateCourtMutation,
 } from "src/api";
+import { TimeSlotPicker, parseTimeFromMinutes } from "src/components";
 
 export type existingCourtType = {
   courtId: number;
@@ -37,6 +38,8 @@ export type existingCourtType = {
   numOfPlayers: number;
   selectedTimeSlots: number[];
 };
+
+const timeSlots: number[][] = [];
 
 export const CreateCourt = ({
   visible,
@@ -65,19 +68,17 @@ export const CreateCourt = ({
   const [numOfPlayers, setNumOfPlayers] = useState<number>(
     existingInfo.numOfPlayers
   );
-  const [selectedTimeSlots, setSelectedTimeSlots] = useState<number[]>(
-    existingInfo.selectedTimeSlots
-  );
+  const [timeSlotTime, setTimeSlotTime] = useState<number[]>();
+  const [timeSlotPickerVisible, setTimeSlotPickerVisible] = useState(false);
 
   const resetFields = () => {
     setName("");
     setPrice("");
     setCourtType("Basketball");
     setNumOfPlayers(6);
-    setSelectedTimeSlots([]);
+    // setSelectedTimeSlots([]);
   };
 
-  const { data: timeSlots } = useTimeSlotsQuery();
   const { mutate: createCourt, isLoading: createLoading } =
     useCreateCourtMutation(() => {
       resetFields();
@@ -97,7 +98,7 @@ export const CreateCourt = ({
       setPrice(existingInfo.price);
       setCourtType(existingInfo.courtType);
       setNumOfPlayers(existingInfo.numOfPlayers);
-      setSelectedTimeSlots(existingInfo.selectedTimeSlots);
+      // setSelectedTimeSlots(existingInfo.selectedTimeSlots);
     } else resetFields();
   }, [visible, JSON.stringify(existingInfo)]);
 
@@ -126,7 +127,7 @@ export const CreateCourt = ({
           </TouchableOpacity>
         </View>
 
-        <View style={styles.createView}>
+        <ScrollView contentContainerStyle={styles.createView}>
           <View style={styles.textInputView}>
             <MaterialCommunityIcon
               name={"account-outline"}
@@ -292,84 +293,78 @@ export const CreateCourt = ({
             >
               Time Slots
             </Text>
-            {selectedTimeSlots.length > 0 && (
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedTimeSlots([]);
-                }}
-              >
-                <Text style={styles.reset}>Reset</Text>
-              </TouchableOpacity>
-            )}
           </View>
-          <ScrollView
-            style={{ flex: 1, marginVertical: 10 }}
-            contentContainerStyle={styles.timeSlotsView}
-          >
-            {timeSlots?.map((timeSlot, index) => (
-              <Pressable
-                key={index}
-                style={({ pressed }) => [
-                  styles.timeSlotView,
-                  selectedTimeSlots.includes(timeSlot.id!)
-                    ? { borderColor: colors.primary }
-                    : {},
-                  pressed ? { backgroundColor: colors.background } : {},
-                ]}
-                onPress={() => {
-                  if (!selectedTimeSlots.includes(timeSlot.id!)) {
-                    setSelectedTimeSlots([...selectedTimeSlots, timeSlot.id!]);
-                  } else
-                    setSelectedTimeSlots(
-                      selectedTimeSlots.filter(
-                        (timeSlotId) => timeSlotId !== timeSlot.id
-                      )
-                    );
-                }}
-              >
+          <View style={styles.timeSlotsView}>
+            {timeSlots.map((timeSlot, index) => (
+              <View key={index} style={styles.timeSlotView}>
                 <Text style={styles.timeSlotText}>
-                  {timeSlot.startTime} - {timeSlot.endTime}
+                  {parseTimeFromMinutes(timeSlot[0], true)} -{" "}
+                  {parseTimeFromMinutes(timeSlot[1], true)}
                 </Text>
-              </Pressable>
+                <View style={{ marginLeft: "auto", flexDirection: "row" }}>
+                  <Button>Edit</Button>
+                  <Button textColor="#ff4500">Remove</Button>
+                </View>
+              </View>
             ))}
-          </ScrollView>
+            <Button
+              onPress={() => {
+                setTimeSlotPickerVisible(true);
+              }}
+            >
+              Add New Time Slot
+            </Button>
+          </View>
           {createLoading || updateLoading ? (
             <ActivityIndicator />
           ) : (
-            <Button
-              textColor={colors.secondary}
-              buttonColor={colors.primary}
-              style={{ borderRadius: 5 }}
-              onPress={() => {
-                if (visible === "create") {
-                  if (name && price) {
-                    createCourt({
-                      courtType,
-                      name: name.trim(),
-                      price: parseInt(price.trim()),
-                      nbOfPlayers: numOfPlayers,
-                      timeSlots: selectedTimeSlots,
-                    });
+            <View style={{ marginTop: "auto" }}>
+              <Button
+                textColor={colors.secondary}
+                buttonColor={colors.primary}
+                style={{ borderRadius: 5, marginTop: 20 }}
+                onPress={() => {
+                  if (visible === "create") {
+                    if (name && price) {
+                      createCourt({
+                        courtType,
+                        name: name.trim(),
+                        price: parseInt(price.trim()),
+                        nbOfPlayers: numOfPlayers,
+                        timeSlots: [],
+                      });
+                    }
+                  } else {
+                    if (name && price) {
+                      updateCourt({
+                        courtId: existingInfo.courtId,
+                        courtType,
+                        name: name.trim(),
+                        price: parseInt(price.trim()),
+                        nbOfPlayers: numOfPlayers,
+                        timeSlots: [],
+                      });
+                    }
                   }
-                } else {
-                  if (name && price) {
-                    updateCourt({
-                      courtId: existingInfo.courtId,
-                      courtType,
-                      name: name.trim(),
-                      price: parseInt(price.trim()),
-                      nbOfPlayers: numOfPlayers,
-                      timeSlots: selectedTimeSlots,
-                    });
-                  }
-                }
-              }}
-            >
-              {visible === "edit" ? "Update" : "Create"}
-            </Button>
+                }}
+              >
+                {visible === "edit" ? "Update" : "Create"}
+              </Button>
+            </View>
           )}
-        </View>
+        </ScrollView>
       </View>
+      <TimeSlotPicker
+        visible={timeSlotPickerVisible}
+        setVisible={setTimeSlotPickerVisible}
+        time={timeSlotTime}
+        setTime={setTimeSlotTime}
+        onPress={(tempTime: number[]) => {
+          timeSlots.push(tempTime);
+          setTimeSlotTime(undefined);
+        }}
+        showEndTime
+      />
     </Fragment>
   );
 };
@@ -467,28 +462,22 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       fontFamily: "Inter-Medium",
     },
     timeSlotsView: {
-      flexDirection: "row",
       justifyContent: "space-between",
-      flexWrap: "wrap",
+      alignItems: "center",
+      marginVertical: 10,
     },
     timeSlotView: {
       backgroundColor: colors.secondary,
-      borderRadius: 20,
-      width: 0.32 * (windowWidth - 40),
+      flexDirection: "row",
+      borderRadius: 5,
+      width: "100%",
       alignItems: "center",
-      paddingVertical: 10,
+      padding: 10,
+      paddingLeft: 20,
       marginVertical: 5,
-      borderWidth: 1,
-      borderColor: colors.secondary,
     },
     timeSlotText: {
       fontFamily: "Inter-Medium",
-      color: colors.tertiary,
-      fontSize: 12,
-    },
-    reset: {
-      fontFamily: "Inter-Medium",
-      color: colors.tertiary,
-      marginRight: 10,
+      color: "white",
     },
   });

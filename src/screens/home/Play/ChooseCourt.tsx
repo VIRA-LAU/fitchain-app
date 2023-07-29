@@ -24,9 +24,12 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
     profilePhotoUrl,
   } = route.params;
 
-  const [selectedTimeSlots, setSelectedTimeSlots] = useState<TimeSlot[]>([]);
+  const [confirmedTime, setConfirmedTime] = useState<number[] | undefined>(
+    bookingDetails?.time
+  );
   const [pressedCourt, setPressedCourt] = useState<Court | null>(null);
-  const [timeSlotVisible, setTimeSlotVisible] = useState<boolean>(false);
+  const [timeSlotPickerVisible, setTimeSlotPickerVisible] =
+    useState<boolean>(false);
 
   const date = new Date(JSON.parse(bookingDetails!.date));
   const searchDate = `${date.getFullYear()}-${(
@@ -39,18 +42,6 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
     date: searchDate,
     branchId,
   });
-
-  useEffect(() => {
-    selectedTimeSlots.sort((a, b) => {
-      if (a.startTime < b.startTime) {
-        return -1;
-      }
-      if (a.startTime < b.startTime) {
-        return 1;
-      }
-      return 0;
-    });
-  }, [JSON.stringify(selectedTimeSlots)]);
 
   return (
     <AppHeader
@@ -65,31 +56,30 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
           {venueName}, {branchLocation}
         </Text>
         <TimeSlotPicker
-          visible={timeSlotVisible}
-          setVisible={setTimeSlotVisible}
-          timeSlots={pressedCourt?.courtTimeSlots}
-          selectedTimeSlots={selectedTimeSlots}
-          setSelectedTimeSlots={setSelectedTimeSlots}
+          visible={timeSlotPickerVisible}
+          setVisible={setTimeSlotPickerVisible}
+          time={confirmedTime}
+          setTime={setConfirmedTime}
           onPress={() => {
-            if (bookingDetails && selectedTimeSlots)
-              navigation.push("BookingPayment", {
-                venueName: venueName!,
-                courtName: pressedCourt!.name,
-                courtType: pressedCourt!.courtType,
-                courtRating: pressedCourt!.rating,
-                courtMaxPlayers: pressedCourt!.nbOfPlayers,
-                selectedTimeSlots,
-                price: pressedCourt!.price,
-                bookingDetails: {
-                  ...bookingDetails,
-                  timeSlotIds: selectedTimeSlots.map((slot) => slot.id),
-                  startTime: selectedTimeSlots[0].startTime,
-                  endTime:
-                    selectedTimeSlots[selectedTimeSlots.length - 1].endTime,
-                  courtId: pressedCourt!.id,
-                },
-                profilePhotoUrl,
-              });
+            // if (bookingDetails && selectedTimeSlots)
+            //   navigation.push("BookingPayment", {
+            //     venueName: venueName!,
+            //     courtName: pressedCourt!.name,
+            //     courtType: pressedCourt!.courtType,
+            //     courtRating: pressedCourt!.rating,
+            //     courtMaxPlayers: pressedCourt!.nbOfPlayers,
+            //     selectedTimeSlots,
+            //     price: pressedCourt!.price,
+            //     bookingDetails: {
+            //       ...bookingDetails,
+            //       timeSlotIds: selectedTimeSlots.map((slot) => slot.id),
+            //       startTime: selectedTimeSlots[0].startTime,
+            //       endTime:
+            //         selectedTimeSlots[selectedTimeSlots.length - 1].endTime,
+            //       courtId: pressedCourt!.id,
+            //     },
+            //     profilePhotoUrl,
+            //   });
           }}
         />
         {branches &&
@@ -103,7 +93,7 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
               price={court.price}
               onPress={() => {
                 setPressedCourt(court);
-                setTimeSlotVisible(true);
+                setTimeSlotPickerVisible(true);
               }}
               rating={court.rating}
             />

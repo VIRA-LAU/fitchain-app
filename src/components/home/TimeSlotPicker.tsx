@@ -1,35 +1,51 @@
-import React, { Fragment, Dispatch, SetStateAction } from "react";
-import {
-  View,
-  StyleSheet,
-  Pressable,
-  Text,
-  useWindowDimensions,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import { Button, useTheme } from "react-native-paper";
+import React, { Fragment, useState, Dispatch, SetStateAction } from "react";
+import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { TimeSlot } from "src/types";
+import { Slider } from "@miblanchard/react-native-slider";
+
+export const parseTimeFromMinutes = (num: number, includeMinutes: boolean) => {
+  const suffix = num === 1440 ? "AM" : Math.floor(num / 60) >= 12 ? "PM" : "AM";
+  var hour =
+    Math.floor(num / 60) >= 12
+      ? Math.floor(num / 60) - 12
+      : Math.floor(num / 60);
+  if (hour === 0) hour = 12;
+
+  if (includeMinutes) {
+    const minutes = num % 60;
+    return `${("0" + hour).slice(-2)}:${("0" + minutes).slice(-2)} ${suffix}`;
+  } else {
+    return `${hour} ${suffix}`;
+  }
+};
+
+const trackMarks: number[] = [];
+for (var i = 0; i <= 1440; i += 240) trackMarks.push(i);
 
 export const TimeSlotPicker = ({
   visible,
   setVisible,
+  time,
+  setTime,
   onPress,
-  timeSlots,
-  selectedTimeSlots,
-  setSelectedTimeSlots,
+  showEndTime = false,
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
-  onPress: Function;
-  timeSlots?: { timeSlot: TimeSlot }[];
-  selectedTimeSlots: TimeSlot[];
-  setSelectedTimeSlots: Dispatch<SetStateAction<TimeSlot[]>>;
+  time?: number[];
+  setTime: Dispatch<SetStateAction<number[] | undefined>>;
+  onPress?: Function;
+  showEndTime?: boolean;
 }) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
-  const styles = makeStyles(colors, height, width);
+  const styles = makeStyles(colors, width, height);
+
+  const [tempTime, setTempTime] = useState<number[]>(time || [720, 840]);
+  const diff = tempTime[1] - tempTime[0];
+  const duration =
+    diff === 30 ? "30 minutes" : diff === 60 ? "1 hour" : `${diff / 60} hours`;
 
   return (
     <Fragment>
@@ -42,67 +58,79 @@ export const TimeSlotPicker = ({
       <View
         style={[styles.wrapperView, { display: visible ? "flex" : "none" }]}
       >
-        <Text style={styles.title}>Select Time Slot</Text>
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-          {timeSlots?.map(({ timeSlot }, index) => (
-            <TouchableOpacity
-              activeOpacity={0.6}
-              key={index}
-              style={[
-                styles.timeSlotView,
-                index === 0
-                  ? { marginLeft: 20 }
-                  : index === timeSlots.length - 1
-                  ? { marginRight: 20 }
-                  : {},
-                selectedTimeSlots.findIndex(
-                  (slot) => slot.id === timeSlot.id
-                ) !== -1
-                  ? { borderColor: colors.primary }
-                  : {},
-              ]}
-              onPress={() => {
-                if (
-                  selectedTimeSlots.findIndex(
-                    (slot) => slot.id === timeSlot.id
-                  ) === -1
-                )
-                  setSelectedTimeSlots([...selectedTimeSlots, timeSlot]);
-                else
-                  setSelectedTimeSlots(
-                    selectedTimeSlots.filter((slot) => slot.id !== timeSlot.id)
-                  );
-              }}
-            >
-              <Text style={styles.timeSlotText}>
-                {timeSlot.startTime} - {timeSlot.endTime}
+        <View style={styles.summaryView}>
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              borderRightWidth: 1,
+              borderRightColor: colors.tertiary,
+            }}
+          >
+            <View>
+              <Text style={styles.labelText}>Start Time</Text>
+              <Text style={styles.valueText}>
+                {parseTimeFromMinutes(tempTime[0], true)}
               </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+            </View>
+          </View>
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <View style={{ minWidth: "60%" }}>
+              <Text style={styles.labelText}>
+                {showEndTime ? "End Time" : "Duration"}
+              </Text>
+              <Text style={styles.valueText}>
+                {showEndTime
+                  ? parseTimeFromMinutes(tempTime[1], true)
+                  : duration}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <Slider
+          minimumValue={0}
+          maximumValue={1440}
+          step={30}
+          value={tempTime}
+          trackMarks={trackMarks}
+          onValueChange={setTempTime}
+          thumbTintColor={colors.primary}
+          minimumTrackTintColor={colors.primary}
+          renderTrackMarkComponent={(index) => {
+            return (
+              <View style={{ marginTop: 50, transform: [{ translateX: -10 }] }}>
+                <Text
+                  style={{
+                    fontFamily: "Inter-Medium",
+                    color: colors.tertiary,
+                  }}
+                >
+                  {parseTimeFromMinutes(trackMarks[index], false)}
+                </Text>
+              </View>
+            );
+          }}
+        />
         <Button
-          buttonColor={
-            selectedTimeSlots.length > 0 ? colors.primary : colors.tertiary
-          }
+          buttonColor={colors.primary}
           textColor={"black"}
-          style={{ borderRadius: 5, margin: 25 }}
-          onPress={
-            selectedTimeSlots.length > 0
-              ? () => {
-                  onPress();
-                  setVisible(false);
-                }
-              : undefined
-          }
+          style={{ borderRadius: 5, marginTop: 40 }}
+          onPress={() => {
+            if (onPress) onPress(tempTime);
+            else {
+              setTime(tempTime);
+            }
+            setVisible(false);
+          }}
         >
-          Continue
+          Confirm
         </Button>
       </View>
     </Fragment>
   );
 };
 
-const makeStyles = (colors: MD3Colors, height: number, width: number) =>
+const makeStyles = (colors: MD3Colors, width: number, height: number) =>
   StyleSheet.create({
     backgroundView: {
       position: "absolute",
@@ -119,26 +147,20 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
       backgroundColor: colors.background,
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,
-      paddingTop: 20,
+      padding: 20,
       zIndex: 2,
     },
-    title: {
-      fontFamily: "Inter-SemiBold",
-      color: colors.tertiary,
+    summaryView: {
       marginBottom: 20,
-      marginHorizontal: 20,
-    },
-    timeSlotView: {
+      flexDirection: "row",
       backgroundColor: colors.secondary,
-      borderRadius: 20,
-      paddingHorizontal: 15,
-      paddingVertical: 10,
-      marginHorizontal: 3,
-      borderWidth: 1,
-      borderColor: colors.secondary,
+      paddingVertical: 20,
+      borderRadius: 7,
     },
-    timeSlotText: {
+    labelText: { fontFamily: "Inter-Medium", color: colors.tertiary },
+    valueText: {
       fontFamily: "Inter-Medium",
-      color: colors.tertiary,
+      color: "white",
+      fontSize: 22,
     },
   });

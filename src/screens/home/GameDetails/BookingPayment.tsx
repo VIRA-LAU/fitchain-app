@@ -4,6 +4,7 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import { useTheme, Text, ActivityIndicator } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -170,7 +171,7 @@ export const BookingPayment = ({ navigation, route }: Props) => {
                     day: "numeric",
                     year: "numeric",
                   })
-                  .slice(0, -6)}
+                  .slice(0, Platform.OS === "ios" ? -5 : -6)}
               </Text>
               {/* <Feather name="edit-3" color={"white"} size={16} /> */}
             </View>

@@ -118,7 +118,7 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
         <Text style={[styles.myCalendar]}>My Calendar</Text>
         <CalendarPicker
           textStyle={{ color: "white" }}
-          todayBackgroundColor={colors.primary}
+          todayBackgroundColor={colors.tertiary}
           selectedDayStyle={{ backgroundColor: colors.primary }}
           initialDate={new Date()}
           onDateChange={(date) => {

@@ -1,6 +1,12 @@
 import { Avatar, Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useEditJoinRequestMutation, usePlayerStatusQuery } from "src/api";
 import { Skeleton } from "../home";
@@ -148,7 +154,7 @@ export const UpdateCard = ({
                     day: "numeric",
                     year: "numeric",
                   })
-                  .slice(0, -6)}
+                  .slice(0, Platform.OS === "ios" ? -5 : -6)}
               </Text>
             </View>
             {type !== "photo-upload" ? (

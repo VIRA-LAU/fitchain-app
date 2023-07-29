@@ -22,8 +22,7 @@ export const ChooseBranch = ({ navigation, route }: Props) => {
     location,
     locationName,
     date: dateStr,
-    startTime,
-    endTime,
+    time,
     gameType,
     nbOfPlayers,
   } = route.params;
@@ -38,8 +37,8 @@ export const ChooseBranch = ({ navigation, route }: Props) => {
     {
       date: searchDate,
       gameType,
-      startTime,
-      endTime,
+      startTime: "",
+      endTime: "",
       nbOfPlayers,
     }
   );
@@ -93,8 +92,7 @@ export const ChooseBranch = ({ navigation, route }: Props) => {
               promoted={false}
               playScreenBookingDetails={{
                 date: dateStr,
-                startTime,
-                endTime,
+                time,
                 gameType,
                 nbOfPlayers,
               }}

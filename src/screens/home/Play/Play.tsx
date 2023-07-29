@@ -13,6 +13,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Pressable,
+  Platform,
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -29,7 +30,11 @@ import { BottomTabParamList, StackParamList } from "src/navigation";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { Branch, GameType } from "src/types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { MapComponent } from "src/components";
+import {
+  MapComponent,
+  TimeSlotPicker,
+  parseTimeFromMinutes,
+} from "src/components";
 import { LatLng, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import { useLocationNameQuery } from "src/api";
@@ -62,17 +67,15 @@ export const Play = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [gameType, setGameType] = useState<GameType>("Basketball");
-  const [dateTimePickerVisible, setDateTimePickerVisible] = useState<
-    "date" | "startTime" | "endTime" | false
-  >(false);
+  const [dateTimePickerVisible, setDateTimePickerVisible] = useState(false);
+  const [timeSlotPickerVisible, setTimeSlotPickerVisible] = useState(false);
 
   useEffect(() => {
     if (branch) setGameType(branch?.courts[0].courtType);
   }, [JSON.stringify(branch)]);
 
-  const [searchDate, setSearchDate] = useState<Date | null>(null);
-  const [startTimeDate, setStartTimeDate] = useState<Date | null>(null);
-  const [endTimeDate, setEndTimeDate] = useState<Date | null>(null);
+  const [searchDate, setSearchDate] = useState<Date | null>(new Date());
+  const [searchTime, setSearchTime] = useState<number[]>();
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(1);
 
   const [mapDisplayed, setMapDisplayed] = useState<boolean>(false);
@@ -107,8 +110,8 @@ export const Play = ({
     if (searchLocationMarker) getLocationName();
   }, [JSON.stringify(searchLocationMarker)]);
 
-  const [selectedDate, selectedStartTime, selectedEndTime] = useMemo(() => {
-    let [date, startTime, endTime]: (string | null)[] = [null, null, null];
+  const [selectedDate, selectedTime] = useMemo(() => {
+    let [date, time]: (string | null)[] = [null, null];
     if (searchDate) {
       date = searchDate
         .toLocaleDateString(undefined, {
@@ -117,16 +120,17 @@ export const Play = ({
           day: "numeric",
           year: "numeric",
         })
-        .slice(0, -6);
+        .slice(0, Platform.OS === "ios" ? -5 : -6);
     }
-    if (startTimeDate) {
-      startTime = timeFormatter(startTimeDate);
+    if (searchTime) {
+      time = `${parseTimeFromMinutes(
+        searchTime[0],
+        true
+      )} - ${parseTimeFromMinutes(searchTime[1], true)}`;
     }
-    if (endTimeDate) {
-      endTime = timeFormatter(endTimeDate);
-    }
-    return [date, startTime, endTime];
-  }, [searchDate, startTimeDate, endTimeDate]);
+
+    return [date, time];
+  }, [searchDate, searchTime]);
 
   const navigation =
     useNavigation<
@@ -356,20 +360,8 @@ export const Play = ({
             <View style={styles.dateTime}>
               <View style={styles.dateTimeRow}>
                 <Text style={styles.labelText}>Date</Text>
-                {searchDate && (
-                  <TouchableOpacity
-                    style={styles.resetView}
-                    onPress={() => {
-                      setSearchDate(null);
-                      setStartTimeDate(null);
-                      setEndTimeDate(null);
-                    }}
-                  >
-                    <Text style={styles.reset}>Reset</Text>
-                  </TouchableOpacity>
-                )}
                 <TouchableOpacity
-                  onPress={() => setDateTimePickerVisible("date")}
+                  onPress={() => setDateTimePickerVisible(true)}
                 >
                   <Text style={styles.buttonText}>
                     {selectedDate ? selectedDate : "Select Date"}
@@ -377,57 +369,22 @@ export const Play = ({
                 </TouchableOpacity>
               </View>
               <View style={styles.dateTimeRow}>
-                <Text style={styles.labelText}>Start Time</Text>
-                {startTimeDate && (
+                <Text style={styles.labelText}>Time</Text>
+                {searchTime && (
                   <TouchableOpacity
                     style={styles.resetView}
                     onPress={() => {
-                      setStartTimeDate(null);
-                      setEndTimeDate(null);
+                      setSearchTime(undefined);
                     }}
                   >
                     <Text style={styles.reset}>Reset</Text>
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity
-                  onPress={
-                    searchDate
-                      ? () => setDateTimePickerVisible("startTime")
-                      : undefined
-                  }
-                  disabled={!searchDate}
+                  onPress={() => setTimeSlotPickerVisible(true)}
                 >
-                  <Text
-                    style={[
-                      styles.buttonText,
-                      searchDate
-                        ? { color: colors.primary }
-                        : { color: colors.tertiary },
-                    ]}
-                  >
-                    {selectedStartTime ? selectedStartTime : "Select Time"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.dateTimeRow}>
-                <Text style={styles.labelText}>End Time</Text>
-                <TouchableOpacity
-                  onPress={
-                    startTimeDate
-                      ? () => setDateTimePickerVisible("endTime")
-                      : undefined
-                  }
-                  disabled={!startTimeDate}
-                >
-                  <Text
-                    style={[
-                      styles.buttonText,
-                      startTimeDate
-                        ? { color: colors.primary }
-                        : { color: colors.tertiary },
-                    ]}
-                  >
-                    {selectedEndTime ? selectedEndTime : "Select Time"}
+                  <Text style={[styles.buttonText, { color: colors.primary }]}>
+                    {selectedTime || "Any Time"}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -447,12 +404,7 @@ export const Play = ({
                             gameType,
                             location: searchLocationMarker,
                             locationName: searchLocationName,
-                            startTime: startTimeDate
-                              ? timeFormatter(startTimeDate, "24")
-                              : undefined,
-                            endTime: endTimeDate
-                              ? timeFormatter(endTimeDate, "24")
-                              : undefined,
+                            time: searchTime,
                             nbOfPlayers: numberOfPlayers,
                           });
                         else {
@@ -463,12 +415,7 @@ export const Play = ({
                             bookingDetails: {
                               date: JSON.stringify(searchDate),
                               nbOfPlayers: numberOfPlayers,
-                              startTime: startTimeDate
-                                ? timeFormatter(startTimeDate, "24")
-                                : undefined,
-                              endTime: endTimeDate
-                                ? timeFormatter(endTimeDate, "24")
-                                : undefined,
+                              time: searchTime,
                               gameType,
                             },
                             profilePhotoUrl: branch.profilePhotoUrl,
@@ -496,12 +443,7 @@ export const Play = ({
                         nbOfPlayers: numberOfPlayers,
                         location: searchLocationMarker,
                         locationName: searchLocationName,
-                        startTime: startTimeDate
-                          ? timeFormatter(startTimeDate, "24")
-                          : undefined,
-                        endTime: endTimeDate
-                          ? timeFormatter(endTimeDate, "24")
-                          : undefined,
+                        time: searchTime,
                       });
                   }}
                 >
@@ -523,38 +465,11 @@ export const Play = ({
 
       <DateTimePickerModal
         isVisible={dateTimePickerVisible !== false}
-        mode={
-          dateTimePickerVisible
-            ? dateTimePickerVisible === "date"
-              ? "date"
-              : "time"
-            : "date"
-        }
-        date={
-          dateTimePickerVisible === "date" && searchDate
-            ? searchDate
-            : dateTimePickerVisible === "startTime" && startTimeDate
-            ? startTimeDate
-            : dateTimePickerVisible === "endTime" && endTimeDate
-            ? endTimeDate
-            : new Date()
-        }
+        mode={"date"}
+        date={searchDate || new Date()}
         onConfirm={(date) => {
           setDateTimePickerVisible(false);
-          if (dateTimePickerVisible === "date") {
-            setSearchDate(date);
-          } else if (dateTimePickerVisible === "startTime") {
-            setStartTimeDate(date);
-            if (!endTimeDate || endTimeDate < date) {
-              let endDate = new Date(date);
-              endDate.setHours(endDate.getHours() + 1);
-              setEndTimeDate(endDate);
-            }
-          } else {
-            if (startTimeDate && date < startTimeDate) {
-              setEndTimeDate(startTimeDate);
-            } else setEndTimeDate(date);
-          }
+          setSearchDate(date);
         }}
         onCancel={() => {
           setDateTimePickerVisible(false);
@@ -589,6 +504,13 @@ export const Play = ({
             </Text>
           </Pressable>
         )}
+      />
+
+      <TimeSlotPicker
+        visible={timeSlotPickerVisible}
+        setVisible={setTimeSlotPickerVisible}
+        time={searchTime}
+        setTime={setSearchTime}
       />
     </Fragment>
   );

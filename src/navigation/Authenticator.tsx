@@ -32,8 +32,7 @@ export type StackParamList = {
     playScreenBookingDetails?: {
       date: string;
       nbOfPlayers: number;
-      startTime?: string;
-      endTime?: string;
+      time?: number[];
       gameType: GameType;
     } | null;
   };
@@ -43,8 +42,7 @@ export type StackParamList = {
     date: string;
     location: LatLng;
     locationName: string;
-    startTime?: string;
-    endTime?: string;
+    time?: number[];
   };
   ChooseCourt: {
     venueName?: string;
@@ -53,9 +51,8 @@ export type StackParamList = {
     bookingDetails?: {
       date: string;
       nbOfPlayers: number;
-      startTime?: string;
-      endTime?: string;
       gameType: GameType;
+      time?: number[];
     };
     profilePhotoUrl?: string;
   };
@@ -65,8 +62,7 @@ export type StackParamList = {
     locationName: string;
     nbOfPlayers: number;
     date?: string;
-    startTime?: string;
-    endTime?: string;
+    time?: number[];
   };
   BookingPayment: {
     venueName: string;
@@ -81,8 +77,7 @@ export type StackParamList = {
       date: string;
       nbOfPlayers: number;
       timeSlotIds: number[];
-      startTime?: string;
-      endTime?: string;
+      time?: number[];
       gameType: GameType;
     };
     profilePhotoUrl?: string;
