@@ -1,4 +1,4 @@
-import React, {
+import {
   Dispatch,
   SetStateAction,
   useEffect,
@@ -21,25 +21,13 @@ import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
-import { GameType } from "src/types";
+import { GameType, TimeSlot } from "src/types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import {
-  useCreateCourtMutation,
-  useTimeSlotsQuery,
-  useUpdateCourtMutation,
-} from "src/api";
+import { useCreateCourtMutation, useUpdateCourtMutation } from "src/api";
 import { TimeSlotPicker, parseTimeFromMinutes } from "src/components";
+import { existingCourtType } from "./BranchManagement";
 
-export type existingCourtType = {
-  courtId: number;
-  name: string;
-  price: string;
-  courtType: GameType;
-  numOfPlayers: number;
-  selectedTimeSlots: number[];
-};
-
-const timeSlots: number[][] = [];
+var timeSlotIndexToEdit: number | undefined;
 
 export const CreateCourt = ({
   visible,
@@ -50,7 +38,7 @@ export const CreateCourt = ({
     price: "",
     courtType: "Basketball",
     numOfPlayers: 6,
-    selectedTimeSlots: [],
+    timeSlots: [],
   },
 }: {
   visible: "create" | "edit" | false;
@@ -68,7 +56,7 @@ export const CreateCourt = ({
   const [numOfPlayers, setNumOfPlayers] = useState<number>(
     existingInfo.numOfPlayers
   );
-  const [timeSlotTime, setTimeSlotTime] = useState<number[]>();
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [timeSlotPickerVisible, setTimeSlotPickerVisible] = useState(false);
 
   const resetFields = () => {
@@ -76,7 +64,7 @@ export const CreateCourt = ({
     setPrice("");
     setCourtType("Basketball");
     setNumOfPlayers(6);
-    // setSelectedTimeSlots([]);
+    setTimeSlots([]);
   };
 
   const { mutate: createCourt, isLoading: createLoading } =
@@ -98,7 +86,7 @@ export const CreateCourt = ({
       setPrice(existingInfo.price);
       setCourtType(existingInfo.courtType);
       setNumOfPlayers(existingInfo.numOfPlayers);
-      // setSelectedTimeSlots(existingInfo.selectedTimeSlots);
+      setTimeSlots(existingInfo.timeSlots);
     } else resetFields();
   }, [visible, JSON.stringify(existingInfo)]);
 
@@ -298,12 +286,30 @@ export const CreateCourt = ({
             {timeSlots.map((timeSlot, index) => (
               <View key={index} style={styles.timeSlotView}>
                 <Text style={styles.timeSlotText}>
-                  {parseTimeFromMinutes(timeSlot[0], true)} -{" "}
-                  {parseTimeFromMinutes(timeSlot[1], true)}
+                  {parseTimeFromMinutes(timeSlot.startTime, true)} -{" "}
+                  {parseTimeFromMinutes(timeSlot.endTime, true)}
                 </Text>
                 <View style={{ marginLeft: "auto", flexDirection: "row" }}>
-                  <Button>Edit</Button>
-                  <Button textColor="#ff4500">Remove</Button>
+                  <Button
+                    onPress={() => {
+                      timeSlotIndexToEdit = index;
+                      setTimeSlotPickerVisible(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    textColor="#ff4500"
+                    onPress={() => {
+                      setTimeSlots(
+                        timeSlots.filter(
+                          (slot, slotIndex) => index !== slotIndex
+                        )
+                      );
+                    }}
+                  >
+                    Remove
+                  </Button>
                 </View>
               </View>
             ))}
@@ -325,13 +331,13 @@ export const CreateCourt = ({
                 !(createLoading || updateLoading)
                   ? () => {
                       if (visible === "create") {
-                        if (name && price) {
+                        if (name && price && timeSlots.length > 0) {
                           createCourt({
                             courtType,
                             name: name.trim(),
                             price: parseInt(price.trim()),
                             nbOfPlayers: numOfPlayers,
-                            timeSlots: [],
+                            timeSlots,
                           });
                         }
                       } else {
@@ -342,7 +348,7 @@ export const CreateCourt = ({
                             name: name.trim(),
                             price: parseInt(price.trim()),
                             nbOfPlayers: numOfPlayers,
-                            timeSlots: [],
+                            timeSlots,
                           });
                         }
                       }
@@ -358,11 +364,18 @@ export const CreateCourt = ({
       <TimeSlotPicker
         visible={timeSlotPickerVisible}
         setVisible={setTimeSlotPickerVisible}
-        time={timeSlotTime}
-        setTime={setTimeSlotTime}
-        onPress={(tempTime: number[]) => {
-          timeSlots.push(tempTime);
-          setTimeSlotTime(undefined);
+        onPress={(tempTime: TimeSlot) => {
+          if (typeof timeSlotIndexToEdit !== "undefined") {
+            setTimeSlots(
+              timeSlots.map((slot, index) =>
+                index === timeSlotIndexToEdit ? { ...slot, ...tempTime } : slot
+              )
+            );
+            timeSlotIndexToEdit = undefined;
+          } else {
+            if (timeSlots) setTimeSlots([...timeSlots, tempTime]);
+            else setTimeSlots([tempTime]);
+          }
         }}
         showEndTime
       />

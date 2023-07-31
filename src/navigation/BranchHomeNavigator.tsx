@@ -6,7 +6,7 @@ import {
   BranchHome,
   BranchManagement,
   CreateCourt,
-  existingCourtType,
+  courtToEdit,
 } from "screens";
 import { VenueBottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { StackParamList } from "./Authenticator";
@@ -18,7 +18,6 @@ const BottomTabNavigator = () => {
   const [createCourtVisible, setCreateCourtVisible] = useState<
     "create" | "edit" | false
   >(false);
-  const [courtInfo, setCourtInfo] = useState<existingCourtType>();
 
   useEffect(() => {
     const handleBack = () => {
@@ -57,7 +56,6 @@ const BottomTabNavigator = () => {
             <BranchManagement
               {...props}
               setCreateCourtVisible={setCreateCourtVisible}
-              setCourtInfo={setCourtInfo}
             />
           )}
         />
@@ -65,7 +63,7 @@ const BottomTabNavigator = () => {
       <CreateCourt
         visible={createCourtVisible}
         setVisible={setCreateCourtVisible}
-        existingInfo={courtInfo}
+        existingInfo={courtToEdit?.current}
       />
     </View>
   );

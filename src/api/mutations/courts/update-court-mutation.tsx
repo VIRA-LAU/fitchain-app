@@ -2,7 +2,7 @@ import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
 import { UserContext } from "../../../utils/UserContext";
 import { useContext } from "react";
-import { Court, GameType } from "src/types";
+import { Court, GameType, TimeSlot } from "src/types";
 
 type Request = {
   courtId: number;
@@ -10,7 +10,7 @@ type Request = {
   courtType: GameType;
   nbOfPlayers: number;
   price: number;
-  timeSlots: number[];
+  timeSlots: TimeSlot[];
 };
 
 const updateCourt = async (data: Request) => {

@@ -2,14 +2,14 @@ import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
 import { UserContext } from "../../../utils/UserContext";
 import { useContext } from "react";
-import { Court, GameType } from "src/types";
+import { Court, GameType, TimeSlot } from "src/types";
 
 type Request = {
   name: string;
   courtType: GameType;
   nbOfPlayers: number;
   price: number;
-  timeSlots: number[];
+  timeSlots: TimeSlot[];
 };
 
 const createCourt = async (data: Request) => {

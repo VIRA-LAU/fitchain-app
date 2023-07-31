@@ -24,9 +24,9 @@ export interface User {
 export type GameType = "Basketball" | "Football" | "Tennis";
 
 export interface TimeSlot {
-  id: number;
-  startTime: string;
-  endTime: string;
+  id?: number;
+  startTime: number;
+  endTime: number;
   courtTimeSlots?: {
     court: {
       name: string;

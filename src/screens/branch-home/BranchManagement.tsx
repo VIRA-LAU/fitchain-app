@@ -1,9 +1,11 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import {
   Dispatch,
+  MutableRefObject,
   SetStateAction,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import {
@@ -36,25 +38,35 @@ import {
   SelectionModal,
   Skeleton,
 } from "src/components";
-import { existingCourtType } from "./CreateCourt";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import { GameType, TimeSlot } from "src/types";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
+
+export type existingCourtType = {
+  courtId: number;
+  name: string;
+  price: string;
+  courtType: GameType;
+  numOfPlayers: number;
+  timeSlots: TimeSlot[];
+};
+export var courtToEdit: MutableRefObject<existingCourtType | undefined>;
 
 export const BranchManagement = ({
   navigation,
   route,
   setCreateCourtVisible,
-  setCourtInfo,
 }: Props & {
   setCreateCourtVisible: Dispatch<SetStateAction<"create" | "edit" | false>>;
-  setCourtInfo: Dispatch<SetStateAction<existingCourtType | undefined>>;
 }) => {
   const theme = useTheme();
   const { colors } = theme;
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const styles = makeStyles(colors, windowWidth, windowHeight);
   const { branchData, setBranchData } = useContext(UserContext);
+
+  courtToEdit = useRef<existingCourtType>();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [permissionDialogVisible, setPermissionDialogVisible] = useState(false);
@@ -316,16 +328,16 @@ export const BranchManagement = ({
                 type={court.courtType}
                 venueName={branchData?.venueName!}
                 onPress={() => {
-                  setCourtInfo({
+                  courtToEdit.current = {
                     courtId: court.id,
                     name: court.name,
                     courtType: court.courtType,
                     price: court.price.toString(),
                     numOfPlayers: court.nbOfPlayers,
-                    selectedTimeSlots: court.courtTimeSlots.map(
-                      (slot) => slot.timeSlotId
+                    timeSlots: court.courtTimeSlots.map(
+                      (slot) => slot.timeSlot
                     ),
-                  });
+                  };
                   setCreateCourtVisible("edit");
                 }}
               />

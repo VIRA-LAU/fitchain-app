@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Slider } from "@miblanchard/react-native-slider";
+import { TimeSlot } from "src/types";
 
 export const parseTimeFromMinutes = (num: number, includeMinutes: boolean) => {
   const suffix = num === 1440 ? "AM" : Math.floor(num / 60) >= 12 ? "PM" : "AM";
@@ -33,16 +34,18 @@ export const TimeSlotPicker = ({
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
-  time?: number[];
-  setTime: Dispatch<SetStateAction<number[] | undefined>>;
-  onPress?: Function;
+  time?: TimeSlot;
+  setTime?: Dispatch<SetStateAction<TimeSlot | undefined>>;
+  onPress?: (tempTime: TimeSlot) => void;
   showEndTime?: boolean;
 }) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
   const styles = makeStyles(colors, width, height);
 
-  const [tempTime, setTempTime] = useState<number[]>(time || [720, 840]);
+  const [tempTime, setTempTime] = useState<number[]>(
+    time ? [time.startTime, time.endTime] : [720, 840]
+  );
   const diff = tempTime[1] - tempTime[0];
   const duration =
     diff === 30 ? "30 minutes" : diff === 60 ? "1 hour" : `${diff / 60} hours`;
@@ -115,9 +118,16 @@ export const TimeSlotPicker = ({
           mode="contained"
           style={{ marginTop: 40 }}
           onPress={() => {
-            if (onPress) onPress(tempTime);
-            else {
-              setTime(tempTime);
+            if (onPress)
+              onPress({
+                startTime: tempTime[0],
+                endTime: tempTime[1],
+              });
+            else if (setTime) {
+              setTime({
+                startTime: tempTime[0],
+                endTime: tempTime[1],
+              });
             }
             setVisible(false);
           }}

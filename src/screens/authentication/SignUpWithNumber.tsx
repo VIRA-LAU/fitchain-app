@@ -20,17 +20,6 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
   };
 
   const createUserWithNumber = () => {
-    //   const options = {
-    //     prompt: false,
-    //   }
-    //   SendSMS.send({
-    //     body: 'The default body of the SMS!',
-    //     recipients: ['+96170661460'],
-    // }, (completed, cancelled, error) => {
-
-    //     console.log('SMS Callback: completed: ' + completed + ' cancelled: ' + cancelled + 'error: ' + error);
-
-    //   });
     let code = generateCode();
     navigation.push("VerifyNumber", {
       code,

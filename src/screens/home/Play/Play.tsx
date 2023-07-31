@@ -28,7 +28,7 @@ import {
 import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabParamList, StackParamList } from "src/navigation";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { Branch, GameType } from "src/types";
+import { Branch, GameType, TimeSlot } from "src/types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {
   MapComponent,
@@ -75,7 +75,7 @@ export const Play = ({
   }, [JSON.stringify(branch)]);
 
   const [searchDate, setSearchDate] = useState<Date | null>(new Date());
-  const [searchTime, setSearchTime] = useState<number[]>();
+  const [searchTime, setSearchTime] = useState<TimeSlot>();
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(1);
 
   const [mapDisplayed, setMapDisplayed] = useState<boolean>(false);
@@ -124,9 +124,9 @@ export const Play = ({
     }
     if (searchTime) {
       time = `${parseTimeFromMinutes(
-        searchTime[0],
+        searchTime.startTime,
         true
-      )} - ${parseTimeFromMinutes(searchTime[1], true)}`;
+      )} - ${parseTimeFromMinutes(searchTime.endTime, true)}`;
     }
 
     return [date, time];
