@@ -175,8 +175,6 @@ export const Home = ({ navigation, route }: Props) => {
   return (
     <AppHeader
       absolutePosition={false}
-      navigation={navigation}
-      route={route}
       right={<IonIcon name="notifications-outline" color="white" size={24} />}
       left={
         <SportTypeDropdown

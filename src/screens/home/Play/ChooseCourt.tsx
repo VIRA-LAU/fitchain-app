@@ -44,13 +44,7 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
   });
 
   return (
-    <AppHeader
-      absolutePosition={false}
-      navigation={navigation}
-      route={route}
-      title={"Choose a Court"}
-      backEnabled
-    >
+    <AppHeader absolutePosition={false} title={"Choose a Court"} backEnabled>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Text variant="labelLarge" style={styles.locationComponent}>
           {venueName}, {branchLocation}

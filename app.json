@@ -7,9 +7,9 @@
     "icon": "./src/assets/images/Logo-Icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./src/assets/images/Logo.png",
+      "image": "./src/assets/images/Logo-Splash.png",
       "resize": "native",
-      "backgroundColor": "#000000"
+      "backgroundColor": "#2e2d36"
     },
     "backgroundColor": "#2e2d36",
     "themeColor": "#f29c1f",

@@ -1,12 +1,6 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
 import { View, StyleSheet, useWindowDimensions, Pressable } from "react-native";
-import {
-  ActivityIndicator,
-  Button,
-  Switch,
-  Text,
-  useTheme,
-} from "react-native-paper";
+import { Button, Switch, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
 import { useStartStopRecording } from "src/api";
@@ -99,19 +93,16 @@ export const RecordGamePopup = ({
             textStyle={{ color: "white", fontFamily: "Inter-Medium" }}
           />
         </View>
-        {recordLoading ? (
-          <ActivityIndicator style={{ marginBottom: 10 }} />
-        ) : !game?.isRecording ? (
+        {!game?.isRecording ? (
           <Button
-            buttonColor={colors.primary}
-            textColor={colors.background}
+            mode="contained"
             style={{
-              borderRadius: 5,
               marginBottom: 10,
               marginHorizontal: 20,
             }}
+            loading={recordLoading}
             onPress={
-              dropDownValue !== null
+              dropDownValue !== null && !recordLoading
                 ? () => {
                     startStopRecording({ recordingMode: "start" });
                   }
@@ -122,16 +113,19 @@ export const RecordGamePopup = ({
           </Button>
         ) : (
           <Button
-            buttonColor={colors.primary}
-            textColor={colors.background}
+            mode="contained"
             style={{
-              borderRadius: 5,
               marginBottom: 10,
               marginHorizontal: 20,
             }}
-            onPress={() => {
-              startStopRecording({ recordingMode: "stop" });
-            }}
+            loading={recordLoading}
+            onPress={
+              !recordLoading
+                ? () => {
+                    startStopRecording({ recordingMode: "stop" });
+                  }
+                : undefined
+            }
           >
             Stop Recording
           </Button>

@@ -3,7 +3,7 @@ import { StyleSheet, View, TextInput, Image, ScrollView } from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
+import { Button, useTheme, Text } from "react-native-paper";
 import React, { useEffect, useRef, useState } from "react";
 import { useForgotPasswordMutation } from "src/api";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -44,7 +44,7 @@ export const ForgotPassword = ({
   }, [error]);
 
   return (
-    <AppHeader navigation={navigation} route={route} backEnabled>
+    <AppHeader backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
         <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
@@ -68,6 +68,7 @@ export const ForgotPassword = ({
                 style={styles.textInput}
                 placeholder={"Email"}
                 keyboardType="email-address"
+                autoCapitalize={"none"}
                 placeholderTextColor={"#a8a8a8"}
                 selectionColor={colors.primary}
                 onChangeText={(text) => {
@@ -90,26 +91,26 @@ export const ForgotPassword = ({
               </Text>
             )}
 
-            {isLoading ? (
-              <ActivityIndicator style={{ marginTop: "10%" }} />
-            ) : (
-              <Button
-                textColor={colors.background}
-                buttonColor={colors.primary}
-                style={styles.sendButton}
-                onPress={() => {
-                  if (email) {
-                    if (emailReg.test(email)) forgotPassword({ email });
-                    else
-                      setErrorMessage(
-                        "Please make sure the provided email is valid."
-                      );
-                  }
-                }}
-              >
-                Send Email
-              </Button>
-            )}
+            <Button
+              mode="contained"
+              style={styles.sendButton}
+              loading={isLoading}
+              onPress={
+                !isLoading
+                  ? () => {
+                      if (email) {
+                        if (emailReg.test(email)) forgotPassword({ email });
+                        else
+                          setErrorMessage(
+                            "Please make sure the provided email is valid."
+                          );
+                      }
+                    }
+                  : undefined
+              }
+            >
+              Send Email
+            </Button>
           </View>
         ) : (
           <View style={styles.inputView}>
@@ -117,8 +118,7 @@ export const ForgotPassword = ({
               {`An email has been sent to\n${email}.`}
             </Text>
             <Button
-              textColor={colors.background}
-              buttonColor={colors.primary}
+              mode="contained"
               style={styles.sendButton}
               onPress={() => {
                 navigation.pop();
@@ -162,9 +162,7 @@ const makeStyles = (colors: MD3Colors) =>
       fontFamily: "Inter-Medium",
     },
     sendButton: {
-      borderRadius: 6,
       marginTop: "7%",
-      height: 50,
       justifyContent: "center",
     },
     textInputView: {

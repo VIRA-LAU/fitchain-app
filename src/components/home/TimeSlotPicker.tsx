@@ -112,9 +112,8 @@ export const TimeSlotPicker = ({
           }}
         />
         <Button
-          buttonColor={colors.primary}
-          textColor={"black"}
-          style={{ borderRadius: 5, marginTop: 40 }}
+          mode="contained"
+          style={{ marginTop: 40 }}
           onPress={() => {
             if (onPress) onPress(tempTime);
             else {

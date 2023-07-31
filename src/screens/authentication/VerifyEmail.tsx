@@ -3,7 +3,7 @@ import { StyleSheet, View, TextInput, Image, ScrollView } from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
+import { Button, useTheme, Text } from "react-native-paper";
 import React, { useEffect, useRef, useState } from "react";
 import {
   useResendEmailCodeMutation,
@@ -110,7 +110,7 @@ export const VerifyEmail = ({
   }, [userError, branchError]);
 
   return (
-    <AppHeader navigation={navigation} route={route} backEnabled>
+    <AppHeader backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
         <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
@@ -151,50 +151,51 @@ export const VerifyEmail = ({
               {errorMessage}
             </Text>
           )}
+          <Button
+            mode="contained"
+            style={styles.continueButton}
+            contentStyle={{ height: 50 }}
+            loading={userLoading || branchLoading}
+            onPress={
+              !(userLoading || branchLoading)
+                ? () => {
+                    if (code.indexOf("") !== -1) {
+                      setErrorMessage("Please enter the full code.");
+                    } else {
+                      if (!isBranch)
+                        verifyUserEmail({
+                          code: code.join(""),
+                          userId,
+                        });
+                      else
+                        verifyBranchEmail({
+                          code: code.join(""),
+                          branchId: userId,
+                        });
+                    }
+                  }
+                : undefined
+            }
+          >
+            Continue
+          </Button>
 
-          {userLoading || branchLoading ? (
-            <ActivityIndicator style={{ marginTop: "10%" }} />
-          ) : (
-            <Button
-              textColor={colors.background}
-              buttonColor={colors.primary}
-              style={styles.continueButton}
-              onPress={() => {
-                if (code.indexOf("") !== -1) {
-                  setErrorMessage("Please enter the full code.");
-                } else {
-                  if (!isBranch)
-                    verifyUserEmail({
-                      code: code.join(""),
+          <Button
+            style={styles.resendButton}
+            loading={resendLoading}
+            onPress={
+              !resendLoading
+                ? () => {
+                    resendCode({
                       userId,
+                      isBranch,
                     });
-                  else
-                    verifyBranchEmail({
-                      code: code.join(""),
-                      branchId: userId,
-                    });
-                }
-              }}
-            >
-              Continue
-            </Button>
-          )}
-
-          {resendLoading ? (
-            <ActivityIndicator style={{ marginTop: "7%" }} />
-          ) : (
-            <Button
-              style={styles.resendButton}
-              onPress={() => {
-                resendCode({
-                  userId,
-                  isBranch,
-                });
-              }}
-            >
-              Resend Code
-            </Button>
-          )}
+                  }
+                : undefined
+            }
+          >
+            Resend Code
+          </Button>
 
           {resendSuccess && (
             <Text
@@ -252,11 +253,9 @@ const makeStyles = (colors: MD3Colors) =>
       fontSize: 24,
       color: "white",
     },
-    resendButton: { borderRadius: 6, marginTop: "5%" },
+    resendButton: { marginTop: "5%" },
     continueButton: {
-      borderRadius: 6,
       marginTop: "7%",
-      height: 50,
       justifyContent: "center",
     },
   });

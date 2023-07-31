@@ -20,7 +20,7 @@ import { StackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
-import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
 import { Team } from "./Team";
@@ -244,8 +244,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
           )
         }
         backgroundImage={game?.type}
-        navigation={navigation}
-        route={route}
         darkMode
       >
         <View style={styles.wrapperView}>
@@ -337,33 +335,26 @@ export const GameDetails = ({ navigation, route }: Props) => {
                 </View>
                 {!playerStatus?.isAdmin && (
                   <View style={styles.buttonsView}>
-                    {joinLoading || cancelLoading || respondLoading ? (
-                      <View style={{ flexGrow: 1 }}>
-                        <ActivityIndicator style={{ marginLeft: 20 }} />
-                      </View>
-                    ) : (
-                      <View
-                        style={{
-                          width: "50%",
-                        }}
-                      >
-                        <Button
-                          icon={() => (
-                            <IonIcon
-                              name={"basketball-outline"}
-                              size={26}
-                              color={colors.secondary}
-                            />
-                          )}
-                          style={{
-                            borderRadius: 5,
-                            backgroundColor: colors.primary,
-                          }}
-                          textColor={colors.secondary}
-                          onPress={
-                            playerStatus?.hasRequestedtoJoin === "APPROVED" ||
-                            playerStatus?.hasRequestedtoJoin === "PENDING" ||
-                            playerStatus?.hasBeenInvited === "APPROVED"
+                    <View
+                      style={{
+                        width: "50%",
+                      }}
+                    >
+                      <Button
+                        icon={() => (
+                          <IonIcon
+                            name={"basketball-outline"}
+                            size={26}
+                            color={colors.secondary}
+                          />
+                        )}
+                        mode="contained"
+                        loading={joinLoading || cancelLoading || respondLoading}
+                        onPress={
+                          !(joinLoading || cancelLoading || respondLoading)
+                            ? playerStatus?.hasRequestedtoJoin === "APPROVED" ||
+                              playerStatus?.hasRequestedtoJoin === "PENDING" ||
+                              playerStatus?.hasBeenInvited === "APPROVED"
                               ? () => {
                                   setPopupVisible("cancelJoinGame");
                                 }
@@ -374,51 +365,49 @@ export const GameDetails = ({ navigation, route }: Props) => {
                               : () => {
                                   setPopupVisible("joinGame");
                                 }
-                          }
-                        >
-                          {playerStatus?.hasBeenInvited === "APPROVED" ||
-                          playerStatus?.hasRequestedtoJoin === "APPROVED"
-                            ? "Leave Game"
-                            : playerStatus?.hasBeenInvited === "PENDING"
-                            ? "Invited to Game"
-                            : playerStatus?.hasRequestedtoJoin === "PENDING"
-                            ? "Cancel Request"
-                            : "Join Game"}
-                        </Button>
-                      </View>
-                    )}
-                    {followLoading ||
-                    unfollowLoading ||
-                    followedGamesFetching ? (
-                      <View style={{ flexGrow: 1 }}>
-                        <ActivityIndicator
-                          style={{ marginRight: 20 }}
-                          color={"white"}
-                        />
-                      </View>
-                    ) : (
-                      <View
-                        style={{
-                          width: "50%",
-                        }}
+                            : undefined
+                        }
                       >
-                        <Button
-                          icon={() => (
-                            <FontAwesomeIcon
-                              name={
-                                followedGames?.some((game) => game?.id === id)
-                                  ? "thumbs-up"
-                                  : "thumbs-o-up"
-                              }
-                              size={22}
-                              color={"white"}
-                            />
-                          )}
-                          style={{ borderRadius: 5 }}
-                          textColor={"white"}
-                          buttonColor={"transparent"}
-                          onPress={
-                            followedGames?.some((game) => game?.id === id)
+                        {playerStatus?.hasBeenInvited === "APPROVED" ||
+                        playerStatus?.hasRequestedtoJoin === "APPROVED"
+                          ? "Leave Game"
+                          : playerStatus?.hasBeenInvited === "PENDING"
+                          ? "Invited to Game"
+                          : playerStatus?.hasRequestedtoJoin === "PENDING"
+                          ? "Cancel Request"
+                          : "Join Game"}
+                      </Button>
+                    </View>
+                    <View
+                      style={{
+                        width: "50%",
+                      }}
+                    >
+                      <Button
+                        icon={() => (
+                          <FontAwesomeIcon
+                            name={
+                              followedGames?.some((game) => game?.id === id)
+                                ? "thumbs-up"
+                                : "thumbs-o-up"
+                            }
+                            size={22}
+                            color={"white"}
+                          />
+                        )}
+                        loading={
+                          followLoading ||
+                          unfollowLoading ||
+                          followedGamesFetching
+                        }
+                        textColor={"white"}
+                        onPress={
+                          !(
+                            followLoading ||
+                            unfollowLoading ||
+                            followedGamesFetching
+                          )
+                            ? followedGames?.some((game) => game?.id === id)
                               ? () => {
                                   unfollowGame({
                                     gameId: game?.id,
@@ -429,23 +418,22 @@ export const GameDetails = ({ navigation, route }: Props) => {
                                     gameId: game?.id,
                                   });
                                 }
-                          }
-                        >
-                          {followedGames?.some((game) => game?.id === id)
-                            ? "Unfollow Game"
-                            : "Follow Game"}
-                        </Button>
-                      </View>
-                    )}
+                            : undefined
+                        }
+                      >
+                        {followedGames?.some((game) => game?.id === id)
+                          ? "Unfollow Game"
+                          : "Follow Game"}
+                      </Button>
+                    </View>
                   </View>
                 )}
                 {(playerStatus?.isAdmin ||
                   playerStatus?.hasBeenInvited === "APPROVED" ||
                   playerStatus?.hasRequestedtoJoin === "APPROVED") && (
                   <Button
-                    buttonColor={colors.primary}
-                    textColor={colors.secondary}
-                    style={{ borderRadius: 5, marginTop: 10 }}
+                    mode="contained"
+                    style={{ marginTop: 10 }}
                     icon={({ size, color }) => (
                       <Feather name="user-plus" size={size} color={color} />
                     )}

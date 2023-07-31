@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, TextInput, ScrollView } from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
+import { Button, useTheme, Text } from "react-native-paper";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useContext, useEffect, useRef } from "react";
 import { useState } from "react";
@@ -58,7 +58,7 @@ export const SignUpExtraDetails = ({
   const weightRef: React.MutableRefObject<TextInput | null> = useRef(null);
 
   return (
-    <AppHeader navigation={navigation} route={route} backEnabled>
+    <AppHeader backEnabled>
       <ScrollView
         contentContainerStyle={styles.wrapperView}
         ref={scrollRef}
@@ -141,29 +141,29 @@ export const SignUpExtraDetails = ({
               onChangeText={setWeight}
             />
           </View>
-          {updateUserLoading && (
-            <ActivityIndicator style={{ marginTop: "10%" }} />
-          )}
-          {!updateUserLoading && (
-            <Button
-              textColor={colors.background}
-              buttonColor={colors.primary}
-              style={[styles.getStartedButton, { marginTop: "10%" }]}
-              onPress={() => handleUpdateUserData()}
-            >
-              Complete
-            </Button>
-          )}
-          {!updateUserLoading && (
-            <Button
-              style={styles.getStartedButton}
-              onPress={() => {
-                setUserData(passedUserData);
-              }}
-            >
-              Skip
-            </Button>
-          )}
+          <Button
+            mode="contained"
+            style={[styles.getStartedButton, { marginTop: "10%" }]}
+            contentStyle={{ height: 50 }}
+            loading={updateUserLoading}
+            onPress={
+              !updateUserLoading ? () => handleUpdateUserData() : undefined
+            }
+          >
+            Complete
+          </Button>
+          <Button
+            style={styles.getStartedButton}
+            onPress={
+              !updateUserLoading
+                ? () => {
+                    setUserData(passedUserData);
+                  }
+                : undefined
+            }
+          >
+            Skip
+          </Button>
         </View>
       </ScrollView>
     </AppHeader>
@@ -208,8 +208,6 @@ const makeStyles = (colors: MD3Colors) =>
       fontFamily: "Inter-Medium",
     },
     getStartedButton: {
-      borderRadius: 6,
-      height: 50,
       justifyContent: "center",
       borderWidth: 1,
     },

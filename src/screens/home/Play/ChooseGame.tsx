@@ -110,8 +110,6 @@ export const ChooseGame = ({ navigation, route }: Props) => {
   return (
     <AppHeader
       absolutePosition={false}
-      navigation={navigation}
-      route={route}
       title={"Choose Game"}
       right={
         <TouchableOpacity

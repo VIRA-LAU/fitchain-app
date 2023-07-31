@@ -85,7 +85,7 @@ export const TimeSlotPicker = ({
             selectedTimeSlots.length > 0 ? colors.primary : colors.tertiary
           }
           textColor={"black"}
-          style={{ borderRadius: 5, margin: 25 }}
+          style={{ margin: 25 }}
           onPress={
             selectedTimeSlots.length > 0
               ? () => {

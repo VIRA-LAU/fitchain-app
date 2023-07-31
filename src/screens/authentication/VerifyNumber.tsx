@@ -85,7 +85,7 @@ export const VerifyNumber = ({ navigation, route }: Props) => {
   };
 
   return (
-    <AppHeader navigation={navigation} route={route} backEnabled>
+    <AppHeader backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
         <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
@@ -114,8 +114,7 @@ export const VerifyNumber = ({ navigation, route }: Props) => {
             Resend Code
           </Button>
           <Button
-            textColor={colors.background}
-            buttonColor={colors.primary}
+            mode="contained"
             style={styles.continueButton}
             onPress={() => verifyCode()}
           >
@@ -167,9 +166,8 @@ const makeStyles = (colors: MD3Colors) =>
       fontSize: 24,
       color: "white",
     },
-    resendButton: { borderRadius: 6, marginTop: "5%" },
+    resendButton: { marginTop: "5%" },
     continueButton: {
-      borderRadius: 6,
       marginTop: "5%",
       height: 50,
       justifyContent: "center",

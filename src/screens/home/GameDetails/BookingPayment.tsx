@@ -61,7 +61,6 @@ export const BookingPayment = ({ navigation, route }: Props) => {
       absolutePosition={false}
       title={venueName}
       right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
-      navigation={navigation}
       backEnabled
     >
       <ScrollView contentContainerStyle={styles.wrapperView}>

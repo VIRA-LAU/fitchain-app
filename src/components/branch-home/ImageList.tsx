@@ -223,8 +223,8 @@ export const ImageList = ({
             return (
               <Button
                 buttonColor="darkred"
-                labelStyle={{ color: "white" }}
-                style={{ borderRadius: 7, margin: 10 }}
+                textColor="white"
+                style={{ margin: 10 }}
                 onPress={() => {
                   const image = imageArr[imageIndex].uri.split("/").pop()!;
                   deletePhoto(image?.substring(0, image.indexOf("?")));

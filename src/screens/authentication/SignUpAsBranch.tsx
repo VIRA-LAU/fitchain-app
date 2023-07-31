@@ -146,7 +146,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
   const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
 
   return (
-    <AppHeader navigation={navigation} route={route} backEnabled>
+    <AppHeader backEnabled>
       <ScrollView
         contentContainerStyle={styles.wrapperView}
         ref={scrollRef}
@@ -327,7 +327,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
             </View>
             <Button
               icon={"map-marker-outline"}
-              style={{ marginTop: "7%", borderRadius: 7 }}
+              style={{ marginTop: "7%" }}
               onPress={() => {
                 setErrorMessage("");
                 setMapVisible(true);
@@ -382,18 +382,15 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                 {errorMessage}
               </Text>
             )}
-            {createBranchLoading ? (
-              <ActivityIndicator style={{ marginTop: "10%" }} />
-            ) : (
-              <Button
-                textColor={colors.background}
-                buttonColor={colors.primary}
-                style={styles.getStartedButton}
-                onPress={() => signUp()}
-              >
-                Get Started
-              </Button>
-            )}
+            <Button
+              mode="contained"
+              style={styles.getStartedButton}
+              contentStyle={{ height: 50 }}
+              loading={createBranchLoading}
+              onPress={!createBranchLoading ? () => signUp() : undefined}
+            >
+              Get Started
+            </Button>
           </View>
         ) : (
           <View style={styles.mapView}>
@@ -473,9 +470,7 @@ const makeStyles = (colors: MD3Colors) =>
       fontFamily: "Inter-Medium",
     },
     getStartedButton: {
-      borderRadius: 6,
       marginTop: "7%",
-      height: 50,
       justifyContent: "center",
       borderWidth: 1,
     },

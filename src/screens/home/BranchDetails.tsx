@@ -50,12 +50,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
       : "";
 
   return (
-    <AppHeader
-      navigation={navigation}
-      route={route}
-      title={branch?.venue.name}
-      backEnabled
-    >
+    <AppHeader title={branch?.venue.name} backEnabled>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.headerView}>
           {!isLoading ? (
@@ -155,13 +150,12 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                   </View>
                 </TouchableOpacity>
 
-                <View style={{ borderRadius: 5, width: "50%" }}>
+                <View style={{ width: "50%" }}>
                   <Button
                     icon={() => (
                       <FeatherIcon name="thumbs-up" size={22} color={"white"} />
                     )}
                     textColor={"white"}
-                    buttonColor={"transparent"}
                   >
                     Follow Venue
                   </Button>

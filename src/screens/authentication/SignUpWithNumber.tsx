@@ -42,7 +42,7 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
   const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
 
   return (
-    <AppHeader navigation={navigation} route={route} backEnabled>
+    <AppHeader backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
         <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
@@ -91,9 +91,9 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
             }}
           />
           <Button
-            textColor={colors.background}
-            buttonColor={colors.primary}
+            mode="contained"
             style={styles.continueButton}
+            contentStyle={{ height: 50 }}
             onPress={() => createUserWithNumber()}
           >
             Continue
@@ -131,9 +131,7 @@ const makeStyles = (colors: MD3Colors) =>
       fontSize: 12,
     },
     continueButton: {
-      borderRadius: 6,
       marginTop: "10%",
-      height: 50,
       justifyContent: "center",
     },
   });

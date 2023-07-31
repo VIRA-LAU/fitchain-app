@@ -52,12 +52,7 @@ export const RatePlayer = ({ navigation, route }: Props) => {
   }
 
   return (
-    <AppHeader
-      navigation={navigation}
-      route={route}
-      title={`Rate Player`}
-      backEnabled
-    >
+    <AppHeader title={`Rate Player`} backEnabled>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.headerView}>
           <Image
@@ -124,8 +119,8 @@ export const RatePlayer = ({ navigation, route }: Props) => {
 
           <View style={styles.rateButtonView}>
             <Button
+              mode="contained"
               style={styles.rateButton}
-              textColor={colors.secondary}
               onPress={() => handleRatePlayer()}
             >
               Rate Player
@@ -149,8 +144,6 @@ const makeStyles = (
       width: "95%",
     },
     rateButton: {
-      backgroundColor: colors.primary,
-      borderRadius: 5,
       marginTop: 20,
       flexGrow: 1,
     },

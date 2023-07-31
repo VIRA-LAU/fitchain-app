@@ -391,9 +391,9 @@ export const Play = ({
             </View>
             <View style={styles.buttonView}>
               <Button
+                mode="contained"
                 buttonColor={searchDate ? colors.primary : colors.tertiary}
-                textColor={"black"}
-                style={{ borderRadius: 5, width: "100%" }}
+                style={{ width: "100%" }}
                 onPress={
                   searchDate && searchLocationMarker && searchLocationName
                     ? () => {
@@ -429,9 +429,8 @@ export const Play = ({
               </Button>
               {!branch && (
                 <Button
-                  buttonColor={colors.primary}
-                  textColor={"black"}
-                  style={{ borderRadius: 5, width: "100%", marginTop: 15 }}
+                  mode="contained"
+                  style={{ width: "100%", marginTop: 15 }}
                   onPress={() => {
                     setVisible(false);
                     if (!branch && searchLocationMarker && searchLocationName)

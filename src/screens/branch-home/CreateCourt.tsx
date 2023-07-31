@@ -17,7 +17,7 @@ import {
   TextInput,
   useWindowDimensions,
 } from "react-native";
-import { ActivityIndicator, Button, Text, useTheme } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
@@ -315,43 +315,44 @@ export const CreateCourt = ({
               Add New Time Slot
             </Button>
           </View>
-          {createLoading || updateLoading ? (
-            <ActivityIndicator />
-          ) : (
-            <View style={{ marginTop: "auto" }}>
-              <Button
-                textColor={colors.secondary}
-                buttonColor={colors.primary}
-                style={{ borderRadius: 5, marginTop: 20 }}
-                onPress={() => {
-                  if (visible === "create") {
-                    if (name && price) {
-                      createCourt({
-                        courtType,
-                        name: name.trim(),
-                        price: parseInt(price.trim()),
-                        nbOfPlayers: numOfPlayers,
-                        timeSlots: [],
-                      });
+
+          <View style={{ marginTop: "auto" }}>
+            <Button
+              mode="contained"
+              style={{ borderRadius: 5, marginTop: 20 }}
+              loading={createLoading || updateLoading}
+              onPress={
+                !(createLoading || updateLoading)
+                  ? () => {
+                      if (visible === "create") {
+                        if (name && price) {
+                          createCourt({
+                            courtType,
+                            name: name.trim(),
+                            price: parseInt(price.trim()),
+                            nbOfPlayers: numOfPlayers,
+                            timeSlots: [],
+                          });
+                        }
+                      } else {
+                        if (name && price) {
+                          updateCourt({
+                            courtId: existingInfo.courtId,
+                            courtType,
+                            name: name.trim(),
+                            price: parseInt(price.trim()),
+                            nbOfPlayers: numOfPlayers,
+                            timeSlots: [],
+                          });
+                        }
+                      }
                     }
-                  } else {
-                    if (name && price) {
-                      updateCourt({
-                        courtId: existingInfo.courtId,
-                        courtType,
-                        name: name.trim(),
-                        price: parseInt(price.trim()),
-                        nbOfPlayers: numOfPlayers,
-                        timeSlots: [],
-                      });
-                    }
-                  }
-                }}
-              >
-                {visible === "edit" ? "Update" : "Create"}
-              </Button>
-            </View>
-          )}
+                  : undefined
+              }
+            >
+              {visible === "edit" ? "Update" : "Create"}
+            </Button>
+          </View>
         </ScrollView>
       </View>
       <TimeSlotPicker

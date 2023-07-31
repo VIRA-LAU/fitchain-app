@@ -155,50 +155,50 @@ export const InvitationCard = ({
         </View>
         <View style={{ marginTop: "auto" }}>
           <View style={styles.buttonsView}>
-            <Button
-              icon={"account-check-outline"}
-              style={{ borderRadius: 5, flex: 1 }}
-              textColor={colors.secondary}
-              buttonColor={colors.primary}
-              onPress={() => {
-                if (type === "request")
-                  editJoinRequest({
-                    requestId: id,
-                    status: "APPROVED",
-                    gameId: game.id,
-                  });
-                else
-                  respondToInvite({
-                    invitationId: id,
-                    gameId: game.id,
-                    status: "APPROVED",
-                  });
-              }}
-            >
-              Accept
-            </Button>
-            <Button
-              icon={{ source: "account-remove-outline", direction: "rtl" }}
-              style={{ borderRadius: 5, flex: 1 }}
-              textColor={"white"}
-              buttonColor={"transparent"}
-              onPress={() => {
-                if (type === "request")
-                  editJoinRequest({
-                    requestId: id,
-                    status: "REJECTED",
-                    gameId: game.id,
-                  });
-                else
-                  respondToInvite({
-                    invitationId: id,
-                    gameId: game.id,
-                    status: "REJECTED",
-                  });
-              }}
-            >
-              Decline
-            </Button>
+            <View style={{ flex: 1 }}>
+              <Button
+                icon={"account-check-outline"}
+                mode="contained"
+                onPress={() => {
+                  if (type === "request")
+                    editJoinRequest({
+                      requestId: id,
+                      status: "APPROVED",
+                      gameId: game.id,
+                    });
+                  else
+                    respondToInvite({
+                      invitationId: id,
+                      gameId: game.id,
+                      status: "APPROVED",
+                    });
+                }}
+              >
+                Accept
+              </Button>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Button
+                icon={{ source: "account-remove-outline", direction: "rtl" }}
+                textColor={"white"}
+                onPress={() => {
+                  if (type === "request")
+                    editJoinRequest({
+                      requestId: id,
+                      status: "REJECTED",
+                      gameId: game.id,
+                    });
+                  else
+                    respondToInvite({
+                      invitationId: id,
+                      gameId: game.id,
+                      status: "REJECTED",
+                    });
+                }}
+              >
+                Decline
+              </Button>
+            </View>
             <EntypoIcon
               name="dots-three-horizontal"
               color="white"

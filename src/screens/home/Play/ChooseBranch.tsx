@@ -47,13 +47,7 @@ export const ChooseBranch = ({ navigation, route }: Props) => {
     useSortBranchesByLocationQuery(branches, location);
 
   return (
-    <AppHeader
-      absolutePosition={false}
-      navigation={navigation}
-      route={route}
-      title={"Choose a Venue"}
-      backEnabled
-    >
+    <AppHeader absolutePosition={false} title={"Choose a Venue"} backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView}>
         <View style={styles.infoView}>
           <IonIcon name={"location-outline"} size={20} color={"white"} />

@@ -26,10 +26,8 @@ export const ResultCard = ({ game }: { game?: Game }) => {
   const { data: playersTeam, isLoading: teamLoading } = useGetPlayerTeamQuery(
     game?.id
   );
-  const { mutate: updateScore } = useUpdateGameMutation(
-    game?.id,
-    setIsChangingScore
-  );
+  const { mutate: updateScore, isLoading: updateScoreLoading } =
+    useUpdateGameMutation(game?.id, setIsChangingScore);
 
   useEffect(() => {
     setTeam(game?.winnerTeam);
@@ -179,12 +177,17 @@ export const ResultCard = ({ game }: { game?: Game }) => {
             <View>
               <Button
                 style={{ marginTop: 20 }}
-                onPress={() => {
-                  updateScore({
-                    homeScore: tempHomeScore,
-                    awayScore: tempAwayScore,
-                  });
-                }}
+                loading={updateScoreLoading}
+                onPress={
+                  !updateScoreLoading
+                    ? () => {
+                        updateScore({
+                          homeScore: tempHomeScore,
+                          awayScore: tempAwayScore,
+                        });
+                      }
+                    : undefined
+                }
               >
                 Confirm
               </Button>

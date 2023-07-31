@@ -9,7 +9,7 @@ import { StyleSheet } from "react-native";
 import OctIcon from "react-native-vector-icons/Octicons";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { SignUpStackParamList } from "navigation";
-import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
+import { Button, useTheme, Text } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useEffect, useRef, useState } from "react";
@@ -142,20 +142,18 @@ export const SignIn = ({
               {errorMessage}
             </Text>
           )}
-          {loginLoading ? (
-            <ActivityIndicator style={{ marginTop: 25 }} />
-          ) : (
-            <Button
-              textColor={colors.background}
-              buttonColor={colors.primary}
-              style={styles.signInButton}
-              onPress={() => signIn()}
-            >
-              Sign In
-            </Button>
-          )}
+
           <Button
-            style={{ borderRadius: 6, marginTop: "3%", marginBottom: 10 }}
+            mode="contained"
+            style={styles.signInButton}
+            loading={loginLoading}
+            onPress={!loginLoading ? () => signIn() : undefined}
+          >
+            Sign In
+          </Button>
+
+          <Button
+            style={{ marginTop: "3%", marginBottom: 10 }}
             onPress={() => {
               navigation.push("ForgotPassword");
             }}
@@ -190,11 +188,12 @@ export const SignIn = ({
 
           <View style={styles.buttonView}>
             <Button
+              mode="contained"
               style={{
                 minWidth: "100%",
                 minHeight: "100%",
-                borderRadius: 7,
               }}
+              buttonColor="#ebebeb"
               textColor="black"
               icon={({ size, color }) => (
                 <OctIcon name="mail" size={size} color={color} />
@@ -215,7 +214,7 @@ export const SignIn = ({
         <View style={{ width: "80%" }}>
           <Button
             textColor={colors.primary}
-            style={{ flexGrow: 1, borderRadius: 7 }}
+            style={{ flexGrow: 1 }}
             icon={({ size, color }) => (
               <OctIcon name="organization" size={size} color={color} />
             )}
@@ -294,7 +293,6 @@ const makeStyles = (fontScale: number, colors: MD3Colors) =>
       color: "white",
     },
     signInButton: {
-      borderRadius: 6,
       marginTop: "5%",
       justifyContent: "center",
     },

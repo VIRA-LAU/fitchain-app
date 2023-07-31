@@ -382,8 +382,6 @@ export const Games = ({ navigation, route }: NavigationProps) => {
   return (
     <AppHeader
       absolutePosition={false}
-      navigation={navigation}
-      route={route}
       searchBar={searchBarVisible}
       searchBarText={searchBarText}
       setSearchBarText={setSearchBarText}

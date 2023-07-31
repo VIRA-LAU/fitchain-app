@@ -80,7 +80,8 @@ export const UpdateCard = ({
       >
     >();
 
-  const { mutate: editJoinRequest } = useEditJoinRequestMutation();
+  const { mutate: editJoinRequest, isLoading: editRequestLoading } =
+    useEditJoinRequestMutation();
 
   if (!playerStatus) return <View />;
   else
@@ -172,38 +173,51 @@ export const UpdateCard = ({
               playerStatus.hasBeenInvited === "APPROVED" ||
               playerStatus.hasRequestedtoJoin === "APPROVED") && (
               <View style={styles.buttonsView}>
-                <Button
-                  icon={"account-check-outline"}
-                  style={{ borderRadius: 5, flex: 1 }}
-                  textColor={colors.secondary}
-                  buttonColor={colors.primary}
-                  onPress={() => {
-                    if (requestId)
-                      editJoinRequest({
-                        requestId,
-                        status: "APPROVED",
-                        gameId,
-                      });
-                  }}
-                >
-                  Accept
-                </Button>
-                <Button
-                  icon={{ source: "account-remove-outline", direction: "rtl" }}
-                  style={{ borderRadius: 5, flex: 1 }}
-                  textColor={"white"}
-                  buttonColor={"transparent"}
-                  onPress={() => {
-                    if (requestId)
-                      editJoinRequest({
-                        requestId,
-                        status: "REJECTED",
-                        gameId,
-                      });
-                  }}
-                >
-                  Decline
-                </Button>
+                <View style={{ flex: 1 }}>
+                  <Button
+                    icon={"account-check-outline"}
+                    mode="contained"
+                    loading={editRequestLoading}
+                    onPress={
+                      !editRequestLoading
+                        ? () => {
+                            if (requestId)
+                              editJoinRequest({
+                                requestId,
+                                status: "APPROVED",
+                                gameId,
+                              });
+                          }
+                        : undefined
+                    }
+                  >
+                    Accept
+                  </Button>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Button
+                    icon={{
+                      source: "account-remove-outline",
+                      direction: "rtl",
+                    }}
+                    textColor={"white"}
+                    loading={editRequestLoading}
+                    onPress={
+                      !editRequestLoading
+                        ? () => {
+                            if (requestId)
+                              editJoinRequest({
+                                requestId,
+                                status: "REJECTED",
+                                gameId,
+                              });
+                          }
+                        : undefined
+                    }
+                  >
+                    Decline
+                  </Button>
+                </View>
               </View>
             )}
         </View>

@@ -95,11 +95,11 @@ function AppContent() {
       else {
         client.defaults.headers.common["Authorization"] = null;
         AsyncStorage.clear();
-        if (branchData)
-          signout({
-            userId: branchData.branchId,
-            isBranch: false,
-          });
+        // if (branchData)
+        //   signout({
+        //     userId: branchData.branchId,
+        //     isBranch: false,
+        //   });
       }
       setBranchData(newBranchData);
     },
@@ -140,6 +140,7 @@ function AppContent() {
     ...DefaultTheme,
     colors: {
       primary: "#f29c1f",
+      onPrimary: "#3b3a42",
       secondary: "#3b3a42",
       tertiary: "#9e9e9e",
       background: "#2e2d36",
@@ -147,6 +148,7 @@ function AppContent() {
         level3: "#3b3a42",
       },
     },
+    roundness: 1,
     fonts: configureFonts({ config: fontConfig }),
   };
 

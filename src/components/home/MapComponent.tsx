@@ -49,8 +49,7 @@ export const MapComponent = ({
         JSON.stringify(tempLocationMarker) !==
           JSON.stringify(locationMarker) && (
           <Button
-            textColor={colors.background}
-            buttonColor={colors.primary}
+            mode="contained"
             style={styles.confirmButton}
             onPress={() => {
               setLocationMarker(tempLocationMarker);

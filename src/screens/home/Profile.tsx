@@ -83,8 +83,6 @@ export const Profile = ({
 
   return (
     <AppHeader
-      navigation={navigation}
-      route={route}
       right={
         isUserProfile && !userDetailsLoading ? (
           isEditing ? (

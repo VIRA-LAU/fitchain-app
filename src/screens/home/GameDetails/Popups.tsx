@@ -114,10 +114,8 @@ export const PopupContainer = ({
             ?
           </Text>
           <Button
-            buttonColor={colors.primary}
-            textColor={colors.background}
+            mode="contained"
             style={{
-              borderRadius: 5,
               marginBottom: 10,
               marginHorizontal: 20,
             }}
@@ -165,10 +163,8 @@ export const PopupContainer = ({
             Would you like to join this game?
           </Text>
           <Button
-            buttonColor={colors.primary}
-            textColor={colors.background}
+            mode="contained"
             style={{
-              borderRadius: 5,
               marginBottom: 10,
               marginHorizontal: 20,
             }}
@@ -193,10 +189,9 @@ export const PopupContainer = ({
             Yes
           </Button>
           <Button
+            mode="contained"
             buttonColor={colors.tertiary}
-            textColor={colors.background}
             style={{
-              borderRadius: 5,
               marginBottom: 10,
               marginHorizontal: 20,
             }}

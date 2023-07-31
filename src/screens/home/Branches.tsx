@@ -39,8 +39,6 @@ export const Branches = ({ navigation, route }: Props) => {
   return (
     <AppHeader
       absolutePosition={false}
-      navigation={navigation}
-      route={route}
       title={"Venues"}
       left={
         <SportTypeDropdown

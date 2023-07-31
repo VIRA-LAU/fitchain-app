@@ -88,8 +88,6 @@ export const BranchManagement = ({
 
   return (
     <AppHeader
-      navigation={navigation}
-      route={route}
       right={
         !branchDetailsLoading ? (
           isEditing ? (

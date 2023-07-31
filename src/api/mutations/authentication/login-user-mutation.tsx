@@ -9,7 +9,7 @@ import { getExpoPushTokenAsync } from "expo-notifications";
 type Request = {
   email: string;
   password: string;
-  notificationsToken: string | undefined;
+  notificationsToken?: string | undefined;
 };
 
 type UserRes = User & {

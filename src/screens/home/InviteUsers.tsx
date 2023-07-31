@@ -41,22 +41,15 @@ export const InviteUsers = ({ navigation, route }: Props) => {
 
   if (!existingPlayers || !users) return <View />;
   return (
-    <AppHeader
-      absolutePosition={false}
-      navigation={navigation}
-      route={route}
-      title={"Invite Players"}
-      backEnabled
-    >
+    <AppHeader absolutePosition={false} title={"Invite Players"} backEnabled>
       <View style={styles.wrapper}>
         <View style={styles.teams}>
           <View style={{ flexGrow: 1, marginRight: 10 }}>
             <Button
+              mode="contained"
               buttonColor={
                 selectedTeam === "Home" ? colors.primary : colors.tertiary
               }
-              textColor={colors.secondary}
-              style={{ borderRadius: 5 }}
               onPress={
                 selectedTeam === "Home"
                   ? undefined
@@ -70,11 +63,10 @@ export const InviteUsers = ({ navigation, route }: Props) => {
           </View>
           <View style={{ flexGrow: 1 }}>
             <Button
+              mode="contained"
               buttonColor={
                 selectedTeam === "Away" ? colors.primary : colors.tertiary
               }
-              textColor={colors.secondary}
-              style={{ borderRadius: 5 }}
               onPress={
                 selectedTeam === "Away"
                   ? undefined
@@ -150,35 +142,30 @@ export const InviteUsers = ({ navigation, route }: Props) => {
                   </View>
                 </View>
                 {playerIndex === -1 ? (
-                  loadingIndex === user.id ? (
-                    <ActivityIndicator
-                      style={{
-                        marginLeft: "auto",
-                        marginRight: 30,
-                      }}
-                    />
-                  ) : (
-                    <TouchableOpacity
-                      activeOpacity={0.6}
-                      style={styles.inviteView}
-                      onPress={() => {
-                        invitePlayer({
-                          gameId,
-                          friendId: user.id,
-                          team: selectedTeam.toUpperCase() as "HOME" | "AWAY",
-                        });
-                      }}
+                  <View style={styles.inviteView}>
+                    <Button
+                      mode="contained"
+                      style={styles.inviteButton}
+                      loading={loadingIndex === user.id}
+                      textColor="white"
+                      buttonColor={colors.background}
+                      onPress={
+                        loadingIndex !== user.id
+                          ? () => {
+                              invitePlayer({
+                                gameId,
+                                friendId: user.id,
+                                team: selectedTeam.toUpperCase() as
+                                  | "HOME"
+                                  | "AWAY",
+                              });
+                            }
+                          : undefined
+                      }
                     >
-                      <Text
-                        style={{
-                          fontFamily: "Inter-Medium",
-                          color: "white",
-                        }}
-                      >
-                        Invite
-                      </Text>
-                    </TouchableOpacity>
-                  )
+                      Invite
+                    </Button>
+                  </View>
                 ) : (
                   <View style={styles.invitedView}>
                     <Feather
@@ -236,11 +223,11 @@ const makeStyles = (colors: MD3Colors) =>
     inviteView: {
       marginLeft: "auto",
       marginRight: 10,
+    },
+    inviteButton: {
       borderRadius: 10,
       borderWidth: 1,
       borderColor: "white",
-      padding: 10,
-      paddingHorizontal: 20,
     },
     invitedView: {
       marginLeft: "auto",

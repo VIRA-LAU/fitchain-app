@@ -14,6 +14,12 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Dispatch, SetStateAction, useRef } from "react";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { SignUpStackParamList, StackParamList } from "src/navigation";
 
 const sportBackground = {
   Basketball: <Image source={require("assets/images/home/basketball.png")} />,
@@ -23,8 +29,6 @@ const sportBackground = {
 export const AppHeader = ({
   children,
   absolutePosition = true,
-  navigation,
-  route,
   title,
   showLogo = false,
   right,
@@ -40,8 +44,6 @@ export const AppHeader = ({
 }: {
   children: any;
   absolutePosition?: boolean;
-  navigation?: any;
-  route?: any;
   title?: string;
   showLogo?: boolean;
   right?: JSX.Element;
@@ -57,6 +59,13 @@ export const AppHeader = ({
 }) => {
   const { colors } = useTheme();
 
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<StackParamList>,
+        StackNavigationProp<SignUpStackParamList>
+      >
+    >();
   const styles = makeStyles(
     colors,
     darkMode,
