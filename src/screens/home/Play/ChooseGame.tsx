@@ -20,14 +20,7 @@ export const ChooseGame = ({ navigation, route }: Props) => {
   const gameCards: JSX.Element[] = [];
   const dayHeaders: string[] = [];
 
-  const {
-    location,
-    date: dateStr,
-    startTime,
-    endTime,
-    gameType,
-    nbOfPlayers,
-  } = route.params;
+  const { location, date: dateStr, time, gameType, nbOfPlayers } = route.params;
 
   const date = dateStr ? new Date(JSON.parse(dateStr)) : undefined;
   const searchDate = date
@@ -39,8 +32,8 @@ export const ChooseGame = ({ navigation, route }: Props) => {
   const { data: games } = useSearchGamesQuery({
     gameType,
     date: searchDate,
-    startTime,
-    endTime,
+    startTime: time?.startTime.toString(),
+    endTime: time?.endTime.toString(),
     nbOfPlayers,
   });
 

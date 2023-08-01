@@ -334,9 +334,7 @@ export const BranchManagement = ({
                     courtType: court.courtType,
                     price: court.price.toString(),
                     numOfPlayers: court.nbOfPlayers,
-                    timeSlots: court.courtTimeSlots.map(
-                      (slot) => slot.timeSlot
-                    ),
+                    timeSlots: court.timeSlots,
                   };
                   setCreateCourtVisible("edit");
                 }}

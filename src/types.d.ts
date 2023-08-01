@@ -27,20 +27,15 @@ export interface TimeSlot {
   id?: number;
   startTime: number;
   endTime: number;
-  courtTimeSlots?: {
-    court: {
-      name: string;
-      courtType: GameType;
-    };
-  }[];
+  courtId?: number;
+  court?: Court;
 }
 
 export interface Game {
   id;
   date: Date;
-  gameTimeSlots: {
-    timeSlot: TimeSlot;
-  }[];
+  startTime: number;
+  endTime: number;
   type: GameType;
   court: Court;
   winnerTeam: string;
@@ -81,10 +76,8 @@ export interface Court {
   price: number;
   rating: number;
   nbOfPlayers: number;
-  courtTimeSlots: {
-    timeSlot: TimeSlot;
-    timeSlotId: number;
-  }[];
+  timeSlots: TimeSlot[];
+  occupiedTimes?: TimeSlot[];
   branchId: number;
   branch: {
     location: string;

@@ -11,13 +11,9 @@ import {
   BranchBooking,
   BranchBookingSkeleton,
 } from "src/components";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "src/utils";
-import {
-  TimeSlotsResponse,
-  useBookingsInBranchQuery,
-  useTimeSlotsInBranchQuery,
-} from "src/api";
+import { useBookingsInBranchQuery } from "src/api";
 
 type Props = BottomTabScreenProps<VenueBottomTabParamList>;
 
@@ -38,59 +34,27 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
     Tennis: true,
   });
 
-  const { data: bookings } = useBookingsInBranchQuery(
-    branchData?.branchId,
-    selectedDate
+  const { data: bookingsInBranch, isLoading: bookingsLoading } =
+    useBookingsInBranchQuery(branchData?.branchId, selectedDate);
+
+  var mappedBookings = bookingsInBranch?.map((booking) => ({
+    startTime: booking.startTime,
+    endTime: booking.endTime,
+    adminName: `${booking.admin.firstName} ${booking.admin.lastName}`,
+    gameType: booking.type,
+    courtId: booking.court.id,
+    courtName: booking.court.name,
+  }));
+
+  mappedBookings = mappedBookings?.filter(
+    (slot) => selectedSports[slot.gameType]
   );
-  const { data: timeSlots, isLoading: timeSlotsLoading } =
-    useTimeSlotsInBranchQuery(branchData?.branchId);
-
-  const allSlots = useMemo(() => {
-    const occupiedTimeSlots = (timeSlots as TimeSlotsResponse[])?.filter(
-      (timeSlot) =>
-        bookings?.findIndex(
-          (booking) =>
-            booking.gameTimeSlots.findIndex(
-              (bookingTimeSlot) =>
-                bookingTimeSlot.timeSlot.id === timeSlot.id &&
-                booking.court.id === timeSlot.courtId
-            ) !== -1
-        ) === -1
-    );
-
-    const mappedBookings = bookings?.map((booking) => ({
-      startTime: booking.gameTimeSlots[0].timeSlot.startTime,
-      endTime:
-        booking.gameTimeSlots[booking.gameTimeSlots.length - 1].timeSlot
-          .endTime,
-      adminName: `${booking.admin.firstName} ${booking.admin.lastName}`,
-      gameType: booking.type,
-      courtId: booking.court.id,
-      courtName: booking.court.name,
-    }));
-
-    let combinedArr: TimeSlotsResponse[] = [];
-
-    if (occupiedTimeSlots) combinedArr = combinedArr.concat(occupiedTimeSlots);
-    if (mappedBookings) combinedArr = combinedArr.concat(mappedBookings);
-
-    combinedArr = combinedArr.sort((a, b) =>
-      a.startTime <= b.startTime ? -1 : 1
-    );
-    combinedArr = combinedArr.sort((a, b) => (a.endTime <= b.endTime ? -1 : 0));
-    combinedArr = combinedArr.filter((slot) => selectedSports[slot.gameType]);
-    return combinedArr;
-  }, [
-    JSON.stringify(bookings),
-    JSON.stringify(timeSlots),
-    JSON.stringify(selectedSports),
-  ]);
-
-  const filteredTimeSlots = useMemo(() => {
-    return (timeSlots as TimeSlotsResponse[])?.filter(
-      (slot) => selectedSports[slot.gameType]
-    );
-  }, [JSON.stringify(timeSlots), JSON.stringify(selectedSports)]);
+  mappedBookings = mappedBookings?.sort((a, b) =>
+    a.startTime <= b.startTime ? -1 : 1
+  );
+  mappedBookings = mappedBookings?.sort((a, b) =>
+    a.endTime <= b.endTime ? -1 : 0
+  );
 
   return (
     <ScrollView contentContainerStyle={styles.wrapper}>
@@ -133,9 +97,9 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
           width={useWindowDimensions().width * 0.89}
         />
       </View>
-      {timeSlotsLoading && <BranchBookingSkeleton />}
-      {!timeSlotsLoading &&
-        (allSlots.length === 0 ? filteredTimeSlots : allSlots)?.map(
+      {bookingsLoading && <BranchBookingSkeleton />}
+      {!bookingsLoading &&
+        mappedBookings?.map(
           ({ startTime, endTime, adminName, gameType, courtName }, index) => (
             <BranchBooking
               key={index}
@@ -148,14 +112,13 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
             />
           )
         )}
-      {!timeSlotsLoading &&
-        (!filteredTimeSlots || filteredTimeSlots.length === 0) && (
-          <View style={styles.placeholder}>
-            <Text style={styles.placeholderText}>
-              There are no assigned time slots.
-            </Text>
-          </View>
-        )}
+      {!bookingsLoading && (!mappedBookings || mappedBookings.length === 0) && (
+        <View style={styles.placeholder}>
+          <Text style={styles.placeholderText}>
+            There are no bookings during this day.
+          </Text>
+        </View>
+      )}
     </ScrollView>
   );
 };

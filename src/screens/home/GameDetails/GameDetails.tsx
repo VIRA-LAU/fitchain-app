@@ -5,7 +5,12 @@ import React, {
   useContext,
   Fragment,
 } from "react";
-import { AppHeader, SelectionModal, Skeleton } from "src/components";
+import {
+  AppHeader,
+  SelectionModal,
+  Skeleton,
+  parseTimeFromMinutes,
+} from "src/components";
 import {
   View,
   StyleSheet,
@@ -307,12 +312,10 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    marginBottom: 10,
                   }}
                 >
-                  <Text
-                    variant="headlineSmall"
-                    style={{ color: "white", marginTop: -5, marginBottom: 10 }}
-                  >
+                  <Text variant="titleLarge" style={{ color: "white" }}>
                     {date
                       .toLocaleDateString(undefined, {
                         weekday: "long",
@@ -322,15 +325,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       })
                       .slice(0, Platform.OS === "ios" ? -5 : -6)}
                   </Text>
-                  <Text
-                    variant="labelLarge"
-                    style={{ color: "white", marginTop: -5, marginBottom: 10 }}
-                  >
-                    {game?.gameTimeSlots[0].timeSlot.startTime} -{" "}
-                    {
-                      game?.gameTimeSlots[game?.gameTimeSlots.length - 1]
-                        .timeSlot.endTime
-                    }
+                  <Text variant="labelLarge" style={{ color: "white" }}>
+                    {parseTimeFromMinutes(game?.startTime)} -{"\n"}
+                    {parseTimeFromMinutes(game?.endTime)}
                   </Text>
                 </View>
                 {!playerStatus?.isAdmin && (

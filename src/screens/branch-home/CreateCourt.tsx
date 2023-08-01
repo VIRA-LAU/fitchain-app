@@ -286,8 +286,8 @@ export const CreateCourt = ({
             {timeSlots.map((timeSlot, index) => (
               <View key={index} style={styles.timeSlotView}>
                 <Text style={styles.timeSlotText}>
-                  {parseTimeFromMinutes(timeSlot.startTime, true)} -{" "}
-                  {parseTimeFromMinutes(timeSlot.endTime, true)}
+                  {parseTimeFromMinutes(timeSlot.startTime)} -{" "}
+                  {parseTimeFromMinutes(timeSlot.endTime)}
                 </Text>
                 <View style={{ marginLeft: "auto", flexDirection: "row" }}>
                   <Button
@@ -364,7 +364,7 @@ export const CreateCourt = ({
       <TimeSlotPicker
         visible={timeSlotPickerVisible}
         setVisible={setTimeSlotPickerVisible}
-        onPress={(tempTime: TimeSlot) => {
+        onPress={(tempTime) => {
           if (typeof timeSlotIndexToEdit !== "undefined") {
             setTimeSlots(
               timeSlots.map((slot, index) =>
@@ -376,6 +376,7 @@ export const CreateCourt = ({
             if (timeSlots) setTimeSlots([...timeSlots, tempTime]);
             else setTimeSlots([tempTime]);
           }
+          setTimeSlotPickerVisible(false);
         }}
         showEndTime
       />

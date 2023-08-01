@@ -6,7 +6,7 @@ import { StackParamList } from "navigation";
 import { AppHeader } from "src/components";
 import { ScrollView } from "react-native-gesture-handler";
 import { CourtCard, TimeSlotPicker } from "src/components";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Court, TimeSlot } from "src/types";
 import { useSearchBranchesQuery } from "src/api";
 
@@ -24,7 +24,7 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
     profilePhotoUrl,
   } = route.params;
 
-  const [confirmedTime, setConfirmedTime] = useState<number[] | undefined>(
+  const [confirmedTime, setConfirmedTime] = useState<TimeSlot | undefined>(
     bookingDetails?.time
   );
   const [pressedCourt, setPressedCourt] = useState<Court | null>(null);
@@ -53,28 +53,27 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
           visible={timeSlotPickerVisible}
           setVisible={setTimeSlotPickerVisible}
           time={confirmedTime}
-          setTime={setConfirmedTime}
-          onPress={() => {
-            // if (bookingDetails && selectedTimeSlots)
-            //   navigation.push("BookingPayment", {
-            //     venueName: venueName!,
-            //     courtName: pressedCourt!.name,
-            //     courtType: pressedCourt!.courtType,
-            //     courtRating: pressedCourt!.rating,
-            //     courtMaxPlayers: pressedCourt!.nbOfPlayers,
-            //     selectedTimeSlots,
-            //     price: pressedCourt!.price,
-            //     bookingDetails: {
-            //       ...bookingDetails,
-            //       timeSlotIds: selectedTimeSlots.map((slot) => slot.id),
-            //       startTime: selectedTimeSlots[0].startTime,
-            //       endTime:
-            //         selectedTimeSlots[selectedTimeSlots.length - 1].endTime,
-            //       courtId: pressedCourt!.id,
-            //     },
-            //     profilePhotoUrl,
-            //   });
+          availableTimes={pressedCourt?.timeSlots}
+          occupiedTimes={pressedCourt?.occupiedTimes}
+          onPress={(tempTime) => {
+            setConfirmedTime(tempTime);
+            if (bookingDetails)
+              navigation.push("BookingPayment", {
+                venueName: venueName!,
+                courtName: pressedCourt!.name,
+                courtType: pressedCourt!.courtType,
+                courtRating: pressedCourt!.rating,
+                courtMaxPlayers: pressedCourt!.nbOfPlayers,
+                price: pressedCourt!.price,
+                bookingDetails: {
+                  ...bookingDetails,
+                  time: tempTime,
+                  courtId: pressedCourt!.id,
+                },
+                profilePhotoUrl,
+              });
           }}
+          constrained
         />
         {branches &&
           branches.length > 0 &&

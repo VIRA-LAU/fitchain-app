@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useTheme, Text, ActivityIndicator } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { AppHeader } from "src/components";
+import { AppHeader, parseTimeFromMinutes } from "src/components";
 import Feather from "react-native-vector-icons/Feather";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -30,7 +30,6 @@ export const BookingPayment = ({ navigation, route }: Props) => {
     courtType,
     courtRating,
     courtMaxPlayers,
-    selectedTimeSlots,
     price,
     bookingDetails,
     profilePhotoUrl,
@@ -42,19 +41,8 @@ export const BookingPayment = ({ navigation, route }: Props) => {
     bookingDetails.nbOfPlayers
   );
 
-  const dateStr = JSON.parse(bookingDetails.date);
-  var bookedHours = 0;
-
-  selectedTimeSlots.forEach((timeslot) => {
-    const startDate = new Date(
-      dateStr.substring(0, dateStr.indexOf("T") + 1) + timeslot.startTime
-    );
-    const endDate = new Date(
-      dateStr.substring(0, dateStr.indexOf("T") + 1) + timeslot.endTime
-    );
-    const timeDiff = (endDate.getTime() - startDate.getTime()) / 1000 / 3600;
-    bookedHours += timeDiff;
-  });
+  const bookedHours =
+    (bookingDetails.time.endTime - bookingDetails.time.startTime) / 60;
 
   return (
     <AppHeader
@@ -179,9 +167,9 @@ export const BookingPayment = ({ navigation, route }: Props) => {
             <Text style={styles.labelText}>Time slot</Text>
             <View style={styles.contentIconView}>
               <Text style={[styles.valueText, { marginRight: 10 }]}>
-                {bookingDetails.startTime} - {bookingDetails.endTime}
+                {parseTimeFromMinutes(bookingDetails.time.startTime)} -{" "}
+                {parseTimeFromMinutes(bookingDetails.time.endTime)}
               </Text>
-              {/* <Feather name="edit-3" color={"white"} size={16} /> */}
             </View>
           </View>
         </View>
@@ -216,21 +204,20 @@ export const BookingPayment = ({ navigation, route }: Props) => {
           </View>
         </View>
         {isLoading ? (
-          <ActivityIndicator
-            size="large"
-            style={{ marginTop: "auto", marginBottom: 10 }}
-          />
+          <View style={styles.paymentViewWrapper}>
+            <ActivityIndicator size="large" style={{ marginVertical: 20 }} />
+          </View>
         ) : (
           <View style={styles.paymentViewWrapper}>
             <TouchableOpacity
               activeOpacity={0.6}
               style={styles.paymentView}
               onPress={() => {
-                const bookingDate = new Date(dateStr);
                 createGame({
                   courtId: bookingDetails.courtId,
-                  timeSlotIds: bookingDetails.timeSlotIds,
-                  date: bookingDate,
+                  startTime: bookingDetails.time.startTime,
+                  endTime: bookingDetails.time.endTime,
+                  date: JSON.parse(bookingDetails.date),
                   type: bookingDetails.gameType,
                 });
               }}

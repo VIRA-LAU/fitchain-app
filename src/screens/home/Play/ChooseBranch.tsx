@@ -37,8 +37,8 @@ export const ChooseBranch = ({ navigation, route }: Props) => {
     {
       date: searchDate,
       gameType,
-      startTime: "",
-      endTime: "",
+      startTime: time?.startTime.toString(),
+      endTime: time?.endTime.toString(),
       nbOfPlayers,
     }
   );

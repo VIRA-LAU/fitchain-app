@@ -9,7 +9,7 @@ import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, StackParamList } from "src/navigation";
-import { GameType, Branch } from "src/types";
+import { GameType, Branch, TimeSlot } from "src/types";
 import { Skeleton } from "./Skeleton";
 
 type styleOptions = "vertical" | "horizontal" | "focused";
@@ -62,7 +62,7 @@ export const BranchCard = ({
   branch: Branch;
   playScreenBookingDetails?: {
     date: string;
-    time?: number[];
+    time?: TimeSlot;
     gameType: GameType;
     nbOfPlayers: number;
   };

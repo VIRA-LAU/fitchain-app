@@ -56,6 +56,22 @@ export type StackParamList = {
     };
     profilePhotoUrl?: string;
   };
+  BookingPayment: {
+    venueName: string;
+    courtName: string;
+    courtType: string;
+    courtRating: number;
+    courtMaxPlayers: number;
+    price: number;
+    bookingDetails: {
+      courtId: number;
+      date: string;
+      nbOfPlayers: number;
+      time: TimeSlot;
+      gameType: GameType;
+    };
+    profilePhotoUrl?: string;
+  };
   ChooseGame: {
     gameType: GameType;
     location: LatLng;
@@ -63,24 +79,6 @@ export type StackParamList = {
     nbOfPlayers: number;
     date?: string;
     time?: TimeSlot;
-  };
-  BookingPayment: {
-    venueName: string;
-    courtName: string;
-    courtType: string;
-    courtRating: number;
-    courtMaxPlayers: number;
-    selectedTimeSlots: TimeSlot[];
-    price: number;
-    bookingDetails: {
-      courtId: number;
-      date: string;
-      nbOfPlayers: number;
-      timeSlotIds: number[];
-      time?: TimeSlot;
-      gameType: GameType;
-    };
-    profilePhotoUrl?: string;
   };
 };
 

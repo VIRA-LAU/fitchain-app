@@ -124,9 +124,8 @@ export const Play = ({
     }
     if (searchTime) {
       time = `${parseTimeFromMinutes(
-        searchTime.startTime,
-        true
-      )} - ${parseTimeFromMinutes(searchTime.endTime, true)}`;
+        searchTime.startTime
+      )} - ${parseTimeFromMinutes(searchTime.endTime)}`;
     }
 
     return [date, time];
@@ -509,7 +508,10 @@ export const Play = ({
         visible={timeSlotPickerVisible}
         setVisible={setTimeSlotPickerVisible}
         time={searchTime}
-        setTime={setSearchTime}
+        onPress={(tempTime) => {
+          setSearchTime(tempTime);
+          setTimeSlotPickerVisible(false);
+        }}
       />
     </Fragment>
   );
