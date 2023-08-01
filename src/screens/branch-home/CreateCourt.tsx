@@ -363,6 +363,16 @@ export const CreateCourt = ({
       </View>
       <TimeSlotPicker
         visible={timeSlotPickerVisible}
+        time={
+          typeof timeSlotIndexToEdit !== "undefined"
+            ? timeSlots[timeSlotIndexToEdit]
+            : { startTime: 720, endTime: 840 }
+        }
+        occupiedTimes={timeSlots.filter((slot) =>
+          typeof timeSlotIndexToEdit !== "undefined"
+            ? slot.id !== timeSlots[timeSlotIndexToEdit].id
+            : true
+        )}
         setVisible={setTimeSlotPickerVisible}
         onPress={(tempTime) => {
           if (typeof timeSlotIndexToEdit !== "undefined") {
@@ -378,6 +388,7 @@ export const CreateCourt = ({
           }
           setTimeSlotPickerVisible(false);
         }}
+        constrained={"partial"}
         showEndTime
       />
     </Fragment>

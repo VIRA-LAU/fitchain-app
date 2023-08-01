@@ -359,11 +359,21 @@ export const Play = ({
             <View style={styles.dateTime}>
               <View style={styles.dateTimeRow}>
                 <Text style={styles.labelText}>Date</Text>
+                {searchDate && (
+                  <TouchableOpacity
+                    style={styles.resetView}
+                    onPress={() => {
+                      setSearchDate(null);
+                    }}
+                  >
+                    <Text style={styles.reset}>Reset</Text>
+                  </TouchableOpacity>
+                )}
                 <TouchableOpacity
                   onPress={() => setDateTimePickerVisible(true)}
                 >
                   <Text style={styles.buttonText}>
-                    {selectedDate ? selectedDate : "Select Date"}
+                    {selectedDate ? selectedDate : "Any Date"}
                   </Text>
                 </TouchableOpacity>
               </View>

@@ -73,7 +73,7 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
                 profilePhotoUrl,
               });
           }}
-          constrained
+          constrained={"full"}
         />
         {branches &&
           branches.length > 0 &&

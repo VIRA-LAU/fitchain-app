@@ -1,4 +1,10 @@
-import React, { Fragment, useState, Dispatch, SetStateAction } from "react";
+import React, {
+  Fragment,
+  useState,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+} from "react";
 import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -38,7 +44,7 @@ export const TimeSlotPicker = ({
   showEndTime = false,
   availableTimes = [],
   occupiedTimes = [],
-  constrained = false,
+  constrained = "none",
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
@@ -47,7 +53,7 @@ export const TimeSlotPicker = ({
   showEndTime?: boolean;
   availableTimes?: TimeSlot[];
   occupiedTimes?: TimeSlot[];
-  constrained?: boolean;
+  constrained?: "full" | "partial" | "none";
 }) => {
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
@@ -61,7 +67,7 @@ export const TimeSlotPicker = ({
     diff === 30 ? "30 minutes" : diff === 60 ? "1 hour" : `${diff / 60} hours`;
 
   var tintColor =
-    !constrained ||
+    constrained === "none" ||
     (!occupiedTimes.some(
       (oTime) =>
         (tempTime[0] > oTime.startTime && tempTime[0] < oTime.endTime) ||
@@ -71,12 +77,18 @@ export const TimeSlotPicker = ({
         (oTime) =>
           tempTime[0] <= oTime.startTime && tempTime[1] >= oTime.endTime
       ) &&
-      availableTimes.some(
-        (aTime) =>
-          tempTime[0] >= aTime.startTime && tempTime[1] <= aTime.endTime
-      ))
+      (constrained === "partial" ||
+        availableTimes.some(
+          (aTime) =>
+            tempTime[0] >= aTime.startTime && tempTime[1] <= aTime.endTime
+        )))
       ? colors.primary
       : "transparent";
+
+  useEffect(() => {
+    if (visible)
+      setTempTime(time ? [time.startTime, time.endTime] : [720, 840]);
+  }, [visible]);
 
   return (
     <Fragment>
