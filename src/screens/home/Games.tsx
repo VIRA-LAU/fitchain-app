@@ -98,8 +98,8 @@ const FollowedGames = (props: GameListProps) => {
     });
     return games.sort((a, b) =>
       props.type === "upcoming"
-        ? a.date.getTime() - b.date.getTime()
-        : b.date.getTime() - a.date.getTime()
+        ? a.startTime.getTime() - b.startTime.getTime()
+        : b.startTime.getTime() - a.startTime.getTime()
     );
   }, [JSON.stringify(followedGames), JSON.stringify(myGames)]);
 
@@ -154,9 +154,9 @@ const GameList = ({
   if (type === "upcoming")
     filteredGames?.forEach((game: Game, index: number) => {
       const gameDate = new Date(
-        game.date
+        game.startTime
           .toISOString()
-          .substring(0, game.date.toISOString().indexOf("T"))
+          .substring(0, game.startTime.toISOString().indexOf("T"))
       );
       const todayDate = new Date(
         today.toISOString().substring(0, today.toISOString().indexOf("T"))
@@ -193,9 +193,9 @@ const GameList = ({
   else
     filteredGames?.forEach((game: Game, index: number) => {
       const gameDate = new Date(
-        game.date
+        game.startTime
           .toISOString()
-          .substring(0, game.date.toISOString().indexOf("T"))
+          .substring(0, game.startTime.toISOString().indexOf("T"))
       );
       const todayDate = new Date(
         today.toISOString().substring(0, today.toISOString().indexOf("T"))

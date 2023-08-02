@@ -11,10 +11,9 @@ import { BottomTabParamList, StackParamList } from "src/navigation";
 
 type Request = {
   courtId: number;
-  date: string;
   type: GameType;
-  startTime: number;
-  endTime: number;
+  startTime: string;
+  endTime: string;
 };
 
 const createGame = async (data: Request) => {
@@ -43,17 +42,6 @@ export const useCreateGameMutation = () => {
       queryClient.refetchQueries(["bookings"]);
       navigation.pop(4);
       navigation.navigate("Home");
-    },
-    onMutate: (variables) => {
-      variables.date = JSON.stringify(
-        new Date(
-          new Date(variables.date).setHours(
-            Math.floor(variables.startTime / 60),
-            variables.startTime % 60,
-            0
-          )
-        )
-      );
     },
   });
 };

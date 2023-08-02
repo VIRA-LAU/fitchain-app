@@ -15,6 +15,17 @@ const getCourtsInBranch = (branchId?: number) => async () => {
 export const useCourtsInBranchQuery = (branchId?: number) => {
   return useQuery<Court[]>(
     ["courts-in-branch", branchId],
-    getCourtsInBranch(branchId)
+    getCourtsInBranch(branchId),
+    {
+      select: (courts) =>
+        courts.map((court) => ({
+          ...court,
+          timeSlots: court.timeSlots.map((timeSlot) => ({
+            ...timeSlot,
+            startTime: new Date(timeSlot.startTime),
+            endTime: new Date(timeSlot.endTime),
+          })),
+        })),
+    }
   );
 };

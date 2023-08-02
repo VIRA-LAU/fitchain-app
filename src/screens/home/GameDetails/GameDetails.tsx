@@ -9,6 +9,7 @@ import {
   AppHeader,
   SelectionModal,
   Skeleton,
+  getMins,
   parseTimeFromMinutes,
 } from "src/components";
 import {
@@ -83,8 +84,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
     useUnfollowGameMutation();
 
   const dateHeader = useMemo(() => {
-    if (game?.date) {
-      let date = new Date(game?.date);
+    if (game?.startTime) {
+      let date = game.startTime;
       const bookingDate = new Date(
         date.toISOString().substring(0, date.toISOString().indexOf("T"))
       );
@@ -102,7 +103,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
       else if (dayDiff <= 30) return "This Month";
       else return "In the Future";
     }
-  }, [game?.date]);
+  }, [game?.startTime]);
 
   useEffect(() => {
     const handleBack = () => {
@@ -116,8 +117,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
       BackHandler.removeEventListener("hardwareBackPress", handleBack);
     };
   }, [popupVisible]);
-
-  const date = game?.date ? new Date(game?.date) : new Date();
 
   const renderScene = () => {
     const route = routes[index];
@@ -316,7 +315,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   }}
                 >
                   <Text variant="titleLarge" style={{ color: "white" }}>
-                    {date
+                    {game!.startTime
                       .toLocaleDateString(undefined, {
                         weekday: "long",
                         month: "long",
@@ -326,8 +325,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       .slice(0, Platform.OS === "ios" ? -5 : -6)}
                   </Text>
                   <Text variant="labelLarge" style={{ color: "white" }}>
-                    {parseTimeFromMinutes(game?.startTime)} -{"\n"}
-                    {parseTimeFromMinutes(game?.endTime)}
+                    {parseTimeFromMinutes(getMins(game!.startTime))}
+                    {" -\n"}
+                    {parseTimeFromMinutes(getMins(game!.endTime))}
                   </Text>
                 </View>
                 {!playerStatus?.isAdmin && (

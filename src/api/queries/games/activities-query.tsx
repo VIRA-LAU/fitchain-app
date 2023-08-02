@@ -14,5 +14,12 @@ const getActivities = (userId?: number) => async () => {
 };
 
 export const useActivitiesQuery = (userId?: number) => {
-  return useQuery<Activity[]>(["activities", userId], getActivities(userId));
+  return useQuery<Activity[]>(["activities", userId], getActivities(userId), {
+    select: (activities) =>
+      activities.map((activity) => ({
+        ...activity,
+        startTime: new Date(activity.startTime),
+        endTime: new Date(activity.endTime),
+      })),
+  });
 };

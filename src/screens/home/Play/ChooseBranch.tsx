@@ -10,7 +10,7 @@ import {
   useSortBranchesByLocationQuery,
   useSearchBranchesQuery,
 } from "src/api";
-import { Branch } from "src/types";
+import { Branch, TimeSlot } from "src/types";
 
 type Props = StackScreenProps<StackParamList, "ChooseBranch">;
 
@@ -27,7 +27,8 @@ export const ChooseBranch = ({ navigation, route }: Props) => {
     nbOfPlayers,
   } = route.params;
 
-  const date = new Date(JSON.parse(dateStr));
+  const date = new Date(dateStr);
+
   const searchDate = `${date.getFullYear()}-${(
     "0" +
     (date.getMonth() + 1)
@@ -37,8 +38,8 @@ export const ChooseBranch = ({ navigation, route }: Props) => {
     {
       date: searchDate,
       gameType,
-      startTime: time?.startTime.toString(),
-      endTime: time?.endTime.toString(),
+      startTime: time?.startTime as string,
+      endTime: time?.endTime as string,
       nbOfPlayers,
     }
   );

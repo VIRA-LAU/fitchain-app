@@ -15,12 +15,16 @@ const getFollowedGames = (type?: "upcoming" | "previous") => async () => {
 export const useFollowedGamesQuery = ({
   type,
 }: { type?: "upcoming" | "previous" } = {}) => {
-  return useQuery<{ game: Game }[], unknown, Game[]>(
+  return useQuery<Game[], unknown, Game[]>(
     ["followed-games", type],
     getFollowedGames(type),
     {
       select: (games) =>
-        games.map(({ game }) => ({ ...game, date: new Date(game.date) })),
+        games.map((game) => ({
+          ...game,
+          startTime: new Date(game.startTime),
+          endTime: new Date(game.endTime),
+        })),
     }
   );
 };

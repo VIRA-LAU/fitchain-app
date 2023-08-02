@@ -13,5 +13,12 @@ const getTimeSlots = async () => {
 };
 
 export const useTimeSlotsQuery = () => {
-  return useQuery<TimeSlot[]>("timeSlots", getTimeSlots);
+  return useQuery<TimeSlot[]>("timeSlots", getTimeSlots, {
+    select: (timeSlots) =>
+      timeSlots.map((timeSlot) => ({
+        ...timeSlot,
+        startTime: new Date(timeSlot.startTime),
+        endTime: new Date(timeSlot.endTime),
+      })),
+  });
 };

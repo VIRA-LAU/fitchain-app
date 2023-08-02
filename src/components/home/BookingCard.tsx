@@ -14,7 +14,7 @@ import "intl";
 import "intl/locale-data/jsonp/en";
 import { Game } from "src/types";
 import { Skeleton } from "./Skeleton";
-import { parseTimeFromMinutes } from "./TimeSlotPicker";
+import { getMins, parseTimeFromMinutes } from "./TimeSlotPicker";
 
 export const BookingCardSkeleton = () => {
   const { colors } = useTheme();
@@ -64,10 +64,10 @@ export const BookingCard = ({
     month: "short",
     day: "numeric",
   });
-  const dateString = dateFormatter.format(booking.date);
+  const dateString = dateFormatter.format(booking.startTime);
   const dateAndTime = `${dateString} - ${parseTimeFromMinutes(
-    booking.startTime
-  )} till ${parseTimeFromMinutes(booking.endTime)}`;
+    getMins(booking.startTime)
+  )} till ${parseTimeFromMinutes(getMins(booking.endTime))}`;
 
   const navigation =
     useNavigation<

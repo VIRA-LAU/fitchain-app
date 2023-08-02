@@ -67,8 +67,8 @@ export const InvitationCard = ({
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
   const styles = makeStyles(colors, height, width);
-  const hours = game.date.getHours();
-  const minutes = game.date.getMinutes();
+  const hours = game.startTime.getHours();
+  const minutes = game.startTime.getMinutes();
   const amPm = hours >= 12 ? "pm" : "am";
   const timeString =
     (hours % 12 || 12).toString().padStart(2, "0") +
@@ -139,7 +139,7 @@ export const InvitationCard = ({
             <Text style={styles.text}>{game.type}</Text>
             {type === "request" ? " game " : " "}on{" "}
             <Text style={styles.text}>
-              {game.date
+              {game.startTime
                 .toLocaleDateString(undefined, {
                   weekday: "long",
                   month: "long",

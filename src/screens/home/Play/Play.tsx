@@ -33,6 +33,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {
   MapComponent,
   TimeSlotPicker,
+  getMins,
   parseTimeFromMinutes,
 } from "src/components";
 import { LatLng, Region } from "react-native-maps";
@@ -124,8 +125,8 @@ export const Play = ({
     }
     if (searchTime) {
       time = `${parseTimeFromMinutes(
-        searchTime.startTime
-      )} - ${parseTimeFromMinutes(searchTime.endTime)}`;
+        getMins(searchTime.startTime as Date)
+      )} - ${parseTimeFromMinutes(getMins(searchTime.endTime as Date))}`;
     }
 
     return [date, time];
@@ -391,8 +392,14 @@ export const Play = ({
                 )}
                 <TouchableOpacity
                   onPress={() => setTimeSlotPickerVisible(true)}
+                  disabled={searchDate === null || searchDate === undefined}
                 >
-                  <Text style={[styles.buttonText, { color: colors.primary }]}>
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      { color: searchDate ? colors.primary : colors.tertiary },
+                    ]}
+                  >
                     {selectedTime || "Any Time"}
                   </Text>
                 </TouchableOpacity>
@@ -409,11 +416,20 @@ export const Play = ({
                         setVisible(false);
                         if (!branch)
                           navigation.push("ChooseBranch", {
-                            date: JSON.stringify(searchDate),
+                            date: searchDate.toISOString(),
                             gameType,
                             location: searchLocationMarker,
                             locationName: searchLocationName,
-                            time: searchTime,
+                            time: searchTime
+                              ? {
+                                  startTime: (
+                                    searchTime?.startTime as Date
+                                  ).toISOString(),
+                                  endTime: (
+                                    searchTime?.endTime as Date
+                                  ).toISOString(),
+                                }
+                              : undefined,
                             nbOfPlayers: numberOfPlayers,
                           });
                         else {
@@ -422,9 +438,18 @@ export const Play = ({
                             venueName: branch.venue.name,
                             branchLocation: branch.location,
                             bookingDetails: {
-                              date: JSON.stringify(searchDate),
+                              date: searchDate.toISOString(),
                               nbOfPlayers: numberOfPlayers,
-                              time: searchTime,
+                              time: searchTime
+                                ? {
+                                    startTime: (
+                                      searchTime?.startTime as Date
+                                    ).toISOString(),
+                                    endTime: (
+                                      searchTime?.endTime as Date
+                                    ).toISOString(),
+                                  }
+                                : undefined,
                               gameType,
                             },
                             profilePhotoUrl: branch.profilePhotoUrl,
@@ -444,14 +469,21 @@ export const Play = ({
                     setVisible(false);
                     if (!branch && searchLocationMarker && searchLocationName)
                       navigation.push("ChooseGame", {
-                        date: searchDate
-                          ? JSON.stringify(searchDate)
-                          : undefined,
+                        date: searchDate ? searchDate.toISOString() : undefined,
                         gameType,
                         nbOfPlayers: numberOfPlayers,
                         location: searchLocationMarker,
                         locationName: searchLocationName,
-                        time: searchTime,
+                        time: searchTime
+                          ? {
+                              startTime: (
+                                searchTime?.startTime as Date
+                              ).toISOString(),
+                              endTime: (
+                                searchTime?.endTime as Date
+                              ).toISOString(),
+                            }
+                          : undefined,
                       });
                   }}
                 >

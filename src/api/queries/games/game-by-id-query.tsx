@@ -13,5 +13,11 @@ const getGameById = (id: number) => async () => {
 };
 
 export const useGameByIdQuery = (id: number) => {
-  return useQuery<Game>(["games", id], getGameById(id));
+  return useQuery<Game>(["games", id], getGameById(id), {
+    select: (game) => ({
+      ...game,
+      startTime: new Date(game.startTime),
+      endTime: new Date(game.endTime),
+    }),
+  });
 };

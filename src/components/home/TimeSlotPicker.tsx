@@ -11,6 +11,8 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Slider } from "@miblanchard/react-native-slider";
 import { TimeSlot } from "src/types";
 
+export const getMins = (date: Date) => date.getHours() * 60 + date.getMinutes();
+
 export const parseTimeFromMinutes = (
   num?: number,
   includeMinutes: boolean = true
@@ -60,34 +62,53 @@ export const TimeSlotPicker = ({
   const styles = makeStyles(colors, width, height);
 
   const [tempTime, setTempTime] = useState<number[]>(
-    time ? [time.startTime, time.endTime] : [720, 840]
+    time
+      ? [getMins(time.startTime as Date), getMins(time.endTime as Date)]
+      : [720, 840]
   );
+
   const diff = tempTime[1] - tempTime[0];
   const duration =
     diff === 30 ? "30 minutes" : diff === 60 ? "1 hour" : `${diff / 60} hours`;
 
+  const availableMins: number[][] = availableTimes.map((time) => [
+    getMins(time.startTime as Date),
+    getMins(time.endTime as Date) === 0 ? 1440 : getMins(time.endTime as Date),
+  ]);
+  const occupiedMins: number[][] = occupiedTimes.map((time) => [
+    getMins(time.startTime as Date),
+    getMins(time.endTime as Date) === 0 ? 1440 : getMins(time.endTime as Date),
+  ]);
+
   var tintColor =
     constrained === "none" ||
-    (!occupiedTimes.some(
+    (!occupiedMins.some(
       (oTime) =>
-        (tempTime[0] > oTime.startTime && tempTime[0] < oTime.endTime) ||
-        (tempTime[1] > oTime.startTime && tempTime[1] < oTime.endTime)
+        (tempTime[0] > oTime[0] && tempTime[0] < oTime[1]) ||
+        (tempTime[1] > oTime[0] && tempTime[1] < oTime[1])
     ) &&
-      !occupiedTimes.some(
-        (oTime) =>
-          tempTime[0] <= oTime.startTime && tempTime[1] >= oTime.endTime
+      !occupiedMins.some(
+        (oTime) => tempTime[0] <= oTime[0] && tempTime[1] >= oTime[1]
       ) &&
       (constrained === "partial" ||
-        availableTimes.some(
-          (aTime) =>
-            tempTime[0] >= aTime.startTime && tempTime[1] <= aTime.endTime
+        availableMins.some(
+          (aTime) => tempTime[0] >= aTime[0] && tempTime[1] <= aTime[1]
         )))
       ? colors.primary
       : "transparent";
 
   useEffect(() => {
     if (visible)
-      setTempTime(time ? [time.startTime, time.endTime] : [720, 840]);
+      setTempTime(
+        time
+          ? [
+              getMins(time.startTime as Date),
+              getMins(time.endTime as Date) === 0
+                ? 1440
+                : getMins(time.endTime as Date),
+            ]
+          : [720, 840]
+      );
   }, [visible]);
 
   return (
@@ -134,26 +155,26 @@ export const TimeSlotPicker = ({
             disabled
             renderThumbComponent={() => <View></View>}
           />
-          {availableTimes?.map((availableTime, index) => (
+          {availableMins?.map((availableTime, index) => (
             <Slider
               key={index}
               containerStyle={styles.absoluteSlider}
               minimumValue={0}
               maximumValue={1440}
-              value={[availableTime.startTime, availableTime.endTime]}
+              value={availableTime}
               minimumTrackTintColor={"green"}
               maximumTrackTintColor="transparent"
               disabled
               renderThumbComponent={() => <View></View>}
             />
           ))}
-          {occupiedTimes?.map((occupiedTime, index) => (
+          {occupiedMins?.map((occupiedTime, index) => (
             <Slider
               key={index}
               containerStyle={styles.absoluteSlider}
               minimumValue={0}
               maximumValue={1440}
-              value={[occupiedTime.startTime, occupiedTime.endTime]}
+              value={occupiedTime}
               minimumTrackTintColor={"red"}
               maximumTrackTintColor="transparent"
               disabled
@@ -197,9 +218,23 @@ export const TimeSlotPicker = ({
           onPress={
             tintColor === colors.primary
               ? () => {
+                  const startTime = new Date("2000-01-01");
+                  startTime.setHours(
+                    Math.floor(tempTime[0] / 60),
+                    tempTime[0] % 60,
+                    0,
+                    0
+                  );
+                  const endTime = new Date("2000-01-01");
+                  endTime.setHours(
+                    Math.floor(tempTime[1] / 60),
+                    tempTime[1] % 60,
+                    0,
+                    0
+                  );
                   onPress({
-                    startTime: tempTime[0],
-                    endTime: tempTime[1],
+                    startTime,
+                    endTime,
                   });
                 }
               : undefined

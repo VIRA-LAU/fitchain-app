@@ -9,8 +9,8 @@ type Response = {
 
 export type TimeSlotsResponse = {
   id?: number;
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
   gameType: GameType;
   courtId: number;
   courtName: string;
@@ -34,11 +34,21 @@ export const useTimeSlotsInBranchQuery = (branchId?: number) => {
     getTimeSlotsInBranch(branchId),
     {
       select: (data) => {
+        data = data.map((d) => ({
+          court: d.court,
+          timeSlot: {
+            ...d.timeSlot,
+            startTime: new Date(d.timeSlot.startTime),
+            endTime: new Date(d.timeSlot.endTime),
+          },
+        }));
         let sorted = data.sort((a, b) =>
-          a.timeSlot.startTime <= b.timeSlot.startTime ? -1 : 1
+          a.timeSlot.startTime.getTime() <= b.timeSlot.startTime.getTime()
+            ? -1
+            : 1
         );
         sorted = sorted.sort((a, b) =>
-          a.timeSlot.endTime <= b.timeSlot.endTime ? -1 : 0
+          a.timeSlot.endTime.getTime() <= b.timeSlot.endTime.getTime() ? -1 : 0
         );
 
         let separatedTimeSlots: TimeSlotsResponse[] = [];

@@ -49,7 +49,9 @@ export const UpcomingGameCard = ({ game }: { game: Game }) => {
   const location = `${game.court.branch.venue.name} - ${game.court.branch.location}`;
   const dateHeader = useMemo(() => {
     const bookingDate = new Date(
-      game.date.toISOString().substring(0, game.date.toISOString().indexOf("T"))
+      game.startTime
+        .toISOString()
+        .substring(0, game.startTime.toISOString().indexOf("T"))
     );
     const todayDate = new Date(
       new Date()

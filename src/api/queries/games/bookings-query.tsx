@@ -17,6 +17,10 @@ export const useBookingsQuery = ({
 }: { type?: "upcoming" | "previous" } = {}) => {
   return useQuery<Game[]>(["bookings", type], getBookings(type), {
     select: (bookings) =>
-      bookings.map((booking) => ({ ...booking, date: new Date(booking.date) })),
+      bookings.map((booking) => ({
+        ...booking,
+        startTime: new Date(booking.startTime),
+        endTime: new Date(booking.endTime),
+      })),
   });
 };

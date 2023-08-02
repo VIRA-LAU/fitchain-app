@@ -7,5 +7,4 @@ export * from "./BranchDetails";
 export * from "./InviteUsers";
 
 export * from "./GameDetails/GameDetails";
-export * from "./GameDetails/BookingPayment";
 export * from "./GameDetails/RatePlayer";

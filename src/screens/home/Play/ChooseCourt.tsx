@@ -24,22 +24,34 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
     profilePhotoUrl,
   } = route.params;
 
+  const date = new Date(bookingDetails!.date);
+  const time = bookingDetails?.time;
+
   const [confirmedTime, setConfirmedTime] = useState<TimeSlot | undefined>(
-    bookingDetails?.time
+    time
+      ? {
+          ...time,
+          startTime: new Date(time.startTime),
+          endTime: new Date(time.endTime),
+        }
+      : undefined
   );
   const [pressedCourt, setPressedCourt] = useState<Court | null>(null);
   const [timeSlotPickerVisible, setTimeSlotPickerVisible] =
     useState<boolean>(false);
 
-  const date = new Date(JSON.parse(bookingDetails!.date));
-  const searchDate = `${date.getFullYear()}-${(
-    "0" +
-    (date.getMonth() + 1)
-  ).slice(-2)}-${("0" + date.getDate()).slice(-2)}`;
+  const searchDate = new Date(
+    `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${(
+      "0" + date.getDate()
+    ).slice(-2)}`
+  );
+  searchDate.setHours(0, 0, 0, 0);
 
   const { data: branches } = useSearchBranchesQuery({
     ...bookingDetails!,
-    date: searchDate,
+    startTime: time?.startTime as string,
+    endTime: time?.endTime as string,
+    date: searchDate.toISOString(),
     branchId,
   });
 
@@ -66,8 +78,13 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
                 courtMaxPlayers: pressedCourt!.nbOfPlayers,
                 price: pressedCourt!.price,
                 bookingDetails: {
-                  ...bookingDetails,
-                  time: tempTime,
+                  date: bookingDetails.date,
+                  gameType: bookingDetails.gameType,
+                  nbOfPlayers: bookingDetails.nbOfPlayers,
+                  time: {
+                    startTime: (tempTime.startTime as Date).toISOString(),
+                    endTime: (tempTime.endTime as Date).toISOString(),
+                  },
                   courtId: pressedCourt!.id,
                 },
                 profilePhotoUrl,

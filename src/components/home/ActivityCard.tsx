@@ -28,14 +28,19 @@ export const ActivityCardSkeleton = () => {
   );
 };
 
-export const ActivityCard = ({ gameId, date, type, isWinner }: Activity) => {
+export const ActivityCard = ({
+  gameId,
+  startTime,
+  type,
+  isWinner,
+}: Activity) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const dateHeader = useMemo(() => {
     const bookingDate = new Date(
-      new Date(date)
+      startTime
         .toISOString()
-        .substring(0, new Date(date).toISOString().indexOf("T"))
+        .substring(0, new Date(startTime).toISOString().indexOf("T"))
     );
     const todayDate = new Date(
       new Date()
@@ -59,6 +64,7 @@ export const ActivityCard = ({ gameId, date, type, isWinner }: Activity) => {
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
+
   return (
     <TouchableOpacity
       activeOpacity={0.6}

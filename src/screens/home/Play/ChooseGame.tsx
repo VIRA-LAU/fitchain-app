@@ -4,7 +4,7 @@ import { Text, useTheme } from "react-native-paper";
 import { useSortGamesByLocationQuery, useSearchGamesQuery } from "src/api";
 import { AppHeader, BookingCard, SortByModal } from "src/components";
 import { StackParamList } from "src/navigation";
-import { Game } from "src/types";
+import { Game, TimeSlot } from "src/types";
 import { DayHeader } from "../Games";
 import { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
@@ -22,7 +22,8 @@ export const ChooseGame = ({ navigation, route }: Props) => {
 
   const { location, date: dateStr, time, gameType, nbOfPlayers } = route.params;
 
-  const date = dateStr ? new Date(JSON.parse(dateStr)) : undefined;
+  const date = dateStr ? new Date(dateStr) : undefined;
+
   const searchDate = date
     ? `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${(
         "0" + date.getDate()
@@ -32,8 +33,8 @@ export const ChooseGame = ({ navigation, route }: Props) => {
   const { data: games } = useSearchGamesQuery({
     gameType,
     date: searchDate,
-    startTime: time?.startTime.toString(),
-    endTime: time?.endTime.toString(),
+    startTime: time?.startTime as string,
+    endTime: time?.endTime as string,
     nbOfPlayers,
   });
 
@@ -50,7 +51,7 @@ export const ChooseGame = ({ navigation, route }: Props) => {
         sortGamesByLocation();
       } else {
         setSortedGames(
-          games.sort((a, b) => a.date.getTime() - b.date.getTime())
+          games.sort((a, b) => a.startTime.getTime() - b.startTime.getTime())
         );
       }
     }
@@ -65,7 +66,9 @@ export const ChooseGame = ({ navigation, route }: Props) => {
 
   sortedGames?.forEach((game: Game, index: number) => {
     const gameDate = new Date(
-      game.date.toISOString().substring(0, game.date.toISOString().indexOf("T"))
+      game.startTime
+        .toISOString()
+        .substring(0, game.startTime.toISOString().indexOf("T"))
     );
     const todayDate = new Date(
       today.toISOString().substring(0, today.toISOString().indexOf("T"))

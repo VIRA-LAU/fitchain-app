@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useTheme, Text, ActivityIndicator } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { AppHeader, parseTimeFromMinutes } from "src/components";
+import { AppHeader, getMins, parseTimeFromMinutes } from "src/components";
 import Feather from "react-native-vector-icons/Feather";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -17,6 +17,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { StackParamList } from "src/navigation";
 import { useCreateGameMutation } from "src/api";
 import { useState } from "react";
+import { TimeSlot } from "src/types";
 
 type Props = StackScreenProps<StackParamList, "BookingPayment">;
 
@@ -41,8 +42,18 @@ export const BookingPayment = ({ navigation, route }: Props) => {
     bookingDetails.nbOfPlayers
   );
 
-  const bookedHours =
-    (bookingDetails.time.endTime - bookingDetails.time.startTime) / 60;
+  const date = new Date(bookingDetails.date);
+  var time = bookingDetails.time;
+  time.startTime = new Date(time.startTime);
+  time.endTime = new Date(time.endTime);
+
+  const endHours =
+    time.endTime.getHours() * 60 + time.endTime.getMinutes() === 0
+      ? 1440
+      : time.endTime.getHours() * 60 + time.endTime.getMinutes();
+  const startHours =
+    time.startTime.getHours() * 60 + time.startTime.getMinutes();
+  const bookedHours = (endHours - startHours) / 60;
 
   return (
     <AppHeader
@@ -151,7 +162,7 @@ export const BookingPayment = ({ navigation, route }: Props) => {
             <Text style={styles.labelText}>Date</Text>
             <View style={styles.contentIconView}>
               <Text style={[styles.valueText, { marginRight: 10 }]}>
-                {new Date(JSON.parse(bookingDetails.date))
+                {date
                   .toLocaleDateString(undefined, {
                     weekday: "long",
                     month: "long",
@@ -167,8 +178,8 @@ export const BookingPayment = ({ navigation, route }: Props) => {
             <Text style={styles.labelText}>Time slot</Text>
             <View style={styles.contentIconView}>
               <Text style={[styles.valueText, { marginRight: 10 }]}>
-                {parseTimeFromMinutes(bookingDetails.time.startTime)} -{" "}
-                {parseTimeFromMinutes(bookingDetails.time.endTime)}
+                {parseTimeFromMinutes(getMins(time.startTime))} -{" "}
+                {parseTimeFromMinutes(getMins(time.endTime))}
               </Text>
             </View>
           </View>
@@ -213,11 +224,24 @@ export const BookingPayment = ({ navigation, route }: Props) => {
               activeOpacity={0.6}
               style={styles.paymentView}
               onPress={() => {
+                const startTime = new Date(date);
+                startTime.setHours(
+                  (time.startTime as Date).getHours(),
+                  (time.startTime as Date).getMinutes(),
+                  0,
+                  0
+                );
+                const endTime = new Date(date);
+                endTime.setHours(
+                  (time.endTime as Date).getHours(),
+                  (time.endTime as Date).getMinutes(),
+                  0,
+                  0
+                );
                 createGame({
                   courtId: bookingDetails.courtId,
-                  startTime: bookingDetails.time.startTime,
-                  endTime: bookingDetails.time.endTime,
-                  date: JSON.parse(bookingDetails.date),
+                  startTime: startTime.toISOString(),
+                  endTime: endTime.toISOString(),
                   type: bookingDetails.gameType,
                 });
               }}

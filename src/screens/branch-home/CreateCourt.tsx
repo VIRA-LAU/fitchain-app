@@ -24,7 +24,7 @@ import Feather from "react-native-vector-icons/Feather";
 import { GameType, TimeSlot } from "src/types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useCreateCourtMutation, useUpdateCourtMutation } from "src/api";
-import { TimeSlotPicker, parseTimeFromMinutes } from "src/components";
+import { TimeSlotPicker, getMins, parseTimeFromMinutes } from "src/components";
 import { existingCourtType } from "./BranchManagement";
 
 var timeSlotIndexToEdit: number | undefined;
@@ -286,8 +286,9 @@ export const CreateCourt = ({
             {timeSlots.map((timeSlot, index) => (
               <View key={index} style={styles.timeSlotView}>
                 <Text style={styles.timeSlotText}>
-                  {parseTimeFromMinutes(timeSlot.startTime)} -{" "}
-                  {parseTimeFromMinutes(timeSlot.endTime)}
+                  {parseTimeFromMinutes(getMins(timeSlot.startTime as Date))}
+                  {" - "}
+                  {parseTimeFromMinutes(getMins(timeSlot.endTime as Date))}
                 </Text>
                 <View style={{ marginLeft: "auto", flexDirection: "row" }}>
                   <Button
@@ -366,7 +367,10 @@ export const CreateCourt = ({
         time={
           typeof timeSlotIndexToEdit !== "undefined"
             ? timeSlots[timeSlotIndexToEdit]
-            : { startTime: 720, endTime: 840 }
+            : {
+                startTime: new Date("2000-01-01T12:00:00.000Z"),
+                endTime: new Date("2000-01-01T14:00:00.000Z"),
+              }
         }
         occupiedTimes={timeSlots.filter((slot) =>
           typeof timeSlotIndexToEdit !== "undefined"

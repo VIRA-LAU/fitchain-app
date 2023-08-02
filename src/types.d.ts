@@ -25,17 +25,16 @@ export type GameType = "Basketball" | "Football" | "Tennis";
 
 export interface TimeSlot {
   id?: number;
-  startTime: number;
-  endTime: number;
+  startTime: Date | string;
+  endTime: Date | string;
   courtId?: number;
   court?: Court;
 }
 
 export interface Game {
   id;
-  date: Date;
-  startTime: number;
-  endTime: number;
+  startTime: Date;
+  endTime: Date;
   type: GameType;
   court: Court;
   winnerTeam: string;
@@ -121,7 +120,8 @@ export interface Branch {
 
 export interface Activity {
   gameId: number;
-  date: Date;
+  startTime: Date;
+  endTime: Date;
   type: GameType;
   isWinner: boolean | "DRAW";
 }

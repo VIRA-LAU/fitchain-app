@@ -1,7 +1,7 @@
 import { Image, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { Skeleton, parseTimeFromMinutes } from "../home";
+import { Skeleton, getMins, parseTimeFromMinutes } from "../home";
 import { GameType } from "src/types";
 
 export const BranchBookingSkeleton = () => {
@@ -27,8 +27,8 @@ export const BranchBooking = ({
   courtName,
 }: {
   type: "available" | "confirmed";
-  startTime: number;
-  endTime: number;
+  startTime: Date;
+  endTime: Date;
   gameType: GameType;
   courtName: string;
   adminName?: string;
@@ -74,8 +74,9 @@ export const BranchBooking = ({
           <Text style={styles.confirmedInfo}>Court Name: {courtName}</Text>
         </View>
         <Text style={styles.timeSlotText}>
-          {parseTimeFromMinutes(startTime)} -{"\n"}
-          {parseTimeFromMinutes(endTime)}
+          {parseTimeFromMinutes(getMins(startTime))}
+          {" -\n"}
+          {parseTimeFromMinutes(getMins(endTime))}
         </Text>
       </View>
     </View>

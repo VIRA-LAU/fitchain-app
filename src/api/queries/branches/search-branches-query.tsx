@@ -26,6 +26,25 @@ const searchBranches = (params: Props) => async () => {
 export const useSearchBranchesQuery = (params: Props) => {
   return useQuery<Branch[]>(
     ["search-branches", params],
-    searchBranches(params)
+    searchBranches(params),
+    {
+      select: (branches) =>
+        branches.map((branch) => ({
+          ...branch,
+          courts: branch.courts.map((court) => ({
+            ...court,
+            timeSlots: court.timeSlots.map((timeSlot) => ({
+              ...timeSlot,
+              startTime: new Date(timeSlot.startTime),
+              endTime: new Date(timeSlot.endTime),
+            })),
+            occupiedTimes: court.occupiedTimes?.map((timeSlot) => ({
+              ...timeSlot,
+              startTime: new Date(timeSlot.startTime),
+              endTime: new Date(timeSlot.endTime),
+            })),
+          })),
+        })),
+    }
   );
 };

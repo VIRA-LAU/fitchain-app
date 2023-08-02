@@ -24,6 +24,10 @@ const searchGames = (params?: Props) => async () => {
 export const useSearchGamesQuery = (params?: Props) => {
   return useQuery<Game[]>(["games", params], searchGames(params), {
     select: (games) =>
-      games.map((game) => ({ ...game, date: new Date(game.date) })),
+      games.map((game) => ({
+        ...game,
+        startTime: new Date(game.startTime),
+        endTime: new Date(game.endTime),
+      })),
   });
 };

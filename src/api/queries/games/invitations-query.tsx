@@ -19,7 +19,8 @@ export const useInvitationsQuery = () => {
   return useQuery<Invitation[]>("invitations", getInvitations(userData!), {
     select: (invitations) =>
       invitations.map((invitation) => {
-        invitation.game.date = new Date(invitation.game.date);
+        invitation.game.startTime = new Date(invitation.game.startTime);
+        invitation.game.endTime = new Date(invitation.game.endTime);
         invitation.game.createdAt = new Date(invitation.game.createdAt);
         return invitation;
       }),
