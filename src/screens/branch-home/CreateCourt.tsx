@@ -4,7 +4,6 @@ import {
   useEffect,
   useRef,
   useState,
-  Fragment,
   MutableRefObject,
 } from "react";
 import {
@@ -13,7 +12,6 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  Pressable,
   TextInput,
   useWindowDimensions,
 } from "react-native";
@@ -24,7 +22,12 @@ import Feather from "react-native-vector-icons/Feather";
 import { GameType, TimeSlot } from "src/types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useCreateCourtMutation, useUpdateCourtMutation } from "src/api";
-import { TimeSlotPicker, getMins, parseTimeFromMinutes } from "src/components";
+import {
+  BottomModal,
+  TimeSlotPicker,
+  getMins,
+  parseTimeFromMinutes,
+} from "src/components";
 import { existingCourtType } from "./BranchManagement";
 
 var timeSlotIndexToEdit: number | undefined;
@@ -91,16 +94,13 @@ export const CreateCourt = ({
   }, [visible, JSON.stringify(existingInfo)]);
 
   return (
-    <Fragment>
-      <Pressable
-        style={[styles.backgroundView, { display: visible ? "flex" : "none" }]}
-        onPress={() => {
-          setVisible(false);
-        }}
-      />
-      <View
-        style={[styles.wrapperView, { display: visible ? "flex" : "none" }]}
-      >
+    <BottomModal
+      visible={visible !== false}
+      setVisible={(state) => {
+        if (!state) setVisible(false);
+      }}
+    >
+      <View style={styles.wrapperView}>
         <View style={styles.header}>
           <Text style={styles.title}>
             {visible === "edit" ? "Edit" : "Create a"} Court
@@ -395,22 +395,14 @@ export const CreateCourt = ({
         constrained={"partial"}
         showEndTime
       />
-    </Fragment>
+    </BottomModal>
   );
 };
 
 const makeStyles = (colors: MD3Colors, windowWidth: number) =>
   StyleSheet.create({
-    backgroundView: {
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      backgroundColor: "black",
-      opacity: 0.5,
-    },
     wrapperView: {
-      position: "absolute",
-      bottom: 0,
+      marginTop: "auto",
       height: "90%",
       width: "100%",
       backgroundColor: colors.background,

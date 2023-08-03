@@ -4,6 +4,7 @@ import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Game, PlayerStatus } from "src/types";
 import { RecordGamePopup } from "./RecordGamePopup";
+import { BottomModal } from "src/components";
 
 export type PopupType =
   | "joinGame"
@@ -39,11 +40,13 @@ export const PopupContainer = ({
 
   if (popupVisible === "joinGame")
     return (
-      <Pressable
-        style={styles.promptView}
-        onPress={() => setPopupVisible(null)}
+      <BottomModal
+        visible={popupVisible !== null}
+        setVisible={(state) => {
+          if (!state) setPopupVisible(null);
+        }}
       >
-        <Pressable style={[styles.prompt, { paddingBottom: 20 }]}>
+        <View style={[styles.prompt, { paddingBottom: 20 }]}>
           <Text style={styles.promptText}>Choose Team</Text>
           <View
             style={{
@@ -95,16 +98,18 @@ export const PopupContainer = ({
               <Text style={styles.promptTeamText}>Away</Text>
             </TouchableOpacity>
           </View>
-        </Pressable>
-      </Pressable>
+        </View>
+      </BottomModal>
     );
   else if (popupVisible === "cancelJoinGame")
     return (
-      <Pressable
-        style={styles.promptView}
-        onPress={() => setPopupVisible(null)}
+      <BottomModal
+        visible={popupVisible !== null}
+        setVisible={(state) => {
+          if (!state) setPopupVisible(null);
+        }}
       >
-        <Pressable style={styles.prompt}>
+        <View style={styles.prompt}>
           <Text style={styles.promptText}>
             Are you sure you want to{" "}
             {playerStatus?.hasRequestedtoJoin === "APPROVED" ||
@@ -149,16 +154,18 @@ export const PopupContainer = ({
             Yes
           </Button>
           <Button onPress={() => setPopupVisible(null)}>No</Button>
-        </Pressable>
-      </Pressable>
+        </View>
+      </BottomModal>
     );
   else if (popupVisible === "respondToInvitation")
     return (
-      <Pressable
-        style={styles.promptView}
-        onPress={() => setPopupVisible(null)}
+      <BottomModal
+        visible={popupVisible !== null}
+        setVisible={(state) => {
+          if (!state) setPopupVisible(null);
+        }}
       >
-        <Pressable style={styles.prompt}>
+        <View style={styles.prompt}>
           <Text style={styles.promptText}>
             Would you like to join this game?
           </Text>
@@ -207,34 +214,31 @@ export const PopupContainer = ({
             No
           </Button>
           <Button onPress={() => setPopupVisible(null)}>Later</Button>
-        </Pressable>
-      </Pressable>
+        </View>
+      </BottomModal>
     );
   else
     return (
-      <Pressable
-        style={styles.promptView}
-        onPress={() => setPopupVisible(null)}
+      <BottomModal
+        visible={popupVisible !== null}
+        setVisible={(state) => {
+          if (!state) setPopupVisible(null);
+        }}
       >
-        <Pressable style={styles.prompt}>
+        <View style={styles.prompt}>
           <RecordGamePopup game={game} setPopupVisible={setPopupVisible} />
-        </Pressable>
-      </Pressable>
+        </View>
+      </BottomModal>
     );
 };
 
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
-    promptView: {
-      position: "absolute",
-      zIndex: 1,
-      backgroundColor: "rgba(0, 0, 0, 0.6)",
-      height: "100%",
-      width: "100%",
-      justifyContent: "center",
-      alignItems: "center",
-    },
     prompt: {
+      marginTop: "auto",
+      marginBottom: "auto",
+      marginLeft: "auto",
+      marginRight: "auto",
       paddingTop: 20,
       paddingBottom: 10,
       width: "75%",

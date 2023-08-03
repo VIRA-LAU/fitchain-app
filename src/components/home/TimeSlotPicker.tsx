@@ -1,15 +1,10 @@
-import React, {
-  Fragment,
-  useState,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-} from "react";
+import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Slider } from "@miblanchard/react-native-slider";
 import { TimeSlot } from "src/types";
+import { BottomModal } from "../modals";
 
 export const getMins = (date: Date) => date.getHours() * 60 + date.getMinutes();
 
@@ -112,16 +107,8 @@ export const TimeSlotPicker = ({
   }, [visible]);
 
   return (
-    <Fragment>
-      <Pressable
-        style={[styles.backgroundView, { display: visible ? "flex" : "none" }]}
-        onPress={() => {
-          setVisible(false);
-        }}
-      />
-      <View
-        style={[styles.wrapperView, { display: visible ? "flex" : "none" }]}
-      >
+    <BottomModal visible={visible} setVisible={setVisible}>
+      <View style={[styles.wrapperView]}>
         <View style={styles.summaryView}>
           <View
             style={{
@@ -243,24 +230,14 @@ export const TimeSlotPicker = ({
           Confirm
         </Button>
       </View>
-    </Fragment>
+    </BottomModal>
   );
 };
 
 const makeStyles = (colors: MD3Colors, width: number, height: number) =>
   StyleSheet.create({
-    backgroundView: {
-      position: "absolute",
-      width,
-      height,
-      backgroundColor: "black",
-      opacity: 0.5,
-      zIndex: 2,
-    },
     wrapperView: {
-      position: "absolute",
-      bottom: 0,
-      width: width,
+      marginTop: "auto",
       backgroundColor: colors.background,
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,

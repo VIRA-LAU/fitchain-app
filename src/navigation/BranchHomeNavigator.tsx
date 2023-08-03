@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useState } from "react";
-import { BackHandler, View } from "react-native";
+import { View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
   BranchHome,
@@ -18,19 +18,6 @@ const BottomTabNavigator = () => {
   const [createCourtVisible, setCreateCourtVisible] = useState<
     "create" | "edit" | false
   >(false);
-
-  useEffect(() => {
-    const handleBack = () => {
-      if (createCourtVisible) {
-        setCreateCourtVisible(false);
-        return true;
-      } else return false;
-    };
-    BackHandler.addEventListener("hardwareBackPress", handleBack);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBack);
-    };
-  }, [createCourtVisible]);
 
   useEffect(() => {
     const requestLocationPermission = async () => {

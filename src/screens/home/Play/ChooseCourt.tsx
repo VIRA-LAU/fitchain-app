@@ -69,6 +69,7 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
           occupiedTimes={pressedCourt?.occupiedTimes}
           onPress={(tempTime) => {
             setConfirmedTime(tempTime);
+            setTimeSlotPickerVisible(false);
             if (bookingDetails)
               navigation.push("BookingPayment", {
                 venueName: venueName!,

@@ -16,6 +16,14 @@ const getBookingsInBranch = (id?: number, date?: string) => async () => {
 export const useBookingsInBranchQuery = (id?: number, date?: string) => {
   return useQuery<Game[]>(
     ["bookings-in-branch", id, date],
-    getBookingsInBranch(id, date)
+    getBookingsInBranch(id, date),
+    {
+      select: (bookings) =>
+        bookings.map((booking) => ({
+          ...booking,
+          startTime: new Date(booking.startTime),
+          endTime: new Date(booking.endTime),
+        })),
+    }
   );
 };

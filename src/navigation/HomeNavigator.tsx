@@ -4,7 +4,6 @@ import {
   useWindowDimensions,
   View,
   StyleSheet,
-  BackHandler,
   TouchableOpacity,
 } from "react-native";
 import {
@@ -46,19 +45,6 @@ const BottomTabNavigator = ({ navigation, route }: Props) => {
   const [permissionReady, setPermissionReady] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    const handleBack = () => {
-      if (playScreenVisible) {
-        setPlayScreenVisible(false);
-        return true;
-      } else return false;
-    };
-    BackHandler.addEventListener("hardwareBackPress", handleBack);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBack);
-    };
-  }, [playScreenVisible]);
 
   useEffect(() => {
     const requestLocationPermission = async () => {
