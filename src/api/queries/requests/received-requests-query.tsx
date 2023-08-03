@@ -16,7 +16,8 @@ export const useReceivedRequestsQuery = () => {
   return useQuery<GameRequest[]>("received-requests", getReceivedRequests, {
     select: (requests) =>
       requests.map((request) => {
-        request.game.date = new Date(request.game.date);
+        request.game.startTime = new Date(request.game.startTime);
+        request.game.endTime = new Date(request.game.endTime);
         request.game.createdAt = new Date(request.game.createdAt);
         return request;
       }),

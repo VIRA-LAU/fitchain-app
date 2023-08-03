@@ -233,7 +233,9 @@ export const BookingPayment = ({ navigation, route }: Props) => {
                 );
                 const endTime = new Date(date);
                 endTime.setHours(
-                  (time.endTime as Date).getHours(),
+                  (time.endTime as Date).getHours() === 0
+                    ? 24
+                    : (time.endTime as Date).getHours(),
                   (time.endTime as Date).getMinutes(),
                   0,
                   0

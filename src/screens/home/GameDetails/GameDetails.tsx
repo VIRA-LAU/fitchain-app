@@ -271,163 +271,161 @@ export const GameDetails = ({ navigation, route }: Props) => {
               },
             ]}
           />
-          {!isPrevious &&
-            (gameDetailsLoading ||
-            playerStatusLoading ||
-            followedGamesLoading ? (
-              <View style={styles.headerView}>
-                <Skeleton height={15} width={80} style={styles.greyFont} />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Skeleton
-                    height={30}
-                    width={160}
-                    style={{ color: "white", marginTop: -5, marginBottom: 10 }}
-                  />
-                  <Skeleton
-                    height={15}
-                    width={80}
-                    style={{ color: "white", marginTop: -5, marginBottom: 10 }}
-                  />
-                </View>
+          {gameDetailsLoading || playerStatusLoading || followedGamesLoading ? (
+            <View style={styles.headerView}>
+              <Skeleton height={15} width={80} style={styles.greyFont} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
                 <Skeleton
-                  height={40}
-                  width={"100%"}
-                  style={{ borderRadius: 5 }}
+                  height={30}
+                  width={160}
+                  style={{ color: "white", marginTop: -5, marginBottom: 10 }}
+                />
+                <Skeleton
+                  height={15}
+                  width={80}
+                  style={{ color: "white", marginTop: -5, marginBottom: 10 }}
                 />
               </View>
-            ) : (
-              <View style={styles.headerView}>
-                <Text variant="labelLarge" style={styles.greyFont}>
-                  {dateHeader}
+              <Skeleton
+                height={40}
+                width={"100%"}
+                style={{ borderRadius: 5 }}
+              />
+            </View>
+          ) : (
+            <View style={styles.headerView}>
+              <Text variant="labelLarge" style={styles.greyFont}>
+                {dateHeader}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 10,
+                }}
+              >
+                <Text variant="titleLarge" style={{ color: "white" }}>
+                  {game!.startTime
+                    .toLocaleDateString(undefined, {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                    .slice(0, Platform.OS === "ios" ? -5 : -6)}
                 </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: 10,
-                  }}
-                >
-                  <Text variant="titleLarge" style={{ color: "white" }}>
-                    {game!.startTime
-                      .toLocaleDateString(undefined, {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })
-                      .slice(0, Platform.OS === "ios" ? -5 : -6)}
-                  </Text>
-                  <Text variant="labelLarge" style={{ color: "white" }}>
-                    {parseTimeFromMinutes(getMins(game!.startTime))}
-                    {" -\n"}
-                    {parseTimeFromMinutes(getMins(game!.endTime))}
-                  </Text>
-                </View>
-                {!playerStatus?.isAdmin && (
-                  <View style={styles.buttonsView}>
-                    <View
-                      style={{
-                        width: "50%",
-                      }}
+                <Text variant="labelLarge" style={{ color: "white" }}>
+                  {parseTimeFromMinutes(getMins(game!.startTime))}
+                  {" -\n"}
+                  {parseTimeFromMinutes(getMins(game!.endTime))}
+                </Text>
+              </View>
+              {!playerStatus?.isAdmin && !isPrevious && (
+                <View style={styles.buttonsView}>
+                  <View
+                    style={{
+                      width: "50%",
+                    }}
+                  >
+                    <Button
+                      icon={() => (
+                        <IonIcon
+                          name={"basketball-outline"}
+                          size={26}
+                          color={colors.secondary}
+                        />
+                      )}
+                      mode="contained"
+                      loading={joinLoading || cancelLoading || respondLoading}
+                      onPress={
+                        !(joinLoading || cancelLoading || respondLoading)
+                          ? playerStatus?.hasRequestedtoJoin === "APPROVED" ||
+                            playerStatus?.hasRequestedtoJoin === "PENDING" ||
+                            playerStatus?.hasBeenInvited === "APPROVED"
+                            ? () => {
+                                setPopupVisible("cancelJoinGame");
+                              }
+                            : playerStatus?.hasBeenInvited === "PENDING"
+                            ? () => {
+                                setPopupVisible("respondToInvitation");
+                              }
+                            : () => {
+                                setPopupVisible("joinGame");
+                              }
+                          : undefined
+                      }
                     >
-                      <Button
-                        icon={() => (
-                          <IonIcon
-                            name={"basketball-outline"}
-                            size={26}
-                            color={colors.secondary}
-                          />
-                        )}
-                        mode="contained"
-                        loading={joinLoading || cancelLoading || respondLoading}
-                        onPress={
-                          !(joinLoading || cancelLoading || respondLoading)
-                            ? playerStatus?.hasRequestedtoJoin === "APPROVED" ||
-                              playerStatus?.hasRequestedtoJoin === "PENDING" ||
-                              playerStatus?.hasBeenInvited === "APPROVED"
-                              ? () => {
-                                  setPopupVisible("cancelJoinGame");
-                                }
-                              : playerStatus?.hasBeenInvited === "PENDING"
-                              ? () => {
-                                  setPopupVisible("respondToInvitation");
-                                }
-                              : () => {
-                                  setPopupVisible("joinGame");
-                                }
-                            : undefined
-                        }
-                      >
-                        {playerStatus?.hasBeenInvited === "APPROVED" ||
-                        playerStatus?.hasRequestedtoJoin === "APPROVED"
-                          ? "Leave Game"
-                          : playerStatus?.hasBeenInvited === "PENDING"
-                          ? "Invited to Game"
-                          : playerStatus?.hasRequestedtoJoin === "PENDING"
-                          ? "Cancel Request"
-                          : "Join Game"}
-                      </Button>
-                    </View>
-                    <View
-                      style={{
-                        width: "50%",
-                      }}
-                    >
-                      <Button
-                        icon={() => (
-                          <FontAwesomeIcon
-                            name={
-                              followedGames?.some((game) => game?.id === id)
-                                ? "thumbs-up"
-                                : "thumbs-o-up"
-                            }
-                            size={22}
-                            color={"white"}
-                          />
-                        )}
-                        loading={
+                      {playerStatus?.hasBeenInvited === "APPROVED" ||
+                      playerStatus?.hasRequestedtoJoin === "APPROVED"
+                        ? "Leave Game"
+                        : playerStatus?.hasBeenInvited === "PENDING"
+                        ? "Invited to Game"
+                        : playerStatus?.hasRequestedtoJoin === "PENDING"
+                        ? "Cancel Request"
+                        : "Join Game"}
+                    </Button>
+                  </View>
+                  <View
+                    style={{
+                      width: "50%",
+                    }}
+                  >
+                    <Button
+                      icon={() => (
+                        <FontAwesomeIcon
+                          name={
+                            followedGames?.some((game) => game?.id === id)
+                              ? "thumbs-up"
+                              : "thumbs-o-up"
+                          }
+                          size={22}
+                          color={"white"}
+                        />
+                      )}
+                      loading={
+                        followLoading ||
+                        unfollowLoading ||
+                        followedGamesFetching
+                      }
+                      textColor={"white"}
+                      onPress={
+                        !(
                           followLoading ||
                           unfollowLoading ||
                           followedGamesFetching
-                        }
-                        textColor={"white"}
-                        onPress={
-                          !(
-                            followLoading ||
-                            unfollowLoading ||
-                            followedGamesFetching
-                          )
-                            ? followedGames?.some((game) => game?.id === id)
-                              ? () => {
-                                  unfollowGame({
-                                    gameId: game?.id,
-                                  });
-                                }
-                              : () => {
-                                  followGame({
-                                    gameId: game?.id,
-                                  });
-                                }
-                            : undefined
-                        }
-                      >
-                        {followedGames?.some((game) => game?.id === id)
-                          ? "Unfollow Game"
-                          : "Follow Game"}
-                      </Button>
-                    </View>
+                        )
+                          ? followedGames?.some((game) => game?.id === id)
+                            ? () => {
+                                unfollowGame({
+                                  gameId: game?.id,
+                                });
+                              }
+                            : () => {
+                                followGame({
+                                  gameId: game?.id,
+                                });
+                              }
+                          : undefined
+                      }
+                    >
+                      {followedGames?.some((game) => game?.id === id)
+                        ? "Unfollow Game"
+                        : "Follow Game"}
+                    </Button>
                   </View>
-                )}
-                {(playerStatus?.isAdmin ||
-                  playerStatus?.hasBeenInvited === "APPROVED" ||
-                  playerStatus?.hasRequestedtoJoin === "APPROVED") && (
+                </View>
+              )}
+              {(playerStatus?.isAdmin ||
+                playerStatus?.hasBeenInvited === "APPROVED" ||
+                playerStatus?.hasRequestedtoJoin === "APPROVED") &&
+                !isPrevious && (
                   <Button
                     mode="contained"
                     style={{ marginTop: 10 }}
@@ -441,8 +439,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     Invite Players
                   </Button>
                 )}
-              </View>
-            ))}
+            </View>
+          )}
 
           <View style={styles.contentView}>
             <TabView

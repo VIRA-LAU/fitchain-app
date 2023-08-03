@@ -1,5 +1,5 @@
 import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
-import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Slider } from "@miblanchard/react-native-slider";
@@ -66,14 +66,36 @@ export const TimeSlotPicker = ({
   const duration =
     diff === 30 ? "30 minutes" : diff === 60 ? "1 hour" : `${diff / 60} hours`;
 
-  const availableMins: number[][] = availableTimes.map((time) => [
-    getMins(time.startTime as Date),
-    getMins(time.endTime as Date) === 0 ? 1440 : getMins(time.endTime as Date),
-  ]);
-  const occupiedMins: number[][] = occupiedTimes.map((time) => [
-    getMins(time.startTime as Date),
-    getMins(time.endTime as Date) === 0 ? 1440 : getMins(time.endTime as Date),
-  ]);
+  var availableMins: number[][] = [];
+
+  availableTimes
+    .map((time) => [
+      getMins(time.startTime as Date),
+      getMins(time.endTime as Date) === 0
+        ? 1440
+        : getMins(time.endTime as Date),
+    ])
+    .forEach((time) => {
+      if (time[1] < time[0]) {
+        availableMins.push([time[0], 1440]);
+        availableMins.push([0, time[1]]);
+      } else availableMins.push(time);
+    });
+
+  var occupiedMins: number[][] = [];
+  occupiedTimes
+    .map((time) => [
+      getMins(time.startTime as Date),
+      getMins(time.endTime as Date) === 0
+        ? 1440
+        : getMins(time.endTime as Date),
+    ])
+    .forEach((time) => {
+      if (time[1] < time[0]) {
+        occupiedMins.push([time[0], 1440]);
+        occupiedMins.push([0, time[1]]);
+      } else occupiedMins.push(time);
+    });
 
   var tintColor =
     constrained === "none" ||

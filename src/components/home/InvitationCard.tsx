@@ -67,9 +67,11 @@ export const InvitationCard = ({
   const { colors } = useTheme();
   const { height, width } = useWindowDimensions();
   const styles = makeStyles(colors, height, width);
+
   const hours = game.startTime.getHours();
   const minutes = game.startTime.getMinutes();
   const amPm = hours >= 12 ? "pm" : "am";
+
   const timeString =
     (hours % 12 || 12).toString().padStart(2, "0") +
     ":" +

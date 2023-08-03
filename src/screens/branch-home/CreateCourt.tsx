@@ -30,7 +30,7 @@ import {
 } from "src/components";
 import { existingCourtType } from "./BranchManagement";
 
-var timeSlotIndexToEdit: number | undefined;
+var timeSlotToEditIndex: number | undefined;
 
 export const CreateCourt = ({
   visible,
@@ -92,6 +92,10 @@ export const CreateCourt = ({
       setTimeSlots(existingInfo.timeSlots);
     } else resetFields();
   }, [visible, JSON.stringify(existingInfo)]);
+
+  useEffect(() => {
+    if (!timeSlotPickerVisible) timeSlotToEditIndex = undefined;
+  }, [timeSlotPickerVisible]);
 
   return (
     <BottomModal
@@ -293,7 +297,7 @@ export const CreateCourt = ({
                 <View style={{ marginLeft: "auto", flexDirection: "row" }}>
                   <Button
                     onPress={() => {
-                      timeSlotIndexToEdit = index;
+                      timeSlotToEditIndex = index;
                       setTimeSlotPickerVisible(true);
                     }}
                   >
@@ -365,27 +369,27 @@ export const CreateCourt = ({
       <TimeSlotPicker
         visible={timeSlotPickerVisible}
         time={
-          typeof timeSlotIndexToEdit !== "undefined"
-            ? timeSlots[timeSlotIndexToEdit]
+          typeof timeSlotToEditIndex !== "undefined"
+            ? timeSlots[timeSlotToEditIndex]
             : {
                 startTime: new Date("2000-01-01T12:00:00.000Z"),
                 endTime: new Date("2000-01-01T14:00:00.000Z"),
               }
         }
         occupiedTimes={timeSlots.filter((slot) =>
-          typeof timeSlotIndexToEdit !== "undefined"
-            ? slot.id !== timeSlots[timeSlotIndexToEdit].id
+          typeof timeSlotToEditIndex !== "undefined"
+            ? slot.id !== timeSlots[timeSlotToEditIndex].id
             : true
         )}
         setVisible={setTimeSlotPickerVisible}
         onPress={(tempTime) => {
-          if (typeof timeSlotIndexToEdit !== "undefined") {
+          if (typeof timeSlotToEditIndex !== "undefined") {
             setTimeSlots(
               timeSlots.map((slot, index) =>
-                index === timeSlotIndexToEdit ? { ...slot, ...tempTime } : slot
+                index === timeSlotToEditIndex ? { ...slot, ...tempTime } : slot
               )
             );
-            timeSlotIndexToEdit = undefined;
+            timeSlotToEditIndex = undefined;
           } else {
             if (timeSlots) setTimeSlots([...timeSlots, tempTime]);
             else setTimeSlots([tempTime]);
