@@ -5,8 +5,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
+  Linking,
 } from "react-native";
-import { useTheme, Text, ActivityIndicator } from "react-native-paper";
+import { useTheme, Text, ActivityIndicator, Button } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { AppHeader, getMins, parseTimeFromMinutes } from "src/components";
 import Feather from "react-native-vector-icons/Feather";
@@ -17,7 +18,6 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { StackParamList } from "src/navigation";
 import { useCreateGameMutation } from "src/api";
 import { useState } from "react";
-import { TimeSlot } from "src/types";
 
 type Props = StackScreenProps<StackParamList, "BookingPayment">;
 
@@ -32,6 +32,7 @@ export const BookingPayment = ({ navigation, route }: Props) => {
     courtRating,
     courtMaxPlayers,
     price,
+    branchLatLng,
     bookingDetails,
     profilePhotoUrl,
   } = route.params;
@@ -94,18 +95,28 @@ export const BookingPayment = ({ navigation, route }: Props) => {
               />
             )}
           </View>
-          <View style={styles.directionsView}>
-            <MatComIcon name="arrow-right-top" color="white" size={24} />
-            <Text
-              style={{
-                color: "white",
-                fontFamily: "Inter-Medium",
-                marginLeft: 5,
-              }}
-            >
-              Get Directions
-            </Text>
-          </View>
+          <Button
+            textColor="white"
+            style={{ alignSelf: "center" }}
+            icon={"arrow-right-top"}
+            onPress={() => {
+              const scheme = Platform.select({
+                ios: "maps://0,0?q=",
+                android: "geo:0,0?q=",
+              });
+              const latLng = `${branchLatLng[0]},${branchLatLng[1]}`;
+              const label = venueName;
+
+              Linking.openURL(
+                Platform.select({
+                  ios: `${scheme}${label}@${latLng}`,
+                  android: `${scheme}${latLng}(${label})`,
+                })!
+              );
+            }}
+          >
+            Get Directions
+          </Button>
         </View>
         <View
           style={[
@@ -275,7 +286,7 @@ const makeStyles = (colors: MD3Colors) =>
     header: {
       marginBottom: 10,
       paddingHorizontal: 20,
-      paddingBottom: 20,
+      paddingBottom: 10,
       backgroundColor: colors.secondary,
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
@@ -291,13 +302,6 @@ const makeStyles = (colors: MD3Colors) =>
       color: colors.tertiary,
       fontFamily: "Inter-SemiBold",
       marginVertical: 1,
-    },
-    directionsView: {
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      paddingTop: 20,
-      paddingBottom: 10,
     },
     contentView: {
       backgroundColor: colors.secondary,

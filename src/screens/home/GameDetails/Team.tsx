@@ -1,11 +1,13 @@
 import {
   Image,
+  Linking,
+  Platform,
   ScrollView,
   StyleSheet,
   View,
   useWindowDimensions,
 } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
   BranchLocation,
@@ -247,6 +249,27 @@ export const Team = ({
           />
         )}
       </View>
+      <Button
+        style={{ marginTop: 20, alignSelf: "center" }}
+        icon={"arrow-right-top"}
+        onPress={() => {
+          const scheme = Platform.select({
+            ios: "maps://0,0?q=",
+            android: "geo:0,0?q=",
+          });
+          const latLng = `${game?.court.branch.latitude},${game?.court.branch.longitude}`;
+          const label = game?.court.branch.venue.name;
+
+          Linking.openURL(
+            Platform.select({
+              ios: `${scheme}${label}@${latLng}`,
+              android: `${scheme}${latLng}(${label})`,
+            })!
+          );
+        }}
+      >
+        Get Directions
+      </Button>
       <View style={styles.divider} />
       <Text variant="labelLarge" style={{ color: colors.tertiary, margin: 20 }}>
         Updates
@@ -268,7 +291,7 @@ const makeStyles = (colors: MD3Colors) =>
     divider: {
       borderColor: colors.secondary,
       borderBottomWidth: 1,
-      marginTop: 20,
+      marginTop: 10,
     },
     updatesView: {
       marginHorizontal: 20,

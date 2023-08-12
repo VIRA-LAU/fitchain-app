@@ -63,6 +63,7 @@ export type StackParamList = {
     courtRating: number;
     courtMaxPlayers: number;
     price: number;
+    branchLatLng: number[];
     bookingDetails: {
       courtId: number;
       date: string;

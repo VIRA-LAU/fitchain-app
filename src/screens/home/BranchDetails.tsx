@@ -5,6 +5,8 @@ import {
   useWindowDimensions,
   ScrollView,
   TouchableOpacity,
+  Platform,
+  Linking,
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -190,7 +192,28 @@ export const BranchDetails = ({ navigation, route }: Props) => {
               />
             )}
           </View>
-          <View style={[styles.divider, { marginVertical: 20 }]} />
+          <Button
+            style={{ marginTop: 10, alignSelf: "center" }}
+            icon={"arrow-right-top"}
+            onPress={() => {
+              const scheme = Platform.select({
+                ios: "maps://0,0?q=",
+                android: "geo:0,0?q=",
+              });
+              const latLng = `${branch?.latitude},${branch?.longitude}`;
+              const label = branch?.venue.name;
+
+              Linking.openURL(
+                Platform.select({
+                  ios: `${scheme}${label}@${latLng}`,
+                  android: `${scheme}${latLng}(${label})`,
+                })!
+              );
+            }}
+          >
+            Get Directions
+          </Button>
+          <View style={[styles.divider, { marginVertical: 10 }]} />
           <Text variant="labelLarge" style={{ color: colors.tertiary }}>
             Teams
           </Text>

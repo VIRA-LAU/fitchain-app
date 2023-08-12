@@ -70,14 +70,15 @@ export const ChooseCourt = ({ navigation, route }: Props) => {
           onPress={(tempTime) => {
             setConfirmedTime(tempTime);
             setTimeSlotPickerVisible(false);
-            if (bookingDetails)
+            if (bookingDetails && pressedCourt && branches)
               navigation.push("BookingPayment", {
                 venueName: venueName!,
-                courtName: pressedCourt!.name,
-                courtType: pressedCourt!.courtType,
-                courtRating: pressedCourt!.rating,
-                courtMaxPlayers: pressedCourt!.nbOfPlayers,
-                price: pressedCourt!.price,
+                courtName: pressedCourt.name,
+                courtType: pressedCourt.courtType,
+                courtRating: pressedCourt.rating,
+                courtMaxPlayers: pressedCourt.nbOfPlayers,
+                price: pressedCourt.price,
+                branchLatLng: [branches[0].latitude, branches[0].longitude],
                 bookingDetails: {
                   date: bookingDetails.date,
                   gameType: bookingDetails.gameType,
