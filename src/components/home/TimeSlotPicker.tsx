@@ -130,7 +130,7 @@ export const TimeSlotPicker = ({
 
   return (
     <BottomModal visible={visible} setVisible={setVisible}>
-      <View style={[styles.wrapperView]}>
+      <View style={styles.wrapperView}>
         <View style={styles.summaryView}>
           <View
             style={{

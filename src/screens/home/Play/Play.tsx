@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   Pressable,
   Platform,
+  useWindowDimensions,
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -39,6 +40,7 @@ import {
 import { LatLng, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import { useLocationNameQuery } from "src/api";
+import CalendarPicker from "react-native-calendar-picker";
 
 export const Play = ({
   visible,
@@ -132,283 +134,303 @@ export const Play = ({
         setMapDisplayed(false);
       }}
     >
-      <View style={styles.wrapperView}>
-        <ScrollView contentContainerStyle={styles.wrapperViewContent}>
-          <View style={styles.header}>
-            {mapDisplayed && (
-              <TouchableOpacity
-                style={{ position: "absolute", left: 0 }}
-                onPress={() => {
-                  setMapDisplayed(false);
-                }}
-              >
-                <MaterialIcon name="arrow-back" color={"white"} size={24} />
-              </TouchableOpacity>
-            )}
-            <Text style={styles.title}>
-              {!branch && "Find or "}Create a Game
-            </Text>
+      <ScrollView
+        style={styles.wrapperView}
+        contentContainerStyle={styles.wrapperViewContent}
+      >
+        <View style={styles.header}>
+          {mapDisplayed && (
             <TouchableOpacity
-              style={{ position: "absolute", right: 0 }}
+              style={{ position: "absolute", left: 0 }}
               onPress={() => {
-                setVisible(false);
                 setMapDisplayed(false);
               }}
             >
-              <Feather name="x" size={24} color={"white"} />
+              <MaterialIcon name="arrow-back" color={"white"} size={24} />
             </TouchableOpacity>
-          </View>
-          {!mapDisplayed ? (
-            <View style={styles.createView}>
-              <ScrollView
-                style={styles.typePicker}
-                showsHorizontalScrollIndicator={false}
-                horizontal
-              >
-                <View style={{ flexDirection: "row", marginHorizontal: 15 }}>
-                  {branch?.courts.findIndex(
-                    (court) => court.courtType === "Basketball"
-                  ) !== -1 && (
-                    <TouchableOpacity
-                      activeOpacity={0.6}
-                      onPress={() => {
-                        setGameType("Basketball");
-                      }}
-                      style={[
-                        styles.sportType,
-                        gameType === "Basketball" && {
-                          borderColor: colors.primary,
-                        },
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.sportText,
-                          gameType === "Basketball" && {
-                            color: colors.primary,
-                          },
-                        ]}
-                      >
-                        Basketball
-                      </Text>
-                      <Image
-                        source={require("assets/images/home/basketball.png")}
-                        style={{ width: 30, height: 30 }}
-                      />
-                    </TouchableOpacity>
-                  )}
-                  {branch?.courts.findIndex(
-                    (court) => court.courtType === "Football"
-                  ) !== -1 && (
-                    <TouchableOpacity
-                      activeOpacity={0.6}
-                      onPress={() => {
-                        setGameType("Football");
-                      }}
-                      style={[
-                        styles.sportType,
-                        gameType === "Football" && {
-                          borderColor: colors.primary,
-                        },
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.sportText,
-                          gameType === "Football" && { color: colors.primary },
-                        ]}
-                      >
-                        Football
-                      </Text>
-                      <Image
-                        source={require("assets/images/home/football.png")}
-                        style={{ width: 30, height: 30 }}
-                      />
-                    </TouchableOpacity>
-                  )}
-                  {branch?.courts.findIndex(
-                    (court) => court.courtType === "Tennis"
-                  ) !== -1 && (
-                    <TouchableOpacity
-                      activeOpacity={0.6}
-                      onPress={() => {
-                        setGameType("Tennis");
-                      }}
-                      style={[
-                        styles.sportType,
-                        gameType === "Tennis" && {
-                          borderColor: colors.primary,
-                        },
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.sportText,
-                          gameType === "Tennis" && { color: colors.primary },
-                        ]}
-                      >
-                        Tennis
-                      </Text>
-                      <Image
-                        source={require("assets/images/home/tennis.png")}
-                        style={{ width: 30, height: 30 }}
-                      />
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </ScrollView>
-              {!branch && (
-                <View style={styles.contentView}>
-                  <View style={styles.contentIconView}>
-                    <IonIcon
-                      name={"location-outline"}
-                      size={20}
-                      color={"white"}
-                      style={{ marginRight: 10 }}
-                    />
-                    <Text
-                      style={[
-                        styles.labelText,
-                        {
-                          minWidth: "75%",
-                          maxWidth: "75%",
-                        },
-                      ]}
-                    >
-                      Nearby:{" "}
-                      {!searchLocationName ? "Loading..." : searchLocationName}
-                    </Text>
-                  </View>
+          )}
+          <Text style={styles.title}>{!branch && "Find or "}Create a Game</Text>
+          <TouchableOpacity
+            style={{ position: "absolute", right: 0 }}
+            onPress={() => {
+              setVisible(false);
+              setMapDisplayed(false);
+            }}
+          >
+            <Feather name="x" size={24} color={"white"} />
+          </TouchableOpacity>
+        </View>
+        {!mapDisplayed ? (
+          <View style={styles.createView}>
+            <ScrollView
+              style={styles.typePicker}
+              showsHorizontalScrollIndicator={false}
+              horizontal
+            >
+              <View style={{ flexDirection: "row", marginHorizontal: 15 }}>
+                {branch?.courts.findIndex(
+                  (court) => court.courtType === "Basketball"
+                ) !== -1 && (
                   <TouchableOpacity
-                    onPress={() => setMapDisplayed(true)}
-                    disabled={!searchLocationName}
-                    style={{ justifyContent: "center" }}
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      setGameType("Basketball");
+                    }}
+                    style={[
+                      styles.sportType,
+                      gameType === "Basketball" && {
+                        borderColor: colors.primary,
+                      },
+                    ]}
                   >
                     <Text
                       style={[
-                        styles.buttonText,
-                        searchLocationMarker &&
-                        searchLocationName &&
-                        initialMapRegion
-                          ? { color: colors.primary }
-                          : { color: colors.tertiary },
+                        styles.sportText,
+                        gameType === "Basketball" && {
+                          color: colors.primary,
+                        },
                       ]}
                     >
-                      Change
+                      Basketball
                     </Text>
+                    <Image
+                      source={require("assets/images/home/basketball.png")}
+                      style={{ width: 30, height: 30 }}
+                    />
                   </TouchableOpacity>
-                </View>
-              )}
+                )}
+                {branch?.courts.findIndex(
+                  (court) => court.courtType === "Football"
+                ) !== -1 && (
+                  <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      setGameType("Football");
+                    }}
+                    style={[
+                      styles.sportType,
+                      gameType === "Football" && {
+                        borderColor: colors.primary,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.sportText,
+                        gameType === "Football" && { color: colors.primary },
+                      ]}
+                    >
+                      Football
+                    </Text>
+                    <Image
+                      source={require("assets/images/home/football.png")}
+                      style={{ width: 30, height: 30 }}
+                    />
+                  </TouchableOpacity>
+                )}
+                {branch?.courts.findIndex(
+                  (court) => court.courtType === "Tennis"
+                ) !== -1 && (
+                  <TouchableOpacity
+                    activeOpacity={0.6}
+                    onPress={() => {
+                      setGameType("Tennis");
+                    }}
+                    style={[
+                      styles.sportType,
+                      gameType === "Tennis" && {
+                        borderColor: colors.primary,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.sportText,
+                        gameType === "Tennis" && { color: colors.primary },
+                      ]}
+                    >
+                      Tennis
+                    </Text>
+                    <Image
+                      source={require("assets/images/home/tennis.png")}
+                      style={{ width: 30, height: 30 }}
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </ScrollView>
+            {!branch && (
               <View style={styles.contentView}>
                 <View style={styles.contentIconView}>
-                  <MatComIcon
-                    name={"account-outline"}
+                  <IonIcon
+                    name={"location-outline"}
                     size={20}
                     color={"white"}
                     style={{ marginRight: 10 }}
                   />
-                  <Text style={styles.labelText}>How many players?</Text>
-                </View>
-                <View style={styles.contentIconView}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (numberOfPlayers > 1)
-                        setNumberOfPlayers((oldNum) => oldNum - 1);
-                    }}
-                  >
-                    <Feather
-                      name="minus-circle"
-                      color={colors.primary}
-                      size={24}
-                    />
-                  </TouchableOpacity>
                   <Text
                     style={[
                       styles.labelText,
-                      { fontSize: 18, width: 40, textAlign: "center" },
+                      {
+                        minWidth: "75%",
+                        maxWidth: "75%",
+                      },
                     ]}
                   >
-                    {numberOfPlayers}
+                    Nearby:{" "}
+                    {!searchLocationName ? "Loading..." : searchLocationName}
                   </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setMapDisplayed(true)}
+                  disabled={!searchLocationName}
+                  style={{ justifyContent: "center" }}
+                >
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      searchLocationMarker &&
+                      searchLocationName &&
+                      initialMapRegion
+                        ? { color: colors.primary }
+                        : { color: colors.tertiary },
+                    ]}
+                  >
+                    Change
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            <View style={styles.contentView}>
+              <View style={styles.contentIconView}>
+                <MatComIcon
+                  name={"account-outline"}
+                  size={20}
+                  color={"white"}
+                  style={{ marginRight: 10 }}
+                />
+                <Text style={styles.labelText}>How many players?</Text>
+              </View>
+              <View style={styles.contentIconView}>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (numberOfPlayers > 1)
+                      setNumberOfPlayers((oldNum) => oldNum - 1);
+                  }}
+                >
+                  <Feather
+                    name="minus-circle"
+                    color={colors.primary}
+                    size={24}
+                  />
+                </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.labelText,
+                    { fontSize: 18, width: 40, textAlign: "center" },
+                  ]}
+                >
+                  {numberOfPlayers}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (numberOfPlayers < 12)
+                      setNumberOfPlayers((oldNum) => oldNum + 1);
+                  }}
+                >
+                  <Feather
+                    name="plus-circle"
+                    color={colors.primary}
+                    size={24}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.dateTime}>
+              <View style={styles.dateTimeRow}>
+                <Text style={styles.labelText}>Date</Text>
+                {searchDate && (
                   <TouchableOpacity
+                    style={styles.resetView}
                     onPress={() => {
-                      if (numberOfPlayers < 12)
-                        setNumberOfPlayers((oldNum) => oldNum + 1);
+                      setSearchDate(null);
                     }}
                   >
-                    <Feather
-                      name="plus-circle"
-                      color={colors.primary}
-                      size={24}
-                    />
+                    <Text style={styles.reset}>Reset</Text>
                   </TouchableOpacity>
-                </View>
+                )}
+                <TouchableOpacity
+                  onPress={() => setDateTimePickerVisible(true)}
+                >
+                  <Text style={styles.buttonText}>
+                    {selectedDate ? selectedDate : "Any Date"}
+                  </Text>
+                </TouchableOpacity>
               </View>
-              <View style={styles.dateTime}>
-                <View style={styles.dateTimeRow}>
-                  <Text style={styles.labelText}>Date</Text>
-                  {searchDate && (
-                    <TouchableOpacity
-                      style={styles.resetView}
-                      onPress={() => {
-                        setSearchDate(null);
-                      }}
-                    >
-                      <Text style={styles.reset}>Reset</Text>
-                    </TouchableOpacity>
-                  )}
+              <View style={styles.dateTimeRow}>
+                <Text style={styles.labelText}>Time</Text>
+                {searchTime && (
                   <TouchableOpacity
-                    onPress={() => setDateTimePickerVisible(true)}
+                    style={styles.resetView}
+                    onPress={() => {
+                      setSearchTime(undefined);
+                    }}
                   >
-                    <Text style={styles.buttonText}>
-                      {selectedDate ? selectedDate : "Any Date"}
-                    </Text>
+                    <Text style={styles.reset}>Reset</Text>
                   </TouchableOpacity>
-                </View>
-                <View style={styles.dateTimeRow}>
-                  <Text style={styles.labelText}>Time</Text>
-                  {searchTime && (
-                    <TouchableOpacity
-                      style={styles.resetView}
-                      onPress={() => {
-                        setSearchTime(undefined);
-                      }}
-                    >
-                      <Text style={styles.reset}>Reset</Text>
-                    </TouchableOpacity>
-                  )}
-                  <TouchableOpacity
-                    onPress={() => setTimeSlotPickerVisible(true)}
-                    disabled={searchDate === null || searchDate === undefined}
+                )}
+                <TouchableOpacity
+                  onPress={() => setTimeSlotPickerVisible(true)}
+                  disabled={searchDate === null || searchDate === undefined}
+                >
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      {
+                        color: searchDate ? colors.primary : colors.tertiary,
+                      },
+                    ]}
                   >
-                    <Text
-                      style={[
-                        styles.buttonText,
-                        {
-                          color: searchDate ? colors.primary : colors.tertiary,
-                        },
-                      ]}
-                    >
-                      {selectedTime || "Any Time"}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                    {selectedTime || "Any Time"}
+                  </Text>
+                </TouchableOpacity>
               </View>
-              <View style={styles.buttonView}>
-                <Button
-                  mode="contained"
-                  buttonColor={searchDate ? colors.primary : colors.tertiary}
-                  style={{ width: "100%" }}
-                  onPress={
-                    searchDate && searchLocationMarker && searchLocationName
-                      ? () => {
-                          setVisible(false);
-                          if (!branch)
-                            navigation.push("ChooseBranch", {
+            </View>
+            <View style={styles.buttonView}>
+              <Button
+                mode="contained"
+                buttonColor={searchDate ? colors.primary : colors.tertiary}
+                style={{ width: "100%" }}
+                onPress={
+                  searchDate && searchLocationMarker && searchLocationName
+                    ? () => {
+                        setVisible(false);
+                        if (!branch)
+                          navigation.push("ChooseBranch", {
+                            date: searchDate.toISOString(),
+                            gameType,
+                            location: searchLocationMarker,
+                            locationName: searchLocationName,
+                            time: searchTime
+                              ? {
+                                  startTime: (
+                                    searchTime?.startTime as Date
+                                  ).toISOString(),
+                                  endTime: (
+                                    searchTime?.endTime as Date
+                                  ).toISOString(),
+                                }
+                              : undefined,
+                            nbOfPlayers: numberOfPlayers,
+                          });
+                        else {
+                          navigation.push("ChooseCourt", {
+                            branchId: branch.id,
+                            venueName: branch.venue.name,
+                            branchLocation: branch.location,
+                            bookingDetails: {
                               date: searchDate.toISOString(),
-                              gameType,
-                              location: searchLocationMarker,
-                              locationName: searchLocationName,
+                              nbOfPlayers: numberOfPlayers,
                               time: searchTime
                                 ? {
                                     startTime: (
@@ -419,85 +441,65 @@ export const Play = ({
                                     ).toISOString(),
                                   }
                                 : undefined,
-                              nbOfPlayers: numberOfPlayers,
-                            });
-                          else {
-                            navigation.push("ChooseCourt", {
-                              branchId: branch.id,
-                              venueName: branch.venue.name,
-                              branchLocation: branch.location,
-                              bookingDetails: {
-                                date: searchDate.toISOString(),
-                                nbOfPlayers: numberOfPlayers,
-                                time: searchTime
-                                  ? {
-                                      startTime: (
-                                        searchTime?.startTime as Date
-                                      ).toISOString(),
-                                      endTime: (
-                                        searchTime?.endTime as Date
-                                      ).toISOString(),
-                                    }
-                                  : undefined,
-                                gameType,
-                              },
-                              profilePhotoUrl: branch.profilePhotoUrl,
-                            });
-                          }
+                              gameType,
+                            },
+                            profilePhotoUrl: branch.profilePhotoUrl,
+                          });
                         }
-                      : undefined
-                  }
+                      }
+                    : undefined
+                }
+              >
+                {branch ? "Find a Court" : "Find Venue"}
+              </Button>
+              {!branch && (
+                <Button
+                  mode="contained"
+                  style={{ width: "100%", marginTop: 15 }}
+                  onPress={() => {
+                    setVisible(false);
+                    if (!branch && searchLocationMarker && searchLocationName)
+                      navigation.push("ChooseGame", {
+                        date: searchDate ? searchDate.toISOString() : undefined,
+                        gameType,
+                        nbOfPlayers: numberOfPlayers,
+                        location: searchLocationMarker,
+                        locationName: searchLocationName,
+                        time: searchTime
+                          ? {
+                              startTime: (
+                                searchTime?.startTime as Date
+                              ).toISOString(),
+                              endTime: (
+                                searchTime?.endTime as Date
+                              ).toISOString(),
+                            }
+                          : undefined,
+                      });
+                  }}
                 >
-                  {branch ? "Find a Court" : "Find Venue"}
+                  Find Game
                 </Button>
-                {!branch && (
-                  <Button
-                    mode="contained"
-                    style={{ width: "100%", marginTop: 15 }}
-                    onPress={() => {
-                      setVisible(false);
-                      if (!branch && searchLocationMarker && searchLocationName)
-                        navigation.push("ChooseGame", {
-                          date: searchDate
-                            ? searchDate.toISOString()
-                            : undefined,
-                          gameType,
-                          nbOfPlayers: numberOfPlayers,
-                          location: searchLocationMarker,
-                          locationName: searchLocationName,
-                          time: searchTime
-                            ? {
-                                startTime: (
-                                  searchTime?.startTime as Date
-                                ).toISOString(),
-                                endTime: (
-                                  searchTime?.endTime as Date
-                                ).toISOString(),
-                              }
-                            : undefined,
-                        });
-                    }}
-                  >
-                    Find Game
-                  </Button>
-                )}
-              </View>
+              )}
             </View>
-          ) : (
-            <MapComponent
-              locationMarker={searchLocationMarker}
-              setLocationMarker={setSearchLocationMarker}
-              setMapDisplayed={setMapDisplayed}
-              region={initialMapRegion}
-              setRegion={setInitialMapRegion}
-            />
-          )}
-        </ScrollView>
+          </View>
+        ) : (
+          <MapComponent
+            locationMarker={searchLocationMarker}
+            setLocationMarker={setSearchLocationMarker}
+            setMapDisplayed={setMapDisplayed}
+            region={initialMapRegion}
+            setRegion={setInitialMapRegion}
+          />
+        )}
+      </ScrollView>
 
+      {Platform.OS === "ios" ? (
         <DateTimePickerModal
           isVisible={dateTimePickerVisible !== false}
           mode={"date"}
           date={searchDate || new Date()}
+          minimumDate={new Date()}
           onConfirm={(date) => {
             setDateTimePickerVisible(false);
             setSearchDate(date);
@@ -536,17 +538,47 @@ export const Play = ({
             </Pressable>
           )}
         />
+      ) : (
+        <BottomModal
+          visible={dateTimePickerVisible}
+          setVisible={setDateTimePickerVisible}
+        >
+          <View
+            style={{
+              backgroundColor: colors.background,
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+              paddingVertical: 40,
+              marginTop: "auto",
+            }}
+          >
+            <CalendarPicker
+              width={useWindowDimensions().width - 40}
+              textStyle={{ color: "white" }}
+              minDate={new Date()}
+              todayBackgroundColor={colors.tertiary}
+              selectedDayStyle={{ backgroundColor: colors.primary }}
+              initialDate={searchDate ?? new Date()}
+              onDateChange={(date) => {
+                const parsedDate = date.toDate();
+                setDateTimePickerVisible(false);
+                setSearchDate(parsedDate);
+              }}
+              selectedStartDate={searchDate ?? new Date()}
+            />
+          </View>
+        </BottomModal>
+      )}
 
-        <TimeSlotPicker
-          visible={timeSlotPickerVisible}
-          setVisible={setTimeSlotPickerVisible}
-          time={searchTime}
-          onPress={(tempTime) => {
-            setSearchTime(tempTime);
-            setTimeSlotPickerVisible(false);
-          }}
-        />
-      </View>
+      <TimeSlotPicker
+        visible={timeSlotPickerVisible}
+        setVisible={setTimeSlotPickerVisible}
+        time={searchTime}
+        onPress={(tempTime) => {
+          setSearchTime(tempTime);
+          setTimeSlotPickerVisible(false);
+        }}
+      />
     </BottomModal>
   );
 };
