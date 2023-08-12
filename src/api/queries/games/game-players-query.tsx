@@ -9,7 +9,7 @@ const getGamePlayers = (id: number) => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("game-players-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

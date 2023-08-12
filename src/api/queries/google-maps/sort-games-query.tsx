@@ -27,7 +27,7 @@ const sortGamesByLocation =
         })
         .catch((e) => {
           console.error("sort-games-query", e);
-          throw new Error(e);
+          throw e;
         });
     }
   };

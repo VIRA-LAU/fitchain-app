@@ -8,7 +8,7 @@ const getGameCount = (userId?: number) => async () => {
       .then((res) => res?.data)
       .catch((e) => {
         console.error("game-count-query", e);
-        throw new Error(e);
+        throw e;
       });
 };
 

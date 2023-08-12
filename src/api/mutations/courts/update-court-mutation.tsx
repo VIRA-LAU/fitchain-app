@@ -19,7 +19,7 @@ const updateCourt = async (data: Request) => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("update-court-mutation", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

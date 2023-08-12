@@ -9,7 +9,7 @@ const getUpdates = (gameId?: number) => async () => {
       .then((res) => res?.data)
       .catch((e) => {
         console.error("updates-query", e);
-        throw new Error(e);
+        throw e;
       });
 };
 

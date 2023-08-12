@@ -24,7 +24,7 @@ const updateUser = async (data: Request) => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("update-user-mutation", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

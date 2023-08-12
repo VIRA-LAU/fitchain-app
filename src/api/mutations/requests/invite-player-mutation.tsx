@@ -22,7 +22,7 @@ const invitePlayer = async (data: Request) => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("invite-player-mutation", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

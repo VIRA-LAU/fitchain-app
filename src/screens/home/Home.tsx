@@ -283,6 +283,7 @@ export const Home = ({ navigation, route }: Props) => {
           {!bookingsLoading &&
             bookings
               ?.filter(({ type }: Game) => selectedSports[type])
+              ?.slice(0, 5)
               .map((booking: Game, index: number) => (
                 <BookingCard key={index} booking={booking} isPrevious={false} />
               ))}

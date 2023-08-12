@@ -8,7 +8,7 @@ const getBookings = (type?: "upcoming" | "previous") => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("bookings-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

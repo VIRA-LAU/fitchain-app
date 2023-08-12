@@ -8,7 +8,7 @@ const getReceivedRequests = async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("received-requests-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

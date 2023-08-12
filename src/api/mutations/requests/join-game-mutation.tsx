@@ -18,7 +18,7 @@ const joinGame = async (data: Request) => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("join-game-mutation", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

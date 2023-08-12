@@ -27,7 +27,7 @@ const sortBranchesByLocation =
         })
         .catch((e) => {
           console.error("sort-branches-query", e);
-          throw new Error(e);
+          throw e;
         });
     }
   };

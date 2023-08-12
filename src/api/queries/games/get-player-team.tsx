@@ -11,7 +11,7 @@ const getPlayerTeamQuery = (gameId: number) => async () => {
       .then((res) => res?.data)
       .catch((e) => {
         console.error("player-team-query", e);
-        throw new Error(e);
+        throw e;
       });
 };
 

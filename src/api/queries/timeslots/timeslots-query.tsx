@@ -8,7 +8,7 @@ const getTimeSlots = async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("timeSlots-query", e.response.data);
-      throw new Error(e);
+      throw e;
     });
 };
 

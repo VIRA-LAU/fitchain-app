@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import queryBuilder from "src/api/queryBuilder";
 import { GameType, Branch } from "src/types";
 import client from "../../client";
@@ -19,7 +19,7 @@ const searchBranches = (params: Props) => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("search-branches-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

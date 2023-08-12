@@ -8,7 +8,7 @@ const getVenueById = (id?: number) => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("venue-by-id-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

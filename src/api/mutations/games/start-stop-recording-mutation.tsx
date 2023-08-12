@@ -12,7 +12,7 @@ const startStopRecording = (gameId: number) => async (data: Request) => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("start-stop-recording-mutation", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

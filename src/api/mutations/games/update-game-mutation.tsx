@@ -15,7 +15,7 @@ const updateGame = (id: number) => async (data: Request) => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("update-game-mutation", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

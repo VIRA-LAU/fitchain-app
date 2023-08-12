@@ -17,7 +17,7 @@ const searchGames = (params?: Props) => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("search-games-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

@@ -17,7 +17,7 @@ const getUsers = async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("users-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

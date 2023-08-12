@@ -9,7 +9,12 @@ import {
 } from "react-native";
 import { useTheme, Text, ActivityIndicator, Button } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { AppHeader, getMins, parseTimeFromMinutes } from "src/components";
+import {
+  AppHeader,
+  GenericDialog,
+  getMins,
+  parseTimeFromMinutes,
+} from "src/components";
 import Feather from "react-native-vector-icons/Feather";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -17,7 +22,8 @@ import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParamList } from "src/navigation";
 import { useCreateGameMutation } from "src/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
 
 type Props = StackScreenProps<StackParamList, "BookingPayment">;
 
@@ -37,8 +43,9 @@ export const BookingPayment = ({ navigation, route }: Props) => {
     profilePhotoUrl,
   } = route.params;
 
-  const { mutate: createGame, isLoading } = useCreateGameMutation();
+  const { mutate: createGame, isLoading, error } = useCreateGameMutation();
 
+  const [errorDialogVisible, setErrorDialogVisible] = useState(false);
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(
     bookingDetails.nbOfPlayers
   );
@@ -55,6 +62,11 @@ export const BookingPayment = ({ navigation, route }: Props) => {
   const startHours =
     time.startTime.getHours() * 60 + time.startTime.getMinutes();
   const bookedHours = (endHours - startHours) / 60;
+
+  useEffect(() => {
+    if (error && error.response?.data.message === "EXISTING_GAME_OVERLAP")
+      setErrorDialogVisible(true);
+  }, [error]);
 
   return (
     <AppHeader
@@ -274,6 +286,12 @@ export const BookingPayment = ({ navigation, route }: Props) => {
           </View>
         )}
       </ScrollView>
+      <GenericDialog
+        visible={errorDialogVisible}
+        setVisible={setErrorDialogVisible}
+        title="Booking Overlap"
+        text="A game was recently booked during this time. Please try again."
+      />
     </AppHeader>
   );
 };

@@ -24,7 +24,7 @@ const getTimeSlotsInBranch = (branchId?: number) => async () => {
       .then((res) => res?.data)
       .catch((e) => {
         console.error("timeSlots-in-branch-query", e.response.data);
-        throw new Error(e);
+        throw e;
       });
 };
 
@@ -43,12 +43,16 @@ export const useTimeSlotsInBranchQuery = (branchId?: number) => {
           },
         }));
         let sorted = data.sort((a, b) =>
-          a.timeSlot.startTime.getTime() <= b.timeSlot.startTime.getTime()
+          new Date(a.timeSlot.startTime).getTime() <=
+          new Date(b.timeSlot.startTime).getTime()
             ? -1
             : 1
         );
         sorted = sorted.sort((a, b) =>
-          a.timeSlot.endTime.getTime() <= b.timeSlot.endTime.getTime() ? -1 : 0
+          new Date(a.timeSlot.endTime).getTime() <=
+          new Date(b.timeSlot.endTime).getTime()
+            ? -1
+            : 0
         );
 
         let separatedTimeSlots: TimeSlotsResponse[] = [];
@@ -56,8 +60,8 @@ export const useTimeSlotsInBranchQuery = (branchId?: number) => {
         sorted?.forEach((courtTimeSlot) => {
           separatedTimeSlots.push({
             id: courtTimeSlot.timeSlot.id,
-            startTime: courtTimeSlot.timeSlot.startTime,
-            endTime: courtTimeSlot.timeSlot.endTime,
+            startTime: new Date(courtTimeSlot.timeSlot.startTime),
+            endTime: new Date(courtTimeSlot.timeSlot.endTime),
             gameType: courtTimeSlot.court.courtType,
             courtId: courtTimeSlot.court.id,
             courtName: courtTimeSlot.court.name,

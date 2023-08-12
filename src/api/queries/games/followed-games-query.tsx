@@ -8,7 +8,7 @@ const getFollowedGames = (type?: "upcoming" | "previous") => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("followed-games-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

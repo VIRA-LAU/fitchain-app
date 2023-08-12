@@ -8,7 +8,7 @@ const getGameById = (id: number) => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("game-by-id-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

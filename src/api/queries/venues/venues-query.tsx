@@ -8,7 +8,7 @@ const getVenues = async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("get-venues-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

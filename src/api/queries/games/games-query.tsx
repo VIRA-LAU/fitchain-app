@@ -14,7 +14,7 @@ const getGames = (params?: Props) => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("games-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

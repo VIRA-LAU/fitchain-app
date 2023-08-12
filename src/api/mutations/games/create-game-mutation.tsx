@@ -8,6 +8,7 @@ import {
 import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList, StackParamList } from "src/navigation";
+import { AxiosError } from "axios";
 
 type Request = {
   courtId: number;
@@ -21,8 +22,8 @@ const createGame = async (data: Request) => {
     .post("/games", data)
     .then((res) => res?.data)
     .catch((e) => {
-      console.error("create-game-mutation", e);
-      throw new Error(e);
+      console.error("create-game-mutation", e?.response.data);
+      throw e;
     });
 };
 
@@ -35,13 +36,17 @@ export const useCreateGameMutation = () => {
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
-  return useMutation<unknown, unknown, Request>({
+  return useMutation<unknown, AxiosError<{ message: string }>, Request>({
     mutationFn: createGame,
     onSuccess: () => {
       queryClient.refetchQueries(["games"]);
       queryClient.refetchQueries(["bookings"]);
       navigation.pop(4);
       navigation.navigate("Home");
+    },
+    onError: (e) => {
+      if (e.response?.data.message === "EXISTING_GAME_OVERLAP")
+        queryClient.refetchQueries("search-branches");
     },
   });
 };

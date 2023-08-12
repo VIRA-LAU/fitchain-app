@@ -8,7 +8,7 @@ const getCourtsInBranch = (branchId?: number) => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("branches-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

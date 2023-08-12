@@ -8,7 +8,7 @@ const getPlayerStatus = (gameId: number) => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("player-status-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

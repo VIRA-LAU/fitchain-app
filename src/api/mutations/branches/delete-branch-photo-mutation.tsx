@@ -9,7 +9,7 @@ const deleteBranchPhoto = async (photoName: string) => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("delete-branch-photo-mutation", e?.response.data);
-      throw new Error(e);
+      throw e;
     });
 };
 

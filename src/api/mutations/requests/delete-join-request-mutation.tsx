@@ -12,7 +12,7 @@ const deleteJoinRequest = async (data: Request) => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("delete-join-request-mutation", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

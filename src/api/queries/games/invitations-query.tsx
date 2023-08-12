@@ -10,7 +10,7 @@ const getInvitations = (userData: UserData) => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("invitations-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

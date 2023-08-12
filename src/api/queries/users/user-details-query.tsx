@@ -8,7 +8,7 @@ const getUserDetails = (id?: number) => async () => {
       .get(`/users/${id}`)
       .then((res) => res?.data)
       .catch((e) => {
-        throw new Error(e);
+        throw e;
       });
 };
 

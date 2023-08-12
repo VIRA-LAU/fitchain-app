@@ -8,7 +8,7 @@ const getBranchById = (id?: number) => async () => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("branch-by-id-query", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

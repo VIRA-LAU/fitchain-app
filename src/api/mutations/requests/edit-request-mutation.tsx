@@ -14,7 +14,7 @@ const editJoinRequest = async (data: Request) => {
     .then((res) => res?.data)
     .catch((e) => {
       console.error("edit-join-request-mutation", e);
-      throw new Error(e);
+      throw e;
     });
 };
 

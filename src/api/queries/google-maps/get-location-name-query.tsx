@@ -9,7 +9,7 @@ const getLocationName = (coordinates?: LatLng) => async () => {
       .then((res) => res?.data)
       .catch((e) => {
         console.error("location-name-query", e.response.data);
-        throw new Error(e);
+        throw e;
       });
 };
 

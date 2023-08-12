@@ -21,8 +21,8 @@ const createRating = async (data: Request) => {
     .post("/users/rate", data)
     .then((res) => res?.data)
     .catch((e) => {
-      console.error("create-game-mutation", e.response.data);
-      throw new Error(e.message);
+      console.error("create-rating-mutation", e.response.data);
+      throw e;
     });
 };
 

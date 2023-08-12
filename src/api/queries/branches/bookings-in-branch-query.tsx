@@ -9,7 +9,7 @@ const getBookingsInBranch = (id?: number, date?: string) => async () => {
       .then((res) => res?.data)
       .catch((e) => {
         console.error("bookings-in-branch-query", e.response.data);
-        throw new Error(e);
+        throw e;
       });
 };
 
