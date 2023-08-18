@@ -1,14 +1,19 @@
 import React, {
   useState,
   useMemo,
-  useEffect,
   useContext,
   Fragment,
+  ReactNode,
 } from "react";
 import {
   AppHeader,
+  BranchLocation,
+  BranchLocationSkeleton,
+  ResultCard,
   SelectionModal,
   Skeleton,
+  UpdateCard,
+  UpdateCardSkeleton,
   getMins,
   parseTimeFromMinutes,
 } from "src/components";
@@ -17,9 +22,11 @@ import {
   StyleSheet,
   useWindowDimensions,
   Pressable,
-  BackHandler,
   TouchableOpacity,
   Platform,
+  ScrollView,
+  Linking,
+  Image,
 } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParamList } from "src/navigation";
@@ -28,7 +35,7 @@ import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
+import { TabBar, TabView } from "react-native-tab-view";
 import { Team } from "./Team";
 import {
   useDeleteJoinRequestMutation,
@@ -36,10 +43,12 @@ import {
   useFollowGameMutation,
   useGameByIdQuery,
   useGamePlayersQuery,
+  useGameStatsQuery,
   useJoinGameMutation,
   usePlayerStatusQuery,
   useRespondToInviteMutation,
   useUnfollowGameMutation,
+  useUpdatesQuery,
 } from "src/api";
 import { PopupContainer, PopupType } from "./Popups";
 import { UserContext } from "src/utils";
@@ -72,6 +81,10 @@ export const GameDetails = ({ navigation, route }: Props) => {
     isLoading: followedGamesLoading,
     isFetching: followedGamesFetching,
   } = useFollowedGamesQuery();
+  const { data: gameUpdates, isFetching: updatesLoading } = useUpdatesQuery(
+    game?.id
+  );
+  const { data: gameStats } = useGameStatsQuery(game?.id);
 
   const { mutate: joinGame, isLoading: joinLoading } = useJoinGameMutation();
   const { mutate: cancelRequest, isLoading: cancelLoading } =
@@ -105,18 +118,70 @@ export const GameDetails = ({ navigation, route }: Props) => {
     }
   }, [game?.startTime]);
 
-  useEffect(() => {
-    const handleBack = () => {
-      if (popupVisible) {
-        setPopupVisible(null);
-        return true;
-      } else return false;
-    };
-    BackHandler.addEventListener("hardwareBackPress", handleBack);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBack);
-    };
-  }, [popupVisible]);
+  let updateCards: { card: ReactNode; date: Date }[] = [];
+
+  if (gameUpdates) {
+    updateCards.push({
+      card: (
+        <UpdateCard
+          key="created"
+          type="create"
+          name={`${gameUpdates.admin.firstName} ${gameUpdates.admin.lastName}`}
+          profilePhotoUrl={gameUpdates.admin.profilePhotoUrl}
+          date={new Date(gameUpdates.createdAt)}
+          gameId={game?.id}
+          profileId={gameUpdates.admin.id}
+          playerStatus={playerStatus}
+        />
+      ),
+      date: new Date(gameUpdates.createdAt),
+    });
+    gameUpdates.gameInvitation.forEach((invitation, index) => {
+      if (invitation.status !== "REJECTED")
+        updateCards.push({
+          card: (
+            <UpdateCard
+              key={`invitation-${index}`}
+              type={invitation.status === "APPROVED" ? "join" : "invitation"}
+              name={
+                invitation.status === "APPROVED"
+                  ? `${invitation.friend.firstName} ${invitation.friend.lastName}`
+                  : `${invitation.user.firstName} ${invitation.user.lastName}`
+              }
+              friendName={`${invitation.friend.firstName} ${invitation.friend.lastName}`}
+              profilePhotoUrl={invitation.friend.profilePhotoUrl}
+              date={new Date(invitation.createdAt)}
+              gameId={game?.id}
+              profileId={invitation.friend.id}
+              playerStatus={playerStatus}
+            />
+          ),
+          date: new Date(invitation.createdAt),
+        });
+    });
+    gameUpdates.gameRequests.forEach((request, index) => {
+      if (request.status !== "REJECTED")
+        updateCards.push({
+          card: (
+            <UpdateCard
+              key={`request-${index}`}
+              type={request.status === "APPROVED" ? "join" : "join-request"}
+              name={`${request.user.firstName} ${request.user.lastName}`}
+              profilePhotoUrl={request.user.profilePhotoUrl}
+              date={new Date(request.createdAt)}
+              requestId={request.id}
+              gameId={game?.id}
+              profileId={request.user.id}
+              playerStatus={playerStatus}
+            />
+          ),
+          date: new Date(request.createdAt),
+        });
+    });
+    updateCards = updateCards.sort(
+      (a, b) => b.date.getTime() - a.date.getTime()
+    );
+  }
 
   const renderScene = () => {
     const route = routes[index];
@@ -124,7 +189,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
       case "Home":
         return (
           <Team
-            name={"Home"}
             game={game}
             players={
               isPrevious
@@ -137,17 +201,16 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       team === "HOME" && status !== "REJECTED"
                   )
             }
-            gameDetailsLoading={gameDetailsLoading}
             playersLoading={playersLoading}
             isPrevious={isPrevious}
             playerStatus={playerStatus}
             teamIndex={index}
+            gameStats={gameStats}
           />
         );
       case "Away":
         return (
           <Team
-            name={"Away"}
             game={game}
             players={
               isPrevious
@@ -160,11 +223,11 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       team === "AWAY" && status !== "REJECTED"
                   )
             }
-            gameDetailsLoading={gameDetailsLoading}
             playersLoading={playersLoading}
             isPrevious={isPrevious}
             playerStatus={playerStatus}
             teamIndex={index}
+            gameStats={gameStats}
           />
         );
       default:
@@ -172,7 +235,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
     }
   };
 
-  const renderTabBar = (props: TabBarProps<any>) => (
+  const renderTabBar = (props: any) => (
     <TabBar
       {...props}
       style={{
@@ -185,6 +248,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
         let isActive = route.key === props.navigationState.routes[index].key;
         return (
           <Pressable
+            key={route.key}
             style={({ pressed }) => [
               styles.tabViewItem,
               {
@@ -442,7 +506,14 @@ export const GameDetails = ({ navigation, route }: Props) => {
             </View>
           )}
 
-          <View style={styles.contentView}>
+          <ScrollView>
+            {isPrevious && <ResultCard game={game} gameStats={gameStats} />}
+            <Text
+              variant="labelLarge"
+              style={{ color: colors.tertiary, marginTop: 20, marginLeft: 20 }}
+            >
+              Team Players
+            </Text>
             <TabView
               navigationState={{ index, routes }}
               renderTabBar={renderTabBar}
@@ -451,7 +522,55 @@ export const GameDetails = ({ navigation, route }: Props) => {
               initialLayout={{ width: windowWidth }}
               swipeEnabled={false}
             />
-          </View>
+            <Image
+              style={{
+                height: 120,
+                maxWidth: "100%",
+                marginBottom: 20,
+              }}
+              resizeMode="contain"
+              source={require("assets/images/home/basketball-court.png")}
+            />
+            <View style={{ marginHorizontal: 20, marginBottom: -10 }}>
+              {gameDetailsLoading ? (
+                <BranchLocationSkeleton />
+              ) : (
+                <BranchLocation type="court" court={game?.court} pressable />
+              )}
+            </View>
+            <Button
+              style={{ marginTop: 20, alignSelf: "center" }}
+              icon={"arrow-right-top"}
+              onPress={() => {
+                const scheme = Platform.select({
+                  ios: "maps://0,0?q=",
+                  android: "geo:0,0?q=",
+                });
+                const latLng = `${game?.court.branch.latitude},${game?.court.branch.longitude}`;
+                const label = game?.court.branch.venue.name;
+
+                Linking.openURL(
+                  Platform.select({
+                    ios: `${scheme}${label}@${latLng}`,
+                    android: `${scheme}${latLng}(${label})`,
+                  })!
+                );
+              }}
+            >
+              Get Directions
+            </Button>
+            <View style={styles.divider} />
+            <Text
+              variant="labelLarge"
+              style={{ color: colors.tertiary, margin: 20 }}
+            >
+              Updates
+            </Text>
+            <View style={styles.updatesView}>
+              {updatesLoading && <UpdateCardSkeleton />}
+              {!updatesLoading && updateCards.map(({ card }) => card)}
+            </View>
+          </ScrollView>
         </View>
       </AppHeader>
     </Fragment>
@@ -477,7 +596,6 @@ const makeStyles = (colors: MD3Colors) =>
       alignItems: "center",
     },
     contentView: {
-      flex: 1,
       paddingTop: 10,
     },
     tabViewItem: {
@@ -486,5 +604,13 @@ const makeStyles = (colors: MD3Colors) =>
       borderRadius: 10,
       justifyContent: "center",
       alignItems: "center",
+    },
+    divider: {
+      borderColor: colors.secondary,
+      borderBottomWidth: 1,
+      marginTop: 10,
+    },
+    updatesView: {
+      marginHorizontal: 20,
     },
   });

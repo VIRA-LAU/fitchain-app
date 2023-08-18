@@ -188,3 +188,16 @@ export interface PlayerStatus {
   invitationId: number | false;
   isAdmin: boolean;
 }
+
+export interface GameStats {
+  [key: string]: {
+    playerPoints: {
+      [key: string]: {
+        scored: number;
+        missed: number;
+      };
+    };
+    points: number;
+    possession: string;
+  };
+}

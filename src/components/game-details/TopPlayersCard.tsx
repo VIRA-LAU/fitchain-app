@@ -15,30 +15,33 @@ export const TopPlayersCard = ({
   return (
     <TouchableOpacity
       style={{
-        height: "100%",
-        width: "100%",
+        width: 120,
+        height: 120,
         marginVertical: 20,
         alignItems: "center",
       }}
     >
       <View
         style={{
-          borderWidth: 5,
+          borderWidth: 2,
           borderColor: "white",
           justifyContent: "center",
           alignItems: "center",
           borderRadius: 90,
-          height: "60%",
-          width: "60%",
+          height: "55%",
+          width: "55%",
         }}
       >
         <FeatherIcon name={"user-plus"} color={"white"} size={24} />
       </View>
       <View style={{ marginTop: 5, alignItems: "center" }}>
-        <Text variant="titleMedium" style={{ color: colors.tertiary }}>
-          {playerName ? playerName : "Select"}{" "}
-        </Text>
         <Text variant="titleSmall" style={{ color: colors.tertiary }}>
+          {playerName ? playerName : "Select"}
+        </Text>
+        <Text
+          variant="titleSmall"
+          style={{ color: colors.tertiary, fontFamily: "Inter-Medium" }}
+        >
           {achievement}
         </Text>
       </View>

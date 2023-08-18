@@ -1,5 +1,11 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
-import { View, StyleSheet, useWindowDimensions, Pressable } from "react-native";
+import {
+  View,
+  StyleSheet,
+  useWindowDimensions,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import { Button, Switch, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
@@ -72,7 +78,7 @@ export const RecordGamePopup = ({
     ) : (
       <View style={{ paddingTop: 20 }}>
         <Text style={styles.promptText}>Select court camera.</Text>
-        <View style={{ marginHorizontal: 20, marginBottom: 20, zIndex: 1 }}>
+        <View style={{ marginHorizontal: 20, marginBottom: 100, zIndex: 3 }}>
           <DropDownPicker
             open={dropDownOpen}
             value={dropDownValue}
@@ -93,49 +99,11 @@ export const RecordGamePopup = ({
             textStyle={{ color: "white", fontFamily: "Inter-Medium" }}
           />
         </View>
-        {!game?.isRecording ? (
-          <Button
-            mode="contained"
-            style={{
-              marginBottom: 10,
-              marginHorizontal: 20,
-            }}
-            loading={recordLoading}
-            onPress={
-              dropDownValue !== null && !recordLoading
-                ? () => {
-                    startStopRecording({ recordingMode: "start" });
-                  }
-                : undefined
-            }
-          >
-            Start Recording
-          </Button>
-        ) : (
-          <Button
-            mode="contained"
-            style={{
-              marginBottom: 10,
-              marginHorizontal: 20,
-            }}
-            loading={recordLoading}
-            onPress={
-              !recordLoading
-                ? () => {
-                    startStopRecording({ recordingMode: "stop" });
-                  }
-                : undefined
-            }
-          >
-            Stop Recording
-          </Button>
-        )}
-        <Button onPress={() => setPopupVisible(null)}>Cancel</Button>
       </View>
     );
   };
 
-  const renderTabBar = (props: TabBarProps<any>) => (
+  const renderTabBar = (props: any) => (
     <TabBar
       {...props}
       style={{
@@ -148,6 +116,7 @@ export const RecordGamePopup = ({
         let isActive = route.key === props.navigationState.routes[index].key;
         return (
           <Pressable
+            key={route.key}
             style={({ pressed }) => [
               styles.tabViewItem,
               {
@@ -178,7 +147,7 @@ export const RecordGamePopup = ({
     />
   );
   return (
-    <View style={styles.wrapperView}>
+    <ScrollView>
       <Text style={styles.promptText}>
         Which camera would you like to record from?
       </Text>
@@ -189,15 +158,57 @@ export const RecordGamePopup = ({
         onIndexChange={setIndex}
         swipeEnabled={false}
       />
-    </View>
+      {!game?.isRecording ? (
+        <Button
+          mode="contained"
+          style={{
+            marginBottom: 10,
+            marginHorizontal: 20,
+          }}
+          loading={recordLoading}
+          onPress={
+            dropDownValue !== null && !recordLoading
+              ? () => {
+                  startStopRecording({ recordingMode: "start" });
+                }
+              : undefined
+          }
+        >
+          Start Recording
+        </Button>
+      ) : (
+        <Button
+          mode="contained"
+          style={{
+            marginBottom: 10,
+            marginHorizontal: 20,
+          }}
+          loading={recordLoading}
+          onPress={
+            !recordLoading
+              ? () => {
+                  startStopRecording({ recordingMode: "stop" });
+                }
+              : undefined
+          }
+        >
+          Stop Recording
+        </Button>
+      )}
+      <Button
+        style={{
+          marginHorizontal: 20,
+        }}
+        onPress={() => setPopupVisible(null)}
+      >
+        Cancel
+      </Button>
+    </ScrollView>
   );
 };
 
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
-    wrapperView: {
-      minHeight: 330,
-    },
     promptText: {
       fontFamily: "Inter-Medium",
       textAlign: "center",

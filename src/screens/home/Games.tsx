@@ -338,7 +338,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
     }
   };
 
-  const renderTabBar = (props: TabBarProps<any>) => (
+  const renderTabBar = (props: any) => (
     <TabBar
       {...props}
       style={{
@@ -350,6 +350,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
         let isActive = route.key === props.navigationState.routes[index].key;
         return (
           <Pressable
+            key={route.key}
             style={({ pressed }) => [
               styles.tabViewItem,
               {

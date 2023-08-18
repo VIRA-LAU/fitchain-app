@@ -49,7 +49,6 @@ export const BranchLocation = ({
   type,
   court,
   branch,
-  team,
   pressable = false,
 }: {
   type: "branch" | "court";
@@ -64,7 +63,6 @@ export const BranchLocation = ({
     longitude: number;
     profilePhotoUrl?: string;
   };
-  team?: "Home" | "Away";
   pressable?: boolean;
 }) => {
   const { colors } = useTheme();
@@ -161,12 +159,6 @@ export const BranchLocation = ({
           <View style={styles.rowView}>
             <Text style={styles.rowKey}>COURT</Text>
             <Text style={styles.rowValue}>{court?.name}</Text>
-          </View>
-        )}
-        {type === "court" && (
-          <View style={styles.rowView}>
-            <Text style={styles.rowKey}>SIDE</Text>
-            <Text style={styles.rowValue}>{team}</Text>
           </View>
         )}
         {type === "court" && (

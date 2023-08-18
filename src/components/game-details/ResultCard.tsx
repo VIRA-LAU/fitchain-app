@@ -2,12 +2,18 @@ import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
 import { useGetPlayerTeamQuery, useUpdateGameMutation } from "src/api";
 import { useContext, useEffect, useState } from "react";
-import { Game } from "src/types";
+import { Game, GameStats } from "src/types";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { UserContext } from "src/utils";
 import { Skeleton } from "../home";
 
-export const ResultCard = ({ game }: { game?: Game }) => {
+export const ResultCard = ({
+  game,
+  gameStats,
+}: {
+  game?: Game;
+  gameStats?: GameStats;
+}) => {
   const { userData } = useContext(UserContext);
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -26,6 +32,7 @@ export const ResultCard = ({ game }: { game?: Game }) => {
   const { data: playersTeam, isLoading: teamLoading } = useGetPlayerTeamQuery(
     game?.id
   );
+
   const { mutate: updateScore, isLoading: updateScoreLoading } =
     useUpdateGameMutation(game?.id, setIsChangingScore);
 
@@ -45,8 +52,8 @@ export const ResultCard = ({ game }: { game?: Game }) => {
 
   useEffect(() => {
     if (game) {
-      setTempHomeScore(game.homeScore);
-      setTempAwayScore(game.awayScore);
+      setTempHomeScore(game.homeScore ?? gameStats?.team1.points ?? 0);
+      setTempAwayScore(game.awayScore ?? gameStats?.team2.points ?? 0);
     }
   }, [JSON.stringify(game)]);
 
@@ -103,7 +110,7 @@ export const ResultCard = ({ game }: { game?: Game }) => {
                   fontSize: 70,
                 }}
               >
-                {game?.homeScore}
+                {game?.homeScore ?? gameStats?.team1.points ?? 0}
               </Text>
             )}
             <Text
@@ -119,6 +126,9 @@ export const ResultCard = ({ game }: { game?: Game }) => {
                 {playersTeam?.team === "HOME" ? "Your Team" : "Opponent"}
               </Text>
             )}
+            <Text style={[styles.teamLabel, { marginTop: 5 }]}>
+              Possession: {gameStats?.team1.possession}
+            </Text>
           </View>
           <Text
             variant="labelLarge"
@@ -147,7 +157,7 @@ export const ResultCard = ({ game }: { game?: Game }) => {
                   fontSize: 70,
                 }}
               >
-                {game?.awayScore}
+                {game?.awayScore ?? gameStats?.team2.points ?? 0}
               </Text>
             )}
             <Text
@@ -163,6 +173,9 @@ export const ResultCard = ({ game }: { game?: Game }) => {
                 {playersTeam?.team === "AWAY" ? "Your Team" : "Opponent"}
               </Text>
             )}
+            <Text style={[styles.teamLabel, { marginTop: 5 }]}>
+              Possession: {gameStats?.team2.possession}
+            </Text>
           </View>
         </View>
         {game?.admin.id === userData?.userId &&
@@ -200,6 +213,7 @@ export const ResultCard = ({ game }: { game?: Game }) => {
             </View>
           ))}
       </View>
+      <View style={styles.divider} />
     </View>
   );
 };
@@ -222,5 +236,10 @@ const makeStyles = (colors: MD3Colors) =>
       padding: 10,
       marginVertical: 10,
       backgroundColor: colors.secondary,
+    },
+    divider: {
+      borderColor: colors.secondary,
+      borderBottomWidth: 1,
+      marginTop: 10,
     },
   });
