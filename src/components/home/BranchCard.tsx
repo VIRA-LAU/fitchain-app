@@ -81,7 +81,7 @@ export const BranchCard = ({
 
   return (
     <TouchableOpacity
-      activeOpacity={0.6}
+      activeOpacity={0.8}
       style={[
         styles.wrapper,
         isFirst ? { marginLeft: 20 } : {},

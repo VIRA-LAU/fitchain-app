@@ -190,14 +190,17 @@ export interface PlayerStatus {
 }
 
 export interface GameStats {
-  [key: string]: {
-    playerPoints: {
-      [key: string]: {
-        scored: number;
-        missed: number;
-      };
-    };
-    points: number;
-    possession: string;
-  };
+  [key: string]:
+    | {
+        playerPoints: {
+          [key: string]: {
+            scored: number;
+            missed: number;
+          };
+        };
+        points: number;
+        possession: string;
+      }
+    | unknown
+    | any;
 }

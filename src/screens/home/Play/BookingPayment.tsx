@@ -244,7 +244,7 @@ export const BookingPayment = ({ navigation, route }: Props) => {
         ) : (
           <View style={styles.paymentViewWrapper}>
             <TouchableOpacity
-              activeOpacity={0.6}
+              activeOpacity={0.8}
               style={styles.paymentView}
               onPress={() => {
                 const startTime = new Date(date);

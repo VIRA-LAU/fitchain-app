@@ -172,7 +172,7 @@ export const Play = ({
                   (court) => court.courtType === "Basketball"
                 ) !== -1 && (
                   <TouchableOpacity
-                    activeOpacity={0.6}
+                    activeOpacity={0.8}
                     onPress={() => {
                       setGameType("Basketball");
                     }}
@@ -203,7 +203,7 @@ export const Play = ({
                   (court) => court.courtType === "Football"
                 ) !== -1 && (
                   <TouchableOpacity
-                    activeOpacity={0.6}
+                    activeOpacity={0.8}
                     onPress={() => {
                       setGameType("Football");
                     }}
@@ -232,7 +232,7 @@ export const Play = ({
                   (court) => court.courtType === "Tennis"
                 ) !== -1 && (
                   <TouchableOpacity
-                    activeOpacity={0.6}
+                    activeOpacity={0.8}
                     onPress={() => {
                       setGameType("Tennis");
                     }}

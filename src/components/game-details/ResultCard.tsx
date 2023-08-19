@@ -1,18 +1,27 @@
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
 import { useGetPlayerTeamQuery, useUpdateGameMutation } from "src/api";
-import { useContext, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Game, GameStats } from "src/types";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { UserContext } from "src/utils";
 import { Skeleton } from "../home";
+import { Highlights } from "./Highlights";
 
 export const ResultCard = ({
   game,
   gameStats,
+  setVideoFocusVisible,
 }: {
   game?: Game;
   gameStats?: GameStats;
+  setVideoFocusVisible: Dispatch<SetStateAction<string | null>>;
 }) => {
   const { userData } = useContext(UserContext);
   const { colors } = useTheme();
@@ -213,6 +222,11 @@ export const ResultCard = ({
             </View>
           ))}
       </View>
+      <View style={styles.divider} />
+      <Highlights
+        gameStats={gameStats}
+        setVideoFocusVisible={setVideoFocusVisible}
+      />
       <View style={styles.divider} />
     </View>
   );

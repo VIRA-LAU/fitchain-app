@@ -20,7 +20,7 @@ export const GameTimeDropdown = ({
   return (
     <View>
       <TouchableOpacity
-        activeOpacity={0.6}
+        activeOpacity={0.8}
         style={styles.dropDownButton}
         onPress={() => setModalVisible(true)}
       >

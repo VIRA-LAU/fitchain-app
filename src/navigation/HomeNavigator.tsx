@@ -112,7 +112,7 @@ const BottomTabNavigator = ({ navigation, route }: Props) => {
         }}
       >
         <TouchableOpacity
-          activeOpacity={0.6}
+          activeOpacity={0.8}
           style={styles.playIconView}
           onPress={() => {
             setPlayScreenVisible(true);

@@ -128,7 +128,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
             {!playScreenBookingDetails && (
               <View style={styles.buttonsView}>
                 <TouchableOpacity
-                  activeOpacity={0.6}
+                  activeOpacity={0.8}
                   style={styles.headerBookCourtPressable}
                   onPress={() => {
                     setPlayScreenVisible(true);
@@ -245,7 +245,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
           {playScreenBookingDetails && (
             <View style={styles.bookCourtPressableView}>
               <TouchableOpacity
-                activeOpacity={0.6}
+                activeOpacity={0.8}
                 style={styles.bookCourtPressable}
                 onPress={() => {
                   navigation.push("ChooseCourt", {

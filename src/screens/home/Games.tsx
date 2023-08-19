@@ -389,7 +389,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
       setSearchBarVisible={setSearchBarVisible}
       right={
         <TouchableOpacity
-          activeOpacity={0.6}
+          activeOpacity={0.8}
           onPress={() => {
             setSearchBarVisible(true);
           }}

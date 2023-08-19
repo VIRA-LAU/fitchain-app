@@ -161,7 +161,7 @@ export const CreateCourt = ({
             horizontal
           >
             <TouchableOpacity
-              activeOpacity={0.6}
+              activeOpacity={0.8}
               onPress={() => {
                 setCourtType("Basketball");
               }}
@@ -187,7 +187,7 @@ export const CreateCourt = ({
               />
             </TouchableOpacity>
             <TouchableOpacity
-              activeOpacity={0.6}
+              activeOpacity={0.8}
               onPress={() => {
                 setCourtType("Football");
               }}
@@ -210,7 +210,7 @@ export const CreateCourt = ({
               />
             </TouchableOpacity>
             <TouchableOpacity
-              activeOpacity={0.6}
+              activeOpacity={0.8}
               onPress={() => {
                 setCourtType("Tennis");
               }}

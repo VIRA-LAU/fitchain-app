@@ -137,7 +137,7 @@ export const AppHeader = ({
               }}
             />
             <TouchableOpacity
-              activeOpacity={0.6}
+              activeOpacity={0.8}
               disabled={searchBarText === ""}
               onPress={() => {
                 if (setSearchBarText) setSearchBarText("");

@@ -1,10 +1,15 @@
 import { useQuery } from "react-query";
-import { Activity, GameStats } from "src/types";
+import { GameStats } from "src/types";
 import client from "../../client";
 
 const getGameStats = (gameId?: number) => async () => {
   return {
-    videoPath: "" as any,
+    videoPath: "",
+    highlights: [
+      "https://fitchain-ai-videos.s3.eu-north-1.amazonaws.com/videos_input/test.mp4",
+      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+      "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    ],
     team1: {
       playerPoints: {
         player1: {

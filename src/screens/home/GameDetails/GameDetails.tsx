@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import {
   AppHeader,
+  BottomModal,
   BranchLocation,
   BranchLocationSkeleton,
   ResultCard,
@@ -52,6 +53,8 @@ import {
 } from "src/api";
 import { PopupContainer, PopupType } from "./Popups";
 import { UserContext } from "src/utils";
+import { ResizeMode, Video } from "expo-av";
+import VideoPlayer from "expo-video-player";
 
 type Props = StackScreenProps<StackParamList, "GameDetails">;
 
@@ -70,6 +73,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
     { key: "Home", title: "Home" },
     { key: "Away", title: "Away" },
   ]);
+  const [videoFocusVisible, setVideoFocusVisible] = useState<string | null>(
+    null
+  );
 
   const { id, isPrevious } = route.params;
   const { data: game, isLoading: gameDetailsLoading } = useGameByIdQuery(id);
@@ -507,7 +513,13 @@ export const GameDetails = ({ navigation, route }: Props) => {
           )}
 
           <ScrollView>
-            {isPrevious && <ResultCard game={game} gameStats={gameStats} />}
+            {isPrevious && (
+              <ResultCard
+                game={game}
+                gameStats={gameStats}
+                setVideoFocusVisible={setVideoFocusVisible}
+              />
+            )}
             <Text
               variant="labelLarge"
               style={{ color: colors.tertiary, marginTop: 20, marginLeft: 20 }}
@@ -573,6 +585,36 @@ export const GameDetails = ({ navigation, route }: Props) => {
           </ScrollView>
         </View>
       </AppHeader>
+      <BottomModal
+        visible={videoFocusVisible !== null}
+        setVisible={(value) => {
+          if (!value) setVideoFocusVisible(null);
+        }}
+      >
+        <View
+          style={{
+            marginTop: "auto",
+            marginBottom: "auto",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <VideoPlayer
+            videoProps={{
+              source: {
+                uri: videoFocusVisible ?? "",
+              },
+              isLooping: true,
+              shouldPlay: true,
+              resizeMode: ResizeMode.COVER,
+            }}
+            style={{
+              width: 0.85 * windowWidth,
+              height: (0.85 * windowWidth * 9) / 16,
+            }}
+          />
+        </View>
+      </BottomModal>
     </Fragment>
   );
 };
