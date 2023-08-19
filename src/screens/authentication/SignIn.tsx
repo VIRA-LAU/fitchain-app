@@ -61,8 +61,9 @@ export const SignIn = ({
 
     if (error && error?.response?.data?.message === "EMAIL_NOT_VERIFIED")
       navigation.push("VerifyEmail", {
-        userId: error.response.data.userId!,
         isBranch: error.response.data.isBranch!,
+        email: email ?? "",
+        password: password ?? "",
       });
   }, [error]);
 

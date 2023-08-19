@@ -5,6 +5,9 @@ import { UserContext, storeData } from "src/utils";
 import { Branch, User } from "src/types";
 import { AxiosError } from "axios";
 import { getExpoPushTokenAsync } from "expo-notifications";
+import { useNavigation } from "@react-navigation/native";
+import { SignUpStackParamList } from "src/navigation";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 type Request = {
   email: string;
@@ -35,8 +38,15 @@ const LoginUser = async (data: Request) => {
     });
 };
 
-export const useLoginUserMutation = () => {
+export const useLoginUserMutation = (
+  {
+    isVerifyingEmail,
+  }: {
+    isVerifyingEmail: boolean;
+  } = { isVerifyingEmail: false }
+) => {
   const { setUserData, setBranchData } = useContext(UserContext);
+  const navigation = useNavigation<StackNavigationProp<SignUpStackParamList>>();
   return useMutation<
     Response,
     AxiosError<{
@@ -84,14 +94,6 @@ export const useLoginUserMutation = () => {
         ];
         storeData(keys, values);
       } else {
-        let fetchedInfo = {
-          userId: (data as UserRes).userId,
-          firstName: (data as UserRes).firstName,
-          lastName: (data as UserRes).lastName,
-          email: (data as UserRes).email,
-          token: (data as UserRes).access_token,
-        };
-        setUserData(fetchedInfo);
         const keys = [
           "isBranch",
           "userId",
@@ -109,6 +111,31 @@ export const useLoginUserMutation = () => {
           (data as UserRes).access_token,
         ];
         storeData(keys, values);
+
+        if (isVerifyingEmail) {
+          client.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${data.access_token}`;
+
+          navigation.replace("SignUpExtraDetails", {
+            userData: {
+              userId: (data as UserRes).userId,
+              firstName: (data as UserRes).firstName,
+              lastName: (data as UserRes).lastName,
+              email: (data as UserRes).email,
+              token: (data as UserRes).access_token,
+            },
+          });
+        } else {
+          let fetchedInfo = {
+            userId: (data as UserRes).userId,
+            firstName: (data as UserRes).firstName,
+            lastName: (data as UserRes).lastName,
+            email: (data as UserRes).email,
+            token: (data as UserRes).access_token,
+          };
+          setUserData(fetchedInfo);
+        }
       }
     },
     onMutate: async (variables) => {

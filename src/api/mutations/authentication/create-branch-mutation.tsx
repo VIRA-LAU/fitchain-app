@@ -1,9 +1,10 @@
 import client from "../../client";
 import { useMutation } from "react-query";
 import { AxiosError } from "axios";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { SignUpStackParamList } from "src/navigation";
 import { getExpoPushTokenAsync } from "expo-notifications";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 type Request = {
   location: string;
@@ -30,13 +31,14 @@ const createBranch = async (data: Request) => {
 };
 
 export const useCreateBranchMutation = () => {
-  const navigation = useNavigation<NavigationProp<SignUpStackParamList>>();
+  const navigation = useNavigation<StackNavigationProp<SignUpStackParamList>>();
   return useMutation<number, AxiosError<{ message: string }>, Request>({
     mutationFn: createBranch,
-    onSuccess: async (data) => {
-      navigation.navigate("VerifyEmail", {
+    onSuccess: async (data, variables) => {
+      navigation.replace("VerifyEmail", {
         isBranch: true,
-        userId: data,
+        email: variables.email,
+        password: variables.password,
       });
     },
     onMutate: async (variables) => {

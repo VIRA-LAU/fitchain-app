@@ -14,7 +14,7 @@ import { UserData } from "src/utils";
 export type SignUpStackParamList = {
   SignIn: undefined;
   SignUpWithEmail: undefined;
-  VerifyEmail: { userId: number; isBranch: boolean };
+  VerifyEmail: { email: string; password: string; isBranch: boolean };
   SignUpExtraDetails: { userData: UserData };
   SignUpAsBranch: undefined;
   ForgotPassword: undefined;

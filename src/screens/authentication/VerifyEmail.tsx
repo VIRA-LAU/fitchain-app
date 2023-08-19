@@ -4,63 +4,13 @@ import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  useResendEmailCodeMutation,
-  useVerifyBranchEmailMutation,
-  useVerifyEmailMutation,
+  useLoginUserMutation,
+  useResendVerificationEmailMutation,
 } from "src/api";
 
 type Props = StackScreenProps<SignUpStackParamList, "VerifyEmail">;
-
-const CodeInput = ({
-  index,
-  code,
-  colors,
-  styles,
-  setCode,
-  setErrorMessage,
-  refs,
-  scrollRef,
-}: {
-  index: number;
-  code: string[];
-  colors: MD3Colors;
-  styles: any;
-  setCode: React.Dispatch<React.SetStateAction<string[]>>;
-  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-  refs: React.MutableRefObject<TextInput | null>[];
-  scrollRef: React.MutableRefObject<ScrollView | null>;
-}) => {
-  return (
-    <TextInput
-      key={index}
-      value={code[index]}
-      selectionColor={colors.primary}
-      maxLength={1}
-      style={styles.codeInput}
-      placeholder="-"
-      placeholderTextColor={colors.tertiary}
-      ref={refs[index]}
-      onFocus={() => {
-        refs[index].current?.measureInWindow((x, y) =>
-          scrollRef.current?.scrollToEnd()
-        );
-      }}
-      onChangeText={(character) => {
-        setCode(
-          code.map((codeCharacter, codeIndex) =>
-            index === codeIndex ? character.toUpperCase() : codeCharacter
-          )
-        );
-        setErrorMessage("");
-        if (character !== "")
-          if (index < 3) refs[index + 1].current?.focus();
-          else refs[index].current?.blur();
-      }}
-    />
-  );
-};
 
 export const VerifyEmail = ({
   navigation,
@@ -72,72 +22,40 @@ export const VerifyEmail = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  const { userId, isBranch } = route.params;
+  const { email, password, isBranch } = route.params;
 
   const {
-    mutate: verifyUserEmail,
-    error: userError,
-    isLoading: userLoading,
-  } = useVerifyEmailMutation();
+    mutate: loginUser,
+    isLoading,
+    error,
+  } = useLoginUserMutation({ isVerifyingEmail: true });
   const {
-    mutate: verifyBranchEmail,
-    error: branchError,
-    isLoading: branchLoading,
-  } = useVerifyBranchEmailMutation();
-  const {
-    mutate: resendCode,
+    mutate: resendEmail,
     isSuccess: resendSuccess,
     isLoading: resendLoading,
-  } = useResendEmailCodeMutation();
+  } = useResendVerificationEmailMutation();
 
-  const [code, setCode] = useState<string[]>(["", "", "", ""]);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
-  const refs: React.MutableRefObject<TextInput | null>[] = [
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-  ];
-
   useEffect(() => {
-    if (
-      (userError && userError?.response?.data?.message === "INCORRECT_CODE") ||
-      (branchError && branchError?.response?.data?.message === "INCORRECT_CODE")
-    )
-      setErrorMessage("The code you entered is invalid or has expired.");
-  }, [userError, branchError]);
+    if (error && error?.response?.data?.message === "EMAIL_NOT_VERIFIED")
+      setErrorMessage("Your email has not been verified yet.");
+  }, [error]);
 
   return (
     <AppHeader backEnabled>
-      <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
+      <ScrollView contentContainerStyle={styles.wrapperView}>
         <Image source={require("assets/images/Logo-Icon.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
           Verify your Email
         </Text>
         <View style={styles.inputView}>
           <Text variant="labelLarge" style={styles.h2}>
-            Please enter the code we sent to your email.{"\n"}
-            (You may have to check your junk folder)
+            Please verify your email address through the email we sent before
+            you proceed.
+            {"\n"}
+            (You may have to check your junk folder.)
           </Text>
-          <View style={styles.codeView}>
-            {[0, 1, 2, 3].map((index) => {
-              return (
-                <CodeInput
-                  key={index}
-                  code={code}
-                  index={index}
-                  colors={colors}
-                  styles={styles}
-                  setCode={setCode}
-                  setErrorMessage={setErrorMessage}
-                  refs={refs}
-                  scrollRef={scrollRef}
-                />
-              );
-            })}
-          </View>
           {errorMessage && (
             <Text
               variant="labelMedium"
@@ -155,24 +73,15 @@ export const VerifyEmail = ({
             mode="contained"
             style={styles.continueButton}
             contentStyle={{ height: 50 }}
-            loading={userLoading || branchLoading}
+            loading={isLoading}
             onPress={
-              !(userLoading || branchLoading)
+              !isLoading
                 ? () => {
-                    if (code.indexOf("") !== -1) {
-                      setErrorMessage("Please enter the full code.");
-                    } else {
-                      if (!isBranch)
-                        verifyUserEmail({
-                          code: code.join(""),
-                          userId,
-                        });
-                      else
-                        verifyBranchEmail({
-                          code: code.join(""),
-                          branchId: userId,
-                        });
-                    }
+                    setErrorMessage("");
+                    loginUser({
+                      email,
+                      password,
+                    });
                   }
                 : undefined
             }
@@ -186,15 +95,15 @@ export const VerifyEmail = ({
             onPress={
               !resendLoading
                 ? () => {
-                    resendCode({
-                      userId,
+                    resendEmail({
+                      email,
                       isBranch,
                     });
                   }
                 : undefined
             }
           >
-            Resend Code
+            Resend Email
           </Button>
 
           {resendSuccess && (
@@ -207,7 +116,7 @@ export const VerifyEmail = ({
                 fontFamily: "Inter-Medium",
               }}
             >
-              New code sent.
+              New email sent.
             </Text>
           )}
         </View>
