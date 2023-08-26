@@ -4,6 +4,7 @@ import React, {
   useContext,
   Fragment,
   ReactNode,
+  useEffect,
 } from "react";
 import {
   AppHeader,
@@ -44,7 +45,6 @@ import {
   useFollowGameMutation,
   useGameByIdQuery,
   useGamePlayersQuery,
-  useGameStatsQuery,
   useJoinGameMutation,
   usePlayerStatusQuery,
   useRespondToInviteMutation,
@@ -55,6 +55,7 @@ import { PopupContainer, PopupType } from "./Popups";
 import { UserContext } from "src/utils";
 import { ResizeMode, Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
+import { RefreshControl } from "react-native";
 
 type Props = StackScreenProps<StackParamList, "GameDetails">;
 
@@ -76,21 +77,35 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const [videoFocusVisible, setVideoFocusVisible] = useState<string | null>(
     null
   );
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const { id, isPrevious } = route.params;
-  const { data: game, isLoading: gameDetailsLoading } = useGameByIdQuery(id);
-  const { data: players, isLoading: playersLoading } = useGamePlayersQuery(id);
-  const { data: playerStatus, isLoading: playerStatusLoading } =
-    usePlayerStatusQuery(id);
+  const {
+    data: game,
+    isFetching: gameDetailsLoading,
+    refetch: refetchGame,
+  } = useGameByIdQuery(id);
+  const {
+    data: players,
+    isFetching: playersLoading,
+    refetch: refetchPlayers,
+  } = useGamePlayersQuery(id);
+  const {
+    data: playerStatus,
+    isFetching: playerStatusLoading,
+    refetch: refetchPlayerStatus,
+  } = usePlayerStatusQuery(id);
   const {
     data: followedGames,
     isLoading: followedGamesLoading,
     isFetching: followedGamesFetching,
+    refetch: refetchFollowedGames,
   } = useFollowedGamesQuery();
-  const { data: gameUpdates, isFetching: updatesLoading } = useUpdatesQuery(
-    game?.id
-  );
-  const { data: gameStats } = useGameStatsQuery(game?.id);
+  const {
+    data: gameUpdates,
+    isFetching: updatesLoading,
+    refetch: refetchUpdates,
+  } = useUpdatesQuery(game?.id);
 
   const { mutate: joinGame, isLoading: joinLoading } = useJoinGameMutation();
   const { mutate: cancelRequest, isLoading: cancelLoading } =
@@ -189,6 +204,32 @@ export const GameDetails = ({ navigation, route }: Props) => {
     );
   }
 
+  useEffect(() => {
+    if (
+      !gameDetailsLoading &&
+      !playersLoading &&
+      !playerStatusLoading &&
+      !followedGamesFetching &&
+      !updatesLoading
+    )
+      setRefreshing(false);
+  }, [
+    gameDetailsLoading,
+    playersLoading,
+    playerStatusLoading,
+    followedGamesFetching,
+    updatesLoading,
+  ]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    refetchGame();
+    refetchPlayers();
+    refetchPlayerStatus();
+    refetchFollowedGames();
+    refetchUpdates();
+  };
+
   const renderScene = () => {
     const route = routes[index];
     switch (route.key) {
@@ -211,7 +252,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
             isPrevious={isPrevious}
             playerStatus={playerStatus}
             teamIndex={index}
-            gameStats={gameStats}
           />
         );
       case "Away":
@@ -233,7 +273,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
             isPrevious={isPrevious}
             playerStatus={playerStatus}
             teamIndex={index}
-            gameStats={gameStats}
           />
         );
       default:
@@ -248,7 +287,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
         backgroundColor: colors.secondary,
         borderRadius: 10,
         marginHorizontal: 20,
-        marginVertical: 10,
+        marginBottom: 10,
       }}
       renderTabBarItem={({ route }) => {
         let isActive = route.key === props.navigationState.routes[index].key;
@@ -512,17 +551,26 @@ export const GameDetails = ({ navigation, route }: Props) => {
             </View>
           )}
 
-          <ScrollView>
+          <ScrollView
+            contentContainerStyle={{ paddingBottom: 10 }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[colors.primary]}
+                progressBackgroundColor={colors.secondary}
+              />
+            }
+          >
             {isPrevious && (
               <ResultCard
                 game={game}
-                gameStats={gameStats}
                 setVideoFocusVisible={setVideoFocusVisible}
               />
             )}
             <Text
               variant="labelLarge"
-              style={{ color: colors.tertiary, marginTop: 20, marginLeft: 20 }}
+              style={{ color: colors.tertiary, margin: 20 }}
             >
               Team Players
             </Text>
@@ -623,7 +671,6 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
       flex: 1,
-      paddingBottom: 10,
     },
     headerView: {
       paddingVertical: 10,

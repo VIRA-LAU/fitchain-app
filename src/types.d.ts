@@ -39,8 +39,19 @@ export interface Game {
   court: Court;
   admin: User;
   createdAt: Date;
-  homeScore: number;
-  awayScore: number;
+  homePoints: number;
+  updatedHomePoints: number;
+  homePossession: string;
+  awayPoints: number;
+  updatedAwayPoints: number;
+  awayPossession: string;
+  playerStatistics: {
+    player?: User;
+    team: "HOME" | "AWAY";
+    scored: number;
+    missed: number;
+  }[];
+  highlights: string[];
   isRecording: boolean;
 }
 
@@ -185,20 +196,4 @@ export interface PlayerStatus {
   requestId: number | false;
   invitationId: number | false;
   isAdmin: boolean;
-}
-
-export interface GameStats {
-  [key: string]:
-    | {
-        playerPoints: {
-          [key: string]: {
-            scored: number;
-            missed: number;
-          };
-        };
-        points: number;
-        possession: string;
-      }
-    | unknown
-    | any;
 }

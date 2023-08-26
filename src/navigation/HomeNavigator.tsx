@@ -38,7 +38,7 @@ import { useNavigationState } from "@react-navigation/native";
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 type Props = StackScreenProps<StackParamList, "BottomBar">;
 
-var playScreenStillVisible = true;
+var playScreenStillVisible = false;
 
 export const setPlayScreenStillVisible = (value: boolean) => {
   playScreenStillVisible = value;

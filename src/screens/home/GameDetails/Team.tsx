@@ -6,9 +6,10 @@ import {
 } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { PlayerCard, PlayerCardSkeleton, TopPlayersCard } from "components";
-import { Game, GameStats, PlayerStatus, TeamPlayer } from "src/types";
-import { useEffect, useRef, useState } from "react";
+import { PlayerCard, PlayerCardSkeleton, ScorePlayerCircle } from "components";
+import { Game, PlayerStatus, TeamPlayer } from "src/types";
+import { useContext, useEffect, useRef, useState } from "react";
+import { UserContext } from "src/utils";
 
 export const Team = ({
   game,
@@ -17,7 +18,6 @@ export const Team = ({
   isPrevious,
   playerStatus,
   teamIndex,
-  gameStats,
 }: {
   game?: Game;
   players?: TeamPlayer[];
@@ -25,11 +25,11 @@ export const Team = ({
   isPrevious: boolean;
   playerStatus?: PlayerStatus;
   teamIndex: number;
-  gameStats?: GameStats;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const windowWidth = useWindowDimensions().width;
+  const { userData } = useContext(UserContext);
 
   const [scrollViewOffset, setScrollViewOffset] = useState<number>(0);
 
@@ -38,6 +38,11 @@ export const Team = ({
   }, [teamIndex]);
 
   const scrollRef = useRef<ScrollView | null>(null);
+
+  const playerStatistics =
+    teamIndex === 0
+      ? game?.playerStatistics.filter((player) => player.team === "HOME")
+      : game?.playerStatistics.filter((player) => player.team === "AWAY");
 
   return (
     <View style={{ backgroundColor: colors.background }}>
@@ -93,7 +98,7 @@ export const Team = ({
           </Text>
         </View>
       )}
-      {isPrevious && (
+      {isPrevious && game && game.playerStatistics.length > 0 && (
         <View>
           <Text
             variant="labelLarge"
@@ -110,19 +115,15 @@ export const Team = ({
             showsHorizontalScrollIndicator={false}
             horizontal
           >
-            {gameStats &&
-              Object.keys(gameStats[`team${teamIndex + 1}`].playerPoints).map(
-                (player, index) => (
-                  <TopPlayersCard
-                    key={index}
-                    playerName={"Assign Player"}
-                    achievement={`Score: ${
-                      gameStats[`team${teamIndex + 1}`].playerPoints[player]
-                        .scored
-                    }`}
-                  />
-                )
-              )}
+            {playerStatistics?.map(({ player, scored, missed }, index) => (
+              <ScorePlayerCircle
+                key={index}
+                player={player}
+                scored={scored}
+                missed={missed}
+                isAdmin={game?.admin.id === userData?.userId}
+              />
+            ))}
           </ScrollView>
         </View>
       )}

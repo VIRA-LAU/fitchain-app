@@ -13,7 +13,7 @@ type Response = {
 
 const followGame = async (data: Request) => {
   return await client
-    .post("/games/followed", data)
+    .post(`/games/follow/${data.gameId}`)
     .then((res) => res?.data)
     .catch((e) => {
       console.error("follow-game-mutation", e);

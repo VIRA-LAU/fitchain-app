@@ -8,20 +8,18 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Game, GameStats } from "src/types";
+import { Game } from "src/types";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { UserContext } from "src/utils";
 import { Skeleton } from "../home";
 import { Highlights } from "./Highlights";
-import { TopPlayersCard } from "./TopPlayersCard";
+import { TopPlayerCircle } from "./PlayerCircle";
 
 export const ResultCard = ({
   game,
-  gameStats,
   setVideoFocusVisible,
 }: {
   game?: Game;
-  gameStats?: GameStats;
   setVideoFocusVisible: Dispatch<SetStateAction<string | null>>;
 }) => {
   const { userData } = useContext(UserContext);
@@ -33,10 +31,10 @@ export const ResultCard = ({
 
   const [isChangingScore, setIsChangingScore] = useState<boolean>(false);
   const [tempHomeScore, setTempHomeScore] = useState<number | undefined>(
-    game?.homeScore
+    game?.updatedHomePoints
   );
   const [tempAwayScore, setTempAwayScore] = useState<number | undefined>(
-    game?.awayScore
+    game?.updatedAwayPoints
   );
 
   const { data: playersTeam, isLoading: teamLoading } = useGetPlayerTeamQuery(
@@ -49,9 +47,9 @@ export const ResultCard = ({
   useEffect(() => {
     if (game && playersTeam) {
       const winnerTeam =
-        game.homeScore === game.awayScore
+        game.updatedHomePoints === game.updatedAwayPoints
           ? "DRAW"
-          : game.homeScore > game.awayScore
+          : game.updatedHomePoints > game.updatedAwayPoints
           ? "HOME"
           : "AWAY";
 
@@ -70,8 +68,8 @@ export const ResultCard = ({
 
   useEffect(() => {
     if (game) {
-      setTempHomeScore(game.homeScore ?? gameStats?.team1.points ?? 0);
-      setTempAwayScore(game.awayScore ?? gameStats?.team2.points ?? 0);
+      setTempHomeScore(game.updatedHomePoints);
+      setTempAwayScore(game.updatedAwayPoints);
     }
   }, [JSON.stringify(game)]);
 
@@ -102,6 +100,7 @@ export const ResultCard = ({
         </View>
       </View>
     );
+
   return (
     <View>
       <Text variant="labelLarge" style={{ color: colors.tertiary, margin: 20 }}>
@@ -128,7 +127,7 @@ export const ResultCard = ({
                   fontSize: 70,
                 }}
               >
-                {game?.homeScore ?? gameStats?.team1.points ?? 0}
+                {game.updatedHomePoints}
               </Text>
             )}
             <Text
@@ -145,7 +144,7 @@ export const ResultCard = ({
               </Text>
             )}
             <Text style={[styles.teamLabel, { marginTop: 5 }]}>
-              Possession: {gameStats?.team1.possession}
+              Possession: {game.homePossession}
             </Text>
           </View>
           <Text
@@ -175,7 +174,7 @@ export const ResultCard = ({
                   fontSize: 70,
                 }}
               >
-                {game?.awayScore ?? gameStats?.team2.points ?? 0}
+                {game.updatedAwayPoints}
               </Text>
             )}
             <Text
@@ -192,7 +191,7 @@ export const ResultCard = ({
               </Text>
             )}
             <Text style={[styles.teamLabel, { marginTop: 5 }]}>
-              Possession: {gameStats?.team2.possession}
+              Possession: {game.awayPossession}
             </Text>
           </View>
         </View>
@@ -243,17 +242,18 @@ export const ResultCard = ({
         showsHorizontalScrollIndicator={false}
         horizontal
       >
-        <TopPlayersCard achievement="Assign Player" playerName="MVP" />
-        <TopPlayersCard achievement="Assign Player" playerName="Top Scorer" />
-        <TopPlayersCard achievement="Assign Player" playerName="Team Player" />
-        <TopPlayersCard achievement="Assign Player" playerName="3-Points" />
+        {["MVP", "Top Scorer", "Team Player", "3-Points"].map(
+          (achievement, index) => (
+            <TopPlayerCircle
+              key={index}
+              achievement={achievement}
+              isAdmin={game?.admin.id === userData?.userId}
+            />
+          )
+        )}
       </ScrollView>
       <View style={styles.divider} />
-      <Highlights
-        gameStats={gameStats}
-        setVideoFocusVisible={setVideoFocusVisible}
-      />
-      <View style={styles.divider} />
+      <Highlights game={game} setVideoFocusVisible={setVideoFocusVisible} />
     </View>
   );
 };
