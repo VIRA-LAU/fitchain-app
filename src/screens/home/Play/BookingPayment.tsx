@@ -20,7 +20,7 @@ import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
-import { StackParamList } from "src/navigation";
+import { StackParamList, setPlayScreenStillVisible } from "src/navigation";
 import { useCreateGameMutation } from "src/api";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
@@ -130,56 +130,6 @@ export const BookingPayment = ({ navigation, route }: Props) => {
             Get Directions
           </Button>
         </View>
-        <View
-          style={[
-            styles.contentView,
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-            },
-          ]}
-        >
-          <View style={styles.contentIconView}>
-            <MatComIcon
-              name={"account-outline"}
-              size={20}
-              color={"white"}
-              style={{ marginRight: 10 }}
-            />
-            <Text style={styles.labelText}>How many players?</Text>
-          </View>
-          <View style={styles.contentIconView}>
-            <TouchableOpacity
-              onPress={() => {
-                if (numberOfPlayers > 1)
-                  setNumberOfPlayers((oldNum) => oldNum - 1);
-              }}
-            >
-              <Feather name="minus-circle" color={colors.primary} size={24} />
-            </TouchableOpacity>
-            <Text
-              style={[
-                styles.labelText,
-                {
-                  fontSize: 18,
-                  width: 40,
-                  textAlign: "center",
-                  color: "white",
-                },
-              ]}
-            >
-              {numberOfPlayers}
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                if (numberOfPlayers < courtMaxPlayers)
-                  setNumberOfPlayers((oldNum) => oldNum + 1);
-              }}
-            >
-              <Feather name="plus-circle" color={colors.primary} size={24} />
-            </TouchableOpacity>
-          </View>
-        </View>
         <View style={styles.contentView}>
           <View style={styles.contentRow}>
             <Text style={styles.labelText}>Date</Text>
@@ -263,6 +213,7 @@ export const BookingPayment = ({ navigation, route }: Props) => {
                   0,
                   0
                 );
+                setPlayScreenStillVisible(false);
                 createGame({
                   courtId: bookingDetails.courtId,
                   startTime: startTime.toISOString(),

@@ -33,16 +33,30 @@ import { StackParamList } from "./Authenticator";
 import * as Location from "expo-location";
 import * as Notifications from "expo-notifications";
 import { useQueryClient } from "react-query";
+import { useNavigationState } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 type Props = StackScreenProps<StackParamList, "BottomBar">;
+
+var playScreenStillVisible = true;
+
+export const setPlayScreenStillVisible = (value: boolean) => {
+  playScreenStillVisible = value;
+};
 
 // TODO: Separate bottom tab navigator as a component for reusability
 const BottomTabNavigator = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, useWindowDimensions().width);
+
   const [playScreenVisible, setPlayScreenVisible] = useState<boolean>(false);
   const [permissionReady, setPermissionReady] = useState<boolean>(false);
+
+  const state = useNavigationState((state) => state.index);
+
+  useEffect(() => {
+    if (state === 0 && playScreenStillVisible) setPlayScreenVisible(true);
+  }, [state]);
 
   const queryClient = useQueryClient();
 

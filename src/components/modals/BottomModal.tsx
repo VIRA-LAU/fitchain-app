@@ -1,12 +1,15 @@
 import { Dispatch, Fragment, SetStateAction } from "react";
 import { Modal, Pressable, View } from "react-native";
+import { setPlayScreenStillVisible } from "src/navigation";
 
 export const BottomModal = ({
+  name,
   visible,
   setVisible,
   onClose,
   children,
 }: {
+  name?: string;
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
   onClose?: Function;
@@ -30,6 +33,7 @@ export const BottomModal = ({
         visible={visible}
         statusBarTranslucent
         onRequestClose={() => {
+          if (name === "playScreen") setPlayScreenStillVisible(false);
           setVisible(false);
           if (onClose) onClose();
         }}
@@ -42,6 +46,7 @@ export const BottomModal = ({
             height: "100%",
           }}
           onPress={() => {
+            if (name === "playScreen") setPlayScreenStillVisible(false);
             setVisible(false);
           }}
         />

@@ -99,14 +99,14 @@ export const Team = ({
             variant="labelLarge"
             style={{
               color: colors.tertiary,
-              marginTop: 20,
+              marginVertical: 20,
               marginLeft: 20,
             }}
           >
             Player Scores
           </Text>
           <ScrollView
-            style={{ flexGrow: 1, marginHorizontal: 10 }}
+            style={{ flexGrow: 1, marginHorizontal: 10, marginBottom: 10 }}
             showsHorizontalScrollIndicator={false}
             horizontal
           >

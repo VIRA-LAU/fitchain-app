@@ -1,5 +1,5 @@
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { useGetPlayerTeamQuery, useUpdateGameMutation } from "src/api";
 import {
   Dispatch,
@@ -13,6 +13,7 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { UserContext } from "src/utils";
 import { Skeleton } from "../home";
 import { Highlights } from "./Highlights";
+import { TopPlayersCard } from "./TopPlayersCard";
 
 export const ResultCard = ({
   game,
@@ -46,17 +47,25 @@ export const ResultCard = ({
     useUpdateGameMutation(game?.id, setIsChangingScore);
 
   useEffect(() => {
-    setTeam(game?.winnerTeam);
-    if (playersTeam?.team && playersTeam?.team !== "none") {
-      if (game?.winnerTeam == "DRAW") {
+    if (game && playersTeam) {
+      const winnerTeam =
+        game.homeScore === game.awayScore
+          ? "DRAW"
+          : game.homeScore > game.awayScore
+          ? "HOME"
+          : "AWAY";
+
+      setTeam(winnerTeam);
+      if (winnerTeam == "DRAW") {
         setMessage("It's a draw!");
-      } else if (game?.winnerTeam === playersTeam.team) {
-        setMessage("Congrats!");
-      } else {
-        setMessage("Hardluck!");
-      }
-    } else if (game?.winnerTeam === "DRAW") setMessage("It's a draw!");
-    else setMessage(`${game?.winnerTeam} team wins!`);
+      } else if (playersTeam?.team && playersTeam?.team !== "none") {
+        if (winnerTeam === playersTeam.team) {
+          setMessage("Congrats!");
+        } else {
+          setMessage("Hardluck!");
+        }
+      } else setMessage(`${winnerTeam} team wins!`);
+    }
   }, [JSON.stringify(playersTeam), JSON.stringify(game)]);
 
   useEffect(() => {
@@ -222,6 +231,23 @@ export const ResultCard = ({
             </View>
           ))}
       </View>
+      <View style={styles.divider} />
+      <Text
+        variant="labelLarge"
+        style={{ color: colors.tertiary, marginVertical: 20, marginLeft: 20 }}
+      >
+        Top Players
+      </Text>
+      <ScrollView
+        style={{ flexGrow: 1, marginHorizontal: 10 }}
+        showsHorizontalScrollIndicator={false}
+        horizontal
+      >
+        <TopPlayersCard achievement="Assign Player" playerName="MVP" />
+        <TopPlayersCard achievement="Assign Player" playerName="Top Scorer" />
+        <TopPlayersCard achievement="Assign Player" playerName="Team Player" />
+        <TopPlayersCard achievement="Assign Player" playerName="3-Points" />
+      </ScrollView>
       <View style={styles.divider} />
       <Highlights
         gameStats={gameStats}

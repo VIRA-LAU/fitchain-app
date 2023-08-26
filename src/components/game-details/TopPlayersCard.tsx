@@ -17,7 +17,6 @@ export const TopPlayersCard = ({
       style={{
         width: 120,
         height: 120,
-        marginVertical: 20,
         alignItems: "center",
       }}
     >

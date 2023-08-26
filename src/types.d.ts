@@ -37,7 +37,6 @@ export interface Game {
   endTime: Date;
   type: GameType;
   court: Court;
-  winnerTeam: string;
   admin: User;
   createdAt: Date;
   homeScore: number;
@@ -134,7 +133,6 @@ export interface GameUpdate {
     profilePhotoUrl: string;
   };
   createdAt: Date;
-  winnerTeam: "HOME" | "AWAY";
   status: string;
   gameInvitation: [
     {

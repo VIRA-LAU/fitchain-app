@@ -623,6 +623,7 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
       flex: 1,
+      paddingBottom: 10,
     },
     headerView: {
       paddingVertical: 10,

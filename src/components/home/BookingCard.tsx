@@ -99,7 +99,8 @@ export const BookingCard = ({
       </View>
       <View style={styles.content}>
         <Text style={[styles.greyText, { fontSize: 14 }]}>
-          <Text style={styles.text}>{booking.type} Game</Text> By{" "}
+          At <Text style={styles.text}>{booking.court.branch.venue.name}</Text>{" "}
+          By{" "}
           <Text style={styles.text}>
             {booking?.admin?.firstName + " " + booking?.admin?.lastName}
           </Text>

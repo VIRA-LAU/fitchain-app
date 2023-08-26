@@ -3,6 +3,7 @@ export * from "./BookingCard";
 export * from "./InvitationCard";
 export * from "./UpcomingGameCard";
 export * from "./BranchCard";
+export * from "./CourtCard";
 export * from "./TimeSlotPicker";
 export * from "./MapComponent";
 export * from "./Skeleton";

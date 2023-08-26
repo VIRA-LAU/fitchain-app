@@ -26,7 +26,11 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { BottomTabParamList, StackParamList } from "src/navigation";
+import {
+  BottomTabParamList,
+  StackParamList,
+  setPlayScreenStillVisible,
+} from "src/navigation";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { Branch, GameType, TimeSlot } from "src/types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -41,6 +45,7 @@ import { LatLng, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import { useLocationNameQuery } from "src/api";
 import CalendarPicker from "react-native-calendar-picker";
+import { Slider } from "@miblanchard/react-native-slider";
 
 export const Play = ({
   visible,
@@ -128,6 +133,7 @@ export const Play = ({
 
   return (
     <BottomModal
+      name="playScreen"
       visible={visible}
       setVisible={setVisible}
       onClose={() => {
@@ -311,40 +317,37 @@ export const Play = ({
                 />
                 <Text style={styles.labelText}>How many players?</Text>
               </View>
-              <View style={styles.contentIconView}>
-                <TouchableOpacity
-                  onPress={() => {
-                    if (numberOfPlayers > 1)
-                      setNumberOfPlayers((oldNum) => oldNum - 1);
-                  }}
-                >
-                  <Feather
-                    name="minus-circle"
-                    color={colors.primary}
-                    size={24}
-                  />
-                </TouchableOpacity>
-                <Text
-                  style={[
-                    styles.labelText,
-                    { fontSize: 18, width: 40, textAlign: "center" },
-                  ]}
-                >
-                  {numberOfPlayers}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    if (numberOfPlayers < 12)
-                      setNumberOfPlayers((oldNum) => oldNum + 1);
-                  }}
-                >
-                  <Feather
-                    name="plus-circle"
-                    color={colors.primary}
-                    size={24}
-                  />
-                </TouchableOpacity>
-              </View>
+              <Slider
+                containerStyle={{ flexGrow: 1, marginLeft: 20 }}
+                step={1}
+                minimumValue={1}
+                maximumValue={12}
+                value={numberOfPlayers}
+                onValueChange={(data) => {
+                  setNumberOfPlayers(data[0]);
+                }}
+                minimumTrackTintColor={colors.tertiary}
+                maximumTrackTintColor={colors.tertiary}
+                thumbTintColor={colors.primary}
+                renderAboveThumbComponent={(data, index) => {
+                  return (
+                    <View
+                      style={{
+                        transform: [{ translateX: 15 }, { translateY: 10 }],
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontFamily: "Inter-Medium",
+                          color: colors.tertiary,
+                        }}
+                      >
+                        {index}
+                      </Text>
+                    </View>
+                  );
+                }}
+              />
             </View>
             <View style={styles.dateTime}>
               <View style={styles.dateTimeRow}>
@@ -404,6 +407,7 @@ export const Play = ({
                 onPress={
                   searchDate && searchLocationMarker && searchLocationName
                     ? () => {
+                        setPlayScreenStillVisible(true);
                         setVisible(false);
                         if (!branch)
                           navigation.push("ChooseBranch", {
@@ -457,6 +461,7 @@ export const Play = ({
                   mode="contained"
                   style={{ width: "100%", marginTop: 15 }}
                   onPress={() => {
+                    setPlayScreenStillVisible(true);
                     setVisible(false);
                     if (!branch && searchLocationMarker && searchLocationName)
                       navigation.push("ChooseGame", {
