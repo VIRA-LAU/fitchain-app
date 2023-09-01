@@ -18,6 +18,8 @@ import {
   UpdateCardSkeleton,
   getMins,
   parseTimeFromMinutes,
+  Team,
+  AssignPlayer,
 } from "src/components";
 import {
   View,
@@ -38,7 +40,6 @@ import Feather from "react-native-vector-icons/Feather";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { TabBar, TabView } from "react-native-tab-view";
-import { Team } from "./Team";
 import {
   useDeleteJoinRequestMutation,
   useFollowedGamesQuery,
@@ -51,11 +52,15 @@ import {
   useUnfollowGameMutation,
   useUpdatesQuery,
 } from "src/api";
-import { PopupContainer, PopupType } from "./Popups";
+import {
+  PopupContainer,
+  PopupType,
+} from "../../components/game-details/Popups";
 import { UserContext } from "src/utils";
-import { ResizeMode, Video } from "expo-av";
+import { ResizeMode } from "expo-av";
 import VideoPlayer from "expo-video-player";
 import { RefreshControl } from "react-native";
+import { PlayerStatistics } from "src/types";
 
 type Props = StackScreenProps<StackParamList, "GameDetails">;
 
@@ -69,6 +74,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const [popupVisible, setPopupVisible] = useState<PopupType | null>(null);
   const [recordingModalVisible, setRecordingModalVisible] =
     useState<boolean>(false);
+  const [assignPlayerVisible, setAssignPlayerVisible] =
+    useState<PlayerStatistics | null>(null);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "Home", title: "Home" },
@@ -252,6 +259,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             isPrevious={isPrevious}
             playerStatus={playerStatus}
             teamIndex={index}
+            setAssignPlayerVisible={setAssignPlayerVisible}
           />
         );
       case "Away":
@@ -273,6 +281,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             isPrevious={isPrevious}
             playerStatus={playerStatus}
             teamIndex={index}
+            setAssignPlayerVisible={setAssignPlayerVisible}
           />
         );
       default:
@@ -663,6 +672,13 @@ export const GameDetails = ({ navigation, route }: Props) => {
           />
         </View>
       </BottomModal>
+      <AssignPlayer
+        playerStatistics={assignPlayerVisible}
+        setVisible={setAssignPlayerVisible}
+        playerStatus={playerStatus}
+        players={players}
+        gameId={game?.id}
+      />
     </Fragment>
   );
 };

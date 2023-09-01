@@ -28,7 +28,7 @@ export const useUpdateGameMutation = (
   return useMutation<Game, unknown, Request>({
     mutationFn: updateGame(id),
     onSuccess: () => {
-      queryClient.refetchQueries(["games", id]);
+      queryClient.refetchQueries(["game", id]);
       queryClient.refetchQueries(["activities", userData?.userId]);
       if (setIsChangingScore) setIsChangingScore(false);
     },

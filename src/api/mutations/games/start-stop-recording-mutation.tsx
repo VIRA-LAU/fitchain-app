@@ -21,7 +21,7 @@ export const useStartStopRecording = (gameId: number) => {
   return useMutation<Game, unknown, Request>({
     mutationFn: startStopRecording(gameId),
     onSuccess: () => {
-      queryClient.refetchQueries(["games", gameId]);
+      queryClient.refetchQueries(["game", gameId]);
     },
   });
 };

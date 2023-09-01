@@ -6,5 +6,5 @@ export * from "./Play";
 export * from "./BranchDetails";
 export * from "./InviteUsers";
 
-export * from "./GameDetails/GameDetails";
-export * from "./GameDetails/RatePlayer";
+export * from "./GameDetails";
+export * from "./RatePlayer";

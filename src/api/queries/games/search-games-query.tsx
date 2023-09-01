@@ -22,7 +22,7 @@ const searchGames = (params?: Props) => async () => {
 };
 
 export const useSearchGamesQuery = (params?: Props) => {
-  return useQuery<Game[]>(["games", params], searchGames(params), {
+  return useQuery<Game[]>(["search-games", params], searchGames(params), {
     select: (games) =>
       games.map((game) => ({
         ...game,

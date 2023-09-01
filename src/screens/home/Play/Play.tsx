@@ -26,11 +26,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  BottomTabParamList,
-  StackParamList,
-  setPlayScreenStillVisible,
-} from "src/navigation";
+import { BottomTabParamList, StackParamList } from "src/navigation";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { Branch, GameType, TimeSlot } from "src/types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -51,9 +47,11 @@ export const Play = ({
   visible,
   setVisible,
   branch,
+  setPlayScreenStillVisible,
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
+  setPlayScreenStillVisible: Dispatch<SetStateAction<boolean>>;
   branch?: Branch;
 }) => {
   const { colors } = useTheme();
@@ -133,9 +131,9 @@ export const Play = ({
 
   return (
     <BottomModal
-      name="playScreen"
       visible={visible}
       setVisible={setVisible}
+      setPlayScreenStillVisible={setPlayScreenStillVisible}
       onClose={() => {
         setMapDisplayed(false);
       }}

@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   useWindowDimensions,
   View,
@@ -38,14 +38,16 @@ import { useNavigationState } from "@react-navigation/native";
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 type Props = StackScreenProps<StackParamList, "BottomBar">;
 
-var playScreenStillVisible = false;
-
-export const setPlayScreenStillVisible = (value: boolean) => {
-  playScreenStillVisible = value;
-};
-
 // TODO: Separate bottom tab navigator as a component for reusability
-const BottomTabNavigator = ({ navigation, route }: Props) => {
+const BottomTabNavigator = ({
+  navigation,
+  route,
+  playScreenStillVisible,
+  setPlayScreenStillVisible,
+}: Props & {
+  playScreenStillVisible: boolean;
+  setPlayScreenStillVisible: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, useWindowDimensions().width);
 
@@ -139,7 +141,11 @@ const BottomTabNavigator = ({ navigation, route }: Props) => {
         </TouchableOpacity>
       </View>
       {permissionReady && (
-        <Play visible={playScreenVisible} setVisible={setPlayScreenVisible} />
+        <Play
+          visible={playScreenVisible}
+          setVisible={setPlayScreenVisible}
+          setPlayScreenStillVisible={setPlayScreenStillVisible}
+        />
       )}
     </View>
   );
@@ -147,10 +153,28 @@ const BottomTabNavigator = ({ navigation, route }: Props) => {
 
 export const HomeNavigator = () => {
   const Stack = createStackNavigator<StackParamList>();
+  const [playScreenStillVisible, setPlayScreenStillVisible] =
+    useState<boolean>(false);
+
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="BottomBar" component={BottomTabNavigator} />
-      <Stack.Screen name="BookingPayment" component={BookingPayment} />
+      <Stack.Screen name="BottomBar">
+        {(props) => (
+          <BottomTabNavigator
+            {...props}
+            playScreenStillVisible={playScreenStillVisible}
+            setPlayScreenStillVisible={setPlayScreenStillVisible}
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="BookingPayment">
+        {(props) => (
+          <BookingPayment
+            {...props}
+            setPlayScreenStillVisible={setPlayScreenStillVisible}
+          />
+        )}
+      </Stack.Screen>
       <Stack.Screen name="GameDetails" component={GameDetails} />
       <Stack.Screen name="BranchDetails" component={BranchDetails} />
       <Stack.Screen name="ChooseBranch" component={ChooseBranch} />

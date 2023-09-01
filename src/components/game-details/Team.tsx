@@ -1,14 +1,23 @@
 import {
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { PlayerCard, PlayerCardSkeleton, ScorePlayerCircle } from "components";
-import { Game, PlayerStatus, TeamPlayer } from "src/types";
-import { useContext, useEffect, useRef, useState } from "react";
+import { PlayerCard, PlayerCardSkeleton } from "./PlayerCard";
+import { ScorePlayerCircle } from "./PlayerCircle";
+import { Game, PlayerStatistics, PlayerStatus, TeamPlayer } from "src/types";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { UserContext } from "src/utils";
 
 export const Team = ({
@@ -18,6 +27,7 @@ export const Team = ({
   isPrevious,
   playerStatus,
   teamIndex,
+  setAssignPlayerVisible,
 }: {
   game?: Game;
   players?: TeamPlayer[];
@@ -25,6 +35,7 @@ export const Team = ({
   isPrevious: boolean;
   playerStatus?: PlayerStatus;
   teamIndex: number;
+  setAssignPlayerVisible: Dispatch<SetStateAction<PlayerStatistics | null>>;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -35,14 +46,18 @@ export const Team = ({
 
   useEffect(() => {
     setScrollViewOffset(0);
-  }, [teamIndex]);
+  }, [teamIndex, JSON.stringify(players)]);
 
   const scrollRef = useRef<ScrollView | null>(null);
 
-  const playerStatistics =
+  const playersStatistics =
     teamIndex === 0
-      ? game?.playerStatistics.filter((player) => player.team === "HOME")
-      : game?.playerStatistics.filter((player) => player.team === "AWAY");
+      ? game?.playersStatistics.filter(
+          (playerStatistics) => playerStatistics.team === "HOME"
+        )
+      : game?.playersStatistics.filter(
+          (playerStatistics) => playerStatistics.team === "AWAY"
+        );
 
   return (
     <View style={{ backgroundColor: colors.background }}>
@@ -98,7 +113,7 @@ export const Team = ({
           </Text>
         </View>
       )}
-      {isPrevious && game && game.playerStatistics.length > 0 && (
+      {isPrevious && game && game.playersStatistics.length > 0 && (
         <View>
           <Text
             variant="labelLarge"
@@ -115,14 +130,25 @@ export const Team = ({
             showsHorizontalScrollIndicator={false}
             horizontal
           >
-            {playerStatistics?.map(({ player, scored, missed }, index) => (
-              <ScorePlayerCircle
+            {playersStatistics?.map((playerStatistics, index) => (
+              <TouchableOpacity
+                activeOpacity={playerStatistics.user ? 1 : 0.6}
                 key={index}
-                player={player}
-                scored={scored}
-                missed={missed}
-                isAdmin={game?.admin.id === userData?.userId}
-              />
+                onPress={
+                  playerStatistics.user
+                    ? undefined
+                    : () => {
+                        setAssignPlayerVisible(playerStatistics);
+                      }
+                }
+              >
+                <ScorePlayerCircle
+                  user={playerStatistics.user}
+                  scored={playerStatistics.scored}
+                  missed={playerStatistics.missed}
+                  isAdmin={game?.admin.id === userData?.userId}
+                />
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>

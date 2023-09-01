@@ -79,6 +79,7 @@ export const PlayerCard = ({
   isLast,
   index,
   scrollRef,
+  isPressable = true,
 }: {
   isActive?: boolean;
   player: TeamPlayer;
@@ -89,6 +90,7 @@ export const PlayerCard = ({
   isLast: boolean;
   index: number;
   scrollRef: MutableRefObject<ScrollView | null>;
+  isPressable?: boolean;
 }) => {
   const { colors } = useTheme();
   const windowWidth = useWindowDimensions().width;
@@ -114,7 +116,7 @@ export const PlayerCard = ({
 
   return (
     <TouchableOpacity
-      activeOpacity={isActive ? 0.8 : 0.6}
+      activeOpacity={isPressable ? (isActive ? 0.8 : 0.6) : 1}
       style={[
         styles.wrapperView,
         isActive
@@ -132,7 +134,7 @@ export const PlayerCard = ({
         },
       ]}
       onPress={
-        isActive
+        isActive && isPressable
           ? () => {
               navigation.push("PlayerProfile", {
                 playerId: id,
@@ -188,52 +190,54 @@ export const PlayerCard = ({
           <IonIcon name={"star"} color={"white"} />
           <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
         </View>
-        <TouchableOpacity
-          disabled={!isPrevious || rated || id === userData?.userId}
-          style={[
-            styles.statusView,
-            {
-              backgroundColor:
-                isPrevious && (rated || userData?.userId == id)
-                  ? colors.primary
-                  : colors.background,
-              borderWidth:
-                isPrevious && (rated || userData?.userId == id || !isInGame)
-                  ? 0
-                  : 1,
-            },
-          ]}
-          onPress={() =>
-            navigation.push("RatePlayer", {
-              playerId: id,
-              firstName,
-              lastName,
-              gameId,
-              profilePhotoUrl,
-              coverPhotoUrl,
-            })
-          }
-        >
-          {isPrevious ? (
-            isInGame && (
-              <Text
-                style={[
-                  styles.statusText,
-                  {
-                    color:
-                      rated || userData?.userId == id
-                        ? colors.background
-                        : colors.tertiary,
-                  },
-                ]}
-              >
-                {id == userData?.userId ? "You" : rated ? "Rated" : "Rate"}
-              </Text>
-            )
-          ) : (
-            <Text style={[styles.statusText]}>{displayedStatus}</Text>
-          )}
-        </TouchableOpacity>
+        {isPressable && (
+          <TouchableOpacity
+            disabled={!isPrevious || rated || id === userData?.userId}
+            style={[
+              styles.statusView,
+              {
+                backgroundColor:
+                  isPrevious && (rated || userData?.userId == id)
+                    ? colors.primary
+                    : colors.background,
+                borderWidth:
+                  isPrevious && (rated || userData?.userId == id || !isInGame)
+                    ? 0
+                    : 1,
+              },
+            ]}
+            onPress={() =>
+              navigation.push("RatePlayer", {
+                playerId: id,
+                firstName,
+                lastName,
+                gameId,
+                profilePhotoUrl,
+                coverPhotoUrl,
+              })
+            }
+          >
+            {isPrevious ? (
+              isInGame && (
+                <Text
+                  style={[
+                    styles.statusText,
+                    {
+                      color:
+                        rated || userData?.userId == id
+                          ? colors.background
+                          : colors.tertiary,
+                    },
+                  ]}
+                >
+                  {id == userData?.userId ? "You" : rated ? "Rated" : "Rate"}
+                </Text>
+              )
+            ) : (
+              <Text style={[styles.statusText]}>{displayedStatus}</Text>
+            )}
+          </TouchableOpacity>
+        )}
         <IonIcon
           name="ellipsis-horizontal"
           color={"white"}

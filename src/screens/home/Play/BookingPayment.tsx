@@ -15,19 +15,22 @@ import {
   getMins,
   parseTimeFromMinutes,
 } from "src/components";
-import Feather from "react-native-vector-icons/Feather";
-import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
-import { StackParamList, setPlayScreenStillVisible } from "src/navigation";
+import { StackParamList } from "src/navigation";
 import { useCreateGameMutation } from "src/api";
-import { useEffect, useState } from "react";
-import { useQueryClient } from "react-query";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 type Props = StackScreenProps<StackParamList, "BookingPayment">;
 
-export const BookingPayment = ({ navigation, route }: Props) => {
+export const BookingPayment = ({
+  navigation,
+  route,
+  setPlayScreenStillVisible,
+}: Props & {
+  setPlayScreenStillVisible: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -46,9 +49,6 @@ export const BookingPayment = ({ navigation, route }: Props) => {
   const { mutate: createGame, isLoading, error } = useCreateGameMutation();
 
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
-  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(
-    bookingDetails.nbOfPlayers
-  );
 
   const date = new Date(bookingDetails.date);
   var time = bookingDetails.time;

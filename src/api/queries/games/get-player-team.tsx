@@ -7,7 +7,7 @@ type Response = {
 const getPlayerTeamQuery = (gameId: number) => async () => {
   if (gameId)
     return await client
-      .get(`/games/getTeam?gameId=${gameId}`)
+      .get(`/games/getTeam/${gameId}`)
       .then((res) => res?.data)
       .catch((e) => {
         console.error("player-team-query", e);

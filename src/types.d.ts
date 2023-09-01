@@ -31,6 +31,15 @@ export interface TimeSlot {
   court?: Court;
 }
 
+export interface PlayerStatistics {
+  id: number;
+  user?: User;
+  processedId: number;
+  team: "HOME" | "AWAY";
+  scored: number;
+  missed: number;
+}
+
 export interface Game {
   id;
   startTime: Date;
@@ -45,12 +54,7 @@ export interface Game {
   awayPoints: number;
   updatedAwayPoints: number;
   awayPossession: string;
-  playerStatistics: {
-    player?: User;
-    team: "HOME" | "AWAY";
-    scored: number;
-    missed: number;
-  }[];
+  playersStatistics: PlayerStatistics[];
   highlights: string[];
   isRecording: boolean;
 }

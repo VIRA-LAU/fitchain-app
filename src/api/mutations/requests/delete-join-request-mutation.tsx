@@ -23,6 +23,7 @@ export const useDeleteJoinRequestMutation = () => {
     mutationFn: deleteJoinRequest,
     onSuccess: (data, variables) => {
       queryClient.refetchQueries(["playerStatus", variables.gameId]);
+      queryClient.refetchQueries(["game", variables.gameId]);
       queryClient.refetchQueries(["games"]);
       queryClient.refetchQueries(["game-players", variables.gameId]);
       queryClient.refetchQueries(["updates", variables.gameId]);
