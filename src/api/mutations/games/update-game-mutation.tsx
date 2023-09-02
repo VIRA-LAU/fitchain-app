@@ -5,8 +5,8 @@ import { Dispatch, SetStateAction, useContext } from "react";
 import { Game } from "src/types";
 
 type Request = {
-  homeScore?: number;
-  awayScore?: number;
+  updatedHomePoints?: number;
+  updatedAwayPoints?: number;
 };
 
 const updateGame = (id: number) => async (data: Request) => {

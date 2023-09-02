@@ -113,46 +113,51 @@ export const Team = ({
           </Text>
         </View>
       )}
-      {isPrevious && game && game.playersStatistics.length > 0 && (
-        <View>
-          <Text
-            variant="labelLarge"
-            style={{
-              color: colors.tertiary,
-              marginVertical: 20,
-              marginLeft: 20,
-            }}
-          >
-            Player Scores
-          </Text>
-          <ScrollView
-            style={{ flexGrow: 1, marginHorizontal: 10, marginBottom: 10 }}
-            showsHorizontalScrollIndicator={false}
-            horizontal
-          >
-            {playersStatistics?.map((playerStatistics, index) => (
-              <TouchableOpacity
-                activeOpacity={playerStatistics.user ? 1 : 0.6}
-                key={index}
-                onPress={
-                  playerStatistics.user
-                    ? undefined
-                    : () => {
-                        setAssignPlayerVisible(playerStatistics);
-                      }
-                }
-              >
-                <ScorePlayerCircle
-                  user={playerStatistics.user}
-                  scored={playerStatistics.scored}
-                  missed={playerStatistics.missed}
-                  isAdmin={game?.admin.id === userData?.userId}
-                />
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      )}
+      {isPrevious &&
+        game &&
+        playersStatistics &&
+        playersStatistics.length > 0 && (
+          <View>
+            <Text
+              variant="labelLarge"
+              style={{
+                color: colors.tertiary,
+                marginVertical: 20,
+                marginLeft: 20,
+              }}
+            >
+              Player Scores
+            </Text>
+            <ScrollView
+              style={{ flexGrow: 1, marginHorizontal: 10, marginBottom: 10 }}
+              showsHorizontalScrollIndicator={false}
+              horizontal
+            >
+              {playersStatistics?.map((playerStatistics, index) => (
+                <TouchableOpacity
+                  activeOpacity={
+                    playerStatistics.user || !playerStatus?.isAdmin ? 1 : 0.6
+                  }
+                  key={index}
+                  onPress={
+                    playerStatistics.user || !playerStatus?.isAdmin
+                      ? undefined
+                      : () => {
+                          setAssignPlayerVisible(playerStatistics);
+                        }
+                  }
+                >
+                  <ScorePlayerCircle
+                    user={playerStatistics.user}
+                    scored={playerStatistics.scored}
+                    missed={playerStatistics.missed}
+                    isAdmin={game.admin.id === userData?.userId}
+                  />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
     </View>
   );
 };

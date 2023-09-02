@@ -212,8 +212,8 @@ export const ResultCard = ({
                   !updateScoreLoading
                     ? () => {
                         updateScore({
-                          homeScore: tempHomeScore,
-                          awayScore: tempAwayScore,
+                          updatedHomePoints: tempHomeScore,
+                          updatedAwayPoints: tempAwayScore,
                         });
                       }
                     : undefined

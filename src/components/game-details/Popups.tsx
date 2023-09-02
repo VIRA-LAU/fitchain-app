@@ -3,14 +3,15 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Game, PlayerStatus } from "src/types";
-import { RecordGamePopup } from "./RecordGamePopup";
+import { RecordGamePopup, UploadVideoPopup } from "./RecordGamePopup";
 import { BottomModal } from "../modals";
 
 export type PopupType =
   | "joinGame"
   | "cancelJoinGame"
   | "respondToInvitation"
-  | "recordVideo";
+  | "recordVideo"
+  | "uploadVideo";
 
 export const PopupContainer = ({
   game,
@@ -217,7 +218,7 @@ export const PopupContainer = ({
         </View>
       </BottomModal>
     );
-  else
+  else if (popupVisible === "recordVideo")
     return (
       <BottomModal
         visible={popupVisible !== null}
@@ -227,6 +228,19 @@ export const PopupContainer = ({
       >
         <View style={styles.prompt}>
           <RecordGamePopup game={game} setPopupVisible={setPopupVisible} />
+        </View>
+      </BottomModal>
+    );
+  else
+    return (
+      <BottomModal
+        visible={popupVisible !== null}
+        setVisible={(state) => {
+          if (!state) setPopupVisible(null);
+        }}
+      >
+        <View style={styles.prompt}>
+          <UploadVideoPopup game={game} setPopupVisible={setPopupVisible} />
         </View>
       </BottomModal>
     );

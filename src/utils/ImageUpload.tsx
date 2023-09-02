@@ -74,3 +74,29 @@ export const uploadImage = async (
     mutate(formData);
   }
 };
+
+export const selectVideo = async (
+  setPermissionDialogVisible: Dispatch<SetStateAction<boolean>>,
+  setTempVideoToUpload: Dispatch<SetStateAction<string | undefined>>
+) => {
+  const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+  if (status !== "granted") {
+    const { status: permissionRequest } =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionRequest !== "granted") {
+      setPermissionDialogVisible(true);
+      return;
+    }
+  }
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+    allowsEditing: false,
+    allowsMultipleSelection: false,
+    selectionLimit: 1,
+    quality: 1,
+  });
+
+  if (!result.canceled && setTempVideoToUpload)
+    setTempVideoToUpload(result.assets[0].uri);
+};

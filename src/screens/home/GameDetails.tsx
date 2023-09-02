@@ -89,7 +89,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
   const { id, isPrevious } = route.params;
   const {
     data: game,
-    isFetching: gameDetailsLoading,
+    isLoading: gameDetailsLoading,
     refetch: refetchGame,
   } = useGameByIdQuery(id);
   const {
@@ -353,7 +353,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
         backEnabled
         title={game?.type}
         right={
-          game?.admin.id === userData?.userId && !isPrevious ? (
+          game?.admin.id === userData?.userId ? (
             <TouchableOpacity
               onPress={() => {
                 setRecordingModalVisible(true);
@@ -372,22 +372,27 @@ export const GameDetails = ({ navigation, route }: Props) => {
           <SelectionModal
             visible={recordingModalVisible}
             setVisible={setRecordingModalVisible}
-            options={[
-              {
-                text: "Record Game",
-                onPress: () => {
-                  setRecordingModalVisible(false);
-                  setPopupVisible("recordVideo");
-                },
-              },
-              {
-                text: "Upload Video",
-                onPress: () => {
-                  setRecordingModalVisible(false);
-                  setPopupVisible("recordVideo");
-                },
-              },
-            ]}
+            options={
+              !isPrevious
+                ? [
+                    {
+                      text: "Record Game",
+                      onPress: () => {
+                        setRecordingModalVisible(false);
+                        setPopupVisible("recordVideo");
+                      },
+                    },
+                  ]
+                : [
+                    {
+                      text: "Upload Video",
+                      onPress: () => {
+                        setRecordingModalVisible(false);
+                        setPopupVisible("uploadVideo");
+                      },
+                    },
+                  ]
+            }
           />
           {gameDetailsLoading || playerStatusLoading || followedGamesLoading ? (
             <View style={styles.headerView}>

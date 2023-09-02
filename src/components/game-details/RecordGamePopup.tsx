@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction, Fragment } from "react";
 import {
   View,
   StyleSheet,
@@ -9,10 +9,13 @@ import {
 import { Button, Switch, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { TabBar, TabBarProps, TabView } from "react-native-tab-view";
-import { useStartStopRecording } from "src/api";
+import { useStartStopRecording, useUploadGameVideoMutation } from "src/api";
 import { PopupType } from "./Popups";
 import { Game } from "src/types";
 import DropDownPicker from "react-native-dropdown-picker";
+import { ResizeMode, Video } from "expo-av";
+import { selectVideo } from "src/utils";
+import { GalleryPermissionDialog } from "../modals";
 
 export const RecordGamePopup = ({
   game,
@@ -167,7 +170,7 @@ export const RecordGamePopup = ({
           }}
           loading={recordLoading}
           onPress={
-            dropDownValue !== null && !recordLoading
+            !recordLoading
               ? () => {
                   startStopRecording({ recordingMode: "start" });
                 }
@@ -232,3 +235,74 @@ const makeStyles = (colors: MD3Colors) =>
       marginVertical: 7,
     },
   });
+
+export const UploadVideoPopup = ({
+  game,
+  setPopupVisible,
+}: {
+  game?: Game;
+  setPopupVisible: Dispatch<SetStateAction<PopupType | null>>;
+}) => {
+  const [tempVideoToUpload, setTempVideoToUpload] = useState<string>();
+  const [permissionDialogVisible, setPermissionDialogVisible] =
+    useState<boolean>(false);
+
+  const { mutate: uploadGameVideo, isLoading: uploadLoading } =
+    useUploadGameVideoMutation(game?.id);
+
+  return (
+    <Fragment>
+      <View style={{ paddingBottom: 10, paddingHorizontal: 20 }}>
+        <Button
+          mode="contained"
+          onPress={() => {
+            selectVideo(setPermissionDialogVisible, setTempVideoToUpload);
+          }}
+        >
+          Select Video
+        </Button>
+        {tempVideoToUpload && (
+          <Video
+            source={{
+              uri: tempVideoToUpload ?? "",
+            }}
+            isLooping
+            shouldPlay
+            resizeMode={ResizeMode.COVER}
+            style={{
+              height: 235,
+              marginVertical: 20,
+            }}
+          />
+        )}
+        {tempVideoToUpload && (
+          <Button
+            mode="contained"
+            onPress={() => {
+              const formData = new FormData();
+
+              let fileName = tempVideoToUpload.split("/").pop();
+              let match = /\.(\w+)$/.exec(fileName!);
+              let type = match ? `video/${match[1]}` : `video`;
+
+              formData.append(`video`, {
+                uri: tempVideoToUpload,
+                name: `${game?.id}.${match ? match[1] : ""}`,
+                type,
+              });
+
+              uploadGameVideo(formData);
+              setPopupVisible(null);
+            }}
+          >
+            Upload Video
+          </Button>
+        )}
+      </View>
+      <GalleryPermissionDialog
+        visible={permissionDialogVisible}
+        setVisible={setPermissionDialogVisible}
+      />
+    </Fragment>
+  );
+};

@@ -33,7 +33,7 @@ export const AssignPlayer = ({
     mutate: assignPlayer,
     isLoading,
     isSuccess,
-  } = useAssignPlayerScoreMutation();
+  } = useAssignPlayerScoreMutation(gameId);
 
   const [scrollViewOffset, setScrollViewOffset] = useState<number>(0);
 
@@ -61,6 +61,7 @@ export const AssignPlayer = ({
           style={{
             color: colors.tertiary,
             fontFamily: "Inter-SemiBold",
+            textAlign: "center",
           }}
         >
           Player AI ID: {playerStatistics?.processedId}
@@ -100,11 +101,11 @@ export const AssignPlayer = ({
         <Button
           mode="contained"
           loading={isLoading}
+          style={{ marginHorizontal: 20 }}
           onPress={() => {
             assignPlayer({
               playerStatisticsId: playerStatistics.id,
               userId: filteredPlayers[scrollViewOffset].id,
-              gameId,
             });
           }}
         >
@@ -124,7 +125,6 @@ const makeStyles = (colors: MD3Colors) =>
       marginRight: "auto",
       paddingVertical: 20,
       backgroundColor: colors.background,
-      alignItems: "center",
     },
     playerCardView: {
       height: 300,

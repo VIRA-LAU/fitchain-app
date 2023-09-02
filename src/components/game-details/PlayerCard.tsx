@@ -116,7 +116,7 @@ export const PlayerCard = ({
 
   return (
     <TouchableOpacity
-      activeOpacity={isPressable ? (isActive ? 0.8 : 0.6) : 1}
+      activeOpacity={isPressable ? (isActive ? 0.8 : 0.6) : isActive ? 1 : 0.6}
       style={[
         styles.wrapperView,
         isActive
