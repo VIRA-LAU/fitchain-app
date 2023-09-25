@@ -29,11 +29,13 @@ import {
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { StackParamList } from "./Authenticator";
 import * as Location from "expo-location";
 import * as Notifications from "expo-notifications";
 import { useQueryClient } from "react-query";
 import { useNavigationState } from "@react-navigation/native";
+import { GameType, TimeSlot } from "src/types";
+import { LatLng } from "react-native-maps";
+import { NavigatorScreenParams } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 type Props = StackScreenProps<StackParamList, "BottomBar">;
@@ -149,6 +151,81 @@ const BottomTabNavigator = ({
       )}
     </View>
   );
+};
+
+export type StackParamList = {
+  BottomBar: NavigatorScreenParams<BottomTabParamList>;
+  GameDetails: { id: number; isPrevious: boolean };
+  InviteUsers: {
+    gameId: number;
+  };
+  PlayerProfile: {
+    playerId: number;
+    firstName: string;
+    lastName: string;
+  };
+  RatePlayer: {
+    playerId: number;
+    firstName: string;
+    lastName: string;
+    gameId: number;
+    profilePhotoUrl?: string;
+    coverPhotoUrl?: string;
+  };
+  BranchDetails: {
+    id: number;
+    playScreenBookingDetails?: {
+      date: string;
+      nbOfPlayers: number;
+      time?: TimeSlot;
+      gameType: GameType;
+    } | null;
+  };
+  ChooseBranch: {
+    gameType: GameType;
+    nbOfPlayers: number;
+    date: string;
+    location: LatLng;
+    locationName: string;
+    time?: TimeSlot;
+  };
+  ChooseCourt: {
+    venueName?: string;
+    branchId: number;
+    branchLocation?: string;
+    bookingDetails?: {
+      date: string;
+      nbOfPlayers: number;
+      gameType: GameType;
+      time?: TimeSlot;
+    };
+    profilePhotoUrl?: string;
+  };
+  BookingPayment: {
+    venueName: string;
+    courtName: string;
+    courtType: string;
+    courtRating: number;
+    courtMaxPlayers: number;
+    price: number;
+    branchLatLng: number[];
+    bookingDetails: {
+      courtId: number;
+      date: string;
+      nbOfPlayers: number;
+      time: TimeSlot;
+      gameType: GameType;
+    };
+    profilePhotoUrl?: string;
+  };
+  ChooseGame: {
+    gameType: GameType;
+    location: LatLng;
+    locationName: string;
+    nbOfPlayers: number;
+    date?: string;
+    time?: TimeSlot;
+  };
 };
 
 export const HomeNavigator = () => {

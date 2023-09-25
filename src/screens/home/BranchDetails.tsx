@@ -98,7 +98,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                   >
                     <Text
                       style={{
-                        fontFamily: "Inter-Medium",
+                        fontFamily: "Poppins-Regular",
                         fontSize: 16,
                         color: "white",
                         textAlign: "center",
@@ -314,7 +314,7 @@ const makeStyles = (
       aspectRatio: 1,
     },
     headerText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       lineHeight: 20,
       color: "white",
       marginVertical: 15,
@@ -363,7 +363,7 @@ const makeStyles = (
       marginBottom: 10,
     },
     rating: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: "white",
       fontSize: 70,
       lineHeight: 70 - 1.5,
@@ -376,7 +376,7 @@ const makeStyles = (
       justifyContent: "space-around",
     },
     ratingLabel: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: colors.tertiary,
       fontSize: 10,
     },

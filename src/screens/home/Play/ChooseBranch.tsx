@@ -116,7 +116,7 @@ const makeStyles = (colors: MD3Colors) =>
       justifyContent: "center",
     },
     placeholderText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: colors.tertiary,
       textAlign: "center",
     },

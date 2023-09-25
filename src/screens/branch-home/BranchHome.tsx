@@ -139,7 +139,7 @@ const makeStyles = (colors: MD3Colors) =>
       maxWidth: "60%",
     },
     location: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: colors.primary,
       fontSize: 16,
     },
@@ -148,7 +148,7 @@ const makeStyles = (colors: MD3Colors) =>
       marginBottom: 20,
     },
     myCalendar: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: "white",
       fontSize: 16,
       marginBottom: 10,
@@ -159,7 +159,7 @@ const makeStyles = (colors: MD3Colors) =>
       justifyContent: "center",
     },
     placeholderText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: colors.tertiary,
       textAlign: "center",
     },

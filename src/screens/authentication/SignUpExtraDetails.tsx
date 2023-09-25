@@ -1,5 +1,12 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View, Image, TextInput, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -67,84 +74,85 @@ export const SignUpExtraDetails = ({
         }}
         scrollEventThrottle={8}
       >
-        <Image source={require("assets/images/Logo-Icon.png")} />
-        <Text variant="titleLarge" style={styles.titleText}>
-          You're almost there!
-        </Text>
-        <View style={styles.inputView}>
-          <Text variant="labelLarge" style={styles.h2}>
-            Please provide the following information.
-          </Text>
-          <View style={styles.textInputView}>
-            <MaterialCommunityIcon
-              name={"account-outline"}
-              size={20}
-              color={"#c9c9c9"}
-              style={{ marginHorizontal: 15 }}
-            />
-            <TextInput
-              style={styles.textInput}
-              placeholder={"Tell us a bit about yourself."}
-              placeholderTextColor={"#a8a8a8"}
-              selectionColor={colors.primary}
-              onSubmitEditing={() => {
-                heightRef.current?.focus();
-                scrollRef.current?.scrollTo({
-                  y: scrollPosition + scrollOffset,
-                  animated: true,
-                });
-              }}
-              blurOnSubmit={false}
-              onChangeText={setDescription}
-            />
-          </View>
-          <View style={styles.textInputView}>
-            <MaterialCommunityIcon
-              name={"account-outline"}
-              size={20}
-              color={"#c9c9c9"}
-              style={{ marginHorizontal: 15 }}
-            />
-            <TextInput
-              style={styles.textInput}
-              placeholder={"Height"}
-              placeholderTextColor={"#a8a8a8"}
-              selectionColor={colors.primary}
-              onSubmitEditing={() => {
-                weightRef.current?.focus();
-                scrollRef.current?.scrollTo({
-                  y: scrollPosition + scrollOffset,
-                  animated: true,
-                });
-              }}
-              blurOnSubmit={false}
-              ref={heightRef}
-              onChangeText={setHeight}
-            />
-          </View>
+        <Image
+          source={require("assets/images/logo-text-dark.png")}
+          style={{
+            aspectRatio: 5.24,
+            height: "auto",
+            width: "50%",
+            resizeMode: "contain",
+            marginTop: 60,
+            marginBottom: "25%",
+          }}
+        />
 
-          <View style={styles.textInputView}>
-            <MaterialCommunityIcon
-              name={"email-outline"}
-              size={20}
-              color={"#c9c9c9"}
-              style={{ marginHorizontal: 15 }}
-            />
-            <TextInput
-              style={styles.textInput}
-              placeholder={"Weight"}
-              placeholderTextColor={"#a8a8a8"}
-              selectionColor={colors.primary}
-              textContentType="emailAddress"
-              autoCapitalize="none"
-              ref={weightRef}
-              onChangeText={setWeight}
-            />
-          </View>
+        <Text
+          variant="headlineSmall"
+          style={[
+            styles.text,
+            {
+              textTransform: "uppercase",
+              marginBottom: 8,
+            },
+          ]}
+        >
+          Your Info
+        </Text>
+        <Text variant="labelLarge" style={styles.text}>
+          Please provide the following information
+        </Text>
+
+        <View style={{ width: "87%", marginTop: 24 }}>
+          <Text style={{ fontFamily: "Poppins-Regular" }}>Bio</Text>
+          <TextInput
+            style={styles.textInput}
+            selectionColor={colors.primary}
+            onSubmitEditing={() => {
+              heightRef.current?.focus();
+              scrollRef.current?.scrollTo({
+                y: scrollPosition + scrollOffset,
+                animated: true,
+              });
+            }}
+            blurOnSubmit={false}
+            onChangeText={setDescription}
+          />
+
+          <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
+            Height
+          </Text>
+          <TextInput
+            style={styles.textInput}
+            selectionColor={colors.primary}
+            onSubmitEditing={() => {
+              weightRef.current?.focus();
+              scrollRef.current?.scrollTo({
+                y: scrollPosition + scrollOffset,
+                animated: true,
+              });
+            }}
+            blurOnSubmit={false}
+            ref={heightRef}
+            onChangeText={setHeight}
+          />
+
+          <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
+            Weight
+          </Text>
+          <TextInput
+            style={styles.textInput}
+            selectionColor={colors.primary}
+            textContentType="emailAddress"
+            autoCapitalize="none"
+            ref={weightRef}
+            onChangeText={setWeight}
+          />
+        </View>
+
+        <View style={{ marginTop: "auto", width: "87%" }}>
           <Button
             mode="contained"
-            style={[styles.getStartedButton, { marginTop: "10%" }]}
-            contentStyle={{ height: 50 }}
+            style={{ marginTop: 20, height: 44, justifyContent: "center" }}
             loading={updateUserLoading}
             onPress={
               !updateUserLoading ? () => handleUpdateUserData() : undefined
@@ -152,18 +160,33 @@ export const SignUpExtraDetails = ({
           >
             Complete
           </Button>
-          <Button
-            style={styles.getStartedButton}
-            onPress={
-              !updateUserLoading
-                ? () => {
-                    setUserData(passedUserData);
-                  }
-                : undefined
-            }
+
+          <View
+            style={{
+              marginTop: 24,
+              marginBottom: 64,
+            }}
           >
-            Skip
-          </Button>
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={
+                !updateUserLoading
+                  ? () => {
+                      setUserData(passedUserData);
+                    }
+                  : undefined
+              }
+            >
+              <Text
+                style={{
+                  fontFamily: "Poppins-Regular",
+                  textAlign: "center",
+                }}
+              >
+                Skip
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </AppHeader>
@@ -176,39 +199,19 @@ const makeStyles = (colors: MD3Colors) =>
       flexGrow: 1,
       backgroundColor: colors.background,
       alignItems: "center",
-      justifyContent: "center",
-      paddingVertical: "5%",
     },
-    titleText: {
-      marginTop: "5%",
-      color: "white",
-    },
-    inputView: {
-      marginTop: "10%",
-      width: "80%",
-    },
-    h2: {
-      marginBottom: "3%",
+    text: {
       color: colors.tertiary,
       textAlign: "center",
     },
-    textInputView: {
-      marginTop: "7%",
-      backgroundColor: colors.secondary,
-      borderRadius: 5,
-      height: 45,
-      flexDirection: "row",
-      alignItems: "center",
-    },
     textInput: {
-      borderRadius: 5,
-      fontSize: 14,
-      color: "white",
-      width: "100%",
-      fontFamily: "Inter-Medium",
-    },
-    getStartedButton: {
-      justifyContent: "center",
-      borderWidth: 1,
+      height: 44,
+      backgroundColor: colors.secondary,
+      marginTop: 4,
+      marginBottom: 8,
+      borderRadius: 8,
+      paddingHorizontal: 10,
+      fontFamily: "Poppins-Regular",
+      color: colors.tertiary,
     },
   });

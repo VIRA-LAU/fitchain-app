@@ -1,5 +1,12 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View, Image, TextInput, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -20,8 +27,7 @@ export const SignUpWithEmail = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -41,12 +47,13 @@ export const SignUpWithEmail = ({
     if (
       checkPasswordValidity(password) &&
       validateEmail(email) &&
-      firstName.length > 0 &&
-      lastName.length > 0
+      fullName.length > 0
     ) {
       let data = {
-        firstName,
-        lastName,
+        firstName:
+          fullName.trim().substring(0, fullName.trim().indexOf(" ")) ||
+          fullName.trim(),
+        lastName: fullName.trim().substring(fullName.trim().indexOf(" ") + 1),
         email,
         password,
       };
@@ -91,7 +98,7 @@ export const SignUpWithEmail = ({
   const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
 
   return (
-    <AppHeader backEnabled>
+    <AppHeader>
       <ScrollView
         contentContainerStyle={styles.wrapperView}
         ref={scrollRef}
@@ -100,122 +107,94 @@ export const SignUpWithEmail = ({
         }}
         scrollEventThrottle={8}
       >
-        <Image source={require("assets/images/Logo-Icon.png")} />
-        <Text variant="titleLarge" style={styles.titleText}>
-          Welcome to FitChain
-        </Text>
-        <View style={styles.inputView}>
-          <Text variant="labelLarge" style={styles.h2}>
-            Please provide the following information.
-          </Text>
-          <View style={styles.textInputView}>
-            <MaterialCommunityIcon
-              name={"account-outline"}
-              size={20}
-              color={"#c9c9c9"}
-              style={{ marginHorizontal: 15 }}
-            />
-            <TextInput
-              value={firstName}
-              style={styles.textInput}
-              placeholder={"First Name"}
-              placeholderTextColor={"#a8a8a8"}
-              selectionColor={colors.primary}
-              onSubmitEditing={() => {
-                lastNameRef.current?.focus();
-                scrollRef.current?.scrollTo({
-                  y: scrollPosition + scrollOffset,
-                  animated: true,
-                });
-              }}
-              blurOnSubmit={false}
-              onChangeText={(text) => {
-                setFirstName(text.trim());
-                setErrorMessage("");
-              }}
-            />
-          </View>
-          <View style={styles.textInputView}>
-            <MaterialCommunityIcon
-              name={"account-outline"}
-              size={20}
-              color={"#c9c9c9"}
-              style={{ marginHorizontal: 15 }}
-            />
-            <TextInput
-              value={lastName}
-              style={styles.textInput}
-              placeholder={"Last Name"}
-              placeholderTextColor={"#a8a8a8"}
-              selectionColor={colors.primary}
-              onSubmitEditing={() => {
-                emailRef.current?.focus();
-                scrollRef.current?.scrollTo({
-                  y: scrollPosition + scrollOffset,
-                  animated: true,
-                });
-              }}
-              blurOnSubmit={false}
-              ref={lastNameRef}
-              onChangeText={(text) => {
-                setLastName(text.trim());
-                setErrorMessage("");
-              }}
-            />
-          </View>
+        <Image
+          source={require("assets/images/logo-text-dark.png")}
+          style={{
+            aspectRatio: 5.24,
+            height: "auto",
+            width: "50%",
+            resizeMode: "contain",
+            marginTop: 60,
+            marginBottom: "25%",
+          }}
+        />
 
-          <View style={styles.textInputView}>
-            <MaterialCommunityIcon
-              name={"email-outline"}
-              size={20}
-              color={"#c9c9c9"}
-              style={{ marginHorizontal: 15 }}
-            />
-            <TextInput
-              value={email}
-              style={styles.textInput}
-              placeholder={"Email"}
-              placeholderTextColor={"#a8a8a8"}
-              selectionColor={colors.primary}
-              textContentType="emailAddress"
-              autoCapitalize="none"
-              onSubmitEditing={() => {
-                passwordRef.current?.focus();
-                scrollRef.current?.scrollToEnd({
-                  animated: true,
-                });
-              }}
-              blurOnSubmit={false}
-              ref={emailRef}
-              onChangeText={(text) => {
-                setEmail(text.trim());
-                setErrorMessage("");
-              }}
-            />
-          </View>
-          <View style={styles.textInputView}>
-            <MaterialCommunityIcon
-              name={"lock"}
-              size={20}
-              color={"#c9c9c9"}
-              style={{ marginHorizontal: 15 }}
-            />
-            <TextInput
-              style={styles.textInput}
-              placeholder={"Password"}
-              placeholderTextColor={"#a8a8a8"}
-              selectionColor={colors.primary}
-              secureTextEntry={true}
-              value={password}
-              ref={passwordRef}
-              onChangeText={(password) => {
-                checkPasswordValidity(password.trim());
-                scrollRef.current?.scrollToEnd({
-                  animated: true,
-                });
-              }}
-            />
-          </View>
+        <Text
+          variant="headlineSmall"
+          style={[
+            styles.text,
+            {
+              textTransform: "uppercase",
+              marginBottom: 8,
+            },
+          ]}
+        >
+          Sign Up
+        </Text>
+        <Text variant="labelLarge" style={styles.text}>
+          Fill in your details and you are 1 step away!
+        </Text>
+
+        <View style={{ width: "87%", marginTop: 24 }}>
+          <Text style={{ fontFamily: "Poppins-Regular" }}>Full Name</Text>
+          <TextInput
+            value={fullName}
+            style={styles.textInput}
+            selectionColor={colors.primary}
+            onSubmitEditing={() => {
+              lastNameRef.current?.focus();
+              scrollRef.current?.scrollTo({
+                y: scrollPosition + scrollOffset,
+                animated: true,
+              });
+            }}
+            blurOnSubmit={false}
+            onChangeText={(text) => {
+              setFullName(text);
+              setErrorMessage("");
+            }}
+          />
+
+          <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
+            Email
+          </Text>
+          <TextInput
+            value={email}
+            style={styles.textInput}
+            selectionColor={colors.primary}
+            textContentType="emailAddress"
+            autoCapitalize="none"
+            onSubmitEditing={() => {
+              passwordRef.current?.focus();
+              scrollRef.current?.scrollToEnd({
+                animated: true,
+              });
+            }}
+            blurOnSubmit={false}
+            ref={emailRef}
+            onChangeText={(text) => {
+              setEmail(text.trim());
+              setErrorMessage("");
+            }}
+          />
+
+          <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
+            Password
+          </Text>
+          <TextInput
+            style={styles.textInput}
+            selectionColor={colors.primary}
+            secureTextEntry={true}
+            value={password}
+            ref={passwordRef}
+            onChangeText={(password) => {
+              checkPasswordValidity(password.trim());
+              scrollRef.current?.scrollToEnd({
+                animated: true,
+              });
+            }}
+          />
+
           {errorMessage && (
             <Text
               variant="labelMedium"
@@ -223,21 +202,45 @@ export const SignUpWithEmail = ({
                 color: "red",
                 textAlign: "center",
                 marginTop: "5%",
-                fontFamily: "Inter-SemiBold",
+                fontFamily: "Poppins-Medium",
               }}
             >
               {errorMessage}
             </Text>
           )}
+        </View>
+
+        <View style={{ marginTop: "auto", width: "87%" }}>
           <Button
             mode="contained"
-            style={styles.getStartedButton}
-            contentStyle={{ height: 50 }}
+            style={{ marginTop: 20, height: 44, justifyContent: "center" }}
             loading={createUserLoading}
             onPress={!createUserLoading ? () => signUp() : undefined}
           >
-            Get Started
+            Sign Up
           </Button>
+
+          <View
+            style={{
+              marginTop: 24,
+              marginBottom: 64,
+            }}
+          >
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={() => navigation.goBack()}
+            >
+              <Text
+                style={{
+                  fontFamily: "Poppins-Regular",
+                  textAlign: "center",
+                }}
+              >
+                Already have an account?{" "}
+                <Text style={{ color: colors.primary }}>Sign in</Text>
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </AppHeader>
@@ -248,42 +251,20 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
       flexGrow: 1,
-      backgroundColor: colors.background,
       alignItems: "center",
-      justifyContent: "center",
-      paddingVertical: "5%",
     },
-    titleText: {
-      marginTop: "5%",
-      color: "white",
-    },
-    inputView: {
-      marginTop: "10%",
-      width: "80%",
-    },
-    h2: {
-      marginBottom: "3%",
+    text: {
       color: colors.tertiary,
       textAlign: "center",
     },
-    textInputView: {
-      marginTop: "7%",
-      backgroundColor: colors.secondary,
-      borderRadius: 5,
-      height: 45,
-      flexDirection: "row",
-      alignItems: "center",
-    },
     textInput: {
-      borderRadius: 5,
-      fontSize: 14,
-      color: "white",
-      width: "100%",
-      fontFamily: "Inter-Medium",
-    },
-    getStartedButton: {
-      marginTop: "7%",
-      justifyContent: "center",
-      borderWidth: 1,
+      height: 44,
+      backgroundColor: colors.secondary,
+      marginTop: 4,
+      marginBottom: 8,
+      borderRadius: 8,
+      paddingHorizontal: 10,
+      fontFamily: "Poppins-Regular",
+      color: colors.tertiary,
     },
   });

@@ -32,8 +32,8 @@ export const MapComponent = ({
         onRegionChangeComplete={(region) => setRegion(region)}
         showsUserLocation
         toolbarEnabled={false}
-        userInterfaceStyle="dark"
-        customMapStyle={customMapStyle}
+        // userInterfaceStyle="dark"
+        // customMapStyle={customMapStyle}
         onPress={async (e) => {
           setTempLocationMarker(e.nativeEvent.coordinate);
         }}
@@ -84,13 +84,13 @@ export const MiniMapComponent = ({
         style={{ flex: 1 }}
         // initialRegion={region}
         toolbarEnabled={false}
-        userInterfaceStyle="dark"
+        // userInterfaceStyle="dark"
+        // customMapStyle={customMapStyle}
         zoomEnabled={false}
         pitchEnabled={false}
         rotateEnabled={false}
         scrollEnabled={false}
         zoomTapEnabled={false}
-        customMapStyle={customMapStyle}
         region={{
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
@@ -107,13 +107,11 @@ export const MiniMapComponent = ({
 const styles = StyleSheet.create({
   confirmButton: {
     position: "absolute",
-    bottom: 0,
+    bottom: 20,
     left: 0,
     right: 0,
-    borderBottomLeftRadius: 7,
-    borderBottomRightRadius: 7,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
 });
 

@@ -8,11 +8,11 @@ import {
   CreateCourt,
   courtToEdit,
 } from "screens";
-import { VenueBottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
-import { StackParamList } from "./Authenticator";
+import { BranchBottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import * as Location from "expo-location";
+import { NavigatorScreenParams } from "@react-navigation/native";
 
-const Tab = createBottomTabNavigator<VenueBottomTabParamList>();
+const Tab = createBottomTabNavigator<BranchBottomTabParamList>();
 
 const BottomTabNavigator = () => {
   const [createCourtVisible, setCreateCourtVisible] = useState<
@@ -56,8 +56,12 @@ const BottomTabNavigator = () => {
   );
 };
 
+export type BranchStackParamList = {
+  BottomBar: NavigatorScreenParams<BranchBottomTabParamList>;
+};
+
 export const BranchHomeNavigator = () => {
-  const Stack = createStackNavigator<StackParamList>();
+  const Stack = createStackNavigator<BranchStackParamList>();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="BottomBar" component={BottomTabNavigator} />

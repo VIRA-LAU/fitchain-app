@@ -39,7 +39,7 @@ export const ScorePlayerCircle = ({
                     ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
                     : ""
                 }
-                labelStyle={{ fontFamily: "Inter-Medium", fontSize: 20 }}
+                labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 20 }}
                 style={{
                   backgroundColor: colors.background,
                 }}
@@ -56,7 +56,7 @@ export const ScorePlayerCircle = ({
         </Text>
         <Text
           variant="titleSmall"
-          style={{ color: colors.tertiary, fontFamily: "Inter-Medium" }}
+          style={{ color: colors.tertiary, fontFamily: "Poppins-Regular" }}
         >
           Scored: {scored}
           {"\n"}Missed: {missed}
@@ -89,7 +89,7 @@ export const TopPlayerCircle = ({
         </Text>
         <Text
           variant="titleSmall"
-          style={{ color: colors.tertiary, fontFamily: "Inter-Medium" }}
+          style={{ color: colors.tertiary, fontFamily: "Poppins-Regular" }}
         >
           {user
             ? `${user.firstName} ${user.lastName}`

@@ -179,7 +179,7 @@ const makeStyles = (
     promoted: {
       color: isFocused ? colors.primary : colors.tertiary,
       fontSize: isFocused ? 12 : 10,
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
     },
     textView: {
       paddingHorizontal: isHorizontal ? 0 : 10,
@@ -187,7 +187,7 @@ const makeStyles = (
     },
     title: {
       color: "white",
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
     },
     ratingView: {
       flexDirection: isHorizontal ? "column" : "row",
@@ -195,14 +195,14 @@ const makeStyles = (
     },
     rating: {
       color: "white",
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       fontSize: 12,
       marginLeft: 5,
       paddingVertical: isHorizontal ? 5 : 0,
     },
     location: {
       color: colors.tertiary,
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       fontSize: 12,
       lineHeight: 20,
     },

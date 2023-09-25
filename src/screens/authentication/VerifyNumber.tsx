@@ -87,7 +87,7 @@ export const VerifyNumber = ({ navigation, route }: Props) => {
   return (
     <AppHeader backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
-        <Image source={require("assets/images/Logo-Icon.png")} />
+        <Image source={require("assets/images/logo.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
           Welcome to Fitchain
         </Text>
@@ -174,7 +174,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     placeholderText: {
       height: 50,
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: colors.tertiary,
       textAlign: "center",
       textAlignVertical: "center",

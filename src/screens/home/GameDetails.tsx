@@ -319,7 +319,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
           >
             <Text
               style={{
-                fontFamily: "Inter-Medium",
+                fontFamily: "Poppins-Regular",
                 color: isActive ? "white" : colors.tertiary,
               }}
             >
@@ -434,7 +434,10 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   marginBottom: 10,
                 }}
               >
-                <Text variant="titleLarge" style={{ color: "white" }}>
+                <Text
+                  variant="titleLarge"
+                  style={{ color: "white", maxWidth: "75%" }}
+                >
                   {game!.startTime
                     .toLocaleDateString(undefined, {
                       weekday: "long",

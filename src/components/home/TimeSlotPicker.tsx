@@ -207,7 +207,7 @@ export const TimeSlotPicker = ({
                 >
                   <Text
                     style={{
-                      fontFamily: "Inter-Medium",
+                      fontFamily: "Poppins-Regular",
                       color: colors.tertiary,
                     }}
                   >
@@ -273,9 +273,9 @@ const makeStyles = (colors: MD3Colors, width: number, height: number) =>
       paddingVertical: 20,
       borderRadius: 7,
     },
-    labelText: { fontFamily: "Inter-Medium", color: colors.tertiary },
+    labelText: { fontFamily: "Poppins-Regular", color: colors.tertiary },
     valueText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: "white",
       fontSize: 22,
     },

@@ -260,7 +260,7 @@ const makeStyles = (colors: MD3Colors) =>
       borderRadius: 10,
     },
     promptText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       textAlign: "center",
       color: "white",
       marginBottom: 30,
@@ -277,7 +277,7 @@ const makeStyles = (colors: MD3Colors) =>
       borderLeftWidth: 1,
     },
     promptTeamText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       textAlign: "center",
       color: "white",
       fontSize: 20,

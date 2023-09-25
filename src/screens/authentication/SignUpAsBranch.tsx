@@ -26,8 +26,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
 
   const [venueName, setVenueName] = useState("");
-  const [managerFirstName, setManagerFirstName] = useState("");
-  const [managerLastName, setManagerLastName] = useState("");
+  const [managerFullName, setManagerFullName] = useState("");
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
   const [password, setPassword] = useState("");
@@ -94,13 +93,18 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
       branchLocation &&
       validateEmail(email) &&
       venueName.trim().length > 0 &&
-      managerFirstName.length > 0 &&
-      managerLastName.length > 0
+      managerFullName.length > 0
     ) {
       let data = {
         venueName: venueName.trim(),
-        managerFirstName,
-        managerLastName,
+        managerFirstName:
+          managerFullName
+            .trim()
+            .substring(0, managerFullName.trim().indexOf(" ")) ||
+          managerFullName.trim(),
+        managerLastName: managerFullName
+          .trim()
+          .substring(managerFullName.trim().indexOf(" ") + 1),
         email,
         description: description.trim(),
         password,
@@ -139,8 +143,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
 
   const scrollOffset = 60;
   const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
-  const firstNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
-  const lastNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
+  const fullNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const descriptionRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
@@ -155,176 +158,137 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
         }}
         scrollEventThrottle={8}
       >
-        <Image source={require("assets/images/Logo-Icon.png")} />
-        <Text variant="titleLarge" style={styles.titleText}>
-          Welcome to FitChain
+        <Image
+          source={require("assets/images/logo-text-dark.png")}
+          style={{
+            aspectRatio: 5.24,
+            height: "auto",
+            width: "50%",
+            resizeMode: "contain",
+            marginTop: 60,
+            marginBottom: "25%",
+          }}
+        />
+
+        <Text
+          variant="headlineSmall"
+          style={[
+            styles.text,
+            {
+              textTransform: "uppercase",
+              marginBottom: 8,
+            },
+          ]}
+        >
+          Sign Up
         </Text>
+        <Text variant="labelLarge" style={styles.text}>
+          Fill in your details and you are 1 step away!
+        </Text>
+
         {!mapVisible ? (
-          <View style={styles.inputView}>
-            <Text variant="labelLarge" style={styles.h2}>
-              Please provide the following information.
+          <View style={{ flexGrow: 1, width: "87%", marginTop: 24 }}>
+            <Text style={{ fontFamily: "Poppins-Regular" }}>Venue Name</Text>
+            <TextInput
+              value={venueName}
+              style={styles.textInput}
+              selectionColor={colors.primary}
+              onSubmitEditing={() => {
+                fullNameRef.current?.focus();
+                scrollRef.current?.scrollTo({
+                  y: scrollPosition + scrollOffset,
+                  animated: true,
+                });
+              }}
+              blurOnSubmit={false}
+              onChangeText={(text) => {
+                setVenueName(text);
+                setErrorMessage("");
+              }}
+            />
+
+            <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
+              Manager Full Name
             </Text>
-            <View style={styles.textInputView}>
-              <MaterialCommunityIcon
-                name={"home-account"}
-                size={20}
-                color={"#c9c9c9"}
-                style={{ marginHorizontal: 15 }}
-              />
-              <TextInput
-                value={venueName}
-                style={styles.textInput}
-                placeholder={"Venue Name"}
-                placeholderTextColor={"#a8a8a8"}
-                selectionColor={colors.primary}
-                onSubmitEditing={() => {
-                  firstNameRef.current?.focus();
-                  scrollRef.current?.scrollTo({
-                    y: scrollPosition + scrollOffset,
-                    animated: true,
-                  });
-                }}
-                blurOnSubmit={false}
-                onChangeText={(text) => {
-                  setVenueName(text);
-                  setErrorMessage("");
-                }}
-              />
-            </View>
-            <View style={styles.textInputView}>
-              <MaterialCommunityIcon
-                name={"account-outline"}
-                size={20}
-                color={"#c9c9c9"}
-                style={{ marginHorizontal: 15 }}
-              />
-              <TextInput
-                value={managerFirstName}
-                style={styles.textInput}
-                placeholder={"Manager First Name"}
-                placeholderTextColor={"#a8a8a8"}
-                selectionColor={colors.primary}
-                onSubmitEditing={() => {
-                  lastNameRef.current?.focus();
-                  scrollRef.current?.scrollTo({
-                    y: scrollPosition + scrollOffset,
-                    animated: true,
-                  });
-                }}
-                blurOnSubmit={false}
-                ref={firstNameRef}
-                onChangeText={(text) => {
-                  setManagerFirstName(text.trim());
-                  setErrorMessage("");
-                }}
-              />
-            </View>
-            <View style={styles.textInputView}>
-              <MaterialCommunityIcon
-                name={"account-outline"}
-                size={20}
-                color={"#c9c9c9"}
-                style={{ marginHorizontal: 15 }}
-              />
-              <TextInput
-                value={managerLastName}
-                style={styles.textInput}
-                placeholder={"Manager Last Name"}
-                placeholderTextColor={"#a8a8a8"}
-                selectionColor={colors.primary}
-                onSubmitEditing={() => {
-                  emailRef.current?.focus();
-                  scrollRef.current?.scrollTo({
-                    y: scrollPosition + scrollOffset,
-                    animated: true,
-                  });
-                }}
-                blurOnSubmit={false}
-                ref={lastNameRef}
-                onChangeText={(text) => {
-                  setManagerLastName(text.trim());
-                  setErrorMessage("");
-                }}
-              />
-            </View>
-            <View style={styles.textInputView}>
-              <MaterialCommunityIcon
-                name={"email-outline"}
-                size={20}
-                color={"#c9c9c9"}
-                style={{ marginHorizontal: 15 }}
-              />
-              <TextInput
-                value={email}
-                style={styles.textInput}
-                placeholder={"Branch Email"}
-                placeholderTextColor={"#a8a8a8"}
-                selectionColor={colors.primary}
-                textContentType="emailAddress"
-                autoCapitalize="none"
-                onSubmitEditing={() => {
-                  descriptionRef.current?.focus();
-                  scrollRef.current?.scrollTo({
-                    y: scrollPosition + scrollOffset,
-                    animated: true,
-                  });
-                }}
-                blurOnSubmit={false}
-                ref={emailRef}
-                onChangeText={(text) => {
-                  setEmail(text.trim());
-                  setErrorMessage("");
-                }}
-              />
-            </View>
-            <View style={styles.textInputView}>
-              <MaterialCommunityIcon
-                name={"text-box-outline"}
-                size={20}
-                color={"#c9c9c9"}
-                style={{ marginHorizontal: 15 }}
-              />
-              <TextInput
-                value={description}
-                style={styles.textInput}
-                placeholder={"Branch Description (Optional)"}
-                placeholderTextColor={"#a8a8a8"}
-                selectionColor={colors.primary}
-                onSubmitEditing={() => {
-                  passwordRef.current?.focus();
-                  scrollRef.current?.scrollTo({
-                    y: scrollPosition + scrollOffset,
-                    animated: true,
-                  });
-                }}
-                blurOnSubmit={false}
-                ref={descriptionRef}
-                onChangeText={(text) => {
-                  setDescription(text);
-                  setErrorMessage("");
-                }}
-              />
-            </View>
-            <View style={styles.textInputView}>
-              <MaterialCommunityIcon
-                name={"lock"}
-                size={20}
-                color={"#c9c9c9"}
-                style={{ marginHorizontal: 15 }}
-              />
-              <TextInput
-                value={password}
-                style={styles.textInput}
-                placeholder={"Password"}
-                placeholderTextColor={"#a8a8a8"}
-                selectionColor={colors.primary}
-                secureTextEntry={true}
-                ref={passwordRef}
-                onChangeText={(password) => {
-                  checkPasswordValidity(password.trim());
-                }}
-              />
-            </View>
+            <TextInput
+              value={managerFullName}
+              style={styles.textInput}
+              selectionColor={colors.primary}
+              onSubmitEditing={() => {
+                emailRef.current?.focus();
+                scrollRef.current?.scrollTo({
+                  y: scrollPosition + scrollOffset,
+                  animated: true,
+                });
+              }}
+              blurOnSubmit={false}
+              ref={fullNameRef}
+              onChangeText={(text) => {
+                setManagerFullName(text);
+                setErrorMessage("");
+              }}
+            />
+
+            <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
+              Email
+            </Text>
+            <TextInput
+              value={email}
+              style={styles.textInput}
+              selectionColor={colors.primary}
+              textContentType="emailAddress"
+              autoCapitalize="none"
+              onSubmitEditing={() => {
+                descriptionRef.current?.focus();
+                scrollRef.current?.scrollTo({
+                  y: scrollPosition + scrollOffset,
+                  animated: true,
+                });
+              }}
+              blurOnSubmit={false}
+              ref={emailRef}
+              onChangeText={(text) => {
+                setEmail(text.trim());
+                setErrorMessage("");
+              }}
+            />
+
+            <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
+              Branch Description (Optional)
+            </Text>
+            <TextInput
+              value={description}
+              style={styles.textInput}
+              selectionColor={colors.primary}
+              onSubmitEditing={() => {
+                passwordRef.current?.focus();
+                scrollRef.current?.scrollTo({
+                  y: scrollPosition + scrollOffset,
+                  animated: true,
+                });
+              }}
+              blurOnSubmit={false}
+              ref={descriptionRef}
+              onChangeText={(text) => {
+                setDescription(text);
+                setErrorMessage("");
+              }}
+            />
+
+            <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
+              Password
+            </Text>
+            <TextInput
+              value={password}
+              style={styles.textInput}
+              selectionColor={colors.primary}
+              secureTextEntry={true}
+              ref={passwordRef}
+              onChangeText={(password) => {
+                checkPasswordValidity(password.trim());
+              }}
+            />
+
             <Button
               icon={"map-marker-outline"}
               style={{ marginTop: "7%" }}
@@ -338,17 +302,12 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
             {locationNameLoading ? (
               <ActivityIndicator style={{ marginTop: 20 }} />
             ) : (
-              <View style={styles.textInputView}>
-                <MaterialCommunityIcon
-                  name={"map-marker-outline"}
-                  size={20}
-                  color={"#c9c9c9"}
-                  style={{ marginHorizontal: 15 }}
-                />
+              <View>
+                <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
+                  Location Name
+                </Text>
                 <TextInput
                   style={styles.textInput}
-                  placeholder={"Location Name"}
-                  placeholderTextColor={"#a8a8a8"}
                   selectionColor={colors.primary}
                   value={locationDescription ?? autoLocationDescription}
                   onChangeText={(text) => {
@@ -376,27 +335,51 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                   color: "red",
                   textAlign: "center",
                   marginTop: "5%",
-                  fontFamily: "Inter-SemiBold",
+                  fontFamily: "Poppins-Bold",
                 }}
               >
                 {errorMessage}
               </Text>
             )}
-            <Button
-              mode="contained"
-              style={styles.getStartedButton}
-              contentStyle={{ height: 50 }}
-              loading={createBranchLoading}
-              onPress={!createBranchLoading ? () => signUp() : undefined}
-            >
-              Get Started
-            </Button>
+
+            <View style={{ marginTop: "auto" }}>
+              <Button
+                mode="contained"
+                style={{ marginTop: 20, height: 44, justifyContent: "center" }}
+                loading={createBranchLoading}
+                onPress={!createBranchLoading ? () => signUp() : undefined}
+              >
+                Sign Up
+              </Button>
+
+              <View
+                style={{
+                  marginTop: 24,
+                  marginBottom: 64,
+                }}
+              >
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={() => navigation.goBack()}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "Poppins-Regular",
+                      textAlign: "center",
+                    }}
+                  >
+                    Already have an account?{" "}
+                    <Text style={{ color: colors.primary }}>Sign in</Text>
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         ) : (
           <View style={styles.mapView}>
             <Text
               variant="labelLarge"
-              style={[styles.h2, { marginBottom: 20 }]}
+              style={[styles.text, { marginBottom: 20 }]}
             >
               Please set the branch location.
             </Text>
@@ -409,9 +392,8 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
               >
                 <MaterialIcon
                   name="arrow-back"
-                  color={"white"}
+                  color={colors.tertiary}
                   size={25}
-                  style={{ marginRight: 20 }}
                 />
               </TouchableOpacity>
               <MapComponent
@@ -435,39 +417,20 @@ const makeStyles = (colors: MD3Colors) =>
       flexGrow: 1,
       backgroundColor: colors.background,
       alignItems: "center",
-      justifyContent: "center",
-      paddingVertical: "5%",
     },
-    titleText: {
-      marginTop: "5%",
-      color: "white",
-    },
-    inputView: {
-      marginTop: "10%",
-      width: "80%",
-      marginBottom: 20,
-    },
-    h2: {
-      marginBottom: "3%",
+    text: {
       color: colors.tertiary,
       textAlign: "center",
     },
-    textInputView: {
-      marginTop: "7%",
-      backgroundColor: colors.secondary,
-      borderRadius: 5,
-      height: 45,
-      flexDirection: "row",
-      alignItems: "center",
-    },
     textInput: {
-      flex: 1,
-      paddingRight: 10,
-      borderRadius: 5,
-      fontSize: 14,
-      color: "white",
-      width: "100%",
-      fontFamily: "Inter-Medium",
+      height: 44,
+      backgroundColor: colors.secondary,
+      marginTop: 4,
+      marginBottom: 8,
+      borderRadius: 8,
+      paddingHorizontal: 10,
+      fontFamily: "Poppins-Regular",
+      color: colors.tertiary,
     },
     getStartedButton: {
       marginTop: "7%",

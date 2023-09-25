@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "white",
-    fontFamily: "Inter-SemiBold",
+    fontFamily: "Poppins-Bold",
   },
   selectionRow: {
     flexDirection: "row",

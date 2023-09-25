@@ -238,7 +238,7 @@ export const BranchManagement = ({
                   >
                     <Text
                       style={{
-                        fontFamily: "Inter-Medium",
+                        fontFamily: "Poppins-Regular",
                         fontSize: 16,
                         color: "white",
                         textAlign: "center",
@@ -405,7 +405,7 @@ const makeStyles = (
       aspectRatio: 1,
     },
     headerText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       lineHeight: 20,
       color: "white",
       marginVertical: 15,
@@ -416,7 +416,7 @@ const makeStyles = (
       justifyContent: "center",
     },
     placeholderText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: colors.tertiary,
       textAlign: "center",
     },

@@ -60,7 +60,7 @@ export const AssignPlayer = ({
         <Text
           style={{
             color: colors.tertiary,
-            fontFamily: "Inter-SemiBold",
+            fontFamily: "Poppins-Bold",
             textAlign: "center",
           }}
         >

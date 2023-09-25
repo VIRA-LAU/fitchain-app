@@ -222,7 +222,7 @@ export const Profile = ({
                           )}${userDetails?.lastName.charAt(0)}`
                         : ""
                     }
-                    labelStyle={{ fontFamily: "Inter-Medium", fontSize: 60 }}
+                    labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 60 }}
                     style={{
                       backgroundColor: colors.background,
                     }}
@@ -442,13 +442,13 @@ const makeStyles = (
       alignItems: "center",
     },
     headerText1: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: colors.tertiary,
       marginTop: 15,
       marginBottom: 20,
     },
     headerText2: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       lineHeight: 20,
       color: "white",
       marginTop: -10,
@@ -464,7 +464,7 @@ const makeStyles = (
       alignItems: "center",
     },
     rating: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: "white",
       fontSize: 70,
       lineHeight: 70 - 1.5,
@@ -477,7 +477,7 @@ const makeStyles = (
       justifyContent: "space-around",
     },
     ratingLabel: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: colors.tertiary,
       fontSize: 10,
     },
@@ -510,13 +510,13 @@ const makeStyles = (
       height: 0.1 * windowWidth,
     },
     achievementTitle: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: colors.tertiary,
       marginTop: 5,
       fontSize: 12,
     },
     achievementValue: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: "white",
       fontSize: 16,
     },
@@ -530,7 +530,7 @@ const makeStyles = (
       marginBottom: -10,
     },
     placeholderText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: colors.tertiary,
       textAlign: "center",
     },

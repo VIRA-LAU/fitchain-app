@@ -121,7 +121,7 @@ export const UpdateCard = ({
                       .charAt(0)}`
                   : ""
               }
-              labelStyle={{ fontFamily: "Inter-Medium", fontSize: 16 }}
+              labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 16 }}
               size={40}
               style={{
                 backgroundColor: colors.background,
@@ -133,15 +133,13 @@ export const UpdateCard = ({
           <View style={styles.textView}>
             <View>
               <Text style={styles.text}>
-                <Text style={{ fontFamily: "Inter-SemiBold", color: "white" }}>
+                <Text style={{ fontFamily: "Poppins-Bold", color: "white" }}>
                   {name}
                 </Text>
                 {type !== "invitation" && updateText(type)}
                 {type === "invitation" && " invited "}
                 {type === "invitation" && (
-                  <Text
-                    style={{ fontFamily: "Inter-SemiBold", color: "white" }}
-                  >
+                  <Text style={{ fontFamily: "Poppins-Bold", color: "white" }}>
                     {friendName}
                   </Text>
                 )}
@@ -248,7 +246,7 @@ const makeStyles = (colors: MD3Colors) =>
       justifyContent: "space-between",
     },
     text: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: colors.tertiary,
       minWidth: "95%",
       maxWidth: "95%",

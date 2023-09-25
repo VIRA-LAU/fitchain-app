@@ -4,15 +4,15 @@
     "slug": "fitchain-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/Logo-Icon.png",
-    "userInterfaceStyle": "dark",
+    "icon": "./src/assets/images/logo.png",
+    "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/images/Logo-Splash.png",
+      "image": "./src/assets/images/logo-splash.png",
       "resize": "native",
-      "backgroundColor": "#2e2d36"
+      "backgroundColor": "#fff"
     },
-    "backgroundColor": "#2e2d36",
-    "themeColor": "#f29c1f",
+    "backgroundColor": "#fff",
+    "themeColor": "#f77e05",
     "updates": {
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/4396245c-91e4-4255-ab4c-236cd04253dc"
@@ -28,7 +28,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/Logo-Icon.png",
+        "foregroundImage": "./src/assets/images/logo.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.fitchain.app",
@@ -46,10 +46,10 @@
       "googleServicesFile": "./google-services.json"
     },
     "web": {
-      "favicon": "./src/assets/images/Logo-Icon.png"
+      "favicon": "./src/assets/images/logo.png"
     },
     "notification": {
-      "icon": "./src/assets/images/Logo-Icon.png",
+      "icon": "./src/assets/images/logo.png",
       "iosDisplayInForeground": true
     },
     "extra": {
@@ -67,7 +67,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./src/assets/images/Logo-Icon.png"
+          "icon": "./src/assets/images/logo.png"
         }
       ]
     ],

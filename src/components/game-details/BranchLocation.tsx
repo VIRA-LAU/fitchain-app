@@ -221,21 +221,21 @@ const makeStyles = (colors: MD3Colors) =>
     },
     title: {
       color: "white",
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
     },
     subtitle: {
       color: colors.tertiary,
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       fontSize: 12,
     },
     rowKey: {
       color: colors.tertiary,
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       fontSize: 10,
     },
     rowValue: {
       color: "white",
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       fontSize: 10,
     },
   });

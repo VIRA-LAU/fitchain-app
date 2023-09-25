@@ -33,7 +33,7 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
   return (
     <AppHeader backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
-        <Image source={require("assets/images/Logo-Icon.png")} />
+        <Image source={require("assets/images/logo.png")} />
         <Text variant="titleLarge" style={styles.titleText}>
           Welcome to Fitchain
         </Text>

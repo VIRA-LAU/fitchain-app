@@ -124,7 +124,7 @@ export const InvitationCard = ({
                       .charAt(0)}`
                   : ""
               }
-              labelStyle={{ fontFamily: "Inter-Medium" }}
+              labelStyle={{ fontFamily: "Poppins-Regular" }}
               size={60}
               style={{
                 backgroundColor: colors.background,
@@ -251,13 +251,13 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
     },
     text: {
       color: "white",
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       lineHeight: 20,
     },
     greyText: {
       color: colors.tertiary,
       fontSize: 12,
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
     },
     buttonsView: {
       flexDirection: "row",

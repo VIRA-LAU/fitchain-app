@@ -4,7 +4,7 @@ import {
   MD3LightTheme as DefaultTheme,
   Provider as PaperProvider,
 } from "react-native-paper";
-import { DarkTheme, NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "react-native";
 import { Authenticator } from "navigation";
 import { useFonts } from "expo-font/build/FontHooks";
@@ -52,26 +52,31 @@ const registerForPushNotificationsAsync = async () => {
       name: "default",
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#f29c1f",
+      lightColor: "#F77E05",
     });
   }
 };
 
 function AppContent() {
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [branchData, setBranchData] = useState<BranchData | null>(null);
+  const [userData, setUserData] = useState<UserData | null | undefined>(
+    undefined
+  );
+  const [branchData, setBranchData] = useState<BranchData | null | undefined>(
+    undefined
+  );
 
   const { mutate: signout } = useSignoutMutation();
 
   const [fontsLoaded] = useFonts({
-    "Inter-SemiBold": require("assets/fonts/Inter-SemiBold.ttf"),
-    "Inter-Medium": require("assets/fonts/Inter-Medium.ttf"),
+    "Poppins-Regular": require("assets/fonts/Poppins-Regular.ttf"), // 400
+    "Poppins-Medium": require("assets/fonts/Poppins-Medium.ttf"), // 500
+    "Poppins-Bold": require("assets/fonts/Poppins-Bold.ttf"), // 700
   });
 
   const userContext = {
     userData,
     branchData,
-    setUserData: (newUserData: UserData | null) => {
+    setUserData: (newUserData: UserData | null | undefined) => {
       if (newUserData)
         client.defaults.headers.common[
           "Authorization"
@@ -87,7 +92,7 @@ function AppContent() {
       }
       setUserData(newUserData);
     },
-    setBranchData: (newBranchData: BranchData | null) => {
+    setBranchData: (newBranchData: BranchData | null | undefined) => {
       if (newBranchData)
         client.defaults.headers.common[
           "Authorization"
@@ -120,45 +125,48 @@ function AppContent() {
 
   const fontConfig = {
     headlineSmall: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
     },
-    titleLarge: {
-      fontFamily: "Inter-SemiBold",
-    },
-    titleSmall: {
-      fontFamily: "Inter-SemiBold",
-    },
-    labelLarge: {
-      fontFamily: "Inter-SemiBold",
+    headlineMedium: {
+      fontFamily: "Poppins-Bold",
     },
     headlineLarge: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
+    },
+    titleSmall: {
+      fontFamily: "Poppins-Bold",
+    },
+    titleLarge: {
+      fontFamily: "Poppins-Bold",
+    },
+    labelLarge: {
+      fontFamily: "Poppins-Medium",
     },
   };
 
   const theme = {
     ...DefaultTheme,
     colors: {
-      primary: "#f29c1f",
-      onPrimary: "#3b3a42",
-      secondary: "#3b3a42",
-      tertiary: "#9e9e9e",
-      background: "#2e2d36",
+      primary: "#F77E05",
+      background: "#fff",
+      onPrimary: "#FFF",
+      secondary: "#F2F4F7",
+      tertiary: "#2B2B2B",
       elevation: {
-        level3: "#3b3a42",
+        level3: "#F2F4F7",
       },
     },
-    roundness: 1,
+    roundness: 1.5,
     fonts: configureFonts({ config: fontConfig }),
   };
 
   if (!fontsLoaded) return null;
   return (
     <UserContext.Provider value={userContext}>
-      <NavigationContainer theme={DarkTheme}>
+      <NavigationContainer>
         <PaperProvider theme={theme}>
           <StatusBar
-            barStyle={"light-content"}
+            barStyle={"dark-content"}
             backgroundColor={"transparent"}
             translucent
           />

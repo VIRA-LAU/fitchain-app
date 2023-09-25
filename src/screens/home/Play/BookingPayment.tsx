@@ -82,7 +82,7 @@ export const BookingPayment = ({
               source={require("assets/images/home/basketball-court-icon.png")}
             />
             <View style={styles.headerContentInfo}>
-              <Text style={{ color: "white", fontFamily: "Inter-SemiBold" }}>
+              <Text style={{ color: "white", fontFamily: "Poppins-Bold" }}>
                 {courtName}
               </Text>
               <Text style={styles.headerContentText}>{courtType}</Text>
@@ -223,14 +223,14 @@ export const BookingPayment = ({
               }}
             >
               <View>
-                <Text style={{ fontFamily: "Inter-Medium", fontSize: 10 }}>
+                <Text style={{ fontFamily: "Poppins-Regular", fontSize: 10 }}>
                   TOTAL
                 </Text>
-                <Text style={{ fontFamily: "Inter-Medium" }}>
+                <Text style={{ fontFamily: "Poppins-Regular" }}>
                   USD {price * bookedHours}
                 </Text>
               </View>
-              <Text style={{ fontFamily: "Inter-SemiBold" }}>
+              <Text style={{ fontFamily: "Poppins-Bold" }}>
                 Continue To Payment
               </Text>
             </TouchableOpacity>
@@ -269,7 +269,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     headerContentText: {
       color: colors.tertiary,
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       marginVertical: 1,
     },
     contentView: {
@@ -293,11 +293,11 @@ const makeStyles = (colors: MD3Colors) =>
       flex: 1,
     },
     labelText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: colors.tertiary,
     },
     valueText: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: "white",
     },
     rating: {

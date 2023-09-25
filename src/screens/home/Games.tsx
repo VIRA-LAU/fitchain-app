@@ -278,7 +278,7 @@ const GameList = ({
         >
           <Text
             style={{
-              fontFamily: "Inter-Medium",
+              fontFamily: "Poppins-Regular",
               color: colors.tertiary,
               textAlign: "center",
             }}
@@ -367,7 +367,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
           >
             <Text
               style={{
-                fontFamily: "Inter-Medium",
+                fontFamily: "Poppins-Regular",
                 color: isActive ? "white" : colors.tertiary,
               }}
             >

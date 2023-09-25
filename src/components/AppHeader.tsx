@@ -111,7 +111,7 @@ export const AppHeader = ({
             {title && <Text style={styles.title}>{title}</Text>}
             {showLogo && (
               <Image
-                source={require("assets/images/Logo.png")}
+                source={require("assets/images/logo-text-dark.png")}
                 style={{ width: "40%" }}
                 resizeMode={"contain"}
               />
@@ -204,7 +204,7 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
     },
     searchBar: {
       color: "white",
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       height: 40,
       flexGrow: 1,
       paddingHorizontal: 20,
@@ -222,7 +222,7 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
       color: darkMode ? "black" : "white",
       textAlign: "center",
       fontSize: 18,
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
     },
     background: {
       position: "absolute",

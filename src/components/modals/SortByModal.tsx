@@ -38,7 +38,7 @@ export const SortByModal = ({
       >
         <Text
           style={{
-            fontFamily: "Inter-Medium",
+            fontFamily: "Poppins-Regular",
             marginTop: 10,
             marginBottom: 7,
             color: colors.tertiary,

@@ -176,7 +176,7 @@ export const PlayerCard = ({
               label={
                 firstName ? `${firstName.charAt(0)}${lastName.charAt(0)}` : ""
               }
-              labelStyle={{ fontFamily: "Inter-Medium", fontSize: 28 }}
+              labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 28 }}
               style={{
                 backgroundColor: colors.background,
               }}
@@ -276,7 +276,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
     },
     name: {
       color: "white",
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       fontSize: 16,
       marginBottom: 5,
     },
@@ -288,7 +288,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
     },
     ratingText: {
       color: "white",
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       marginLeft: 5,
     },
     statusView: {
@@ -300,7 +300,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       marginTop: 5,
     },
     statusText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: colors.tertiary,
       padding: 5,
     },

@@ -421,7 +421,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       justifyContent: "center",
     },
     title: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: "white",
       fontSize: 16,
     },
@@ -441,7 +441,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       marginHorizontal: 5,
     },
     sportText: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       fontSize: 16,
       lineHeight: 16,
       marginRight: 10,
@@ -463,7 +463,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       alignItems: "center",
     },
     labelText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: "white",
     },
     buttonView: {
@@ -485,7 +485,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       fontSize: 14,
       color: "white",
       width: "100%",
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
     },
     timeSlotsView: {
       justifyContent: "space-between",
@@ -503,7 +503,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       marginVertical: 5,
     },
     timeSlotText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: "white",
     },
   });

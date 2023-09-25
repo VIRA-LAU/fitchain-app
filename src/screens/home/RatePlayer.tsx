@@ -82,7 +82,7 @@ export const RatePlayer = ({ navigation, route }: Props) => {
                 label={
                   firstName ? `${firstName.charAt(0)}${lastName.charAt(0)}` : ""
                 }
-                labelStyle={{ fontFamily: "Inter-Medium" }}
+                labelStyle={{ fontFamily: "Poppins-Regular" }}
                 style={{
                   backgroundColor: colors.secondary,
                 }}
@@ -155,7 +155,7 @@ const makeStyles = (
       textAlign: "center",
       color: "white",
       width: "70%",
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       alignContent: "center",
       marginTop: 15,
       alignSelf: "center",
@@ -184,7 +184,7 @@ const makeStyles = (
       alignItems: "center",
     },
     rating: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: "white",
       fontSize: 70,
       lineHeight: 70 - 1.5,
@@ -192,7 +192,7 @@ const makeStyles = (
       marginVertical: 20,
     },
     ratingLabel: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: colors.tertiary,
       fontSize: 10,
     },

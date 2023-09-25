@@ -1,3 +1,5 @@
+export * from "./Splash";
+export * from "./AccountTypeSelection";
 export * from "./SignIn";
 export * from "./SignUpWithEmail";
 export * from "./VerifyEmail";

@@ -79,7 +79,7 @@ const UploadPhotosButton = ({
           style={{
             color: "white",
             marginLeft: 5,
-            fontFamily: "Inter-Medium",
+            fontFamily: "Poppins-Regular",
             fontSize: 12,
           }}
         >

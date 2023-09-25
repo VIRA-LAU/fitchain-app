@@ -55,7 +55,7 @@ export const RecordGamePopup = ({
         }}
       >
         <View style={styles.selectView}>
-          <Text style={{ color: "white", fontFamily: "Inter-Medium" }}>
+          <Text style={{ color: "white", fontFamily: "Poppins-Regular" }}>
             Upload While Recording
           </Text>
           <Switch
@@ -67,7 +67,7 @@ export const RecordGamePopup = ({
         </View>
 
         <View style={styles.selectView}>
-          <Text style={{ color: "white", fontFamily: "Inter-Medium" }}>
+          <Text style={{ color: "white", fontFamily: "Poppins-Regular" }}>
             Show Modified Video
           </Text>
           <Switch
@@ -81,7 +81,7 @@ export const RecordGamePopup = ({
     ) : (
       <View style={{ paddingTop: 20 }}>
         <Text style={styles.promptText}>Select court camera.</Text>
-        <View style={{ marginHorizontal: 20, marginBottom: 100, zIndex: 3 }}>
+        <View style={{ marginHorizontal: 20, marginBottom: "25%", zIndex: 3 }}>
           <DropDownPicker
             open={dropDownOpen}
             value={dropDownValue}
@@ -99,7 +99,7 @@ export const RecordGamePopup = ({
               borderColor: "transparent",
             }}
             theme="DARK"
-            textStyle={{ color: "white", fontFamily: "Inter-Medium" }}
+            textStyle={{ color: "white", fontFamily: "Poppins-Regular" }}
           />
         </View>
       </View>
@@ -137,7 +137,7 @@ export const RecordGamePopup = ({
           >
             <Text
               style={{
-                fontFamily: "Inter-Medium",
+                fontFamily: "Poppins-Regular",
                 color: isActive ? "white" : colors.tertiary,
               }}
             >
@@ -213,7 +213,7 @@ export const RecordGamePopup = ({
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     promptText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       textAlign: "center",
       color: "white",
       marginBottom: 10,

@@ -8,11 +8,13 @@ import {
   SignUpAsBranch,
   VerifyEmail,
   ForgotPassword,
+  AccountTypeSelection,
 } from "screens";
 import { UserData } from "src/utils";
 
 export type SignUpStackParamList = {
-  SignIn: undefined;
+  AccountTypeSelection: undefined;
+  SignIn: { accountType: "user" | "branch" };
   SignUpWithEmail: undefined;
   VerifyEmail: { email: string; password: string; isBranch: boolean };
   SignUpExtraDetails: { userData: UserData };
@@ -30,9 +32,13 @@ const Stack = createStackNavigator<SignUpStackParamList>();
 
 export const SignUpNavigator = () => (
   <Stack.Navigator
-    initialRouteName="SignIn"
+    initialRouteName="AccountTypeSelection"
     screenOptions={{ headerShown: false }}
   >
+    <Stack.Screen
+      name="AccountTypeSelection"
+      component={AccountTypeSelection}
+    />
     <Stack.Screen name="SignIn" component={SignIn} />
     <Stack.Screen name="SignUpWithEmail" component={SignUpWithEmail} />
     <Stack.Screen name="VerifyEmail" component={VerifyEmail} />

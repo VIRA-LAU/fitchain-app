@@ -15,12 +15,14 @@ export type BottomTabParamList = {
   Profile: undefined;
 };
 
-export type VenueBottomTabParamList = {
+export type BranchBottomTabParamList = {
   Home: undefined;
   Branch: undefined;
 };
 
-type Props = BottomTabScreenProps<BottomTabParamList & VenueBottomTabParamList>;
+type Props = BottomTabScreenProps<
+  BottomTabParamList & BranchBottomTabParamList
+>;
 
 export const tabScreenOptions = ({
   route,

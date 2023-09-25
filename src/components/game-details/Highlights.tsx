@@ -56,7 +56,7 @@ export const Highlights = ({
             <Text
               style={{
                 color: "white",
-                fontFamily: "Inter-Medium",
+                fontFamily: "Poppins-Regular",
                 textAlign: "center",
                 marginTop: 10,
               }}

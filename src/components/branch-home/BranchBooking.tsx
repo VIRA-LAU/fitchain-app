@@ -112,16 +112,16 @@ const makeStyles = (colors: MD3Colors) =>
       width: "140%",
     },
     typeText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       fontSize: 16,
     },
     confirmedInfo: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       fontSize: 12,
       color: colors.tertiary,
     },
     timeSlotText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       fontSize: 14,
       color: colors.tertiary,
       lineHeight: 20,

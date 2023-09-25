@@ -1,12 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
-import {
-  ActivityIndicator,
-  Avatar,
-  Button,
-  Text,
-  useTheme,
-} from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { Avatar, Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { StackParamList } from "navigation";
 import { AppHeader } from "src/components";
@@ -113,7 +107,10 @@ export const InviteUsers = ({ navigation, route }: Props) => {
                             )}`
                           : ""
                       }
-                      labelStyle={{ fontFamily: "Inter-Medium", fontSize: 20 }}
+                      labelStyle={{
+                        fontFamily: "Poppins-Regular",
+                        fontSize: 20,
+                      }}
                       size={45}
                       style={{
                         backgroundColor: colors.secondary,
@@ -175,7 +172,7 @@ export const InviteUsers = ({ navigation, route }: Props) => {
                     />
                     <Text
                       style={{
-                        fontFamily: "Inter-Medium",
+                        fontFamily: "Poppins-Regular",
                         color: colors.tertiary,
                         marginLeft: 10,
                       }}
@@ -212,7 +209,7 @@ const makeStyles = (colors: MD3Colors) =>
       borderBottomWidth: 0.5,
     },
     name: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: "white",
       fontSize: 16,
     },

@@ -1,5 +1,12 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View, TextInput, Image, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -45,17 +52,35 @@ export const VerifyEmail = ({
   return (
     <AppHeader backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView}>
-        <Image source={require("assets/images/Logo-Icon.png")} />
-        <Text variant="titleLarge" style={styles.titleText}>
-          Verify your Email
+        <Image
+          source={require("assets/images/logo-text-dark.png")}
+          style={{
+            aspectRatio: 5.24,
+            height: "auto",
+            width: "50%",
+            resizeMode: "contain",
+            marginTop: 60,
+            marginBottom: "25%",
+          }}
+        />
+
+        <Text
+          variant="headlineSmall"
+          style={[
+            styles.text,
+            {
+              textTransform: "uppercase",
+              marginBottom: 8,
+            },
+          ]}
+        >
+          Verify Email
         </Text>
-        <View style={styles.inputView}>
-          <Text variant="labelLarge" style={styles.h2}>
-            Please verify your email address through the email we sent before
-            you proceed.
-            {"\n"}
-            (You may have to check your junk folder.)
-          </Text>
+        <Text variant="labelLarge" style={styles.text}>
+          Please verify your email address through the email we sent
+        </Text>
+
+        <View style={{ width: "87%", marginTop: 24 }}>
           {errorMessage && (
             <Text
               variant="labelMedium"
@@ -63,16 +88,32 @@ export const VerifyEmail = ({
                 color: "red",
                 textAlign: "center",
                 marginTop: "5%",
-                fontFamily: "Inter-SemiBold",
+                fontFamily: "Poppins-Medium",
               }}
             >
               {errorMessage}
             </Text>
           )}
+
+          {resendSuccess && (
+            <Text
+              variant="labelMedium"
+              style={{
+                color: "#008c2a",
+                textAlign: "center",
+                marginTop: "5%",
+                fontFamily: "Poppins-Medium",
+              }}
+            >
+              New email sent.
+            </Text>
+          )}
+        </View>
+
+        <View style={{ marginTop: "auto", width: "87%" }}>
           <Button
             mode="contained"
-            style={styles.continueButton}
-            contentStyle={{ height: 50 }}
+            style={{ marginTop: 20, height: 44, justifyContent: "center" }}
             loading={isLoading}
             onPress={
               !isLoading
@@ -88,9 +129,9 @@ export const VerifyEmail = ({
           >
             Continue
           </Button>
-
           <Button
-            style={styles.resendButton}
+            mode="contained"
+            style={{ marginTop: 12, height: 44, justifyContent: "center" }}
             loading={resendLoading}
             onPress={
               !resendLoading
@@ -99,6 +140,7 @@ export const VerifyEmail = ({
                       email,
                       isBranch,
                     });
+                    setErrorMessage("");
                   }
                 : undefined
             }
@@ -106,19 +148,26 @@ export const VerifyEmail = ({
             Resend Email
           </Button>
 
-          {resendSuccess && (
-            <Text
-              variant="labelMedium"
-              style={{
-                color: "lightgreen",
-                textAlign: "center",
-                marginTop: "5%",
-                fontFamily: "Inter-Medium",
-              }}
+          <View
+            style={{
+              marginTop: 24,
+              marginBottom: 64,
+            }}
+          >
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={() => navigation.goBack()}
             >
-              New email sent.
-            </Text>
-          )}
+              <Text
+                style={{
+                  fontFamily: "Poppins-Regular",
+                  textAlign: "center",
+                }}
+              >
+                Go Back
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </AppHeader>
@@ -131,40 +180,10 @@ const makeStyles = (colors: MD3Colors) =>
       flexGrow: 1,
       backgroundColor: colors.background,
       alignItems: "center",
-      justifyContent: "center",
-      paddingVertical: "5%",
     },
-    titleText: {
-      marginTop: "5%",
-      color: "white",
-    },
-    inputView: {
-      marginTop: "10%",
-      width: "80%",
-    },
-    h2: {
+    text: {
       color: colors.tertiary,
       textAlign: "center",
-      fontSize: 12,
-    },
-    codeView: {
-      width: "95%",
-      marginTop: "5%",
-      flexDirection: "row",
-      alignSelf: "center",
-    },
-    codeInput: {
-      backgroundColor: colors.secondary,
-      width: "23%",
-      aspectRatio: 1 / 1,
-      marginHorizontal: "1%",
-      textAlign: "center",
-      fontSize: 24,
-      color: "white",
-    },
-    resendButton: { marginTop: "5%" },
-    continueButton: {
-      marginTop: "7%",
-      justifyContent: "center",
+      maxWidth: "87%",
     },
   });

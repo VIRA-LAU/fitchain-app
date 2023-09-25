@@ -111,12 +111,12 @@ const makeStyles = (colors: MD3Colors) =>
     },
     text: {
       color: "white",
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
     },
     greyText: {
       color: colors.tertiary,
       fontSize: 12,
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
     },
     gameIcon: { marginRight: 10, width: 35, aspectRatio: 1 },
   });

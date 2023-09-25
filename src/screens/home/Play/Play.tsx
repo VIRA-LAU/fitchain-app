@@ -51,7 +51,7 @@ export const Play = ({
 }: {
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
-  setPlayScreenStillVisible: Dispatch<SetStateAction<boolean>>;
+  setPlayScreenStillVisible?: Dispatch<SetStateAction<boolean>>;
   branch?: Branch;
 }) => {
   const { colors } = useTheme();
@@ -336,7 +336,7 @@ export const Play = ({
                     >
                       <Text
                         style={{
-                          fontFamily: "Inter-Medium",
+                          fontFamily: "Poppins-Regular",
                           color: colors.tertiary,
                         }}
                       >
@@ -405,7 +405,8 @@ export const Play = ({
                 onPress={
                   searchDate && searchLocationMarker && searchLocationName
                     ? () => {
-                        setPlayScreenStillVisible(true);
+                        if (setPlayScreenStillVisible)
+                          setPlayScreenStillVisible(true);
                         setVisible(false);
                         if (!branch)
                           navigation.push("ChooseBranch", {
@@ -459,7 +460,8 @@ export const Play = ({
                   mode="contained"
                   style={{ width: "100%", marginTop: 15 }}
                   onPress={() => {
-                    setPlayScreenStillVisible(true);
+                    if (setPlayScreenStillVisible)
+                      setPlayScreenStillVisible(true);
                     setVisible(false);
                     if (!branch && searchLocationMarker && searchLocationName)
                       navigation.push("ChooseGame", {
@@ -608,7 +610,7 @@ const makeStyles = (colors: MD3Colors) =>
       justifyContent: "center",
     },
     title: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       color: "white",
       fontSize: 16,
     },
@@ -627,7 +629,7 @@ const makeStyles = (colors: MD3Colors) =>
       marginHorizontal: 5,
     },
     sportText: {
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
       fontSize: 16,
       lineHeight: 16,
       marginRight: 10,
@@ -649,11 +651,11 @@ const makeStyles = (colors: MD3Colors) =>
       alignItems: "center",
     },
     labelText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: "white",
     },
     buttonText: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: colors.primary,
       textAlignVertical: "center",
     },
@@ -680,7 +682,7 @@ const makeStyles = (colors: MD3Colors) =>
       marginRight: 15,
     },
     reset: {
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       color: colors.tertiary,
     },
   });

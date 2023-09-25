@@ -1,87 +1,9 @@
 import React, { useContext, useEffect } from "react";
-import { NavigatorScreenParams } from "@react-navigation/native";
 import { SignUpNavigator } from "./SignUpNavigator";
-import { BottomTabParamList } from "./tabScreenOptions";
-import { GameType, TimeSlot } from "src/types";
 import { UserContext, getData } from "src/utils";
 import { HomeNavigator } from "./HomeNavigator";
 import { BranchHomeNavigator } from "./BranchHomeNavigator";
-import { LatLng } from "react-native-maps";
-
-export type StackParamList = {
-  BottomBar: NavigatorScreenParams<BottomTabParamList>;
-  GameDetails: { id: number; isPrevious: boolean };
-  InviteUsers: {
-    gameId: number;
-  };
-  PlayerProfile: {
-    playerId: number;
-    firstName: string;
-    lastName: string;
-  };
-  RatePlayer: {
-    playerId: number;
-    firstName: string;
-    lastName: string;
-    gameId: number;
-    profilePhotoUrl?: string;
-    coverPhotoUrl?: string;
-  };
-  BranchDetails: {
-    id: number;
-    playScreenBookingDetails?: {
-      date: string;
-      nbOfPlayers: number;
-      time?: TimeSlot;
-      gameType: GameType;
-    } | null;
-  };
-  ChooseBranch: {
-    gameType: GameType;
-    nbOfPlayers: number;
-    date: string;
-    location: LatLng;
-    locationName: string;
-    time?: TimeSlot;
-  };
-  ChooseCourt: {
-    venueName?: string;
-    branchId: number;
-    branchLocation?: string;
-    bookingDetails?: {
-      date: string;
-      nbOfPlayers: number;
-      gameType: GameType;
-      time?: TimeSlot;
-    };
-    profilePhotoUrl?: string;
-  };
-  BookingPayment: {
-    venueName: string;
-    courtName: string;
-    courtType: string;
-    courtRating: number;
-    courtMaxPlayers: number;
-    price: number;
-    branchLatLng: number[];
-    bookingDetails: {
-      courtId: number;
-      date: string;
-      nbOfPlayers: number;
-      time: TimeSlot;
-      gameType: GameType;
-    };
-    profilePhotoUrl?: string;
-  };
-  ChooseGame: {
-    gameType: GameType;
-    location: LatLng;
-    locationName: string;
-    nbOfPlayers: number;
-    date?: string;
-    time?: TimeSlot;
-  };
-};
+import { Splash } from "src/screens";
 
 export const Authenticator = () => {
   const { userData, branchData, setUserData, setBranchData } =
@@ -136,6 +58,9 @@ export const Authenticator = () => {
           });
         }
       }
+    } else {
+      setUserData(null);
+      setBranchData(null);
     }
   };
 
@@ -143,7 +68,9 @@ export const Authenticator = () => {
     getLocalData();
   }, []);
 
-  if (userData) return <HomeNavigator />;
+  if (typeof userData === "undefined" && typeof branchData === "undefined")
+    return <Splash />;
+  else if (userData) return <HomeNavigator />;
   else if (branchData) return <BranchHomeNavigator />;
   else return <SignUpNavigator />;
 };

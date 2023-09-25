@@ -162,13 +162,13 @@ const makeStyles = (colors: MD3Colors) =>
     },
     greyText: {
       color: colors.tertiary,
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
       fontSize: 12,
       lineHeight: 23,
     },
     text: {
       color: "white",
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
     },
     textRow: {
       flexDirection: "row",

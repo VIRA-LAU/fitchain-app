@@ -1,5 +1,12 @@
 import type { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View, TextInput, Image, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -44,39 +51,54 @@ export const ForgotPassword = ({
   }, [error]);
 
   return (
-    <AppHeader backEnabled>
+    <AppHeader>
       <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
-        <Image source={require("assets/images/Logo-Icon.png")} />
-        <Text variant="titleLarge" style={styles.titleText}>
-          Forgot your password?
+        <Image
+          source={require("assets/images/logo-text-dark.png")}
+          style={{
+            aspectRatio: 5.24,
+            height: "auto",
+            width: "50%",
+            resizeMode: "contain",
+            marginTop: 60,
+            marginBottom: "25%",
+          }}
+        />
+
+        <Text
+          variant="headlineSmall"
+          style={[
+            styles.text,
+            {
+              textTransform: "uppercase",
+              marginBottom: 8,
+            },
+          ]}
+        >
+          Forgot Password
         </Text>
+
         {!isSuccess ? (
-          <View style={styles.inputView}>
-            <Text variant="labelLarge" style={styles.h2}>
-              Please enter your email address and we'll send you a link to reset
-              your password.
+          <View style={{ width: "87%", flexGrow: 1 }}>
+            <Text variant="labelLarge" style={styles.text}>
+              Please enter your email address
             </Text>
-            <View style={styles.textInputView}>
-              <MaterialCommunityIcon
-                name={"account-outline"}
-                size={20}
-                color={"#c9c9c9"}
-                style={{ marginHorizontal: 15 }}
-              />
-              <TextInput
-                value={email}
-                style={styles.textInput}
-                placeholder={"Email"}
-                keyboardType="email-address"
-                autoCapitalize={"none"}
-                placeholderTextColor={"#a8a8a8"}
-                selectionColor={colors.primary}
-                onChangeText={(text) => {
-                  setEmail(text.trim());
-                  setErrorMessage("");
-                }}
-              />
-            </View>
+
+            <Text style={{ fontFamily: "Poppins-Regular", marginTop: 24 }}>
+              Email
+            </Text>
+            <TextInput
+              value={email}
+              style={styles.textInput}
+              keyboardType="email-address"
+              autoCapitalize={"none"}
+              selectionColor={colors.primary}
+              onChangeText={(text) => {
+                setEmail(text.trim());
+                setErrorMessage("");
+              }}
+            />
+
             {errorMessage && (
               <Text
                 variant="labelMedium"
@@ -84,42 +106,70 @@ export const ForgotPassword = ({
                   color: "red",
                   textAlign: "center",
                   marginTop: "5%",
-                  fontFamily: "Inter-SemiBold",
+                  fontFamily: "Poppins-Bold",
                 }}
               >
                 {errorMessage}
               </Text>
             )}
 
-            <Button
-              mode="contained"
-              style={styles.sendButton}
-              loading={isLoading}
-              onPress={
-                !isLoading
-                  ? () => {
-                      if (email) {
-                        if (emailReg.test(email)) forgotPassword({ email });
-                        else
-                          setErrorMessage(
-                            "Please make sure the provided email is valid."
-                          );
+            <View style={{ marginTop: "auto" }}>
+              <Button
+                mode="contained"
+                style={{ marginTop: 20, height: 44, justifyContent: "center" }}
+                loading={isLoading}
+                onPress={
+                  !isLoading
+                    ? () => {
+                        if (email) {
+                          if (emailReg.test(email)) forgotPassword({ email });
+                          else
+                            setErrorMessage(
+                              "Please make sure the provided email is valid."
+                            );
+                        }
                       }
-                    }
-                  : undefined
-              }
-            >
-              Send Email
-            </Button>
+                    : undefined
+                }
+              >
+                Send Email
+              </Button>
+
+              <View
+                style={{
+                  marginTop: 24,
+                  marginBottom: 64,
+                }}
+              >
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={() => navigation.goBack()}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "Poppins-Regular",
+                      textAlign: "center",
+                    }}
+                  >
+                    Go Back
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         ) : (
-          <View style={styles.inputView}>
+          <View style={{ flexGrow: 1, width: "87%", marginTop: 24 }}>
             <Text style={styles.success}>
               {`An email has been sent to\n${email}.`}
             </Text>
             <Button
               mode="contained"
-              style={styles.sendButton}
+              style={{
+                height: 44,
+                justifyContent: "center",
+                marginTop: "auto",
+                marginBottom: 64,
+              }}
               onPress={() => {
                 navigation.pop();
               }}
@@ -139,47 +189,25 @@ const makeStyles = (colors: MD3Colors) =>
       flexGrow: 1,
       backgroundColor: colors.background,
       alignItems: "center",
-      justifyContent: "center",
-      paddingVertical: "5%",
     },
-    titleText: {
-      marginTop: "5%",
-      color: "white",
-    },
-    inputView: {
-      marginTop: "10%",
-      width: "80%",
-    },
-    h2: {
+    text: {
       color: colors.tertiary,
       textAlign: "center",
-      fontSize: 12,
     },
     success: {
-      color: "lightgreen",
+      color: "#008c2a",
       textAlign: "center",
       fontSize: 14,
-      fontFamily: "Inter-Medium",
-    },
-    sendButton: {
-      marginTop: "7%",
-      justifyContent: "center",
-    },
-    textInputView: {
-      marginTop: "7%",
-      backgroundColor: colors.secondary,
-      borderRadius: 5,
-      height: 45,
-      flexDirection: "row",
-      alignItems: "center",
+      fontFamily: "Poppins-Regular",
     },
     textInput: {
-      flex: 1,
-      paddingRight: 10,
-      borderRadius: 5,
-      fontSize: 14,
-      color: "white",
-      width: "100%",
-      fontFamily: "Inter-Medium",
+      height: 44,
+      backgroundColor: colors.secondary,
+      marginTop: 4,
+      marginBottom: 8,
+      borderRadius: 8,
+      paddingHorizontal: 10,
+      fontFamily: "Poppins-Regular",
+      color: colors.tertiary,
     },
   });

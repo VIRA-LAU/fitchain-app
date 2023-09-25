@@ -127,10 +127,10 @@ const makeStyles = (colors: MD3Colors) =>
     },
     greyText: {
       color: colors.tertiary,
-      fontFamily: "Inter-Medium",
+      fontFamily: "Poppins-Regular",
     },
     text: {
       color: "white",
-      fontFamily: "Inter-SemiBold",
+      fontFamily: "Poppins-Bold",
     },
   });
