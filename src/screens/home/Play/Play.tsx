@@ -150,7 +150,11 @@ export const Play = ({
                 setMapDisplayed(false);
               }}
             >
-              <MaterialIcon name="arrow-back" color={"white"} size={24} />
+              <MaterialIcon
+                name="arrow-back"
+                color={colors.tertiary}
+                size={24}
+              />
             </TouchableOpacity>
           )}
           <Text style={styles.title}>{!branch && "Find or "}Create a Game</Text>
@@ -161,7 +165,7 @@ export const Play = ({
               setMapDisplayed(false);
             }}
           >
-            <Feather name="x" size={24} color={"white"} />
+            <Feather name="x" size={24} color={colors.tertiary} />
           </TouchableOpacity>
         </View>
         {!mapDisplayed ? (
@@ -269,7 +273,7 @@ export const Play = ({
                   <IonIcon
                     name={"location-outline"}
                     size={20}
-                    color={"white"}
+                    color={colors.tertiary}
                     style={{ marginRight: 10 }}
                   />
                   <Text
@@ -310,7 +314,7 @@ export const Play = ({
                 <MatComIcon
                   name={"account-outline"}
                   size={20}
-                  color={"white"}
+                  color={colors.tertiary}
                   style={{ marginRight: 10 }}
                 />
                 <Text style={styles.labelText}>How many players?</Text>
@@ -516,7 +520,7 @@ export const Play = ({
             backgroundColor: colors.secondary,
           }}
           buttonTextColorIOS={colors.primary}
-          textColor={"white"}
+          textColor={colors.tertiary}
           style={{
             backgroundColor: colors.secondary,
           }}
@@ -559,7 +563,7 @@ export const Play = ({
           >
             <CalendarPicker
               width={useWindowDimensions().width - 40}
-              textStyle={{ color: "white" }}
+              textStyle={{ color: colors.tertiary }}
               minDate={new Date()}
               todayBackgroundColor={colors.tertiary}
               selectedDayStyle={{ backgroundColor: colors.primary }}
@@ -611,7 +615,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     title: {
       fontFamily: "Poppins-Bold",
-      color: "white",
+      color: colors.tertiary,
       fontSize: 16,
     },
     typePicker: {
@@ -633,7 +637,7 @@ const makeStyles = (colors: MD3Colors) =>
       fontSize: 16,
       lineHeight: 16,
       marginRight: 10,
-      color: "white",
+      color: colors.tertiary,
     },
     createView: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 20 },
     contentView: {
@@ -652,7 +656,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     labelText: {
       fontFamily: "Poppins-Regular",
-      color: "white",
+      color: colors.tertiary,
     },
     buttonText: {
       fontFamily: "Poppins-Regular",

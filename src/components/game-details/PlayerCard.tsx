@@ -44,14 +44,14 @@ export const PlayerCardSkeleton = () => {
         <Skeleton style={[styles.profilePicture, { borderRadius: 100 }]} />
         <Skeleton height={20} width={100} style={styles.name} />
         <View style={[styles.ratingView, { marginTop: 8 }]}>
-          <IonIcon name={"star"} color={"white"} />
+          <IonIcon name={"star"} color={colors.tertiary} />
           <Skeleton height={15} width={30} style={styles.ratingText} />
         </View>
         <Skeleton height={30} style={styles.statusView} />
 
         <IonIcon
           name="ellipsis-horizontal"
-          color={"white"}
+          color={colors.tertiary}
           size={24}
           style={{ marginVertical: 5 }}
         />
@@ -187,7 +187,7 @@ export const PlayerCard = ({
           {firstName} {lastName}
         </Text>
         <View style={styles.ratingView}>
-          <IonIcon name={"star"} color={"white"} />
+          <IonIcon name={"star"} color={colors.tertiary} />
           <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
         </View>
         {isPressable && (
@@ -240,7 +240,7 @@ export const PlayerCard = ({
         )}
         <IonIcon
           name="ellipsis-horizontal"
-          color={"white"}
+          color={colors.tertiary}
           size={24}
           style={{ marginVertical: 5 }}
         />
@@ -253,7 +253,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
   StyleSheet.create({
     wrapperView: {
       width: 0.4 * windowWidth,
-      height: 235,
+      height: 245,
       backgroundColor: colors.secondary,
       borderRadius: 10,
       alignItems: "center",
@@ -275,10 +275,9 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       alignItems: "center",
     },
     name: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Bold",
       fontSize: 16,
-      marginBottom: 5,
     },
     ratingView: {
       flexDirection: "row",
@@ -287,7 +286,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       justifyContent: "center",
     },
     ratingText: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Regular",
       marginLeft: 5,
     },

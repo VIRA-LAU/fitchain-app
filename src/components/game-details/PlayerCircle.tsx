@@ -23,7 +23,7 @@ export const ScorePlayerCircle = ({
       <View style={{ marginTop: 5, alignItems: "center" }}>
         {!user ? (
           <View style={styles.circleView}>
-            <FeatherIcon name={"user-plus"} color={"white"} size={24} />
+            <FeatherIcon name={"user-plus"} color={colors.tertiary} size={24} />
           </View>
         ) : (
           <View style={styles.profilePhoto}>
@@ -81,7 +81,7 @@ export const TopPlayerCircle = ({
   return (
     <View style={styles.wrapperView}>
       <View style={styles.circleView}>
-        <FeatherIcon name={"user-plus"} color={"white"} size={24} />
+        <FeatherIcon name={"user-plus"} color={colors.tertiary} size={24} />
       </View>
       <View style={{ marginTop: 5, alignItems: "center" }}>
         <Text variant="titleSmall" style={{ color: colors.tertiary }}>
@@ -112,7 +112,7 @@ const makeStyles = (colors: MD3Colors) =>
       width: "55%",
       aspectRatio: 1,
       borderWidth: 2,
-      borderColor: "white",
+      borderColor: colors.tertiary,
       justifyContent: "center",
       alignItems: "center",
       borderRadius: 90,
@@ -122,7 +122,7 @@ const makeStyles = (colors: MD3Colors) =>
       width: "55%",
       borderRadius: 40,
       borderWidth: 2,
-      borderColor: "white",
+      borderColor: colors.tertiary,
       marginBottom: 5,
     },
   });

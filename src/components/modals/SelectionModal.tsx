@@ -46,7 +46,7 @@ export const SelectionModal = ({
             <Text
               variant="labelLarge"
               style={{
-                color: "white",
+                color: colors.tertiary,
               }}
             >
               {option.text}

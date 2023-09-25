@@ -51,13 +51,21 @@ export const ChooseBranch = ({ navigation, route }: Props) => {
     <AppHeader absolutePosition={false} title={"Choose a Venue"} backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView}>
         <View style={styles.infoView}>
-          <IonIcon name={"location-outline"} size={20} color={"white"} />
+          <IonIcon
+            name={"location-outline"}
+            size={20}
+            color={colors.tertiary}
+          />
           <Text variant="labelLarge" style={styles.information}>
             {locationName}
           </Text>
         </View>
         <View style={[styles.infoView, { marginBottom: 20 }]}>
-          <IonIcon name={"calendar-outline"} size={20} color={"white"} />
+          <IonIcon
+            name={"calendar-outline"}
+            size={20}
+            color={colors.tertiary}
+          />
           <Text variant="labelLarge" style={styles.information}>
             {date.toLocaleDateString("en-US", {
               weekday: "long",
@@ -106,7 +114,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     information: {
       marginLeft: 10,
-      color: "white",
+      color: colors.tertiary,
     },
     wrapperView: {
       margin: 20,

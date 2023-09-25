@@ -72,7 +72,9 @@ export const BookingPayment = ({
     <AppHeader
       absolutePosition={false}
       title={venueName}
-      right={<IonIcon name="ellipsis-horizontal" color="white" size={24} />}
+      right={
+        <IonIcon name="ellipsis-horizontal" color={colors.tertiary} size={24} />
+      }
       backEnabled
     >
       <ScrollView contentContainerStyle={styles.wrapperView}>
@@ -82,7 +84,9 @@ export const BookingPayment = ({
               source={require("assets/images/home/basketball-court-icon.png")}
             />
             <View style={styles.headerContentInfo}>
-              <Text style={{ color: "white", fontFamily: "Poppins-Bold" }}>
+              <Text
+                style={{ color: colors.tertiary, fontFamily: "Poppins-Bold" }}
+              >
                 {courtName}
               </Text>
               <Text style={styles.headerContentText}>{courtType}</Text>
@@ -108,7 +112,7 @@ export const BookingPayment = ({
             )}
           </View>
           <Button
-            textColor="white"
+            textColor={colors.tertiary}
             style={{ alignSelf: "center" }}
             icon={"arrow-right-top"}
             onPress={() => {
@@ -144,7 +148,7 @@ export const BookingPayment = ({
                   })
                   .slice(0, Platform.OS === "ios" ? -5 : -6)}
               </Text>
-              {/* <Feather name="edit-3" color={"white"} size={16} /> */}
+              {/* <Feather name="edit-3" color={colors.tertiary} size={16} /> */}
             </View>
           </View>
           <View style={styles.contentRow}>
@@ -181,7 +185,9 @@ export const BookingPayment = ({
             </Text>
           </View>
           <View style={styles.contentRow}>
-            <Text style={[styles.labelText, { color: "white" }]}>Total</Text>
+            <Text style={[styles.labelText, { color: colors.tertiary }]}>
+              Total
+            </Text>
             <Text style={[styles.valueText, { marginRight: 10 }]}>
               USD {price * bookedHours}
             </Text>
@@ -298,7 +304,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     valueText: {
       fontFamily: "Poppins-Bold",
-      color: "white",
+      color: colors.tertiary,
     },
     rating: {
       flexDirection: "row",

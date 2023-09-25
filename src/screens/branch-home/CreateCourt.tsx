@@ -115,7 +115,7 @@ export const CreateCourt = ({
               setVisible(false);
             }}
           >
-            <Feather name="x" size={24} color={"white"} />
+            <Feather name="x" size={24} color={colors.tertiary} />
           </TouchableOpacity>
         </View>
 
@@ -239,7 +239,7 @@ export const CreateCourt = ({
               <MatComIcon
                 name={"account-outline"}
                 size={20}
-                color={"white"}
+                color={colors.tertiary}
                 style={{ marginRight: 10 }}
               />
               <Text style={styles.labelText}>How many players?</Text>
@@ -422,7 +422,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
     },
     title: {
       fontFamily: "Poppins-Bold",
-      color: "white",
+      color: colors.tertiary,
       fontSize: 16,
     },
     typePicker: {
@@ -445,7 +445,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       fontSize: 16,
       lineHeight: 16,
       marginRight: 10,
-      color: "white",
+      color: colors.tertiary,
     },
     createView: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 20 },
     contentView: {
@@ -464,7 +464,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
     },
     labelText: {
       fontFamily: "Poppins-Regular",
-      color: "white",
+      color: colors.tertiary,
     },
     buttonView: {
       marginVertical: 20,
@@ -483,7 +483,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       paddingRight: 10,
       borderRadius: 5,
       fontSize: 14,
-      color: "white",
+      color: colors.tertiary,
       width: "100%",
       fontFamily: "Poppins-Regular",
     },
@@ -504,6 +504,6 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
     },
     timeSlotText: {
       fontFamily: "Poppins-Regular",
-      color: "white",
+      color: colors.tertiary,
     },
   });

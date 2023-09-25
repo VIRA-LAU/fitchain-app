@@ -133,13 +133,20 @@ export const UpdateCard = ({
           <View style={styles.textView}>
             <View>
               <Text style={styles.text}>
-                <Text style={{ fontFamily: "Poppins-Bold", color: "white" }}>
+                <Text
+                  style={{ fontFamily: "Poppins-Bold", color: colors.tertiary }}
+                >
                   {name}
                 </Text>
                 {type !== "invitation" && updateText(type)}
                 {type === "invitation" && " invited "}
                 {type === "invitation" && (
-                  <Text style={{ fontFamily: "Poppins-Bold", color: "white" }}>
+                  <Text
+                    style={{
+                      fontFamily: "Poppins-Bold",
+                      color: colors.tertiary,
+                    }}
+                  >
                     {friendName}
                   </Text>
                 )}
@@ -157,7 +164,11 @@ export const UpdateCard = ({
               </Text>
             </View>
             {type !== "photo-upload" ? (
-              <IonIcon name="ellipsis-horizontal" color={"white"} size={20} />
+              <IonIcon
+                name="ellipsis-horizontal"
+                color={colors.tertiary}
+                size={20}
+              />
             ) : (
               <Image
                 source={require("assets/images/home/uploaded-photo.png")}
@@ -198,7 +209,7 @@ export const UpdateCard = ({
                       source: "account-remove-outline",
                       direction: "rtl",
                     }}
-                    textColor={"white"}
+                    textColor={colors.tertiary}
                     loading={editRequestLoading}
                     onPress={
                       !editRequestLoading

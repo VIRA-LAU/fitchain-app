@@ -42,17 +42,20 @@ export const tabScreenOptions = ({
       }
     },
     tabBarActiveTintColor: colors.primary,
-    tabBarInactiveTintColor: "white",
+    tabBarInactiveTintColor: colors.tertiary,
     tabBarStyle: {
       height: 80,
-      borderColor: "white",
+      borderColor: colors.tertiary,
       position: "relative",
       backgroundColor: colors.secondary,
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,
     },
-    tabBarItemStyle: { paddingBottom: 15 },
-    tabBarActiveBackgroundColor: colors.secondary,
-    tabBarInactiveBackgroundColor: colors.secondary,
+    tabBarLabelStyle: {
+      fontFamily: "Poppins-Medium",
+    },
+    tabBarItemStyle: { paddingBottom: 12 },
+    tabBarActiveBackgroundColor: colors.background,
+    tabBarInactiveBackgroundColor: colors.background,
   };
 };

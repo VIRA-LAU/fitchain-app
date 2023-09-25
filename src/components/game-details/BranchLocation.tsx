@@ -144,7 +144,7 @@ export const BranchLocation = ({
           {type === "branch" && (
             <FeatherIcon
               name={"star"}
-              color={"white"}
+              color={colors.tertiary}
               size={14}
               style={{ marginLeft: "auto", marginRight: 5 }}
             />
@@ -220,7 +220,7 @@ const makeStyles = (colors: MD3Colors) =>
       marginVertical: 2,
     },
     title: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Regular",
     },
     subtitle: {
@@ -234,7 +234,7 @@ const makeStyles = (colors: MD3Colors) =>
       fontSize: 10,
     },
     rowValue: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Regular",
       fontSize: 10,
     },

@@ -262,7 +262,7 @@ const makeStyles = (colors: MD3Colors) =>
     promptText: {
       fontFamily: "Poppins-Regular",
       textAlign: "center",
-      color: "white",
+      color: colors.tertiary,
       marginBottom: 30,
       marginHorizontal: 20,
       lineHeight: 20,
@@ -279,7 +279,7 @@ const makeStyles = (colors: MD3Colors) =>
     promptTeamText: {
       fontFamily: "Poppins-Regular",
       textAlign: "center",
-      color: "white",
+      color: colors.tertiary,
       fontSize: 20,
     },
   });

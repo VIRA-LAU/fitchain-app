@@ -100,7 +100,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                       style={{
                         fontFamily: "Poppins-Regular",
                         fontSize: 16,
-                        color: "white",
+                        color: colors.tertiary,
                         textAlign: "center",
                         margin: 10,
                       }}
@@ -155,9 +155,13 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                 <View style={{ width: "50%" }}>
                   <Button
                     icon={() => (
-                      <FeatherIcon name="thumbs-up" size={22} color={"white"} />
+                      <FeatherIcon
+                        name="thumbs-up"
+                        size={22}
+                        color={colors.tertiary}
+                      />
                     )}
-                    textColor={"white"}
+                    textColor={colors.tertiary}
                   >
                     Follow Venue
                   </Button>
@@ -316,7 +320,7 @@ const makeStyles = (
     headerText: {
       fontFamily: "Poppins-Regular",
       lineHeight: 20,
-      color: "white",
+      color: colors.tertiary,
       marginVertical: 15,
       textAlign: "center",
     },
@@ -364,10 +368,10 @@ const makeStyles = (
     },
     rating: {
       fontFamily: "Poppins-Bold",
-      color: "white",
+      color: colors.tertiary,
       fontSize: 70,
-      lineHeight: 70 - 1.5,
-      height: 70 - 16,
+      lineHeight: 85,
+      height: 70,
       marginVertical: 20,
     },
     ratingLabelsView: {

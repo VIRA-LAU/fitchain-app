@@ -104,7 +104,11 @@ export const Profile = ({
                 setModalVisible(true);
               }}
             >
-              <IonIcon name="ellipsis-horizontal" color={"white"} size={24} />
+              <IonIcon
+                name="ellipsis-horizontal"
+                color={colors.tertiary}
+                size={24}
+              />
             </TouchableOpacity>
           )
         ) : (
@@ -450,7 +454,7 @@ const makeStyles = (
     headerText2: {
       fontFamily: "Poppins-Regular",
       lineHeight: 20,
-      color: "white",
+      color: colors.tertiary,
       marginTop: -10,
       marginBottom: 20,
       textAlign: "center",
@@ -465,10 +469,10 @@ const makeStyles = (
     },
     rating: {
       fontFamily: "Poppins-Bold",
-      color: "white",
+      color: colors.tertiary,
       fontSize: 70,
-      lineHeight: 70 - 1.5,
-      height: 70 - 16,
+      lineHeight: 85,
+      height: 70,
       marginVertical: 20,
     },
     ratingLabelsView: {
@@ -517,7 +521,7 @@ const makeStyles = (
     },
     achievementValue: {
       fontFamily: "Poppins-Bold",
-      color: "white",
+      color: colors.tertiary,
       fontSize: 16,
     },
     divider: {

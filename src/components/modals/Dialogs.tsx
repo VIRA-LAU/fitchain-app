@@ -30,6 +30,8 @@ export const GenericDialog = ({
   text: string;
 }) => {
   const theme = useTheme();
+  const colors = theme.colors;
+
   return (
     <Portal>
       <Dialog
@@ -39,9 +41,9 @@ export const GenericDialog = ({
         }}
         theme={theme}
       >
-        <Dialog.Title style={{ color: "white" }}>{title}</Dialog.Title>
+        <Dialog.Title style={{ color: colors.tertiary }}>{title}</Dialog.Title>
         <Dialog.Content>
-          <Text variant="bodyMedium" style={{ color: "white" }}>
+          <Text variant="bodyMedium" style={{ color: colors.tertiary }}>
             {text}
           </Text>
         </Dialog.Content>

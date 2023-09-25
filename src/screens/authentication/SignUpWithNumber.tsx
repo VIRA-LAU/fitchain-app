@@ -46,8 +46,12 @@ export const SignUpWithNumber = ({ navigation, route }: Props) => {
           </Text>
           <PhoneInput
             defaultCode={"LB"}
-            codeTextStyle={{ color: "white", fontSize: 14, height: 20 }}
-            textInputStyle={{ color: "white", fontSize: 14, height: 45 }}
+            codeTextStyle={{ color: colors.tertiary, fontSize: 14, height: 20 }}
+            textInputStyle={{
+              color: colors.tertiary,
+              fontSize: 14,
+              height: 45,
+            }}
             countryPickerButtonStyle={{
               backgroundColor: colors.secondary,
               borderRadius: 5,
@@ -103,14 +107,14 @@ const makeStyles = (colors: MD3Colors) =>
     },
     titleText: {
       marginTop: "5%",
-      color: "white",
+      color: colors.tertiary,
     },
     inputView: {
       marginTop: "15%",
       width: "80%",
     },
     h1: {
-      color: "white",
+      color: colors.tertiary,
       textAlign: "center",
     },
     h2: {

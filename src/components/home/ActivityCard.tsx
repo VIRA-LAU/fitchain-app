@@ -130,7 +130,7 @@ const makeStyles = (colors: MD3Colors) =>
       fontFamily: "Poppins-Regular",
     },
     text: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Bold",
     },
   });

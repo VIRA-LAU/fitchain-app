@@ -112,7 +112,7 @@ export const ResultCard = ({
           <View style={{ alignItems: "center" }}>
             {isChangingScore ? (
               <TextInput
-                textColor="white"
+                textColor={colors.tertiary}
                 keyboardType="numeric"
                 value={tempHomeScore?.toString()}
                 onChangeText={(text) =>
@@ -159,7 +159,7 @@ export const ResultCard = ({
           <View style={{ alignItems: "center" }}>
             {isChangingScore ? (
               <TextInput
-                textColor="white"
+                textColor={colors.tertiary}
                 keyboardType="numeric"
                 value={tempAwayScore?.toString()}
                 onChangeText={(text) =>
@@ -261,7 +261,7 @@ export const ResultCard = ({
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     result: {
-      color: "white",
+      color: colors.tertiary,
       fontSize: 18,
       fontWeight: "800",
     },
@@ -271,7 +271,7 @@ const makeStyles = (colors: MD3Colors) =>
       fontWeight: "400",
     },
     scoreInput: {
-      color: "white",
+      color: colors.tertiary,
       fontSize: 30,
       padding: 10,
       marginVertical: 10,

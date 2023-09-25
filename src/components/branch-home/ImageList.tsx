@@ -74,10 +74,10 @@ const UploadPhotosButton = ({
           );
         }}
       >
-        <IonIcon name="camera-outline" color={"white"} size={20} />
+        <IonIcon name="camera-outline" color={colors.tertiary} size={20} />
         <Text
           style={{
-            color: "white",
+            color: colors.tertiary,
             marginLeft: 5,
             fontFamily: "Poppins-Regular",
             fontSize: 12,
@@ -223,7 +223,7 @@ export const ImageList = ({
             return (
               <Button
                 buttonColor="darkred"
-                textColor="white"
+                textColor={colors.tertiary}
                 style={{ margin: 10 }}
                 onPress={() => {
                   const image = imageArr[imageIndex].uri.split("/").pop()!;

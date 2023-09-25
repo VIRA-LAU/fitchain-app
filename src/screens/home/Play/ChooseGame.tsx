@@ -113,7 +113,7 @@ export const ChooseGame = ({ navigation, route }: Props) => {
             setModalVisible(true);
           }}
         >
-          <MaterialIcon name="sort" color={"white"} size={24} />
+          <MaterialIcon name="sort" color={colors.tertiary} size={24} />
         </TouchableOpacity>
       }
       backEnabled
@@ -131,7 +131,7 @@ export const ChooseGame = ({ navigation, route }: Props) => {
         <Text
           variant="headlineSmall"
           style={{
-            color: "white",
+            color: colors.tertiary,
             marginTop: -5,
             marginBottom: 10,
           }}

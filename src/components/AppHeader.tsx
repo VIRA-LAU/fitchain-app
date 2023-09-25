@@ -98,7 +98,7 @@ export const AppHeader = ({
               >
                 <MaterialIcon
                   name="arrow-back"
-                  color={darkMode ? "black" : "white"}
+                  color={colors.tertiary}
                   size={25}
                   style={{ marginRight: 20 }}
                 />
@@ -147,7 +147,7 @@ export const AppHeader = ({
             >
               <IonIcon
                 name={searchBarText ? "close-outline" : "search-outline"}
-                color="white"
+                color={colors.tertiary}
                 size={20}
               />
             </TouchableOpacity>
@@ -168,9 +168,11 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
     },
     header: {
       position: "relative",
-      backgroundColor: colors.secondary,
+      backgroundColor: colors.background,
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.tertiary,
     },
     headerAbsolute: {
       position: "absolute",
@@ -203,7 +205,7 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
       paddingRight: 20,
     },
     searchBar: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Regular",
       height: 40,
       flexGrow: 1,
@@ -219,7 +221,7 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
       justifyContent: "center",
     },
     title: {
-      color: darkMode ? "black" : "white",
+      color: colors.tertiary,
       textAlign: "center",
       fontSize: 18,
       fontFamily: "Poppins-Bold",

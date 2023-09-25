@@ -81,7 +81,7 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
       <View style={styles.calendarView}>
         <Text style={[styles.myCalendar]}>My Calendar</Text>
         <CalendarPicker
-          textStyle={{ color: "white" }}
+          textStyle={{ color: colors.tertiary }}
           todayBackgroundColor={colors.tertiary}
           selectedDayStyle={{ backgroundColor: colors.primary }}
           initialDate={new Date()}
@@ -133,7 +133,7 @@ const makeStyles = (colors: MD3Colors) =>
       paddingBottom: 20,
     },
     venueName: {
-      color: "white",
+      color: colors.tertiary,
       marginTop: 15,
       marginBottom: 5,
       maxWidth: "60%",
@@ -149,7 +149,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     myCalendar: {
       fontFamily: "Poppins-Bold",
-      color: "white",
+      color: colors.tertiary,
       fontSize: 16,
       marginBottom: 10,
       marginLeft: 10,

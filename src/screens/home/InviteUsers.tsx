@@ -130,7 +130,11 @@ export const InviteUsers = ({ navigation, route }: Props) => {
                       marginTop: 5,
                     }}
                   >
-                    <IonIcon name={"star-outline"} color={"white"} size={14} />
+                    <IonIcon
+                      name={"star-outline"}
+                      color={colors.tertiary}
+                      size={14}
+                    />
                     <Text
                       style={[styles.name, { fontSize: 14, marginLeft: 10 }]}
                     >
@@ -144,7 +148,7 @@ export const InviteUsers = ({ navigation, route }: Props) => {
                       mode="contained"
                       style={styles.inviteButton}
                       loading={loadingIndex === user.id}
-                      textColor="white"
+                      textColor={colors.tertiary}
                       buttonColor={colors.background}
                       onPress={
                         loadingIndex !== user.id
@@ -210,7 +214,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     name: {
       fontFamily: "Poppins-Bold",
-      color: "white",
+      color: colors.tertiary,
       fontSize: 16,
     },
     teams: {
@@ -224,7 +228,7 @@ const makeStyles = (colors: MD3Colors) =>
     inviteButton: {
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: "white",
+      borderColor: colors.tertiary,
     },
     invitedView: {
       marginLeft: "auto",

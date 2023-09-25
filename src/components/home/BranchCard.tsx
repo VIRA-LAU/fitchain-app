@@ -186,7 +186,7 @@ const makeStyles = (
       paddingTop: isHorizontal ? 10 : 0,
     },
     title: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Bold",
     },
     ratingView: {
@@ -194,7 +194,7 @@ const makeStyles = (
       alignItems: isHorizontal ? "flex-start" : "center",
     },
     rating: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Regular",
       fontSize: 12,
       marginLeft: 5,

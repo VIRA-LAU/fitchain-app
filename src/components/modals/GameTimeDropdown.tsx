@@ -3,6 +3,7 @@ import { Modal, StyleSheet, View, TouchableOpacity } from "react-native";
 import { useTheme, Text } from "react-native-paper";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { modalStyles } from "./SelectionModal";
+import { MD3Colors } from "react-native-paper/lib/typescript/types";
 
 export const GameTimeDropdown = ({
   index,
@@ -13,6 +14,7 @@ export const GameTimeDropdown = ({
 }) => {
   const { colors } = useTheme();
   const mStyles = modalStyles(colors);
+  const styles = makeStyles(colors);
 
   const durations = ["Upcoming Games", "Previous Games"];
   const [modalVisible, setModalVisible] = useState(false);
@@ -27,7 +29,7 @@ export const GameTimeDropdown = ({
         <Text style={styles.title}>{durations[index]}</Text>
         <FeatherIcon
           name={`chevron-${modalVisible ? "up" : "down"}`}
-          color={"white"}
+          color={colors.tertiary}
           size={24}
           style={{ marginLeft: 5 }}
         />
@@ -62,7 +64,7 @@ export const GameTimeDropdown = ({
                   <Text
                     variant="labelLarge"
                     style={{
-                      color: "white",
+                      color: colors.tertiary,
                     }}
                   >
                     {duration}
@@ -70,7 +72,7 @@ export const GameTimeDropdown = ({
                   {index === localIndex && (
                     <FeatherIcon
                       name="check"
-                      color={"white"}
+                      color={colors.tertiary}
                       size={26}
                       style={{ marginLeft: "auto" }}
                     />
@@ -85,19 +87,20 @@ export const GameTimeDropdown = ({
   );
 };
 
-const styles = StyleSheet.create({
-  dropDownButton: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  title: {
-    color: "white",
-    fontFamily: "Poppins-Bold",
-  },
-  selectionRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 10,
-    height: 30,
-  },
-});
+const makeStyles = (colors: MD3Colors) =>
+  StyleSheet.create({
+    dropDownButton: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    title: {
+      color: colors.tertiary,
+      fontFamily: "Poppins-Bold",
+    },
+    selectionRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginVertical: 10,
+      height: 30,
+    },
+  });

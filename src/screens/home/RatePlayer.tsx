@@ -153,7 +153,7 @@ const makeStyles = (
     },
     question: {
       textAlign: "center",
-      color: "white",
+      color: colors.tertiary,
       width: "70%",
       fontFamily: "Poppins-Regular",
       alignContent: "center",
@@ -163,7 +163,7 @@ const makeStyles = (
     PlayerName: {
       fontWeight: "600",
       fontSize: 30,
-      color: "white",
+      color: colors.tertiary,
     },
     headerView: {
       backgroundColor: colors.background,
@@ -185,7 +185,7 @@ const makeStyles = (
     },
     rating: {
       fontFamily: "Poppins-Bold",
-      color: "white",
+      color: colors.tertiary,
       fontSize: 70,
       lineHeight: 70 - 1.5,
       height: 70 - 16,

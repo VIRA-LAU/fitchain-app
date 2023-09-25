@@ -276,7 +276,7 @@ const makeStyles = (colors: MD3Colors, width: number, height: number) =>
     labelText: { fontFamily: "Poppins-Regular", color: colors.tertiary },
     valueText: {
       fontFamily: "Poppins-Regular",
-      color: "white",
+      color: colors.tertiary,
       fontSize: 22,
     },
     absoluteSlider: {

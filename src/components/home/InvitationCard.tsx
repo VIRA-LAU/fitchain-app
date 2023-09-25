@@ -40,7 +40,11 @@ export const InvitationCardSkeleton = () => {
             height={40}
             style={{ borderRadius: 5, flex: 1, marginHorizontal: 10 }}
           />
-          <EntypoIcon name="dots-three-horizontal" color="white" size={18} />
+          <EntypoIcon
+            name="dots-three-horizontal"
+            color={colors.tertiary}
+            size={18}
+          />
         </View>
       </View>
     </View>
@@ -182,7 +186,7 @@ export const InvitationCard = ({
             <View style={{ flex: 1 }}>
               <Button
                 icon={{ source: "account-remove-outline", direction: "rtl" }}
-                textColor={"white"}
+                textColor={colors.primary}
                 onPress={() => {
                   if (type === "request")
                     editJoinRequest({
@@ -203,7 +207,7 @@ export const InvitationCard = ({
             </View>
             <EntypoIcon
               name="dots-three-horizontal"
-              color="white"
+              color={colors.tertiary}
               size={18}
               onPress={() =>
                 navigation.push("GameDetails", {
@@ -250,7 +254,7 @@ const makeStyles = (colors: MD3Colors, height: number, width: number) =>
       alignItems: "center",
     },
     text: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Bold",
       lineHeight: 20,
     },

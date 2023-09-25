@@ -319,8 +319,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
           >
             <Text
               style={{
-                fontFamily: "Poppins-Regular",
-                color: isActive ? "white" : colors.tertiary,
+                fontFamily: isActive ? "Poppins-Bold" : "Poppins-Regular",
+                color: colors.tertiary,
               }}
             >
               {route.title}
@@ -407,12 +407,20 @@ export const GameDetails = ({ navigation, route }: Props) => {
                 <Skeleton
                   height={30}
                   width={160}
-                  style={{ color: "white", marginTop: -5, marginBottom: 10 }}
+                  style={{
+                    color: colors.tertiary,
+                    marginTop: -5,
+                    marginBottom: 10,
+                  }}
                 />
                 <Skeleton
                   height={15}
                   width={80}
-                  style={{ color: "white", marginTop: -5, marginBottom: 10 }}
+                  style={{
+                    color: colors.tertiary,
+                    marginTop: -5,
+                    marginBottom: 10,
+                  }}
                 />
               </View>
               <Skeleton
@@ -436,7 +444,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               >
                 <Text
                   variant="titleLarge"
-                  style={{ color: "white", maxWidth: "75%" }}
+                  style={{ color: colors.tertiary, maxWidth: "75%" }}
                 >
                   {game!.startTime
                     .toLocaleDateString(undefined, {
@@ -447,7 +455,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     })
                     .slice(0, Platform.OS === "ios" ? -5 : -6)}
                 </Text>
-                <Text variant="labelLarge" style={{ color: "white" }}>
+                <Text variant="labelLarge" style={{ color: colors.tertiary }}>
                   {parseTimeFromMinutes(getMins(game!.startTime))}
                   {" -\n"}
                   {parseTimeFromMinutes(getMins(game!.endTime))}
@@ -512,7 +520,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                               : "thumbs-o-up"
                           }
                           size={22}
-                          color={"white"}
+                          color={colors.tertiary}
                         />
                       )}
                       loading={
@@ -520,7 +528,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                         unfollowLoading ||
                         followedGamesFetching
                       }
-                      textColor={"white"}
+                      textColor={colors.tertiary}
                       onPress={
                         !(
                           followLoading ||

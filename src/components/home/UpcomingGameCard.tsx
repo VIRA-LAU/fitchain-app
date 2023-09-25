@@ -101,7 +101,7 @@ export const UpcomingGameCard = ({ game }: { game: Game }) => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapper: {
-      color: "white",
+      color: colors.tertiary,
       flexDirection: "row",
       justifyContent: "space-between",
       backgroundColor: colors.secondary,
@@ -110,7 +110,7 @@ const makeStyles = (colors: MD3Colors) =>
       borderRadius: 10,
     },
     text: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Bold",
     },
     greyText: {

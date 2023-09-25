@@ -62,7 +62,7 @@ export const SortByModal = ({
             <Text
               variant="labelLarge"
               style={{
-                color: "white",
+                color: colors.tertiary,
               }}
             >
               Date
@@ -70,7 +70,7 @@ export const SortByModal = ({
             {sortOption === "date" && (
               <FeatherIcon
                 name="check"
-                color={"white"}
+                color={colors.tertiary}
                 size={26}
                 style={{ marginLeft: "auto" }}
               />
@@ -93,7 +93,7 @@ export const SortByModal = ({
             <Text
               variant="labelLarge"
               style={{
-                color: "white",
+                color: colors.tertiary,
               }}
             >
               Location
@@ -101,7 +101,7 @@ export const SortByModal = ({
             {sortOption === "location" && (
               <FeatherIcon
                 name="check"
-                color={"white"}
+                color={colors.tertiary}
                 size={26}
                 style={{ marginLeft: "auto" }}
               />

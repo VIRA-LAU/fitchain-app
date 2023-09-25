@@ -43,7 +43,7 @@ export const CourtCard = ({
               {name}
             </Text>
             <View style={styles.rating}>
-              <FeatherIcon name={`star`} color={"white"} size={14} />
+              <FeatherIcon name={`star`} color={colors.tertiary} size={14} />
               <Text style={styles.title}>{rating.toFixed(1)}</Text>
             </View>
           </View>
@@ -79,7 +79,7 @@ const makeStyles = (colors: MD3Colors) =>
       width: "100%",
     },
     courtType: {
-      color: "white",
+      color: colors.tertiary,
     },
     courtImage: {
       height: 75,
@@ -104,7 +104,7 @@ const makeStyles = (colors: MD3Colors) =>
       marginHorizontal: 15,
     },
     title: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Regular",
       marginLeft: 5,
     },
@@ -114,7 +114,7 @@ const makeStyles = (colors: MD3Colors) =>
       fontSize: 12,
     },
     rowValue: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Regular",
       fontSize: 10,
     },

@@ -101,7 +101,7 @@ export const SportTypeDropdown = ({
         <SportIcons sports={sports(true)} selectedSports={selectedSports} />
         <FeatherIcon
           name={`chevron-${modalVisible ? "up" : "down"}`}
-          color={"white"}
+          color={colors.tertiary}
           size={24}
           style={{ marginLeft: 32.5, width: 25 }}
         />
@@ -141,7 +141,7 @@ export const SportTypeDropdown = ({
                   <Text
                     variant="labelLarge"
                     style={{
-                      color: "white",
+                      color: colors.tertiary,
                     }}
                   >
                     {sport.type}
@@ -149,7 +149,7 @@ export const SportTypeDropdown = ({
                   {selectedSports[sport.type] && (
                     <FeatherIcon
                       name="check"
-                      color={"white"}
+                      color={colors.tertiary}
                       size={26}
                       style={{ marginLeft: "auto" }}
                     />

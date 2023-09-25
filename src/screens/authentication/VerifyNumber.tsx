@@ -140,7 +140,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     titleText: {
       marginTop: "5%",
-      color: "white",
+      color: colors.tertiary,
     },
     inputView: {
       marginTop: "10%",
@@ -164,7 +164,7 @@ const makeStyles = (colors: MD3Colors) =>
       marginHorizontal: "1%",
       textAlign: "center",
       fontSize: 24,
-      color: "white",
+      color: colors.tertiary,
     },
     resendButton: { marginTop: "5%" },
     continueButton: {

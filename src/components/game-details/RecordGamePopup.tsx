@@ -55,7 +55,9 @@ export const RecordGamePopup = ({
         }}
       >
         <View style={styles.selectView}>
-          <Text style={{ color: "white", fontFamily: "Poppins-Regular" }}>
+          <Text
+            style={{ color: colors.tertiary, fontFamily: "Poppins-Regular" }}
+          >
             Upload While Recording
           </Text>
           <Switch
@@ -67,7 +69,9 @@ export const RecordGamePopup = ({
         </View>
 
         <View style={styles.selectView}>
-          <Text style={{ color: "white", fontFamily: "Poppins-Regular" }}>
+          <Text
+            style={{ color: colors.tertiary, fontFamily: "Poppins-Regular" }}
+          >
             Show Modified Video
           </Text>
           <Switch
@@ -99,7 +103,10 @@ export const RecordGamePopup = ({
               borderColor: "transparent",
             }}
             theme="DARK"
-            textStyle={{ color: "white", fontFamily: "Poppins-Regular" }}
+            textStyle={{
+              color: colors.tertiary,
+              fontFamily: "Poppins-Regular",
+            }}
           />
         </View>
       </View>
@@ -215,7 +222,7 @@ const makeStyles = (colors: MD3Colors) =>
     promptText: {
       fontFamily: "Poppins-Regular",
       textAlign: "center",
-      color: "white",
+      color: colors.tertiary,
       marginBottom: 10,
       marginHorizontal: 20,
       lineHeight: 20,

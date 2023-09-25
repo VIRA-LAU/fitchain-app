@@ -71,7 +71,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     score: {
       width: 85,
-      color: "white",
+      color: colors.tertiary,
       textAlign: "center",
     },
   });

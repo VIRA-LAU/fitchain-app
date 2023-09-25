@@ -165,7 +165,7 @@ export const Team = ({
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     playerCardView: {
-      height: 300,
+      height: 310,
       flexDirection: "row",
     },
     placeholder: {

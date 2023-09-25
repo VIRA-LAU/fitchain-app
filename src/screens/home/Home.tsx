@@ -175,7 +175,13 @@ export const Home = ({ navigation, route }: Props) => {
   return (
     <AppHeader
       absolutePosition={false}
-      right={<IonIcon name="notifications-outline" color="white" size={24} />}
+      right={
+        <IonIcon
+          name="notifications-outline"
+          color={colors.tertiary}
+          size={24}
+        />
+      }
       left={
         <SportTypeDropdown
           selectedSports={selectedSports}
@@ -195,7 +201,7 @@ export const Home = ({ navigation, route }: Props) => {
           />
         }
       >
-        <Text variant="headlineSmall" style={{ color: "white" }}>
+        <Text variant="headlineSmall" style={{ color: colors.tertiary }}>
           Hi {userData?.firstName},
         </Text>
         <Text variant="labelLarge" style={styles.headerSubtext}>

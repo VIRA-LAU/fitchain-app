@@ -36,6 +36,7 @@ import { useNavigationState } from "@react-navigation/native";
 import { GameType, TimeSlot } from "src/types";
 import { LatLng } from "react-native-maps";
 import { NavigatorScreenParams } from "@react-navigation/native";
+import { Image } from "react-native";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 type Props = StackScreenProps<StackParamList, "BottomBar">;
@@ -137,7 +138,12 @@ const BottomTabNavigator = ({
           }}
         >
           <View style={styles.playIcon}>
-            <IonIcon name={"basketball-outline"} size={35} color={"white"} />
+            {/* <IonIcon name={"basketball-outline"} size={35} color={colors.tertiary} /> */}
+            <Image
+              source={require("assets/images/logo-white.png")}
+              resizeMode="contain"
+              style={{ width: "65%" }}
+            />
           </View>
           <Text style={styles.playText}>Play</Text>
         </TouchableOpacity>
@@ -274,10 +280,16 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
     playIcon: {
       width: windowWidth / 5.5,
       aspectRatio: 1,
-      backgroundColor: colors.primary,
+      backgroundColor: colors.tertiary,
       borderRadius: 40,
       justifyContent: "center",
       alignItems: "center",
     },
-    playText: { height: 40, fontSize: 10, color: "white", paddingTop: 12 },
+    playText: {
+      height: 40,
+      fontSize: 10,
+      color: colors.tertiary,
+      paddingTop: 12,
+      fontFamily: "Poppins-Medium",
+    },
   });

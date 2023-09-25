@@ -255,7 +255,7 @@ const GameList = ({
       <Text
         variant="headlineSmall"
         style={{
-          color: "white",
+          color: colors.tertiary,
           marginTop: -5,
           marginBottom: 10,
         }}
@@ -367,8 +367,8 @@ export const Games = ({ navigation, route }: NavigationProps) => {
           >
             <Text
               style={{
-                fontFamily: "Poppins-Regular",
-                color: isActive ? "white" : colors.tertiary,
+                fontFamily: isActive ? "Poppins-Bold" : "Poppins-Regular",
+                color: colors.tertiary,
               }}
             >
               {route.title}
@@ -394,7 +394,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
             setSearchBarVisible(true);
           }}
         >
-          <IonIcon name="search-outline" color="white" size={24} />
+          <IonIcon name="search-outline" color={colors.tertiary} size={24} />
         </TouchableOpacity>
       }
       middle={

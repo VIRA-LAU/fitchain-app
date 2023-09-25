@@ -121,7 +121,11 @@ export const BranchManagement = ({
                 setModalVisible(true);
               }}
             >
-              <IonIcon name="ellipsis-horizontal" color={"white"} size={24} />
+              <IonIcon
+                name="ellipsis-horizontal"
+                color={colors.tertiary}
+                size={24}
+              />
             </TouchableOpacity>
           )
         ) : (
@@ -240,7 +244,7 @@ export const BranchManagement = ({
                       style={{
                         fontFamily: "Poppins-Regular",
                         fontSize: 16,
-                        color: "white",
+                        color: colors.tertiary,
                         textAlign: "center",
                         margin: 10,
                       }}
@@ -359,7 +363,7 @@ export const BranchManagement = ({
       </ScrollView>
       <IconButton
         icon={"plus"}
-        iconColor="white"
+        iconColor={colors.tertiary}
         containerColor={colors.primary}
         size={40}
         style={{ position: "absolute", right: 20, bottom: 20 }}
@@ -407,7 +411,7 @@ const makeStyles = (
     headerText: {
       fontFamily: "Poppins-Regular",
       lineHeight: 20,
-      color: "white",
+      color: colors.tertiary,
       marginVertical: 15,
       textAlign: "center",
     },

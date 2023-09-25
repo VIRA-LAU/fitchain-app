@@ -167,7 +167,7 @@ const makeStyles = (colors: MD3Colors) =>
       lineHeight: 23,
     },
     text: {
-      color: "white",
+      color: colors.tertiary,
       fontFamily: "Poppins-Bold",
     },
     textRow: {
