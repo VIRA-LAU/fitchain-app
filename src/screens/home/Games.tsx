@@ -383,10 +383,6 @@ export const Games = ({ navigation, route }: NavigationProps) => {
   return (
     <AppHeader
       absolutePosition={false}
-      searchBar={searchBarVisible}
-      searchBarText={searchBarText}
-      setSearchBarText={setSearchBarText}
-      setSearchBarVisible={setSearchBarVisible}
       right={
         <TouchableOpacity
           activeOpacity={0.8}
@@ -400,12 +396,12 @@ export const Games = ({ navigation, route }: NavigationProps) => {
       middle={
         <GameTimeDropdown index={durationIndex} setIndex={setDurationIndex} />
       }
-      left={
-        <SportTypeDropdown
-          selectedSports={selectedSports}
-          setSelectedSports={setSelectedSports}
-        />
-      }
+      // left={
+      //   <SportTypeDropdown
+      //     selectedSports={selectedSports}
+      //     setSelectedSports={setSelectedSports}
+      //   />
+      // }
     >
       <View style={styles.wrapperView}>
         <TabView

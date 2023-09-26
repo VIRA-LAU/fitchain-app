@@ -1,6 +1,12 @@
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { StyleSheet, ScrollView, View } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import { Button, Text, useTheme } from "react-native-paper";
 import {
   AppHeader,
   SportTypeDropdown,
@@ -12,6 +18,7 @@ import { BottomTabParamList } from "src/navigation";
 import { useBranchesQuery } from "src/api";
 import { useState } from "react";
 import { Branch } from "src/types";
+import IonIcon from "react-native-vector-icons/Ionicons";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -39,17 +46,51 @@ export const Branches = ({ navigation, route }: Props) => {
   return (
     <AppHeader
       absolutePosition={false}
-      title={"Venues"}
-      left={
-        <SportTypeDropdown
-          selectedSports={selectedSports}
-          setSelectedSports={setSelectedSports}
-        />
-      }
-      searchBar
-      searchBarText={searchBarText}
-      setSearchBarText={setSearchBarText}
+      title={"Courts"}
+      // left={
+      //   <SportTypeDropdown
+      //     selectedSports={selectedSports}
+      //     setSelectedSports={setSelectedSports}
+      //   />
+      // }
     >
+      <View style={styles.searchView}>
+        <View style={styles.searchBarView}>
+          <TextInput
+            style={styles.searchBar}
+            value={searchBarText}
+            placeholder="Search"
+            placeholderTextColor={colors.tertiary}
+            cursorColor={colors.primary}
+            onChangeText={setSearchBarText}
+          />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            disabled={searchBarText === ""}
+            onPress={() => {
+              if (setSearchBarText) setSearchBarText("");
+            }}
+          >
+            <IonIcon
+              name={searchBarText ? "close-outline" : "search-outline"}
+              color={colors.primary}
+              size={20}
+            />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          style={{
+            height: 40,
+            width: 40,
+            backgroundColor: colors.primary,
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 8,
+          }}
+        >
+          <IonIcon name="filter-sharp" size={18} color={colors.onPrimary} />
+        </TouchableOpacity>
+      </View>
       <ScrollView contentContainerStyle={styles.wrapperView}>
         {isLoading && <BranchCardSkeleton type="horizontal" />}
         {!isLoading &&
@@ -76,7 +117,7 @@ export const Branches = ({ navigation, route }: Props) => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      padding: 20,
+      paddingHorizontal: 16,
       paddingBottom: 40,
     },
     placeholder: {
@@ -87,5 +128,32 @@ const makeStyles = (colors: MD3Colors) =>
       fontFamily: "Poppins-Regular",
       color: colors.tertiary,
       textAlign: "center",
+    },
+    searchView: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginTop: 12,
+      marginBottom: 24,
+      marginHorizontal: 16,
+      height: 40,
+    },
+    searchBarView: {
+      flexGrow: 1,
+      height: 40,
+      borderRadius: 8,
+      backgroundColor: colors.secondary,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginRight: 12,
+      paddingRight: 16,
+    },
+    searchBar: {
+      color: colors.tertiary,
+      fontFamily: "Poppins-Regular",
+      fontSize: 12,
+      height: 40,
+      flexGrow: 1,
+      paddingHorizontal: 16,
     },
   });

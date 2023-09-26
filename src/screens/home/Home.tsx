@@ -1,4 +1,10 @@
-import { StyleSheet, View, ScrollView, RefreshControl } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  RefreshControl,
+  Image,
+} from "react-native";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -15,6 +21,7 @@ import {
   BranchCardSkeleton,
   InvitationCardSkeleton,
   ActivityCardSkeleton,
+  HomeCard,
 } from "components";
 import { BottomTabParamList } from "src/navigation/tabScreenOptions";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
@@ -33,14 +40,29 @@ import { Activity, Game, GameRequest, Invitation, Branch } from "src/types";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
-const SectionTitle = ({ title, styles }: { title: string; styles: any }) => {
+const SectionTitle = ({ title }: { title: string }) => {
   const { colors } = useTheme();
   return (
-    <View style={styles.sectionTitle}>
-      <Text variant="labelLarge" style={{ color: colors.tertiary }}>
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginTop: 24,
+        marginBottom: 8,
+      }}
+    >
+      <Text
+        style={{
+          color: colors.tertiary,
+          fontFamily: "Poppins-Bold",
+          textTransform: "uppercase",
+          fontSize: 16,
+        }}
+      >
         {title}
       </Text>
-      <FeatherIcon name="chevron-right" color={colors.tertiary} size={20} />
+      <FeatherIcon name="chevron-right" color={colors.primary} size={20} />
     </View>
   );
 };
@@ -175,20 +197,34 @@ export const Home = ({ navigation, route }: Props) => {
   return (
     <AppHeader
       absolutePosition={false}
-      right={
-        <IonIcon
-          name="notifications-outline"
-          color={colors.tertiary}
-          size={24}
-        />
-      }
-      left={
-        <SportTypeDropdown
-          selectedSports={selectedSports}
-          setSelectedSports={setSelectedSports}
-        />
-      }
+      // left={
+      //   <SportTypeDropdown
+      //     selectedSports={selectedSports}
+      //     setSelectedSports={setSelectedSports}
+      //   />
+      // }
       showLogo
+      right={
+        <View style={{ flexDirection: "row" }}>
+          <Image
+            source={require("assets/icons/notifications-dark.png")}
+            style={{
+              resizeMode: "contain",
+              width: 24,
+              aspectRatio: 1,
+            }}
+          />
+          <Image
+            source={require("assets/icons/chat-dark.png")}
+            style={{
+              resizeMode: "contain",
+              width: 24,
+              aspectRatio: 1,
+              marginLeft: 16,
+            }}
+          />
+        </View>
+      }
     >
       <ScrollView
         contentContainerStyle={styles.wrapperView}
@@ -201,10 +237,49 @@ export const Home = ({ navigation, route }: Props) => {
           />
         }
       >
-        <Text variant="headlineSmall" style={{ color: colors.tertiary }}>
-          Hi {userData?.firstName},
+        <Text
+          style={{
+            color: colors.tertiary,
+            marginBottom: 16,
+            fontFamily: "Poppins-Bold",
+            fontSize: 16,
+          }}
+        >
+          Hi {userData?.firstName}, Welcome Back!
         </Text>
-        <Text variant="labelLarge" style={styles.headerSubtext}>
+        <View style={{ flexDirection: "row" }}>
+          <HomeCard
+            icon="book"
+            title="Book a Court"
+            body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+            addMarginRight
+          />
+          <HomeCard
+            icon="play"
+            title="Play a Match"
+            body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+          />
+        </View>
+        <View style={{ flexDirection: "row", marginVertical: 16 }}>
+          <HomeCard
+            icon="challenges"
+            title="Challenges"
+            body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+            addMarginRight
+          />
+          <HomeCard
+            icon="guide"
+            title="User Guide"
+            body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+          />
+        </View>
+        <HomeCard
+          icon="leaderboard"
+          title="Leaderboard"
+          body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+        />
+
+        {/* <Text variant="labelLarge" style={styles.headerSubtext}>
           Upcoming Games
         </Text>
         <View>
@@ -225,9 +300,9 @@ export const Home = ({ navigation, route }: Props) => {
                   </Text>
                 </View>
               )))}
-        </View>
+        </View> */}
 
-        <SectionTitle title="Invitations" styles={styles} />
+        {/* <SectionTitle title="Invitations" styles={styles} />
         <View>
           <ScrollView
             style={{
@@ -252,8 +327,9 @@ export const Home = ({ navigation, route }: Props) => {
                 </Text>
               </View>
             )}
-        </View>
-        <SectionTitle title="Venues" styles={styles} />
+        </View> */}
+
+        <SectionTitle title="Courts" />
         <View>
           <ScrollView
             style={{ flexDirection: "row", marginHorizontal: -20 }}
@@ -283,7 +359,8 @@ export const Home = ({ navigation, route }: Props) => {
                 </View>
               )))}
         </View>
-        <SectionTitle title="Bookings" styles={styles} />
+
+        {/* <SectionTitle title="Bookings" styles={styles} />
         <View>
           {bookingsLoading && <BookingCardSkeleton />}
           {!bookingsLoading &&
@@ -303,8 +380,9 @@ export const Home = ({ navigation, route }: Props) => {
                   </Text>
                 </View>
               )))}
-        </View>
-        <SectionTitle title="Activities" styles={styles} />
+        </View> */}
+
+        {/* <SectionTitle title="Activities" styles={styles} />
         <View>
           {activitiesLoading && <ActivityCardSkeleton />}
           {!activitiesLoading &&
@@ -323,7 +401,7 @@ export const Home = ({ navigation, route }: Props) => {
                 </Text>
               </View>
             )}
-        </View>
+        </View> */}
       </ScrollView>
     </AppHeader>
   );
@@ -334,17 +412,10 @@ const makeStyles = (colors: MD3Colors) =>
     wrapperView: {
       flexGrow: 1,
       backgroundColor: colors.background,
-      padding: 20,
-      paddingBottom: 40,
+      padding: 16,
+      paddingBottom: 50,
     },
     headerSubtext: { color: colors.tertiary, marginTop: 10, marginBottom: 20 },
-    sectionTitle: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginTop: 30,
-      marginBottom: 20,
-    },
     placeholder: {
       height: 50,
       justifyContent: "center",

@@ -12,6 +12,7 @@ import {
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Dispatch, SetStateAction, useRef } from "react";
 import {
@@ -33,14 +34,10 @@ export const AppHeader = ({
   showLogo = false,
   right,
   middle,
-  left,
-  searchBar,
-  searchBarText,
-  setSearchBarVisible,
-  setSearchBarText,
   backEnabled = false,
-  darkMode = false,
+  invertColors = false,
   backgroundImage,
+  middleTitle = false,
 }: {
   children: any;
   absolutePosition?: boolean;
@@ -48,14 +45,10 @@ export const AppHeader = ({
   showLogo?: boolean;
   right?: JSX.Element;
   middle?: JSX.Element;
-  left?: JSX.Element;
-  searchBar?: boolean;
-  searchBarText?: string;
-  setSearchBarVisible?: Dispatch<SetStateAction<boolean>>;
-  setSearchBarText?: Dispatch<SetStateAction<string>>;
   backEnabled?: boolean;
-  darkMode?: boolean;
+  invertColors?: boolean;
   backgroundImage?: "Basketball" | "Football" | "Tennis";
+  middleTitle?: boolean;
 }) => {
   const { colors } = useTheme();
 
@@ -68,7 +61,7 @@ export const AppHeader = ({
     >();
   const styles = makeStyles(
     colors,
-    darkMode,
+    invertColors,
     StatusBar.currentHeight as number
   );
 
@@ -96,70 +89,46 @@ export const AppHeader = ({
                   navigation.goBack();
                 }}
               >
-                <MaterialIcon
-                  name="arrow-back"
-                  color={colors.tertiary}
+                <FeatherIcon
+                  name="chevron-left"
+                  color={!invertColors ? colors.tertiary : colors.onPrimary}
                   size={25}
                   style={{ marginRight: 20 }}
                 />
               </TouchableOpacity>
             )}
-            {left}
-          </View>
-
-          <View style={styles.middleView}>
-            {title && <Text style={styles.title}>{title}</Text>}
             {showLogo && (
               <Image
                 source={require("assets/images/logo-text-dark.png")}
-                style={{ width: "40%" }}
-                resizeMode={"contain"}
+                style={{
+                  width: "65%",
+                  height: "auto",
+                  aspectRatio: 5.24,
+                  resizeMode: "contain",
+                  marginLeft: -5,
+                }}
               />
             )}
+            {title && !middleTitle && <Text style={styles.title}>{title}</Text>}
+          </View>
+
+          <View style={styles.middleView}>
+            {title && middleTitle && <Text style={styles.title}>{title}</Text>}
             {middle}
           </View>
           <View style={{ zIndex: 2 }}>{right}</View>
         </View>
-        {searchBar && (
-          <View style={styles.searchBarView}>
-            <TextInput
-              style={styles.searchBar}
-              ref={searchBarRef}
-              value={searchBarText}
-              autoFocus={typeof setSearchBarVisible !== "undefined"}
-              placeholder="Search..."
-              placeholderTextColor={colors.tertiary}
-              cursorColor={colors.primary}
-              onChangeText={setSearchBarText}
-              onBlur={() => {
-                if (setSearchBarVisible && !searchBarText)
-                  setSearchBarVisible(false);
-              }}
-            />
-            <TouchableOpacity
-              activeOpacity={0.8}
-              disabled={searchBarText === ""}
-              onPress={() => {
-                if (setSearchBarText) setSearchBarText("");
-                searchBarRef.current?.blur();
-                if (setSearchBarVisible) setSearchBarVisible(false);
-              }}
-            >
-              <IonIcon
-                name={searchBarText ? "close-outline" : "search-outline"}
-                color={colors.tertiary}
-                size={20}
-              />
-            </TouchableOpacity>
-          </View>
-        )}
       </View>
       <View style={{ flex: 1 }}>{children}</View>
     </KeyboardAvoidingView>
   );
 };
 
-const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
+const makeStyles = (
+  colors: MD3Colors,
+  invertColors: boolean,
+  SBHeight: number
+) =>
   StyleSheet.create({
     wrapperView: {
       position: "relative",
@@ -169,8 +138,6 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
     header: {
       position: "relative",
       backgroundColor: colors.background,
-      borderBottomLeftRadius: 10,
-      borderBottomRightRadius: 10,
       borderBottomWidth: 0.5,
       borderBottomColor: colors.tertiary,
     },
@@ -186,30 +153,11 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
       flexGrow: 1,
       paddingTop: Platform.OS == "ios" ? 20 + SBHeight : SBHeight,
       minHeight: Platform.OS == "ios" ? 85 + SBHeight : 65 + SBHeight,
-      paddingHorizontal: 20,
+      paddingHorizontal: 16,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
       paddingBottom: 0,
-    },
-    searchBarView: {
-      borderWidth: 1,
-      height: 40,
-      margin: 20,
-      marginTop: 0,
-      borderColor: colors.tertiary,
-      borderRadius: 20,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      paddingRight: 20,
-    },
-    searchBar: {
-      color: colors.tertiary,
-      fontFamily: "Poppins-Regular",
-      height: 40,
-      flexGrow: 1,
-      paddingHorizontal: 20,
     },
     middleView: {
       position: "absolute",
@@ -221,7 +169,7 @@ const makeStyles = (colors: MD3Colors, darkMode: boolean, SBHeight: number) =>
       justifyContent: "center",
     },
     title: {
-      color: colors.tertiary,
+      color: !invertColors ? colors.tertiary : colors.onPrimary,
       textAlign: "center",
       fontSize: 18,
       fontFamily: "Poppins-Bold",

@@ -144,8 +144,8 @@ const makeStyles = (
       flexDirection: isHorizontal ? "row" : "column",
       justifyContent: "flex-end",
       marginHorizontal: isHorizontal || isFocused ? 0 : 5,
-      marginBottom: isHorizontal || isFocused ? 20 : 0,
-      borderRadius: 10,
+      marginBottom: isHorizontal || isFocused ? 16 : 0,
+      borderRadius: 12,
       minWidth: isHorizontal ? "auto" : 200,
     },
     image: {

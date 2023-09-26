@@ -52,7 +52,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
       : "";
 
   return (
-    <AppHeader title={branch?.venue.name} backEnabled>
+    <AppHeader title={branch?.venue.name} backEnabled middleTitle>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.headerView}>
           {!isLoading ? (

@@ -102,7 +102,7 @@ const BottomTabNavigator = ({
     <View style={{ height: "100%", position: "relative" }}>
       <Tab.Navigator screenOptions={tabScreenOptions}>
         <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Games" component={Games} />
+        <Tab.Screen name="Challenges" component={Games} />
         <Tab.Screen
           name="Play"
           component={View}
@@ -115,7 +115,7 @@ const BottomTabNavigator = ({
             },
           }}
         />
-        <Tab.Screen name="Venues" component={Branches} />
+        <Tab.Screen name="Community" component={Branches} />
         <Tab.Screen
           name="Profile"
           children={(props) => <Profile {...props} isUserProfile />}

@@ -6,12 +6,13 @@ import { useTheme } from "react-native-paper";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
+import { Image, StyleSheet } from "react-native";
 
 export type BottomTabParamList = {
   Home: undefined;
-  Games: undefined;
+  Challenges: undefined;
   Play: undefined;
-  Venues: undefined;
+  Community: undefined;
   Profile: undefined;
 };
 
@@ -32,13 +33,52 @@ export const tabScreenOptions = ({
     headerShown: false,
     tabBarIcon: ({ color }) => {
       if (route.name === "Home") {
-        return <FeatherIcon name={"home"} size={20} color={color} />;
-      } else if (route.name === "Games") {
+        if (color === colors.primary)
+          return (
+            <Image
+              source={require("assets/icons/home-primary.png")}
+              style={styles.icon}
+            />
+          );
+        else
+          return (
+            <Image
+              source={require("assets/icons/home-dark.png")}
+              style={styles.icon}
+            />
+          );
+      } else if (route.name === "Challenges") {
         return <FeatherIcon name={"calendar"} size={20} color={color} />;
-      } else if (route.name === "Venues") {
-        return <IonIcon name={"location-outline"} size={20} color={color} />;
+      } else if (route.name === "Community") {
+        if (color === colors.primary)
+          return (
+            <Image
+              source={require("assets/icons/community-primary.png")}
+              style={[styles.icon, { width: "35%" }]}
+            />
+          );
+        else
+          return (
+            <Image
+              source={require("assets/icons/community-dark.png")}
+              style={[styles.icon, { width: "35%" }]}
+            />
+          );
       } else if (route.name === "Profile" || route.name === "Branch") {
-        return <MatComIcon name={"account-outline"} size={20} color={color} />;
+        if (color === colors.primary)
+          return (
+            <Image
+              source={require("assets/icons/profile-primary.png")}
+              style={styles.icon}
+            />
+          );
+        else
+          return (
+            <Image
+              source={require("assets/icons/profile-dark.png")}
+              style={styles.icon}
+            />
+          );
       }
     },
     tabBarActiveTintColor: colors.primary,
@@ -54,8 +94,12 @@ export const tabScreenOptions = ({
     tabBarLabelStyle: {
       fontFamily: "Poppins-Medium",
     },
-    tabBarItemStyle: { paddingBottom: 12 },
+    tabBarItemStyle: { paddingVertical: 12 },
     tabBarActiveBackgroundColor: colors.background,
     tabBarInactiveBackgroundColor: colors.background,
   };
 };
+
+const styles = StyleSheet.create({
+  icon: { width: "25%", resizeMode: "contain" },
+});
