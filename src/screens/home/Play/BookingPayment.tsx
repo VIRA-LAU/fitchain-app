@@ -72,9 +72,9 @@ export const BookingPayment = ({
     <AppHeader
       absolutePosition={false}
       title={venueName}
-      right={
-        <IonIcon name="ellipsis-horizontal" color={colors.tertiary} size={24} />
-      }
+      // right={
+      //   <IonIcon name="ellipsis-horizontal" color={colors.tertiary} size={24} />
+      // }
       backEnabled
     >
       <ScrollView contentContainerStyle={styles.wrapperView}>
@@ -85,7 +85,7 @@ export const BookingPayment = ({
             />
             <View style={styles.headerContentInfo}>
               <Text
-                style={{ color: colors.tertiary, fontFamily: "Poppins-Bold" }}
+                style={{ color: colors.tertiary, fontFamily: "Poppins-Medium" }}
               >
                 {courtName}
               </Text>
@@ -229,14 +229,27 @@ export const BookingPayment = ({
               }}
             >
               <View>
-                <Text style={{ fontFamily: "Poppins-Regular", fontSize: 10 }}>
+                <Text
+                  style={{
+                    fontFamily: "Poppins-Regular",
+                    fontSize: 10,
+                    color: colors.onPrimary,
+                  }}
+                >
                   TOTAL
                 </Text>
-                <Text style={{ fontFamily: "Poppins-Regular" }}>
+                <Text
+                  style={{
+                    fontFamily: "Poppins-Regular",
+                    color: colors.onPrimary,
+                  }}
+                >
                   USD {price * bookedHours}
                 </Text>
               </View>
-              <Text style={{ fontFamily: "Poppins-Bold" }}>
+              <Text
+                style={{ fontFamily: "Poppins-Bold", color: colors.onPrimary }}
+              >
                 Continue To Payment
               </Text>
             </TouchableOpacity>
@@ -275,7 +288,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     headerContentText: {
       color: colors.tertiary,
-      fontFamily: "Poppins-Bold",
+      fontFamily: "Poppins-Medium",
       marginVertical: 1,
     },
     contentView: {
@@ -303,7 +316,7 @@ const makeStyles = (colors: MD3Colors) =>
       color: colors.tertiary,
     },
     valueText: {
-      fontFamily: "Poppins-Bold",
+      fontFamily: "Poppins-Medium",
       color: colors.tertiary,
     },
     rating: {

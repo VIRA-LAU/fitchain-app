@@ -5,7 +5,14 @@ import {
   RefreshControl,
   Image,
 } from "react-native";
-import { useContext, useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
@@ -67,7 +74,11 @@ const SectionTitle = ({ title }: { title: string }) => {
   );
 };
 
-export const Home = ({ navigation, route }: Props) => {
+export const Home = ({
+  navigation,
+  route,
+  setPlayScreenVisible,
+}: Props & { setPlayScreenVisible: Dispatch<SetStateAction<boolean>> }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const { userData } = useContext(UserContext);
@@ -249,32 +260,33 @@ export const Home = ({ navigation, route }: Props) => {
         </Text>
         <View style={{ flexDirection: "row" }}>
           <HomeCard
-            icon="book"
+            type="book"
             title="Book a Court"
             body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
             addMarginRight
           />
           <HomeCard
-            icon="play"
+            type="play"
             title="Play a Match"
             body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+            setPlayScreenVisible={setPlayScreenVisible}
           />
         </View>
         <View style={{ flexDirection: "row", marginVertical: 16 }}>
           <HomeCard
-            icon="challenges"
+            type="challenges"
             title="Challenges"
             body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
             addMarginRight
           />
           <HomeCard
-            icon="guide"
+            type="guide"
             title="User Guide"
             body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
           />
         </View>
         <HomeCard
-          icon="leaderboard"
+          type="leaderboard"
           title="Leaderboard"
           body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
         />

@@ -6,23 +6,14 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { Button, Text, useTheme } from "react-native-paper";
-import {
-  AppHeader,
-  SportTypeDropdown,
-  BranchCard,
-  BranchCardSkeleton,
-} from "src/components";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { BottomTabParamList } from "src/navigation";
+import { Text, useTheme } from "react-native-paper";
+import { AppHeader, BranchCard, BranchCardSkeleton } from "src/components";
 import { useBranchesQuery } from "src/api";
 import { useState } from "react";
 import { Branch } from "src/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 
-type Props = BottomTabScreenProps<BottomTabParamList>;
-
-export const Branches = ({ navigation, route }: Props) => {
+export const Branches = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -47,6 +38,7 @@ export const Branches = ({ navigation, route }: Props) => {
     <AppHeader
       absolutePosition={false}
       title={"Courts"}
+      backEnabled
       // left={
       //   <SportTypeDropdown
       //     selectedSports={selectedSports}

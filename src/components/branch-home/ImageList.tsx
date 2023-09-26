@@ -164,15 +164,21 @@ export const ImageList = ({
   if (isLoading || updateLoading || deleteLoading) return <ImageListSkeleton />;
   else if (imageArr.length === 0 && !editable) return <View />;
   return (
-    <View style={{ marginTop: 20 }}>
-      <Text variant="labelLarge" style={{ color: colors.tertiary }}>
-        Photos
+    <View>
+      <Text
+        style={{
+          fontFamily: "Poppins-Bold",
+          fontSize: 16,
+          color: colors.tertiary,
+          marginBottom: 8,
+        }}
+      >
+        Pictures
       </Text>
       {imageArr.length > 0 ? (
         <ScrollView
           style={{
             flexDirection: "row",
-            marginVertical: 20,
             marginHorizontal: -20,
             maxHeight: 0.25 * windowHeight,
           }}

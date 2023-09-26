@@ -405,7 +405,7 @@ export const Play = ({
               <Button
                 mode="contained"
                 buttonColor={searchDate ? colors.primary : colors.tertiary}
-                style={{ width: "100%" }}
+                style={{ width: "100%", height: 45, justifyContent: "center" }}
                 onPress={
                   searchDate && searchLocationMarker && searchLocationName
                     ? () => {
@@ -462,7 +462,12 @@ export const Play = ({
               {!branch && (
                 <Button
                   mode="contained"
-                  style={{ width: "100%", marginTop: 15 }}
+                  style={{
+                    width: "100%",
+                    marginTop: 16,
+                    height: 45,
+                    justifyContent: "center",
+                  }}
                   onPress={() => {
                     if (setPlayScreenStillVisible)
                       setPlayScreenStillVisible(true);
@@ -633,17 +638,16 @@ const makeStyles = (colors: MD3Colors) =>
       marginHorizontal: 5,
     },
     sportText: {
-      fontFamily: "Poppins-Bold",
+      fontFamily: "Poppins-Medium",
       fontSize: 16,
-      lineHeight: 16,
       marginRight: 10,
       color: colors.tertiary,
     },
-    createView: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 20 },
+    createView: { flexGrow: 1, paddingHorizontal: 16, paddingBottom: 20 },
     contentView: {
       backgroundColor: colors.secondary,
-      marginTop: 15,
-      padding: 20,
+      marginTop: 16,
+      padding: 16,
       flexDirection: "row",
       justifyContent: "space-between",
       borderRadius: 10,

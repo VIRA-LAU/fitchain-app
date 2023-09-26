@@ -366,7 +366,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
           )
         }
         backgroundImage={game?.type}
-        darkMode
+        middleTitle
       >
         <View style={styles.wrapperView}>
           <SelectionModal

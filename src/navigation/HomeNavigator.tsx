@@ -25,10 +25,10 @@ import {
   ChooseBranch,
   ChooseGame,
   RatePlayer,
+  Community,
 } from "screens";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import IonIcon from "react-native-vector-icons/Ionicons";
 import * as Location from "expo-location";
 import * as Notifications from "expo-notifications";
 import { useQueryClient } from "react-query";
@@ -101,8 +101,13 @@ const BottomTabNavigator = ({
   return (
     <View style={{ height: "100%", position: "relative" }}>
       <Tab.Navigator screenOptions={tabScreenOptions}>
-        <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Challenges" component={Games} />
+        <Tab.Screen
+          name="Home"
+          children={(props) => (
+            <Home {...props} setPlayScreenVisible={setPlayScreenVisible} />
+          )}
+        />
+        <Tab.Screen name="Games" component={Games} />
         <Tab.Screen
           name="Play"
           component={View}
@@ -115,7 +120,7 @@ const BottomTabNavigator = ({
             },
           }}
         />
-        <Tab.Screen name="Community" component={Branches} />
+        <Tab.Screen name="Community" component={Community} />
         <Tab.Screen
           name="Profile"
           children={(props) => <Profile {...props} isUserProfile />}
@@ -178,6 +183,7 @@ export type StackParamList = {
     profilePhotoUrl?: string;
     coverPhotoUrl?: string;
   };
+  Branches: undefined;
   BranchDetails: {
     id: number;
     playScreenBookingDetails?: {
@@ -258,6 +264,7 @@ export const HomeNavigator = () => {
           />
         )}
       </Stack.Screen>
+      <Stack.Screen name="Branches" component={Branches} />
       <Stack.Screen name="GameDetails" component={GameDetails} />
       <Stack.Screen name="BranchDetails" component={BranchDetails} />
       <Stack.Screen name="ChooseBranch" component={ChooseBranch} />

@@ -10,7 +10,7 @@ import { Image, StyleSheet } from "react-native";
 
 export type BottomTabParamList = {
   Home: undefined;
-  Challenges: undefined;
+  Games: undefined;
   Play: undefined;
   Community: undefined;
   Profile: undefined;
@@ -47,7 +47,7 @@ export const tabScreenOptions = ({
               style={styles.icon}
             />
           );
-      } else if (route.name === "Challenges") {
+      } else if (route.name === "Games") {
         return <FeatherIcon name={"calendar"} size={20} color={color} />;
       } else if (route.name === "Community") {
         if (color === colors.primary)

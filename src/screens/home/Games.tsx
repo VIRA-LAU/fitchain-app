@@ -44,7 +44,7 @@ export const DayHeader = ({ day }: { day: string }) => {
   return (
     <Text
       variant="labelLarge"
-      style={{ marginVertical: 10, color: colors.tertiary }}
+      style={{ marginVertical: 16, color: colors.tertiary }}
     >
       {day}
     </Text>

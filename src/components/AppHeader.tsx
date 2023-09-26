@@ -5,16 +5,12 @@ import {
   StatusBar,
   Text,
   Image,
-  TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
 } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import IonIcon from "react-native-vector-icons/Ionicons";
-import { Dispatch, SetStateAction, useRef } from "react";
 import {
   CompositeNavigationProp,
   useNavigation,
@@ -65,8 +61,6 @@ export const AppHeader = ({
     StatusBar.currentHeight as number
   );
 
-  const searchBarRef = useRef<TextInput>(null);
-
   return (
     <KeyboardAvoidingView behavior={"padding"} style={styles.wrapperView}>
       <View style={absolutePosition ? styles.headerAbsolute : styles.header}>
@@ -93,7 +87,7 @@ export const AppHeader = ({
                   name="chevron-left"
                   color={!invertColors ? colors.tertiary : colors.onPrimary}
                   size={25}
-                  style={{ marginRight: 20 }}
+                  style={{ marginRight: 16 }}
                 />
               </TouchableOpacity>
             )}
@@ -138,8 +132,8 @@ const makeStyles = (
     header: {
       position: "relative",
       backgroundColor: colors.background,
-      borderBottomWidth: 0.5,
-      borderBottomColor: colors.tertiary,
+      borderBottomWidth: 0.75,
+      borderBottomColor: "rgba(43, 43, 43, 0.20)",
     },
     headerAbsolute: {
       position: "absolute",
@@ -176,9 +170,9 @@ const makeStyles = (
     },
     background: {
       position: "absolute",
-      height: 80 + SBHeight,
+      height: 85 + SBHeight,
       overflow: "hidden",
       justifyContent: "center",
-      alignItems: "center",
+      transform: [{ translateX: -10 }],
     },
   });

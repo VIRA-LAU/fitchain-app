@@ -54,7 +54,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
   return (
     <AppHeader title={branch?.venue.name} backEnabled middleTitle>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={styles.headerView}>
+        <View>
           {!isLoading ? (
             <Image
               source={
@@ -125,7 +125,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
             ) : (
               <View style={{ marginBottom: 15 }} />
             )}
-            {!playScreenBookingDetails && (
+            {/* {!playScreenBookingDetails && (
               <View style={styles.buttonsView}>
                 <TouchableOpacity
                   activeOpacity={0.8}
@@ -167,14 +167,153 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                   </Button>
                 </View>
               </View>
-            )}
+            )} */}
           </View>
         </View>
+
         <View style={styles.contentView}>
+          <View style={[styles.ratingView, { marginBottom: 16 }]}>
+            <View style={{ width: "50%" }}>
+              <Text
+                style={{
+                  fontFamily: "Poppins-Bold",
+                  fontSize: 16,
+                  color: colors.tertiary,
+                }}
+              >
+                Pricing
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "Poppins-Bold",
+                  fontSize: 32,
+                  color: colors.primary,
+                }}
+              >
+                {pricesStr}{" "}
+                <Text
+                  style={{
+                    fontFamily: "Poppins-Regular",
+                    fontSize: 20,
+                    color: colors.tertiary,
+                  }}
+                >
+                  $/hour
+                </Text>
+              </Text>
+            </View>
+            <View style={{ width: "50%" }}>
+              <Text
+                style={{
+                  fontFamily: "Poppins-Bold",
+                  fontSize: 16,
+                  color: colors.tertiary,
+                }}
+              >
+                Ratings
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "Poppins-Bold",
+                  fontSize: 32,
+                  color: colors.primary,
+                }}
+              >
+                4.2{" "}
+                <Text
+                  style={{
+                    fontFamily: "Poppins-Regular",
+                    fontSize: 20,
+                    color: colors.tertiary,
+                  }}
+                >
+                  /5
+                </Text>
+              </Text>
+            </View>
+          </View>
+          <View style={[styles.ratingView, { marginBottom: 24 }]}>
+            <View style={styles.ratingLabelsView}>
+              <Text style={styles.ratingLabel}>CLEANLINESS</Text>
+              <Text style={styles.ratingLabel}>PUNCTUALITY</Text>
+              <Text style={styles.ratingLabel}>VALUE FOR MONEY</Text>
+              <Text style={styles.ratingLabel}>STAFF</Text>
+            </View>
+            <View style={styles.ratingLinesView}>
+              <View style={styles.ratingLineOuter}>
+                <View style={[styles.ratingLineInner, { width: "90%" }]} />
+              </View>
+              <View style={styles.ratingLineOuter}>
+                <View style={[styles.ratingLineInner, { width: "60%" }]} />
+              </View>
+              <View style={styles.ratingLineOuter}>
+                <View style={[styles.ratingLineInner, { width: "80%" }]} />
+              </View>
+              <View style={styles.ratingLineOuter}>
+                <View style={[styles.ratingLineInner, { width: "100%" }]} />
+              </View>
+            </View>
+          </View>
+
+          <ImageList images={branch?.branchPhotoUrl} isLoading={isLoading} />
+
+          <Button
+            mode="contained"
+            style={{ height: 45, justifyContent: "center", marginVertical: 24 }}
+            onPress={() => {
+              if (playScreenBookingDetails)
+                navigation.push("ChooseCourt", {
+                  branchId: branch!.id,
+                  branchLocation: branch!.location,
+                  venueName: branch!.venue!.name,
+                  bookingDetails: playScreenBookingDetails!,
+                  profilePhotoUrl: branch!.profilePhotoUrl,
+                });
+              else setPlayScreenVisible(true);
+            }}
+          >
+            Book Court
+          </Button>
+
+          {/* <View style={styles.bookCourtPressableView}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.bookCourtPressable}
+              onPress={() => {
+                navigation.push("ChooseCourt", {
+                  branchId: branch!.id,
+                  branchLocation: branch!.location,
+                  venueName: branch!.venue!.name,
+                  bookingDetails: playScreenBookingDetails!,
+                  profilePhotoUrl: branch!.profilePhotoUrl,
+                });
+              }}
+            >
+              <IonIcon
+                name={"basketball-outline"}
+                size={30}
+                color={colors.secondary}
+              />
+              <View style={{ marginLeft: 5 }}>
+                <Text variant="titleSmall" style={styles.bookCourtButton}>
+                  Book Court
+                </Text>
+                <Text variant="labelMedium" style={{ color: colors.secondary }}>
+                  USD {pricesStr}/hr
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View> */}
+
           <View>
             <Text
               variant="labelLarge"
-              style={{ color: colors.tertiary, marginBottom: 20 }}
+              style={{
+                fontFamily: "Poppins-Bold",
+                fontSize: 16,
+                color: colors.tertiary,
+                marginBottom: 16,
+              }}
             >
               Branch
             </Text>
@@ -196,6 +335,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
               />
             )}
           </View>
+
           <Button
             style={{ marginTop: 10, alignSelf: "center" }}
             icon={"arrow-right-top"}
@@ -217,71 +357,9 @@ export const BranchDetails = ({ navigation, route }: Props) => {
           >
             Get Directions
           </Button>
-          <View style={[styles.divider, { marginVertical: 10 }]} />
-          <Text variant="labelLarge" style={{ color: colors.tertiary }}>
-            Teams
-          </Text>
-          <View style={styles.teamsView}>
-            <Text style={styles.rating}>4.2</Text>
-            <View style={styles.ratingLabelsView}>
-              <Text style={styles.ratingLabel}>PERFORMANCE</Text>
-              <Text style={styles.ratingLabel}>PUNCTUALITY</Text>
-              <Text style={styles.ratingLabel}>TEAMPLAYER</Text>
-              <Text style={styles.ratingLabel}>FAIR PLAY</Text>
-            </View>
-            <View style={styles.ratingLinesView}>
-              <View style={styles.ratingLineOuter}>
-                <View style={[styles.ratingLineInner, { width: "90%" }]} />
-              </View>
-              <View style={styles.ratingLineOuter}>
-                <View style={[styles.ratingLineInner, { width: "60%" }]} />
-              </View>
-              <View style={styles.ratingLineOuter}>
-                <View style={[styles.ratingLineInner, { width: "80%" }]} />
-              </View>
-              <View style={styles.ratingLineOuter}>
-                <View style={[styles.ratingLineInner, { width: "100%" }]} />
-              </View>
-            </View>
-          </View>
-          <View style={styles.divider} />
-          <ImageList images={branch?.branchPhotoUrl} isLoading={isLoading} />
-          {playScreenBookingDetails && (
-            <View style={styles.bookCourtPressableView}>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={styles.bookCourtPressable}
-                onPress={() => {
-                  navigation.push("ChooseCourt", {
-                    branchId: branch!.id,
-                    branchLocation: branch!.location,
-                    venueName: branch!.venue!.name,
-                    bookingDetails: playScreenBookingDetails!,
-                    profilePhotoUrl: branch!.profilePhotoUrl,
-                  });
-                }}
-              >
-                <IonIcon
-                  name={"basketball-outline"}
-                  size={30}
-                  color={colors.secondary}
-                />
-                <View style={{ marginLeft: 5 }}>
-                  <Text variant="titleSmall" style={styles.bookCourtButton}>
-                    Book Court
-                  </Text>
-                  <Text
-                    variant="labelMedium"
-                    style={{ color: colors.secondary }}
-                  >
-                    USD {pricesStr}/hr
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
       </ScrollView>
+
       <Play
         visible={playScreenVisible}
         setVisible={setPlayScreenVisible}
@@ -297,11 +375,6 @@ const makeStyles = (
   windowHeight: number
 ) =>
   StyleSheet.create({
-    headerView: {
-      backgroundColor: colors.secondary,
-      borderBottomLeftRadius: 10,
-      borderBottomRightRadius: 10,
-    },
     headerImage: {
       width: "100%",
       height: 0.25 * windowHeight,
@@ -318,10 +391,9 @@ const makeStyles = (
       aspectRatio: 1,
     },
     headerText: {
-      fontFamily: "Poppins-Regular",
-      lineHeight: 20,
+      fontFamily: "Poppins-Medium",
       color: colors.tertiary,
-      marginVertical: 15,
+      marginTop: 12,
       textAlign: "center",
     },
     buttonsView: {
@@ -332,7 +404,7 @@ const makeStyles = (
       alignItems: "center",
     },
     contentView: {
-      padding: 20,
+      padding: 16,
       flex: 1,
     },
     headerBookCourtPressable: {
@@ -361,10 +433,10 @@ const makeStyles = (
     bookCourtButton: {
       color: colors.secondary,
     },
-    teamsView: {
+    ratingView: {
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 10,
+      marginBottom: 24,
     },
     rating: {
       fontFamily: "Poppins-Bold",
@@ -375,7 +447,6 @@ const makeStyles = (
       marginVertical: 20,
     },
     ratingLabelsView: {
-      marginLeft: 15,
       height: 70,
       justifyContent: "space-around",
     },
@@ -392,16 +463,12 @@ const makeStyles = (
     },
     ratingLineOuter: {
       height: 5,
-      backgroundColor: colors.secondary,
+      backgroundColor: colors.tertiary,
       borderRadius: 5,
     },
     ratingLineInner: {
-      backgroundColor: colors.tertiary,
+      backgroundColor: colors.primary,
       height: "100%",
       borderRadius: 5,
-    },
-    divider: {
-      borderColor: colors.secondary,
-      borderBottomWidth: 1,
     },
   });

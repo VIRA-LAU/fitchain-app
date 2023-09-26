@@ -104,21 +104,16 @@ export const Profile = ({
                 setModalVisible(true);
               }}
             >
-              <IonIcon
-                name="ellipsis-horizontal"
-                color={colors.tertiary}
-                size={24}
-              />
+              <IonIcon name="menu-outline" color={colors.tertiary} size={28} />
             </TouchableOpacity>
           )
         ) : (
           <View />
         )
       }
-      title={`${route.params?.firstName || firstName} ${
-        route.params?.lastName || lastName
-      }`}
-      backEnabled
+      title={"Profile"}
+      absolutePosition={false}
+      backEnabled={!isUserProfile}
     >
       <ScrollView>
         <GalleryPermissionDialog
@@ -145,8 +140,7 @@ export const Profile = ({
             },
           ]}
         />
-        <View style={styles.headerView}>
-          <View>
+        {/* <View>
             {!userDetailsLoading ? (
               <Image
                 source={
@@ -197,94 +191,102 @@ export const Profile = ({
                 />
               </TouchableOpacity>
             )}
-          </View>
-          <View style={styles.headerContent}>
-            <View
-              style={{
-                marginTop: (-0.33 * windowWidth) / 2,
-              }}
-            >
-              {!userDetailsLoading ? (
-                profilePhotoToUpload ? (
-                  <Avatar.Image
-                    source={{ uri: profilePhotoToUpload }}
-                    size={0.33 * windowWidth}
-                    style={{ backgroundColor: "transparent" }}
-                  />
-                ) : userDetails?.profilePhotoUrl ? (
-                  <Avatar.Image
-                    source={{ uri: userDetails.profilePhotoUrl }}
-                    size={0.33 * windowWidth}
-                    style={{ backgroundColor: "transparent" }}
-                  />
-                ) : (
-                  <Avatar.Text
-                    label={
-                      userDetails?.firstName
-                        ? `${userDetails?.firstName.charAt(
-                            0
-                          )}${userDetails?.lastName.charAt(0)}`
-                        : ""
-                    }
-                    labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 60 }}
-                    style={{
-                      backgroundColor: colors.background,
-                    }}
-                    size={0.33 * windowWidth}
-                  />
-                )
+          </View> */}
+        <View style={styles.headerContent}>
+          <View
+            style={{
+              // marginTop: (-0.33 * windowWidth) / 2,
+              marginTop: 24,
+            }}
+          >
+            {!userDetailsLoading ? (
+              profilePhotoToUpload ? (
+                <Avatar.Image
+                  source={{ uri: profilePhotoToUpload }}
+                  size={0.33 * windowWidth}
+                  style={{ backgroundColor: "transparent" }}
+                />
+              ) : userDetails?.profilePhotoUrl ? (
+                <Avatar.Image
+                  source={{ uri: userDetails.profilePhotoUrl }}
+                  size={0.33 * windowWidth}
+                  style={{ backgroundColor: "transparent" }}
+                />
               ) : (
-                <View style={{ width: 0.33 * windowWidth, aspectRatio: 1 }} />
-              )}
-              {isEditing && (
-                <TouchableOpacity
-                  onPress={() =>
-                    uploadImage(
-                      "user",
-                      "profile",
-                      userData?.userId,
-                      setPermissionDialogVisible,
-                      setProfilePhotoToUpload,
-                      updateUserData
-                    )
+                <Avatar.Text
+                  label={
+                    userDetails?.firstName
+                      ? `${userDetails?.firstName.charAt(
+                          0
+                        )}${userDetails?.lastName.charAt(0)}`
+                      : ""
                   }
-                  activeOpacity={0.8}
-                  style={[
-                    styles.editImage,
-                    {
-                      borderRadius: 100,
-                    },
-                  ]}
-                >
-                  <MaterialIcon
-                    name="camera-alt"
-                    size={28}
-                    color={colors.tertiary}
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
-            {gameCountLoading ? (
-              <Skeleton height={15} width={100} style={styles.headerText1} />
-            ) : (
-              <Text style={styles.headerText1}>
-                Played {gameCount} game{gameCount !== 1 && "s"}
-              </Text>
-            )}
-            {userDetailsLoading ? (
-              <Skeleton height={20} width={150} style={styles.headerText2} />
-            ) : (
-              userDetails?.description && (
-                <Text style={styles.headerText2}>
-                  {userDetails?.description}
-                </Text>
+                  labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 60 }}
+                  style={{
+                    backgroundColor: colors.background,
+                  }}
+                  size={0.33 * windowWidth}
+                />
               )
+            ) : (
+              <View style={{ width: 0.33 * windowWidth, aspectRatio: 1 }} />
+            )}
+            {isEditing && (
+              <TouchableOpacity
+                onPress={() =>
+                  uploadImage(
+                    "user",
+                    "profile",
+                    userData?.userId,
+                    setPermissionDialogVisible,
+                    setProfilePhotoToUpload,
+                    updateUserData
+                  )
+                }
+                activeOpacity={0.8}
+                style={[
+                  styles.editImage,
+                  {
+                    borderRadius: 100,
+                  },
+                ]}
+              >
+                <MaterialIcon
+                  name="camera-alt"
+                  size={28}
+                  color={colors.tertiary}
+                />
+              </TouchableOpacity>
             )}
           </View>
+
+          {userDetailsLoading ? (
+            <Skeleton height={20} width={150} style={styles.name} />
+          ) : (
+            userDetails?.firstName && (
+              <Text style={styles.name}>{`${
+                userDetails?.firstName || firstName
+              } ${userDetails?.lastName || lastName}`}</Text>
+            )
+          )}
+          {gameCountLoading ? (
+            <Skeleton height={15} width={100} style={styles.headerText1} />
+          ) : (
+            <Text style={styles.headerText1}>
+              Played {gameCount} game{gameCount !== 1 && "s"}
+            </Text>
+          )}
+          {userDetailsLoading ? (
+            <Skeleton height={20} width={150} style={styles.headerText2} />
+          ) : (
+            userDetails?.description && (
+              <Text style={styles.headerText2}>{userDetails?.description}</Text>
+            )
+          )}
         </View>
         <View style={styles.contentView}>
           <Text variant="labelLarge" style={{ color: colors.tertiary }}>
-            Teams
+            Rating
           </Text>
           <View style={styles.teamsView}>
             {userDetailsLoading ? (
@@ -424,11 +426,6 @@ const makeStyles = (
   windowHeight: number
 ) =>
   StyleSheet.create({
-    headerView: {
-      backgroundColor: colors.secondary,
-      borderBottomLeftRadius: 10,
-      borderBottomRightRadius: 10,
-    },
     headerImage: {
       width: "100%",
       height: 0.25 * windowHeight,
@@ -445,19 +442,23 @@ const makeStyles = (
       justifyContent: "space-between",
       alignItems: "center",
     },
+    name: {
+      fontFamily: "Poppins-Bold",
+      color: colors.tertiary,
+      fontSize: 24,
+      marginTop: 16,
+      marginBottom: 12,
+    },
     headerText1: {
       fontFamily: "Poppins-Bold",
       color: colors.tertiary,
-      marginTop: 15,
-      marginBottom: 20,
     },
     headerText2: {
       fontFamily: "Poppins-Regular",
-      lineHeight: 20,
       color: colors.tertiary,
-      marginTop: -10,
-      marginBottom: 20,
+      marginBottom: 16,
       textAlign: "center",
+      marginTop: 5,
     },
     contentView: {
       padding: 20,
@@ -493,11 +494,11 @@ const makeStyles = (
     },
     ratingLineOuter: {
       height: 5,
-      backgroundColor: colors.secondary,
+      backgroundColor: colors.tertiary,
       borderRadius: 5,
     },
     ratingLineInner: {
-      backgroundColor: colors.tertiary,
+      backgroundColor: colors.primary,
       height: "100%",
       borderRadius: 5,
     },

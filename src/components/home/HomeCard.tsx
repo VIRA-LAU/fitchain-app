@@ -1,46 +1,71 @@
-import { Image, StyleSheet, View } from "react-native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { Dispatch, SetStateAction } from "react";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
+import { BottomTabParamList, StackParamList } from "src/navigation";
 
 export const HomeCard = ({
-  icon,
+  type,
   title,
   body,
   addMarginRight = false,
+  setPlayScreenVisible,
 }: {
-  icon: "book" | "play" | "challenges" | "guide" | "leaderboard";
+  type: "book" | "play" | "challenges" | "guide" | "leaderboard";
   title: string;
   body: string;
   addMarginRight?: boolean;
+  setPlayScreenVisible?: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<StackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
+
   return (
-    <View
+    <TouchableOpacity
+      activeOpacity={0.6}
       style={[
         styles.wrapper,
         {
           marginRight: addMarginRight ? 16 : 0,
-          flexDirection: icon === "leaderboard" ? "row" : "column",
-          alignItems: icon === "leaderboard" ? "center" : "flex-start",
+          flexDirection: type === "leaderboard" ? "row" : "column",
+          alignItems: type === "leaderboard" ? "center" : "flex-start",
         },
       ]}
+      onPress={() => {
+        if (type === "book") navigation.push("Branches");
+        else if (type === "play" && setPlayScreenVisible)
+          setPlayScreenVisible(true);
+      }}
     >
       <Image
         source={
-          icon === "book"
+          type === "book"
             ? require("assets/icons/book.png")
-            : icon === "play"
+            : type === "play"
             ? require("assets/icons/play.png")
-            : icon === "challenges"
+            : type === "challenges"
             ? require("assets/icons/challenges.png")
-            : icon === "guide"
+            : type === "guide"
             ? require("assets/icons/guide.png")
             : require("assets/icons/leaderboard.png")
         }
         style={[
           styles.icon,
-          icon === "leaderboard"
+          type === "leaderboard"
             ? { width: "15%", marginRight: 16 }
             : { marginBottom: 16 },
         ]}
@@ -49,7 +74,7 @@ export const HomeCard = ({
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.body}>{body}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
