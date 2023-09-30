@@ -4,7 +4,7 @@
     "slug": "fitchain-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/logo.png",
+    "icon": "./src/assets/images/app-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./src/assets/images/logo-splash.png",
@@ -19,7 +19,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "7",
+      "buildNumber": "9",
       "supportsTablet": true,
       "bundleIdentifier": "ee8ec30aa5a0f3bc41b762e2b0ca14b5",
       "config": {
@@ -27,10 +27,6 @@
       }
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/logo.png",
-        "backgroundColor": "#FFFFFF"
-      },
       "package": "com.fitchain.app",
       "config": {
         "googleMaps": {
@@ -46,10 +42,10 @@
       "googleServicesFile": "./google-services.json"
     },
     "web": {
-      "favicon": "./src/assets/images/logo.png"
+      "favicon": "./src/assets/images/app-icon.png"
     },
     "notification": {
-      "icon": "./src/assets/images/logo.png",
+      "icon": "./src/assets/images/app-icon.png",
       "iosDisplayInForeground": true
     },
     "extra": {
@@ -67,7 +63,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./src/assets/images/logo.png"
+          "icon": "./src/assets/images/app-icon.png"
         }
       ]
     ],

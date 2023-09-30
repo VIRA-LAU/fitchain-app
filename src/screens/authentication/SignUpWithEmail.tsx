@@ -11,22 +11,16 @@ import { SignUpStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
-import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { useCreateUserMutation } from "src/api";
 type Props = StackScreenProps<SignUpStackParamList, "SignUpWithEmail">;
 
-export const SignUpWithEmail = ({
-  navigation,
-  route,
-}: {
-  navigation: Props["navigation"];
-  route: Props["route"];
-}) => {
+export const SignUpWithEmail = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -93,7 +87,6 @@ export const SignUpWithEmail = ({
 
   const scrollOffset = 60;
   const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
-  const lastNameRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
 
@@ -106,6 +99,7 @@ export const SignUpWithEmail = ({
           setScrollPosition(event.nativeEvent.contentOffset.y);
         }}
         scrollEventThrottle={8}
+        keyboardShouldPersistTaps="handled"
       >
         <Image
           source={require("assets/images/logo-text-dark.png")}
@@ -135,14 +129,14 @@ export const SignUpWithEmail = ({
           Fill in your details and you are 1 step away!
         </Text>
 
-        <View style={{ width: "87%", marginTop: 24 }}>
+        <View style={{ flexGrow: 1, width: "87%", marginTop: 24 }}>
           <Text style={{ fontFamily: "Poppins-Regular" }}>Full Name</Text>
           <TextInput
             value={fullName}
             style={styles.textInput}
             selectionColor={colors.primary}
             onSubmitEditing={() => {
-              lastNameRef.current?.focus();
+              emailRef.current?.focus();
               scrollRef.current?.scrollTo({
                 y: scrollPosition + scrollOffset,
                 animated: true,
@@ -181,19 +175,37 @@ export const SignUpWithEmail = ({
           <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
             Password
           </Text>
-          <TextInput
-            style={styles.textInput}
-            selectionColor={colors.primary}
-            secureTextEntry={true}
-            value={password}
-            ref={passwordRef}
-            onChangeText={(password) => {
-              checkPasswordValidity(password.trim());
-              scrollRef.current?.scrollToEnd({
-                animated: true,
-              });
-            }}
-          />
+          <View style={[styles.textInput, styles.passwordView]}>
+            <TextInput
+              style={styles.password}
+              selectionColor={colors.primary}
+              secureTextEntry={!passwordVisible}
+              ref={passwordRef}
+              value={password}
+              onChangeText={(password) => {
+                checkPasswordValidity(password.trim());
+                scrollRef.current?.scrollToEnd({
+                  animated: true,
+                });
+              }}
+            />
+            <TouchableOpacity
+              style={{
+                width: 44,
+                height: 44,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setPasswordVisible(!passwordVisible);
+              }}
+            >
+              <Image
+                source={require("assets/icons/eye.png")}
+                style={{ resizeMode: "contain", width: 24, height: 24 }}
+              />
+            </TouchableOpacity>
+          </View>
 
           {errorMessage && (
             <Text
@@ -210,7 +222,7 @@ export const SignUpWithEmail = ({
           )}
         </View>
 
-        <View style={{ marginTop: "auto", width: "87%" }}>
+        <View style={{ width: "87%" }}>
           <Button
             mode="contained"
             style={{ marginTop: 20, height: 44, justifyContent: "center" }}
@@ -266,5 +278,15 @@ const makeStyles = (colors: MD3Colors) =>
       paddingHorizontal: 10,
       fontFamily: "Poppins-Regular",
       color: colors.tertiary,
+    },
+    passwordView: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 0,
+    },
+    password: {
+      flexGrow: 1,
+      height: 44,
+      paddingHorizontal: 10,
     },
   });

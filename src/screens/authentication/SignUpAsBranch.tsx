@@ -11,7 +11,6 @@ import { SignUpStackParamList } from "navigation";
 import { AppHeader, MapComponent } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
-import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useRef, useEffect } from "react";
 import { useState } from "react";
 import { useCreateBranchMutation, useLocationNameQuery } from "src/api";
@@ -30,6 +29,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [branchLocation, setBranchLocation] = useState<LatLng>();
   const [locationDescription, setLocationDescription] = useState("");
 
@@ -157,6 +157,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
           setScrollPosition(event.nativeEvent.contentOffset.y);
         }}
         scrollEventThrottle={8}
+        keyboardShouldPersistTaps="handled"
       >
         <Image
           source={require("assets/images/logo-text-dark.png")}
@@ -278,16 +279,34 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
             <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
               Password
             </Text>
-            <TextInput
-              value={password}
-              style={styles.textInput}
-              selectionColor={colors.primary}
-              secureTextEntry={true}
-              ref={passwordRef}
-              onChangeText={(password) => {
-                checkPasswordValidity(password.trim());
-              }}
-            />
+            <View style={[styles.textInput, styles.passwordView]}>
+              <TextInput
+                style={styles.password}
+                selectionColor={colors.primary}
+                secureTextEntry={!passwordVisible}
+                ref={passwordRef}
+                value={password}
+                onChangeText={(password) => {
+                  checkPasswordValidity(password.trim());
+                }}
+              />
+              <TouchableOpacity
+                style={{
+                  width: 44,
+                  height: 44,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => {
+                  setPasswordVisible(!passwordVisible);
+                }}
+              >
+                <Image
+                  source={require("assets/icons/eye.png")}
+                  style={{ resizeMode: "contain", width: 24, height: 24 }}
+                />
+              </TouchableOpacity>
+            </View>
 
             <Button
               icon={"map-marker-outline"}
@@ -335,7 +354,7 @@ export const SignUpAsBranch = ({ navigation, route }: Props) => {
                   color: "red",
                   textAlign: "center",
                   marginTop: "5%",
-                  fontFamily: "Poppins-Bold",
+                  fontFamily: "Poppins-Medium",
                 }}
               >
                 {errorMessage}
@@ -415,7 +434,6 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
       flexGrow: 1,
-      backgroundColor: colors.background,
       alignItems: "center",
     },
     text: {
@@ -431,6 +449,16 @@ const makeStyles = (colors: MD3Colors) =>
       paddingHorizontal: 10,
       fontFamily: "Poppins-Regular",
       color: colors.tertiary,
+    },
+    passwordView: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 0,
+    },
+    password: {
+      flexGrow: 1,
+      height: 44,
+      paddingHorizontal: 10,
     },
     getStartedButton: {
       marginTop: "7%",

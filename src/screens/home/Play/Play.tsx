@@ -570,7 +570,7 @@ export const Play = ({
               width={useWindowDimensions().width - 40}
               textStyle={{ color: colors.tertiary }}
               minDate={new Date()}
-              todayBackgroundColor={colors.tertiary}
+              todayBackgroundColor={colors.secondary}
               selectedDayStyle={{ backgroundColor: colors.primary }}
               initialDate={searchDate ?? new Date()}
               onDateChange={(date) => {

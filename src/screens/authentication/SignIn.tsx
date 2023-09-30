@@ -1,11 +1,12 @@
 import {
   useWindowDimensions,
+  StyleSheet,
   View,
   Image,
   TextInput,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
-import { StyleSheet } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
 import { SignUpStackParamList } from "navigation";
 import { Button, useTheme, Text } from "react-native-paper";
@@ -13,17 +14,10 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { useEffect, useRef, useState } from "react";
 import { AppHeader } from "src/components";
 import { useLoginUserMutation } from "src/api";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 type Props = StackScreenProps<SignUpStackParamList, "SignIn">;
 
-export const SignIn = ({
-  navigation,
-  route,
-}: {
-  navigation: Props["navigation"];
-  route: Props["route"];
-}) => {
+export const SignIn = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -32,6 +26,7 @@ export const SignIn = ({
   const [email, setEmail] = useState<string | undefined>();
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const {
     mutate: loginUser,
@@ -69,13 +64,15 @@ export const SignIn = ({
       });
   }, [error]);
 
-  const scrollRef: React.MutableRefObject<ScrollView | null> = useRef(null);
   const emailRef: React.MutableRefObject<TextInput | null> = useRef(null);
   const passwordRef: React.MutableRefObject<TextInput | null> = useRef(null);
 
   return (
     <AppHeader>
-      <ScrollView contentContainerStyle={styles.wrapperView} ref={scrollRef}>
+      <ScrollView
+        contentContainerStyle={styles.wrapperView}
+        keyboardShouldPersistTaps="handled"
+      >
         <Image
           source={require("assets/images/logo-text-dark.png")}
           style={{
@@ -104,7 +101,7 @@ export const SignIn = ({
           Login to start using our application
         </Text>
 
-        <View style={{ width: "87%", marginTop: 24 }}>
+        <View style={{ flexGrow: 1, width: "87%", marginTop: 24 }}>
           <Text style={{ fontFamily: "Poppins-Regular" }}>Email</Text>
           <TextInput
             style={styles.textInput}
@@ -124,17 +121,35 @@ export const SignIn = ({
           <Text style={{ fontFamily: "Poppins-Regular", marginTop: 4 }}>
             Password
           </Text>
-          <TextInput
-            style={styles.textInput}
-            selectionColor={colors.primary}
-            secureTextEntry
-            ref={passwordRef}
-            value={password}
-            onChangeText={(password) => {
-              setPassword(password.trim());
-              setErrorMessage("");
-            }}
-          />
+          <View style={[styles.textInput, styles.passwordView]}>
+            <TextInput
+              style={styles.password}
+              selectionColor={colors.primary}
+              secureTextEntry={!passwordVisible}
+              ref={passwordRef}
+              value={password}
+              onChangeText={(password) => {
+                setPassword(password.trim());
+                setErrorMessage("");
+              }}
+            />
+            <TouchableOpacity
+              style={{
+                width: 44,
+                height: 44,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={() => {
+                setPasswordVisible(!passwordVisible);
+              }}
+            >
+              <Image
+                source={require("assets/icons/eye.png")}
+                style={{ resizeMode: "contain", width: 24, height: 24 }}
+              />
+            </TouchableOpacity>
+          </View>
 
           <TouchableOpacity
             activeOpacity={0.6}
@@ -168,7 +183,7 @@ export const SignIn = ({
           )}
         </View>
 
-        <View style={{ marginTop: "auto", width: "87%" }}>
+        <View style={{ width: "87%" }}>
           <Button
             mode="contained"
             style={{ marginTop: 20, height: 44, justifyContent: "center" }}
@@ -227,5 +242,15 @@ const makeStyles = (colors: MD3Colors) =>
       paddingHorizontal: 10,
       fontFamily: "Poppins-Regular",
       color: colors.tertiary,
+    },
+    passwordView: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 0,
+    },
+    password: {
+      flexGrow: 1,
+      height: 44,
+      paddingHorizontal: 10,
     },
   });

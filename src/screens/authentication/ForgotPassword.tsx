@@ -13,7 +13,6 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import React, { useEffect, useRef, useState } from "react";
 import { useForgotPasswordMutation } from "src/api";
-import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
 type Props = StackScreenProps<SignUpStackParamList, "ForgotPassword">;
 
@@ -106,7 +105,7 @@ export const ForgotPassword = ({
                   color: "red",
                   textAlign: "center",
                   marginTop: "5%",
-                  fontFamily: "Poppins-Bold",
+                  fontFamily: "Poppins-Medium",
                 }}
               >
                 {errorMessage}
