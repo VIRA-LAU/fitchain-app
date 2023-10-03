@@ -60,7 +60,7 @@ export const Branches = () => {
             activeOpacity={0.8}
             disabled={searchBarText === ""}
             onPress={() => {
-              if (setSearchBarText) setSearchBarText("");
+              setSearchBarText("");
             }}
           >
             <IonIcon
@@ -97,7 +97,7 @@ export const Branches = () => {
         {!isLoading && (!filteredBranches || filteredBranches.length === 0) && (
           <View style={styles.placeholder}>
             <Text style={styles.placeholderText}>
-              There are no nearby venues.
+              There are no nearby branches.
             </Text>
           </View>
         )}

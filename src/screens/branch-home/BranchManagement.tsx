@@ -19,7 +19,7 @@ import {
 } from "react-native";
 import { IconButton, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { VenueBottomTabParamList } from "src/navigation";
+import { BranchBottomTabParamList } from "src/navigation";
 import { UserContext, uploadImage } from "src/utils";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import {
@@ -41,7 +41,7 @@ import {
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import { GameType, TimeSlot } from "src/types";
 
-type Props = BottomTabScreenProps<VenueBottomTabParamList>;
+type Props = BottomTabScreenProps<BranchBottomTabParamList>;
 
 export type existingCourtType = {
   courtId: number;

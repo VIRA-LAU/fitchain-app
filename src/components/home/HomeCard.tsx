@@ -15,13 +15,11 @@ export const HomeCard = ({
   title,
   body,
   addMarginRight = false,
-  setPlayScreenVisible,
 }: {
   type: "book" | "play" | "challenges" | "guide" | "leaderboard";
   title: string;
   body: string;
   addMarginRight?: boolean;
-  setPlayScreenVisible?: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -47,8 +45,7 @@ export const HomeCard = ({
       ]}
       onPress={() => {
         if (type === "book") navigation.push("Branches");
-        else if (type === "play" && setPlayScreenVisible)
-          setPlayScreenVisible(true);
+        else if (type === "play") navigation.push("BookCourt");
       }}
     >
       <Image

@@ -259,7 +259,6 @@ export const Home = ({
             type="play"
             title="Play a Match"
             body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-            setPlayScreenVisible={setPlayScreenVisible}
           />
         </View>
         <View style={{ flexDirection: "row", marginVertical: 16 }}>

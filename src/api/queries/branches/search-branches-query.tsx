@@ -45,6 +45,7 @@ export const useSearchBranchesQuery = (params: Props) => {
             })),
           })),
         })),
+      enabled: false,
     }
   );
 };

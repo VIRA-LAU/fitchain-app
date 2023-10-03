@@ -13,7 +13,6 @@ import {
 import { Text, useTheme } from "react-native-paper";
 import {
   GameDetails,
-  Games,
   Home,
   InviteUsers,
   Play,
@@ -28,6 +27,7 @@ import {
   Community,
   Notifications as NotificationsScreen,
   Challenges,
+  BookCourt,
 } from "screens";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -140,7 +140,8 @@ const BottomTabNavigator = ({
           activeOpacity={0.8}
           style={styles.playIconView}
           onPress={() => {
-            setPlayScreenVisible(true);
+            // setPlayScreenVisible(true);
+            navigation.push("BookCourt");
           }}
         >
           <View style={styles.playIcon}>
@@ -167,6 +168,7 @@ const BottomTabNavigator = ({
 
 export type StackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
+  BookCourt: undefined;
   GameDetails: { id: number };
   InviteUsers: {
     gameId: number;
@@ -276,6 +278,7 @@ export const HomeNavigator = () => {
       <Stack.Screen name="RatePlayer" component={RatePlayer} />
       <Stack.Screen name="PlayerProfile" component={Profile} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      <Stack.Screen name="BookCourt" component={BookCourt} />
     </Stack.Navigator>
   );
 };
