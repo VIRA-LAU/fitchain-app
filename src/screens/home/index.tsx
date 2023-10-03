@@ -1,11 +1,12 @@
 export * from "./Home";
-export * from "./Games";
-export * from "./Branches";
+export * from "./Challenges";
+export * from "./Play";
 export * from "./Community";
 export * from "./Profile";
-export * from "./Play";
+export * from "./Branches";
 export * from "./BranchDetails";
-export * from "./InviteUsers";
-
 export * from "./GameDetails";
+export * from "./Notifications";
+export * from "./InviteUsers";
 export * from "./RatePlayer";
+export * from "./Games";

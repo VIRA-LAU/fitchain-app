@@ -8,3 +8,4 @@ export * from "./TimeSlotPicker";
 export * from "./MapComponent";
 export * from "./Skeleton";
 export * from "./HomeCard";
+export * from "./Notification";

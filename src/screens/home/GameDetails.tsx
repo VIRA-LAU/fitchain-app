@@ -86,7 +86,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
   );
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  const { id, isPrevious } = route.params;
+  const { id } = route.params;
   const {
     data: game,
     isLoading: gameDetailsLoading,
@@ -113,6 +113,19 @@ export const GameDetails = ({ navigation, route }: Props) => {
     isFetching: updatesLoading,
     refetch: refetchUpdates,
   } = useUpdatesQuery(game?.id);
+
+  const isPrevious = game
+    ? new Date(game?.endTime) < new Date()
+      ? true
+      : false
+    : false;
+
+  const loading =
+    gameDetailsLoading ||
+    playersLoading ||
+    playerStatusLoading ||
+    followedGamesFetching ||
+    updatesLoading;
 
   const { mutate: joinGame, isLoading: joinLoading } = useJoinGameMutation();
   const { mutate: cancelRequest, isLoading: cancelLoading } =
@@ -212,21 +225,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
   }
 
   useEffect(() => {
-    if (
-      !gameDetailsLoading &&
-      !playersLoading &&
-      !playerStatusLoading &&
-      !followedGamesFetching &&
-      !updatesLoading
-    )
-      setRefreshing(false);
-  }, [
-    gameDetailsLoading,
-    playersLoading,
-    playerStatusLoading,
-    followedGamesFetching,
-    updatesLoading,
-  ]);
+    if (!loading) setRefreshing(false);
+  }, [loading]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -255,7 +255,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       team === "HOME" && status !== "REJECTED"
                   )
             }
-            playersLoading={playersLoading}
+            playersLoading={loading}
             isPrevious={isPrevious}
             playerStatus={playerStatus}
             teamIndex={index}
@@ -277,7 +277,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       team === "AWAY" && status !== "REJECTED"
                   )
             }
-            playersLoading={playersLoading}
+            playersLoading={loading}
             isPrevious={isPrevious}
             playerStatus={playerStatus}
             teamIndex={index}
@@ -394,7 +394,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   ]
             }
           />
-          {gameDetailsLoading || playerStatusLoading || followedGamesLoading ? (
+          {loading ? (
             <View style={styles.headerView}>
               <Skeleton height={15} width={80} style={styles.greyFont} />
               <View
@@ -591,6 +591,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               <ResultCard
                 game={game}
                 setVideoFocusVisible={setVideoFocusVisible}
+                loading={loading}
               />
             )}
             <Text
@@ -617,7 +618,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               source={require("assets/images/home/basketball-court.png")}
             />
             <View style={{ marginHorizontal: 20, marginBottom: -10 }}>
-              {gameDetailsLoading ? (
+              {loading ? (
                 <BranchLocationSkeleton />
               ) : (
                 <BranchLocation type="court" court={game?.court} pressable />
@@ -652,8 +653,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
               Updates
             </Text>
             <View style={styles.updatesView}>
-              {updatesLoading && <UpdateCardSkeleton />}
-              {!updatesLoading && updateCards.map(({ card }) => card)}
+              {loading && <UpdateCardSkeleton />}
+              {!loading && updateCards.map(({ card }) => card)}
             </View>
           </ScrollView>
         </View>

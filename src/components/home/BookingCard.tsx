@@ -81,9 +81,7 @@ export const BookingCard = ({
     <TouchableOpacity
       activeOpacity={0.8}
       style={styles.wrapper}
-      onPress={() =>
-        navigation.push("GameDetails", { id: booking.id, isPrevious })
-      }
+      onPress={() => navigation.push("GameDetails", { id: booking.id })}
     >
       <View style={styles.leftImageView}>
         <Image

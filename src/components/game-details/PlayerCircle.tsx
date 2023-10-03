@@ -41,7 +41,7 @@ export const ScorePlayerCircle = ({
                 }
                 labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 20 }}
                 style={{
-                  backgroundColor: colors.background,
+                  backgroundColor: colors.secondary,
                 }}
               />
             )}

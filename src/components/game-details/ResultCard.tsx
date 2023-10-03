@@ -18,9 +18,11 @@ import { TopPlayerCircle } from "./PlayerCircle";
 export const ResultCard = ({
   game,
   setVideoFocusVisible,
+  loading,
 }: {
   game?: Game;
   setVideoFocusVisible: Dispatch<SetStateAction<string | null>>;
+  loading: boolean;
 }) => {
   const { userData } = useContext(UserContext);
   const { colors } = useTheme();
@@ -73,7 +75,7 @@ export const ResultCard = ({
     }
   }, [JSON.stringify(game)]);
 
-  if (!game || teamLoading)
+  if (!game || teamLoading || loading)
     return (
       <View>
         <Text

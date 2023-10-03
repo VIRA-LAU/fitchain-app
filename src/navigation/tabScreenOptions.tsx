@@ -3,14 +3,11 @@ import {
   BottomTabScreenProps,
 } from "@react-navigation/bottom-tabs";
 import { useTheme } from "react-native-paper";
-import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import FeatherIcon from "react-native-vector-icons/Feather";
-import IonIcon from "react-native-vector-icons/Ionicons";
 import { Image, StyleSheet } from "react-native";
 
 export type BottomTabParamList = {
   Home: undefined;
-  Games: undefined;
+  Challenges: undefined;
   Play: undefined;
   Community: undefined;
   Profile: undefined;
@@ -47,8 +44,21 @@ export const tabScreenOptions = ({
               style={styles.icon}
             />
           );
-      } else if (route.name === "Games") {
-        return <FeatherIcon name={"calendar"} size={20} color={color} />;
+      } else if (route.name === "Challenges") {
+        if (color === colors.primary)
+          return (
+            <Image
+              source={require("assets/icons/challenges-primary.png")}
+              style={styles.icon}
+            />
+          );
+        else
+          return (
+            <Image
+              source={require("assets/icons/challenges-dark.png")}
+              style={styles.icon}
+            />
+          );
       } else if (route.name === "Community") {
         if (color === colors.primary)
           return (

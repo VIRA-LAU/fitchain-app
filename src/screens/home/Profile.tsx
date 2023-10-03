@@ -223,7 +223,7 @@ export const Profile = ({
                   }
                   labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 60 }}
                   style={{
-                    backgroundColor: colors.background,
+                    backgroundColor: colors.secondary,
                   }}
                   size={0.33 * windowWidth}
                 />

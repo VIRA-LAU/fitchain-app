@@ -212,7 +212,6 @@ export const InvitationCard = ({
               onPress={() =>
                 navigation.push("GameDetails", {
                   id: game.id,
-                  isPrevious: false,
                 })
               }
             />

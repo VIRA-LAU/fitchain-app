@@ -90,7 +90,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                   <View
                     style={{
                       ...styles.profilePhoto,
-                      backgroundColor: colors.background,
+                      backgroundColor: colors.secondary,
                       justifyContent: "center",
                       alignItems: "center",
                       borderRadius: 100,
@@ -98,7 +98,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                   >
                     <Text
                       style={{
-                        fontFamily: "Poppins-Regular",
+                        fontFamily: "Poppins-Medium",
                         fontSize: 16,
                         color: colors.tertiary,
                         textAlign: "center",

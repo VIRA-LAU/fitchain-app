@@ -72,9 +72,7 @@ export const UpcomingGameCard = ({ game }: { game: Game }) => {
     <TouchableOpacity
       activeOpacity={0.8}
       style={styles.wrapper}
-      onPress={() =>
-        navigation.push("GameDetails", { id: game.id, isPrevious: false })
-      }
+      onPress={() => navigation.push("GameDetails", { id: game.id })}
     >
       <View>
         {/* <Text style={styles.text}>This {weekday[game.date?.getDay()]},</Text> */}

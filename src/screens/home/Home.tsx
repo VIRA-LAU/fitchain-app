@@ -4,6 +4,7 @@ import {
   ScrollView,
   RefreshControl,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import {
   Dispatch,
@@ -31,19 +32,24 @@ import {
   HomeCard,
 } from "components";
 import { BottomTabParamList } from "src/navigation/tabScreenOptions";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import {
+  BottomTabNavigationProp,
+  BottomTabScreenProps,
+} from "@react-navigation/bottom-tabs";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import IonIcon from "react-native-vector-icons/Ionicons";
 import { UserContext } from "src/utils";
 import {
   useBranchesQuery,
-  useGamesQuery,
-  useBookingsQuery,
   useInvitationsQuery,
-  useActivitiesQuery,
   useReceivedRequestsQuery,
 } from "src/api";
-import { Activity, Game, GameRequest, Invitation, Branch } from "src/types";
+import { Branch } from "src/types";
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackParamList } from "src/navigation";
 
 type Props = BottomTabScreenProps<BottomTabParamList>;
 
@@ -83,26 +89,19 @@ export const Home = ({
   const styles = makeStyles(colors);
   const { userData } = useContext(UserContext);
 
+  const stackNavigation =
+    useNavigation<
+      CompositeNavigationProp<
+        StackNavigationProp<StackParamList>,
+        BottomTabNavigationProp<BottomTabParamList>
+      >
+    >();
+
   const {
     data: branches,
     isFetching: branchesLoading,
     refetch: refetchBranches,
   } = useBranchesQuery();
-  const {
-    data: games,
-    isFetching: gamesLoading,
-    refetch: refetchGames,
-  } = useGamesQuery({
-    type: "upcoming",
-    limit: 5,
-  });
-  const {
-    data: bookings,
-    isFetching: bookingsLoading,
-    refetch: refetchBookings,
-  } = useBookingsQuery({
-    type: "upcoming",
-  });
   const {
     data: invitations,
     isFetching: invitationsLoading,
@@ -113,97 +112,67 @@ export const Home = ({
     isFetching: requestsLoading,
     refetch: refetchRequests,
   } = useReceivedRequestsQuery();
-  const {
-    data: activities,
-    isFetching: activitiesLoading,
-    refetch: refetchActivities,
-  } = useActivitiesQuery(userData?.userId);
 
-  const [selectedSports, setSelectedSports] = useState({
-    Basketball: true,
-    Football: true,
-    Tennis: true,
-  });
+  // const {
+  //   data: games,
+  //   isFetching: gamesLoading,
+  //   refetch: refetchGames,
+  // } = useGamesQuery({
+  //   type: "upcoming",
+  //   limit: 5,
+  // });
+  // const {
+  //   data: bookings,
+  //   isFetching: bookingsLoading,
+  //   refetch: refetchBookings,
+  // } = useBookingsQuery({
+  //   type: "upcoming",
+  // });
+  // const {
+  //   data: activities,
+  //   isFetching: activitiesLoading,
+  //   refetch: refetchActivities,
+  // } = useActivitiesQuery(userData?.userId);
+
+  // const [selectedSports, setSelectedSports] = useState({
+  //   Basketball: true,
+  //   Football: true,
+  //   Tennis: true,
+  // });
   const [refreshing, setRefreshing] = useState<boolean>(false);
-
-  const invitationsRequests = useMemo(() => {
-    let result: ((Invitation | GameRequest) & {
-      type: "invitation" | "request";
-    })[] = [];
-    if (invitations)
-      result = result.concat(
-        invitations.map((invitation) => ({ type: "invitation", ...invitation }))
-      );
-    if (receivedRequests)
-      result = result.concat(
-        receivedRequests.map((request) => ({ type: "request", ...request }))
-      );
-
-    const filteredResult = result.filter(
-      ({ game }: Invitation) => selectedSports[game.type]
-    );
-
-    const sortedResult = result.sort(
-      (a, b) => a.game.createdAt.getTime() - b.game.createdAt.getTime()
-    );
-    const mappedResult = sortedResult.map(
-      (
-        invReq: (Invitation | GameRequest) & {
-          type: "invitation" | "request";
-        },
-        index: number
-      ) => (
-        <InvitationCard
-          id={invReq.id}
-          key={index}
-          type={invReq.type}
-          user={invReq.user?.firstName + " " + invReq.user?.lastName}
-          game={invReq.game}
-          isFirst={index === 0}
-          isLast={index === filteredResult.length - 1}
-          profilePhotoUrl={invReq.user?.profilePhotoUrl}
-        />
-      )
-    );
-    return mappedResult;
-  }, [
-    JSON.stringify(invitations),
-    JSON.stringify(receivedRequests),
-    JSON.stringify(selectedSports),
-  ]);
 
   useEffect(() => {
     if (
-      !gamesLoading &&
-      !bookingsLoading &&
+      // !gamesLoading &&
+      // !bookingsLoading &&
       !branchesLoading &&
       !requestsLoading &&
-      !invitationsLoading &&
-      !activitiesLoading
+      !invitationsLoading
+      // !activitiesLoading
     )
       setRefreshing(false);
   }, [
-    gamesLoading,
-    bookingsLoading,
+    // gamesLoading,
+    // bookingsLoading,
     branchesLoading,
     requestsLoading,
     invitationsLoading,
-    activitiesLoading,
+    // activitiesLoading,
   ]);
 
   const onRefresh = () => {
     setRefreshing(true);
-    refetchGames();
+    // refetchGames();
     refetchInvitations();
     refetchRequests();
-    refetchBookings();
+    // refetchBookings();
     refetchBranches();
-    refetchActivities();
+    // refetchActivities();
   };
 
-  const filteredBranches = branches?.filter((branch) =>
-    branch.courts.map((court) => selectedSports[court.courtType]).includes(true)
-  );
+  // const filteredBranches = branches?.filter((branch) =>
+  //   branch.courts.map((court) => selectedSports[court.courtType]).includes(true)
+  // );
 
   return (
     <AppHeader
@@ -217,15 +186,36 @@ export const Home = ({
       showLogo
       right={
         <View style={{ flexDirection: "row" }}>
-          <Image
-            source={require("assets/icons/notifications-dark.png")}
+          <TouchableOpacity
             style={{
-              resizeMode: "contain",
               width: 24,
               aspectRatio: 1,
             }}
-          />
-          <Image
+            onPress={() => stackNavigation.push("Notifications")}
+          >
+            <Image
+              source={require("assets/icons/notifications-dark.png")}
+              style={{
+                resizeMode: "contain",
+                width: "100%",
+                flex: 1,
+              }}
+            />
+            {((invitations && invitations?.length > 0) ||
+              (receivedRequests && receivedRequests?.length > 0)) && (
+              <View
+                style={{
+                  height: 10,
+                  width: 10,
+                  backgroundColor: colors.primary,
+                  borderRadius: 10,
+                  position: "absolute",
+                  right: 0,
+                }}
+              />
+            )}
+          </TouchableOpacity>
+          {/* <Image
             source={require("assets/icons/chat-dark.png")}
             style={{
               resizeMode: "contain",
@@ -233,7 +223,7 @@ export const Home = ({
               aspectRatio: 1,
               marginLeft: 16,
             }}
-          />
+          /> */}
         </View>
       }
     >
@@ -351,19 +341,19 @@ export const Home = ({
           >
             {branchesLoading && <BranchCardSkeleton type="vertical" />}
             {!branchesLoading &&
-              filteredBranches?.map((branch: Branch, index: number) => (
+              branches?.map((branch: Branch, index: number) => (
                 <BranchCard
                   key={index}
                   type="vertical"
                   branch={branch}
                   isFirst={index === 0}
-                  isLast={index === filteredBranches.length - 1}
+                  isLast={index === branches.length - 1}
                 />
               ))}
           </ScrollView>
           {!branchesLoading &&
-            (!filteredBranches ||
-              (filteredBranches?.length === 0 && (
+            (!branches ||
+              (branches?.length === 0 && (
                 <View style={styles.placeholder}>
                   <Text style={styles.placeholderText}>
                     There are no nearby venues.

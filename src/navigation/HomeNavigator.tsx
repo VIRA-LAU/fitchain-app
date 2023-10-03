@@ -26,6 +26,8 @@ import {
   ChooseGame,
   RatePlayer,
   Community,
+  Notifications as NotificationsScreen,
+  Challenges,
 } from "screens";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -87,7 +89,6 @@ const BottomTabNavigator = ({
           const gameId = parseInt(url.split("/").pop()!);
           navigation.push("GameDetails", {
             id: gameId,
-            isPrevious: false,
           });
         }
       }
@@ -107,7 +108,7 @@ const BottomTabNavigator = ({
             <Home {...props} setPlayScreenVisible={setPlayScreenVisible} />
           )}
         />
-        <Tab.Screen name="Games" component={Games} />
+        <Tab.Screen name="Challenges" component={Challenges} />
         <Tab.Screen
           name="Play"
           component={View}
@@ -166,7 +167,7 @@ const BottomTabNavigator = ({
 
 export type StackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
-  GameDetails: { id: number; isPrevious: boolean };
+  GameDetails: { id: number };
   InviteUsers: {
     gameId: number;
   };
@@ -238,6 +239,7 @@ export type StackParamList = {
     date?: string;
     time?: TimeSlot;
   };
+  Notifications: undefined;
 };
 
 export const HomeNavigator = () => {
@@ -273,6 +275,7 @@ export const HomeNavigator = () => {
       <Stack.Screen name="InviteUsers" component={InviteUsers} />
       <Stack.Screen name="RatePlayer" component={RatePlayer} />
       <Stack.Screen name="PlayerProfile" component={Profile} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} />
     </Stack.Navigator>
   );
 };
