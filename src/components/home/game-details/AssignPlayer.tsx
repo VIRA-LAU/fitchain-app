@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { BottomModal } from "../modals";
+import { BottomModal } from "../../modals";
 import {
   ScrollView,
   StyleSheet,

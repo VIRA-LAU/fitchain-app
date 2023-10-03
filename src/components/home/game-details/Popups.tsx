@@ -4,7 +4,7 @@ import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Game, PlayerStatus } from "src/types";
 import { RecordGamePopup, UploadVideoPopup } from "./RecordGamePopup";
-import { BottomModal } from "../modals";
+import { BottomModal } from "../../modals";
 
 export type PopupType =
   | "joinGame"

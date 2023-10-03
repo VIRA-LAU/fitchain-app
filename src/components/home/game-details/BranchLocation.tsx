@@ -10,7 +10,8 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BottomTabParamList, StackParamList } from "navigation";
 import { Court } from "src/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import { MiniMapComponent, Skeleton } from "../home";
+import { Skeleton } from "../Skeleton";
+import { MiniMapComponent } from "../MapComponent";
 
 export const BranchLocationSkeleton = () => {
   const { colors } = useTheme();

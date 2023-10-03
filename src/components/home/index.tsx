@@ -1,3 +1,5 @@
+export * from "./game-details";
+
 export * from "./ActivityCard";
 export * from "./BookingCard";
 export * from "./InvitationCard";
@@ -9,3 +11,4 @@ export * from "./MapComponent";
 export * from "./Skeleton";
 export * from "./HomeCard";
 export * from "./Notification";
+export * from "./CommunityPost";

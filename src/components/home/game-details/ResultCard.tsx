@@ -11,7 +11,7 @@ import {
 import { Game } from "src/types";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { UserContext } from "src/utils";
-import { Skeleton } from "../home";
+import { Skeleton } from "../Skeleton";
 import { Highlights } from "./Highlights";
 import { TopPlayerCircle } from "./PlayerCircle";
 

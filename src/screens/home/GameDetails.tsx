@@ -55,7 +55,7 @@ import {
 import {
   PopupContainer,
   PopupType,
-} from "../../components/game-details/Popups";
+} from "../../components/home/game-details/Popups";
 import { UserContext } from "src/utils";
 import { ResizeMode } from "expo-av";
 import VideoPlayer from "expo-video-player";

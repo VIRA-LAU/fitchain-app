@@ -148,7 +148,7 @@ function AppContent() {
     ...DefaultTheme,
     colors: {
       primary: "#F77E05",
-      background: "#fff",
+      background: "#FFF",
       onPrimary: "#FFF",
       secondary: "#F2F4F7",
       tertiary: "#2B2B2B",

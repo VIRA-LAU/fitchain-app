@@ -15,7 +15,7 @@ import { Game } from "src/types";
 import DropDownPicker from "react-native-dropdown-picker";
 import { ResizeMode, Video } from "expo-av";
 import { selectVideo } from "src/utils";
-import { GalleryPermissionDialog } from "../modals";
+import { GalleryPermissionDialog } from "../../modals";
 
 export const RecordGamePopup = ({
   game,

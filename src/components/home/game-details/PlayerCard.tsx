@@ -19,7 +19,7 @@ import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, StackParamList } from "src/navigation";
 import { PlayerStatus, TeamPlayer } from "src/types";
 import { UserContext } from "src/utils";
-import { Skeleton } from "../home";
+import { Skeleton } from "../Skeleton";
 
 export const PlayerCardSkeleton = () => {
   const { colors } = useTheme();

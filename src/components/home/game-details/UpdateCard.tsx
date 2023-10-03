@@ -8,8 +8,8 @@ import {
   Platform,
 } from "react-native";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { useEditJoinRequestMutation, usePlayerStatusQuery } from "src/api";
-import { Skeleton } from "../home";
+import { useEditJoinRequestMutation } from "src/api";
+import { Skeleton } from "../Skeleton";
 import {
   CompositeNavigationProp,
   useNavigation,

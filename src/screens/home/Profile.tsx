@@ -461,8 +461,9 @@ const makeStyles = (
       marginTop: 5,
     },
     contentView: {
-      padding: 20,
-      marginBottom: 30,
+      paddingHorizontal: 16,
+      paddingTop: 16,
+      marginBottom: 40,
     },
     teamsView: {
       flexDirection: "row",

@@ -112,9 +112,8 @@ const makeStyles = (colors: MD3Colors) =>
       flexDirection: "row",
       borderRadius: 10,
       backgroundColor: colors.secondary,
-      padding: 15,
+      padding: 16,
       marginBottom: 10,
-      paddingBottom: 20,
     },
     gameIcon: {
       width: 35,

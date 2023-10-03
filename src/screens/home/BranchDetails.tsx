@@ -4,22 +4,17 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
-  TouchableOpacity,
   Platform,
   Linking,
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
+import { AppHeader, ImageList, Skeleton } from "src/components";
 import {
-  AppHeader,
   BranchLocation,
   BranchLocationSkeleton,
-  ImageList,
-  Skeleton,
-} from "src/components";
+} from "src/components/home/game-details/BranchLocation";
 import { StackParamList } from "src/navigation";
-import IonIcon from "react-native-vector-icons/Ionicons";
-import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
 import { useBranchByIdQuery } from "src/api";
 import { useState } from "react";
