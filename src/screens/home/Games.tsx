@@ -349,10 +349,10 @@ export const Games = () => {
             style={({ pressed }) => [
               styles.tabViewItem,
               {
-                width: 0.5 * (windowWidth - 40 - 20),
+                flex: 1,
                 backgroundColor: isActive ? colors.primary : colors.secondary,
               },
-              pressed && { backgroundColor: colors.background },
+              pressed && { backgroundColor: "rgba(247, 126, 5, 0.1)" },
             ]}
             onPress={() => {
               setIndex(routes.findIndex(({ key }) => route.key === key));
@@ -395,6 +395,7 @@ export const Games = () => {
       //     setSelectedSports={setSelectedSports}
       //   />
       // }
+      backEnabled
     >
       <View style={styles.wrapperView}>
         <TabView

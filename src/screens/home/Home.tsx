@@ -405,7 +405,7 @@ const makeStyles = (colors: MD3Colors) =>
       flexGrow: 1,
       backgroundColor: colors.background,
       padding: 16,
-      paddingBottom: 50,
+      paddingBottom: 60,
     },
     headerSubtext: { color: colors.tertiary, marginTop: 10, marginBottom: 20 },
     placeholder: {

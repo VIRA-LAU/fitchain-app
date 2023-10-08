@@ -2,11 +2,11 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import {
   StyleSheet,
   View,
-  Image,
   useWindowDimensions,
   ScrollView,
   TouchableOpacity,
   BackHandler,
+  Pressable,
 } from "react-native";
 import { Avatar, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -17,6 +17,7 @@ import {
   GalleryPermissionDialog,
   SelectionModal,
   Skeleton,
+  RadarChart,
 } from "src/components";
 import { BottomTabParamList, StackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -31,6 +32,7 @@ import {
 } from "src/api";
 import { StackScreenProps } from "@react-navigation/stack";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import { TabBar, TabView } from "react-native-tab-view";
 
 type Props =
   | BottomTabScreenProps<BottomTabParamList>
@@ -45,8 +47,8 @@ export const Profile = ({
 }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-  const styles = makeStyles(colors, windowWidth, windowHeight);
+  const { width: windowWidth } = useWindowDimensions();
+  const styles = makeStyles(colors, windowWidth);
 
   const { userData, setUserData } = useContext(UserContext);
   const { firstName, lastName, userId } = userData!;
@@ -62,11 +64,181 @@ export const Profile = ({
   const [modalVisible, setModalVisible] = useState(false);
   const [permissionDialogVisible, setPermissionDialogVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [coverPhotoToUpload, setCoverPhotoToUpload] = useState<string>();
   const [profilePhotoToUpload, setProfilePhotoToUpload] = useState<string>();
+
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: "Timeline", title: "Timeline" },
+    { key: "Stats", title: "Stats" },
+    { key: "Teams", title: "Teams" },
+  ]);
 
   const { mutate: updateUserData, isSuccess: updateUserSuccess } =
     useUpdateUserMutation();
+
+  const renderScene = () => {
+    const tabViewRoute = routes[index];
+    switch (tabViewRoute.key) {
+      case "Timeline":
+        return (
+          <View
+            style={{ marginTop: 24, marginBottom: -10, marginHorizontal: 16 }}
+          >
+            {activitiesLoading && <ActivityCardSkeleton />}
+            {!activitiesLoading &&
+              activities?.map((activity: Activity, index: number) => (
+                <ActivityCard key={index} {...activity} />
+              ))}
+            {!activitiesLoading && (!activities || activities.length === 0) && (
+              <View style={styles.placeholder}>
+                <Text style={styles.placeholderText}>
+                  {route.params?.firstName
+                    ? `${route.params.firstName} has `
+                    : "You have "}
+                  no recent activities.
+                </Text>
+              </View>
+            )}
+          </View>
+        );
+      case "Stats":
+        return (
+          <View style={{ marginTop: 24, marginHorizontal: 30 }}>
+            <View style={{ flexDirection: "row", marginBottom: 16 }}>
+              <View
+                style={{
+                  flex: 1,
+                  borderRightWidth: 1,
+                  borderColor: colors.primary,
+                }}
+              >
+                <Text style={styles.statsTitle}>RPG</Text>
+                <Text style={styles.statsValue}>28.9</Text>
+              </View>
+              <View
+                style={{
+                  flex: 1.25,
+                  borderRightWidth: 1,
+                  borderColor: colors.primary,
+                  alignItems: "center",
+                }}
+              >
+                <View>
+                  <Text style={styles.statsTitle}>3 PTS</Text>
+                  <Text style={styles.statsValue}>28.9</Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "flex-end",
+                }}
+              >
+                <View>
+                  <Text style={styles.statsTitle}>2 PTS</Text>
+                  <Text style={styles.statsValue}>28.9</Text>
+                </View>
+              </View>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              <View
+                style={{
+                  flex: 1,
+                  borderRightWidth: 1,
+                  borderColor: colors.primary,
+                }}
+              >
+                <Text style={styles.statsTitle}>RPG</Text>
+                <Text style={styles.statsValue}>28.9</Text>
+              </View>
+              <View
+                style={{
+                  flex: 1.25,
+                  borderRightWidth: 1,
+                  borderColor: colors.primary,
+                  alignItems: "center",
+                }}
+              >
+                <View>
+                  <Text style={styles.statsTitle}>3 PTS</Text>
+                  <Text style={styles.statsValue}>28.9</Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: "flex-end",
+                }}
+              >
+                <View>
+                  <Text style={styles.statsTitle}>2 PTS</Text>
+                  <Text style={styles.statsValue}>28.9</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        );
+      case "Teams":
+        return (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginVertical: 40,
+            }}
+          >
+            <Text
+              style={{ fontFamily: "Poppins-Regular", color: colors.tertiary }}
+            >
+              {isUserProfile ? "You are" : `${route.params?.firstName} is`} not
+              part of any team yet.
+            </Text>
+          </View>
+        );
+      default:
+        return <View />;
+    }
+  };
+
+  const renderTabBar = (props: any) => (
+    <TabBar
+      {...props}
+      style={{
+        backgroundColor: "rgba(247, 126, 5, 0.1)",
+        borderRadius: 100,
+        elevation: 0,
+        marginHorizontal: 16,
+      }}
+      renderTabBarItem={({ route }) => {
+        let isActive = route.key === props.navigationState.routes[index].key;
+        return (
+          <Pressable
+            key={route.key}
+            style={({ pressed }) => [
+              styles.tabViewItem,
+              {
+                backgroundColor: isActive ? colors.background : "transparent",
+              },
+              pressed && { backgroundColor: colors.background },
+            ]}
+            onPress={() => {
+              setIndex(routes.findIndex(({ key }) => route.key === key));
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Poppins-Bold",
+                color: colors.tertiary,
+              }}
+            >
+              {route.title}
+            </Text>
+          </Pressable>
+        );
+      }}
+      renderIndicator={() => <View style={{ width: 0 }} />}
+    />
+  );
 
   useEffect(() => {
     const handleBack = () => {
@@ -140,76 +312,19 @@ export const Profile = ({
             },
           ]}
         />
-        {/* <View>
-            {!userDetailsLoading ? (
-              <Image
-                source={
-                  coverPhotoToUpload
-                    ? { uri: coverPhotoToUpload }
-                    : userDetails?.coverPhotoUrl
-                    ? {
-                        uri: userDetails.coverPhotoUrl,
-                      }
-                    : require("assets/images/home/profile-background.png")
-                }
-                style={styles.headerImage}
-              />
-            ) : (
-              <View
-                style={[
-                  styles.headerImage,
-                  { backgroundColor: colors.background },
-                ]}
-              />
-            )}
-            {isEditing && (
-              <TouchableOpacity
-                onPress={() =>
-                  uploadImage(
-                    "user",
-                    "cover",
-                    userData?.userId,
-                    setPermissionDialogVisible,
-                    setCoverPhotoToUpload,
-                    updateUserData
-                  )
-                }
-                activeOpacity={0.8}
-                style={[
-                  styles.editImage,
-                  {
-                    justifyContent: "flex-end",
-                    alignItems: "flex-end",
-                  },
-                ]}
-              >
-                <MaterialIcon
-                  name="image"
-                  size={28}
-                  color={colors.tertiary}
-                  style={{ marginRight: 20, marginBottom: 20 }}
-                />
-              </TouchableOpacity>
-            )}
-          </View> */}
         <View style={styles.headerContent}>
-          <View
-            style={{
-              // marginTop: (-0.33 * windowWidth) / 2,
-              marginTop: 24,
-            }}
-          >
+          <View>
             {!userDetailsLoading ? (
               profilePhotoToUpload ? (
                 <Avatar.Image
                   source={{ uri: profilePhotoToUpload }}
-                  size={0.33 * windowWidth}
+                  size={70}
                   style={{ backgroundColor: "transparent" }}
                 />
               ) : userDetails?.profilePhotoUrl ? (
                 <Avatar.Image
                   source={{ uri: userDetails.profilePhotoUrl }}
-                  size={0.33 * windowWidth}
+                  size={70}
                   style={{ backgroundColor: "transparent" }}
                 />
               ) : (
@@ -225,11 +340,11 @@ export const Profile = ({
                   style={{
                     backgroundColor: colors.secondary,
                   }}
-                  size={0.33 * windowWidth}
+                  size={70}
                 />
               )
             ) : (
-              <View style={{ width: 0.33 * windowWidth, aspectRatio: 1 }} />
+              <View style={{ width: 70, aspectRatio: 1 }} />
             )}
             {isEditing && (
               <TouchableOpacity
@@ -260,271 +375,101 @@ export const Profile = ({
             )}
           </View>
 
-          {userDetailsLoading ? (
-            <Skeleton height={20} width={150} style={styles.name} />
-          ) : (
-            userDetails?.firstName && (
-              <Text style={styles.name}>{`${
-                userDetails?.firstName || firstName
-              } ${userDetails?.lastName || lastName}`}</Text>
-            )
-          )}
-          {gameCountLoading ? (
-            <Skeleton height={15} width={100} style={styles.headerText1} />
-          ) : (
-            <Text style={styles.headerText1}>
-              Played {gameCount} game{gameCount !== 1 && "s"}
-            </Text>
-          )}
-          {userDetailsLoading ? (
-            <Skeleton height={20} width={150} style={styles.headerText2} />
-          ) : (
-            userDetails?.description && (
-              <Text style={styles.headerText2}>{userDetails?.description}</Text>
-            )
-          )}
-        </View>
-        <View style={styles.contentView}>
-          <Text variant="labelLarge" style={{ color: colors.tertiary }}>
-            Rating
-          </Text>
-          <View style={styles.teamsView}>
+          <View>
             {userDetailsLoading ? (
-              <Skeleton height={60} width={90} />
+              <Skeleton height={20} width={150} style={styles.name} />
             ) : (
-              <Text style={styles.rating}>
-                {userDetails?.rating.toFixed(1)}
+              userDetails?.firstName && (
+                <Text style={styles.name}>{`${
+                  userDetails?.firstName || firstName
+                } ${userDetails?.lastName || lastName}`}</Text>
+              )
+            )}
+            {gameCountLoading ? (
+              <Skeleton height={15} width={100} style={styles.gameCount} />
+            ) : (
+              <Text style={styles.gameCount}>
+                Played {gameCount} game{gameCount !== 1 && "s"}
               </Text>
             )}
-            <View style={styles.ratingLabelsView}>
-              <Text style={styles.ratingLabel}>PERFORMANCE</Text>
-              <Text style={styles.ratingLabel}>PUNCTUALITY</Text>
-              <Text style={styles.ratingLabel}>TEAMPLAYER</Text>
-              <Text style={styles.ratingLabel}>FAIR PLAY</Text>
-            </View>
-            <View style={styles.ratingLinesView}>
-              <View style={styles.ratingLineOuter}>
-                <View
-                  style={[
-                    styles.ratingLineInner,
-                    {
-                      width: `${(userDetails?.performance
-                        ? userDetails.performance * 20
-                        : 0
-                      ).toFixed(1)}%`,
-                    },
-                  ]}
-                />
-              </View>
-              <View style={styles.ratingLineOuter}>
-                <View
-                  style={[
-                    styles.ratingLineInner,
-                    {
-                      width: `${(userDetails?.punctuality
-                        ? userDetails.punctuality * 20
-                        : 0
-                      ).toFixed(1)}%`,
-                    },
-                  ]}
-                />
-              </View>
-              <View style={styles.ratingLineOuter}>
-                <View
-                  style={[
-                    styles.ratingLineInner,
-                    {
-                      width: `${(userDetails?.teamPlayer
-                        ? userDetails.teamPlayer * 20
-                        : 0
-                      ).toFixed(1)}%`,
-                    },
-                  ]}
-                />
-              </View>
-              <View style={styles.ratingLineOuter}>
-                <View
-                  style={[
-                    styles.ratingLineInner,
-                    {
-                      width: `${(userDetails?.fairplay
-                        ? userDetails.fairplay * 20
-                        : 0
-                      ).toFixed(1)}%`,
-                    },
-                  ]}
-                />
-              </View>
-            </View>
           </View>
-          <View style={styles.divider} />
-          <Text
-            variant="labelLarge"
-            style={{ color: colors.tertiary, marginTop: 20 }}
-          >
-            Achievements (3)
-          </Text>
-          <View style={styles.achievementsView}>
-            <View style={styles.achievementView}>
-              <Image
-                source={require("assets/images/home/achievement-mvp.png")}
-                style={styles.achievement}
-              />
-              <Text style={styles.achievementTitle}>MVP</Text>
-              <Text style={styles.achievementValue}>x3</Text>
-            </View>
-            <View style={styles.achievementView}>
-              <Image
-                source={require("assets/images/home/achievement-top-scorer.png")}
-                style={styles.achievement}
-              />
-              <Text style={styles.achievementTitle}>Top Scorer</Text>
-              <Text style={styles.achievementValue}>x11</Text>
-            </View>
-            <View style={styles.achievementView}>
-              <Image
-                source={require("assets/images/home/achievement-3-pointer.png")}
-                style={styles.achievement}
-              />
-              <Text style={styles.achievementTitle}>3-Pointer</Text>
-              <Text style={styles.achievementValue}>x3</Text>
-            </View>
-          </View>
-          <View style={styles.divider} />
-          <Text
-            variant="labelLarge"
-            style={{ color: colors.tertiary, marginVertical: 20 }}
-          >
-            Activity
-          </Text>
-          <View>
-            {activitiesLoading && <ActivityCardSkeleton />}
-            {!activitiesLoading &&
-              activities?.map((activity: Activity, index: number) => (
-                <ActivityCard key={index} {...activity} />
-              ))}
-            {!activitiesLoading && (!activities || activities.length === 0) && (
-              <View style={styles.placeholder}>
-                <Text style={styles.placeholderText}>
-                  {route.params?.firstName
-                    ? `${route.params.firstName} has `
-                    : "You have "}
-                  no recent activities.
-                </Text>
-              </View>
-            )}
-          </View>
+        </View>
+        {userDetailsLoading ? (
+          <Skeleton height={20} width={150} style={styles.bio} />
+        ) : (
+          userDetails?.description && (
+            <Text style={styles.bio}>{userDetails?.description}</Text>
+          )
+        )}
+        <View style={styles.divider} />
+        <View
+          style={{
+            height: 0.5 * windowWidth,
+            width: "100%",
+            alignSelf: "center",
+            marginTop: 16,
+            marginBottom: 24,
+          }}
+        >
+          <RadarChart
+            radarData={[
+              { label: "Skill", value: 80 },
+              { label: "Offense", value: 30 },
+              { label: "Defense", value: 70 },
+              { label: "General", value: 50 },
+              { label: "Teamplay", value: 80 },
+              { label: "Punctuality", value: 50 },
+            ]}
+            size={0.5 * windowWidth}
+          />
+        </View>
+        <View style={styles.contentView}>
+          <TabView
+            navigationState={{ index, routes }}
+            renderTabBar={renderTabBar}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={{ width: windowWidth }}
+            swipeEnabled={false}
+          />
         </View>
       </ScrollView>
     </AppHeader>
   );
 };
 
-const makeStyles = (
-  colors: MD3Colors,
-  windowWidth: number,
-  windowHeight: number
-) =>
+const makeStyles = (colors: MD3Colors, windowWidth: number) =>
   StyleSheet.create({
-    headerImage: {
-      width: "100%",
-      height: 0.25 * windowHeight,
-      opacity: 0.5,
-      borderBottomLeftRadius: 10,
-      borderBottomRightRadius: 10,
-    },
     headerContent: {
       alignItems: "center",
-    },
-    buttonsView: {
       flexDirection: "row",
-      margin: 15,
-      justifyContent: "space-between",
-      alignItems: "center",
+      marginHorizontal: 16,
+      marginVertical: 24,
     },
     name: {
       fontFamily: "Poppins-Bold",
       color: colors.tertiary,
       fontSize: 24,
-      marginTop: 16,
-      marginBottom: 12,
+      marginLeft: 16,
     },
-    headerText1: {
-      fontFamily: "Poppins-Bold",
-      color: colors.tertiary,
+    gameCount: {
+      fontFamily: "Poppins-Medium",
+      color: "#979797",
+      marginLeft: 16,
     },
-    headerText2: {
-      fontFamily: "Poppins-Regular",
+    bio: {
+      fontFamily: "Poppins-Medium",
       color: colors.tertiary,
+      fontSize: 12,
       marginBottom: 16,
-      textAlign: "center",
-      marginTop: 5,
+      marginHorizontal: 20,
     },
     contentView: {
-      paddingHorizontal: 16,
-      paddingTop: 16,
-      marginBottom: 40,
+      marginBottom: 60,
     },
     teamsView: {
       flexDirection: "row",
       alignItems: "center",
-    },
-    rating: {
-      fontFamily: "Poppins-Bold",
-      color: colors.tertiary,
-      fontSize: 70,
-      lineHeight: 85,
-      height: 70,
-      marginVertical: 20,
-    },
-    ratingLabelsView: {
-      marginLeft: 15,
-      height: 70,
-      justifyContent: "space-around",
-    },
-    ratingLabel: {
-      fontFamily: "Poppins-Bold",
-      color: colors.tertiary,
-      fontSize: 10,
-    },
-    ratingLinesView: {
-      flexGrow: 1,
-      height: 70,
-      marginLeft: 15,
-      justifyContent: "space-around",
-    },
-    ratingLineOuter: {
-      height: 5,
-      backgroundColor: colors.tertiary,
-      borderRadius: 5,
-    },
-    ratingLineInner: {
-      backgroundColor: colors.primary,
-      height: "100%",
-      borderRadius: 5,
-    },
-    achievementsView: {
-      flexDirection: "row",
-      justifyContent: "space-around",
-      marginVertical: 20,
-    },
-    achievementView: {
-      alignItems: "center",
-    },
-    achievement: {
-      width: 0.1 * windowWidth,
-      height: 0.1 * windowWidth,
-    },
-    achievementTitle: {
-      fontFamily: "Poppins-Bold",
-      color: colors.tertiary,
-      marginTop: 5,
-      fontSize: 12,
-    },
-    achievementValue: {
-      fontFamily: "Poppins-Bold",
-      color: colors.tertiary,
-      fontSize: 16,
     },
     divider: {
       borderColor: colors.secondary,
@@ -550,5 +495,22 @@ const makeStyles = (
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
+    },
+    tabViewItem: {
+      flex: 1,
+      height: 35,
+      margin: 3,
+      borderRadius: 100,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    statsTitle: {
+      fontFamily: "Poppins-Regular",
+      color: colors.tertiary,
+    },
+    statsValue: {
+      fontFamily: "Poppins-Bold",
+      color: colors.primary,
+      fontSize: 24,
     },
   });

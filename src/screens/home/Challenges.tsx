@@ -237,7 +237,7 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapper: {
       padding: 16,
-      paddingBottom: 50,
+      paddingBottom: 60,
     },
     text: {
       fontFamily: "Poppins-Regular",

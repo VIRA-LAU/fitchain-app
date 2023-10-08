@@ -26,6 +26,6 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapper: {
       flexGrow: 1,
-      paddingBottom: 50,
+      paddingBottom: 60,
     },
   });
