@@ -4,7 +4,6 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Dispatch, SetStateAction } from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -45,7 +44,8 @@ export const HomeCard = ({
       ]}
       onPress={() => {
         if (type === "book") navigation.push("Branches");
-        else if (type === "play") navigation.push("BookCourt", {});
+        else if (type === "play") navigation.push("Games");
+        else if (type === "challenges") navigation.navigate("Challenges");
       }}
     >
       <Image

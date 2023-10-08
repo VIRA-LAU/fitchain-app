@@ -214,7 +214,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                   color: colors.primary,
                 }}
               >
-                4.2{" "}
+                {branch?.rating}{" "}
                 <Text
                   style={{
                     fontFamily: "Poppins-Regular",
@@ -256,15 +256,10 @@ export const BranchDetails = ({ navigation, route }: Props) => {
             mode="contained"
             style={{ height: 45, justifyContent: "center", marginVertical: 24 }}
             onPress={() => {
-              if (playScreenBookingDetails)
-                navigation.push("ChooseCourt", {
-                  branchId: branch!.id,
-                  branchLocation: branch!.location,
-                  venueName: branch!.venue!.name,
-                  bookingDetails: playScreenBookingDetails!,
-                  profilePhotoUrl: branch!.profilePhotoUrl,
-                });
-              else setPlayScreenVisible(true);
+              navigation.push("BookCourt", {
+                branchId: branch?.id,
+                courtTypes: branch?.courts.map((court) => court.courtType),
+              });
             }}
           >
             Book Court

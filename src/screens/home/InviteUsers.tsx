@@ -1,10 +1,9 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { StyleSheet, View } from "react-native";
-import { Avatar, Button, Text, useTheme } from "react-native-paper";
+import { StyleSheet, View, ScrollView, TouchableOpacity } from "react-native";
+import { Avatar, Button, Text, TextInput, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { StackParamList } from "navigation";
 import { AppHeader } from "src/components";
-import { ScrollView } from "react-native-gesture-handler";
 import {
   useGamePlayersQuery,
   useInvitePlayerMutation,
@@ -24,6 +23,7 @@ export const InviteUsers = ({ navigation, route }: Props) => {
 
   const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
   const [selectedTeam, setSelectedTeam] = useState<"Home" | "Away">("Home");
+  const [searchBarText, setSearchBarText] = useState<string>("");
 
   const { data: users } = useUsersQuery();
   const { data: existingPlayers } = useGamePlayersQuery(
@@ -33,9 +33,15 @@ export const InviteUsers = ({ navigation, route }: Props) => {
 
   const { mutate: invitePlayer } = useInvitePlayerMutation(setLoadingIndex);
 
+  const filteredUsers = users?.filter((user) =>
+    `${user.firstName} ${user.lastName}`
+      .toLowerCase()
+      .includes(searchBarText.toLowerCase())
+  );
+
   if (!existingPlayers || !users) return <View />;
   return (
-    <AppHeader absolutePosition={false} title={"Invite Players"} backEnabled>
+    <AppHeader absolutePosition={false} title={"Invite Friends"} backEnabled>
       <View style={styles.wrapper}>
         <View style={styles.teams}>
           <View style={{ flexGrow: 1, marginRight: 10 }}>
@@ -73,8 +79,34 @@ export const InviteUsers = ({ navigation, route }: Props) => {
             </Button>
           </View>
         </View>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          {users.map((user, index) => {
+        <View style={styles.searchBarView}>
+          <TextInput
+            style={styles.searchBar}
+            value={searchBarText}
+            placeholder="Search"
+            placeholderTextColor={colors.tertiary}
+            cursorColor={colors.primary}
+            onChangeText={setSearchBarText}
+          />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            disabled={searchBarText === ""}
+            onPress={() => {
+              setSearchBarText("");
+            }}
+          >
+            <IonIcon
+              name={searchBarText ? "close-outline" : "search-outline"}
+              color={colors.primary}
+              size={20}
+            />
+          </TouchableOpacity>
+        </View>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ marginHorizontal: 16 }}
+        >
+          {filteredUsers?.map((user, index) => {
             var playerIndex = existingPlayers.findIndex(
               (player) => player.id === user.id
             );
@@ -198,11 +230,30 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapper: {
       flexGrow: 1,
-      padding: 20,
+      paddingTop: 16,
     },
     locationComponent: {
       color: colors.tertiary,
       margin: 20,
+    },
+    searchBarView: {
+      height: 40,
+      borderRadius: 8,
+      backgroundColor: colors.secondary,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginHorizontal: 16,
+      marginBottom: 16,
+      paddingRight: 16,
+    },
+    searchBar: {
+      color: colors.tertiary,
+      fontFamily: "Poppins-Regular",
+      fontSize: 12,
+      height: 40,
+      flexGrow: 1,
+      paddingHorizontal: 16,
     },
     user: {
       flexDirection: "row",
@@ -219,7 +270,8 @@ const makeStyles = (colors: MD3Colors) =>
     },
     teams: {
       flexDirection: "row",
-      marginBottom: 10,
+      marginBottom: 16,
+      marginHorizontal: 16,
     },
     inviteView: {
       marginLeft: "auto",

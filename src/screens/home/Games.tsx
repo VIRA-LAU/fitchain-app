@@ -1,4 +1,3 @@
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ScrollView,
@@ -18,9 +17,7 @@ import {
   BookingCardSkeleton,
   GameTimeDropdown,
   SportSelection,
-  SportTypeDropdown,
 } from "components";
-import { BottomTabParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import {
   useBookingsQuery,
@@ -29,8 +26,6 @@ import {
 } from "src/api";
 import { Game } from "src/types";
 import { QueryObserverResult } from "react-query";
-
-type NavigationProps = BottomTabScreenProps<BottomTabParamList>;
 
 type GameListProps = {
   selectedSports: SportSelection;
@@ -291,7 +286,7 @@ const GameList = ({
   );
 };
 
-export const Games = ({ navigation, route }: NavigationProps) => {
+export const Games = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const windowWidth = useWindowDimensions().width;
@@ -355,9 +350,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
               styles.tabViewItem,
               {
                 width: 0.5 * (windowWidth - 40 - 20),
-                backgroundColor: isActive
-                  ? colors.background
-                  : colors.secondary,
+                backgroundColor: isActive ? colors.primary : colors.secondary,
               },
               pressed && { backgroundColor: colors.background },
             ]}
@@ -368,7 +361,7 @@ export const Games = ({ navigation, route }: NavigationProps) => {
             <Text
               style={{
                 fontFamily: isActive ? "Poppins-Bold" : "Poppins-Regular",
-                color: colors.tertiary,
+                color: isActive ? colors.background : colors.tertiary,
               }}
             >
               {route.title}

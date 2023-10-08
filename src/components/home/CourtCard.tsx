@@ -9,6 +9,7 @@ export const CourtCard = ({
   rating,
   onPress,
   name,
+  isSelected,
 }: {
   venueName: string;
   type: string;
@@ -16,6 +17,7 @@ export const CourtCard = ({
   name: string;
   rating: number;
   onPress: Function;
+  isSelected?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -23,7 +25,10 @@ export const CourtCard = ({
   return (
     <TouchableOpacity
       activeOpacity={0.6}
-      style={styles.wrapperView}
+      style={[
+        styles.wrapperView,
+        isSelected ? { borderColor: colors.primary } : {},
+      ]}
       onPress={() => onPress()}
     >
       <View style={styles.contentView}>
@@ -58,7 +63,6 @@ export const CourtCard = ({
           </View>
         </View>
       </View>
-      <View style={styles.lineStyle} />
     </TouchableOpacity>
   );
 };
@@ -68,6 +72,10 @@ const makeStyles = (colors: MD3Colors) =>
     wrapperView: {
       alignItems: "center",
       height: 100,
+      borderWidth: 1,
+      borderColor: colors.tertiary,
+      borderRadius: 12,
+      marginBottom: 16,
     },
     rating: {
       flexDirection: "row",

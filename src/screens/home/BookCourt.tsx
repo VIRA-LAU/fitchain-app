@@ -11,23 +11,19 @@ import {
 import CalendarPicker from "react-native-calendar-picker";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { AppHeader, BranchCard, BranchCardSkeleton } from "src/components";
+import {
+  AppHeader,
+  BranchCard,
+  BranchCardSkeleton,
+  CourtCard,
+} from "src/components";
 import { StackParamList } from "src/navigation";
-import { Branch, GameType } from "src/types";
+import { Branch, Court, GameType } from "src/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useSearchBranchesQuery } from "src/api";
+import Feather from "react-native-vector-icons/Feather";
 
 type Props = StackScreenProps<StackParamList, "BookCourt">;
-
-const stageTitles = [
-  "Type of Sport",
-  "Type of Court",
-  "Dates",
-  "",
-  "",
-  "Invite Friends",
-  "",
-];
 
 const GameTypeCard = ({
   gameType,
@@ -199,12 +195,31 @@ const DurationCard = ({
   );
 };
 
+const numOfStages = 6;
+enum Stages {
+  GameType = 0,
+  CourtType = 1,
+  Time = 2,
+  BranchSelection = 3,
+  CourtSelection = 4,
+  NumPlayers = 5,
+}
+const stageTitles = [
+  "Type of Sport",
+  "Type of Court",
+  "Dates",
+  "",
+  "Select Court",
+  "",
+  "Invite Friends",
+];
+
 export const BookCourt = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const { width: windowWidth } = useWindowDimensions();
 
-  const { data } = route.params;
+  const { data, branchId, courtTypes } = route.params;
   const stage = data?.stage ?? 0;
 
   const [gameType, setGameType] = useState<GameType>(
@@ -225,7 +240,17 @@ export const BookCourt = ({ navigation, route }: Props) => {
   const [branchSearchText, setBranchSearchText] = useState<string>(
     data?.branchSearchText ?? ""
   );
-  const [selectedBranch, setSelectedBranch] = useState<Branch>();
+  const [selectedBranch, setSelectedBranch] = useState<Branch | undefined>(
+    data?.selectedBranch
+  );
+  const [selectedCourt, setSelectedCourt] = useState<Court | undefined>(
+    data?.selectedCourt
+  );
+  const [courtPrivacy, setCourtPrivacy] = useState<"Private" | "Public">(
+    "Private"
+  );
+  const [minNumberOfPlayers, setMinNumberOfPlayers] = useState<number>(0);
+  const [maxNumberOfPlayers, setMaxNumberOfPlayers] = useState<number>(8);
 
   const searchStartTime = new Date(searchDate);
   searchStartTime.setHours(
@@ -280,55 +305,96 @@ export const BookCourt = ({ navigation, route }: Props) => {
     startTime: timeSlotStartTime.toISOString(),
     endTime: timeSlotEndTime.toISOString(),
     nbOfPlayers: 1,
+    branchId,
   });
 
+  var branchPrices: string[] = [];
+
+  if (branches)
+    branchPrices = branches.map((branch) =>
+      branch.courts.length === 1
+        ? branch.courts[0].price.toString()
+        : `${Math.min.apply(
+            null,
+            branch.courts.map((court) => court.price)
+          )}-${Math.max.apply(
+            null,
+            branch.courts.map((court) => court.price)
+          )}`
+    );
+
+  const buttonDisabled =
+    (stage === Stages.BranchSelection && !selectedBranch) ||
+    (stage === Stages.CourtSelection && !selectedCourt);
+
   useEffect(() => {
-    if (stage === 3) fetchBranches();
-  }, [stage]);
+    if (stage === Stages.BranchSelection) fetchBranches();
+  }, []);
+
+  useEffect(() => {
+    if (stage === Stages.BranchSelection && branches && branchId) {
+      const selBranch = branches.find((branch) => branch.id === branchId);
+      if (selBranch)
+        navigation.replace("BookCourt", {
+          data: {
+            stage: stage + (selBranch.courts.length > 1 ? 1 : 2),
+            gameType,
+            courtType,
+            searchDate: searchDate.toISOString(),
+            selectedStartTime,
+            selectedDuration,
+            branchSearchText,
+            selectedBranch: selBranch,
+            selectedCourt:
+              selBranch.courts.length > 1 ? undefined : selBranch.courts[0],
+          },
+          branchId,
+        });
+    }
+  }, [JSON.stringify(branches)]);
 
   return (
     <AppHeader absolutePosition={false} title={"Book a Court"} backEnabled>
       <View style={styles.stageBarBack}>
         <View
-          style={[styles.stageBar, { width: (windowWidth / 4) * (stage + 1) }]}
+          style={[
+            styles.stageBar,
+            { width: (windowWidth / numOfStages) * (stage + 1) },
+          ]}
         />
       </View>
       <ScrollView contentContainerStyle={styles.wrapper}>
-        {stage <= 2 && (
+        {(stage <= Stages.Time || stage === Stages.CourtSelection) && (
           <Text style={[styles.title, { marginBottom: 16 }]}>
             {stageTitles[stage]}
           </Text>
         )}
-        {stage === 0 && (
+        {stage === Stages.GameType && (
           <View style={styles.gameTypes}>
-            <GameTypeCard
-              gameType="Basketball"
-              selectedGameType={gameType}
-              setGameType={setGameType}
-            />
-            <GameTypeCard
-              gameType="Football"
-              selectedGameType={gameType}
-              setGameType={setGameType}
-            />
-            <GameTypeCard
-              gameType="Tennis"
-              selectedGameType={gameType}
-              setGameType={setGameType}
-            />
-            {/* <GameType
-              gameType="Padel Tennis"
-              selectedGameType={gameType}
-              setGameType={setGameType}
-            />
-            <GameType
-              gameType="Volleyball"
-              selectedGameType={gameType}
-              setGameType={setGameType}
-            /> */}
+            {(!courtTypes || courtTypes.includes("Basketball")) && (
+              <GameTypeCard
+                gameType="Basketball"
+                selectedGameType={gameType}
+                setGameType={setGameType}
+              />
+            )}
+            {(!courtTypes || courtTypes.includes("Football")) && (
+              <GameTypeCard
+                gameType="Football"
+                selectedGameType={gameType}
+                setGameType={setGameType}
+              />
+            )}
+            {(!courtTypes || courtTypes.includes("Tennis")) && (
+              <GameTypeCard
+                gameType="Tennis"
+                selectedGameType={gameType}
+                setGameType={setGameType}
+              />
+            )}
           </View>
         )}
-        {stage === 1 && (
+        {stage === Stages.CourtType && (
           <View style={styles.gameTypes}>
             <CourtType
               courtType="Half Court"
@@ -342,25 +408,35 @@ export const BookCourt = ({ navigation, route }: Props) => {
             />
           </View>
         )}
-        {stage === 2 && (
+        {stage === Stages.Time && (
           <View style={{ marginBottom: 16 }}>
-            <CalendarPicker
-              width={windowWidth * 0.9}
-              textStyle={{
-                color: colors.tertiary,
-                fontFamily: "Poppins-Medium",
+            <View
+              style={{
+                backgroundColor: colors.secondary,
+                marginHorizontal: -16,
+                paddingVertical: 16,
+                borderBottomLeftRadius: 28,
+                borderBottomRightRadius: 28,
               }}
-              minDate={new Date()}
-              todayBackgroundColor={colors.secondary}
-              selectedDayStyle={{ backgroundColor: colors.primary }}
-              selectedDayTextColor={colors.background}
-              initialDate={searchDate ?? new Date()}
-              onDateChange={(date) => {
-                const parsedDate = date.toDate();
-                setSearchDate(parsedDate);
-              }}
-              selectedStartDate={searchDate ?? new Date()}
-            />
+            >
+              <CalendarPicker
+                width={windowWidth - 64}
+                textStyle={{
+                  color: colors.tertiary,
+                  fontFamily: "Poppins-Medium",
+                }}
+                minDate={new Date()}
+                todayBackgroundColor={colors.secondary}
+                selectedDayStyle={{ backgroundColor: colors.primary }}
+                selectedDayTextColor={colors.background}
+                initialDate={searchDate ?? new Date()}
+                onDateChange={(date) => {
+                  const parsedDate = date.toDate();
+                  setSearchDate(parsedDate);
+                }}
+                selectedStartDate={searchDate ?? new Date()}
+              />
+            </View>
             <Text style={[styles.title, { marginTop: 24, marginBottom: 16 }]}>
               Start Time
             </Text>
@@ -420,7 +496,7 @@ export const BookCourt = ({ navigation, route }: Props) => {
             </ScrollView>
           </View>
         )}
-        {stage === 3 && (
+        {stage === Stages.BranchSelection && (
           <View style={{ marginBottom: 16 }}>
             <View style={styles.searchView}>
               <View style={styles.searchBarView}>
@@ -476,6 +552,7 @@ export const BookCourt = ({ navigation, route }: Props) => {
                       type="horizontal"
                       promoted={false}
                       branch={branch}
+                      price={branchPrices[index]}
                       pressable={false}
                       isSelected={selectedBranch?.id === branch.id}
                     />
@@ -491,48 +568,278 @@ export const BookCourt = ({ navigation, route }: Props) => {
             </View>
           </View>
         )}
+        {stage === Stages.CourtSelection && (
+          <View style={{ marginBottom: 16 }}>
+            {selectedBranch?.courts.map((court, index) => (
+              <CourtCard
+                key={index}
+                name={court.name}
+                price={court.price}
+                rating={court.rating}
+                type={court.courtType}
+                venueName={selectedBranch.venue.name}
+                isSelected={selectedCourt?.id === court.id}
+                onPress={() => {
+                  setSelectedCourt(court);
+                }}
+              />
+            ))}
+          </View>
+        )}
+        {stage === Stages.NumPlayers && (
+          <View style={{ marginBottom: 16 }}>
+            <View style={{ flexDirection: "row", marginBottom: 16 }}>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                style={[
+                  styles.gameType,
+                  { flex: 1, marginBottom: 0, alignItems: "center" },
+                  courtPrivacy === "Private"
+                    ? {
+                        backgroundColor: colors.primary,
+                      }
+                    : {},
+                ]}
+                onPress={() => setCourtPrivacy("Private")}
+              >
+                <Text
+                  style={[
+                    styles.title,
+                    courtPrivacy === "Private"
+                      ? {
+                          color: colors.background,
+                        }
+                      : {},
+                  ]}
+                >
+                  Private
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                style={[
+                  styles.gameType,
+                  {
+                    flex: 1,
+                    marginBottom: 0,
+                    marginRight: 0,
+                    alignItems: "center",
+                  },
+                  courtPrivacy === "Public"
+                    ? {
+                        backgroundColor: colors.primary,
+                      }
+                    : {},
+                ]}
+                onPress={() => setCourtPrivacy("Public")}
+              >
+                <Text
+                  style={[
+                    styles.title,
+                    courtPrivacy === "Public"
+                      ? {
+                          color: colors.background,
+                        }
+                      : {},
+                  ]}
+                >
+                  Public
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={[styles.title, { marginBottom: 16 }]}>
+              Number of players
+            </Text>
+            <View
+              style={{
+                borderRadius: 12,
+                backgroundColor: colors.secondary,
+                paddingVertical: 25,
+                paddingHorizontal: 22,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 10,
+                }}
+              >
+                <Text style={styles.text}>Minimum</Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (minNumberOfPlayers > 0)
+                        setMinNumberOfPlayers((oldNum) => oldNum - 1);
+                    }}
+                  >
+                    <Feather
+                      name="minus-circle"
+                      color={colors.primary}
+                      size={24}
+                    />
+                  </TouchableOpacity>
+                  <Text
+                    style={[
+                      styles.title,
+                      {
+                        fontSize: 24,
+                        width: 40,
+                        textAlign: "center",
+                        lineHeight: 24,
+                        paddingTop: 10,
+                      },
+                    ]}
+                  >
+                    {minNumberOfPlayers === 0 ? "-" : minNumberOfPlayers}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (minNumberOfPlayers < 12)
+                        setMinNumberOfPlayers((oldNum) => oldNum + 1);
+                    }}
+                  >
+                    <Feather
+                      name="plus-circle"
+                      color={colors.primary}
+                      size={24}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.text}>Maximum</Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (maxNumberOfPlayers > 2)
+                        setMaxNumberOfPlayers((oldNum) => oldNum - 1);
+                    }}
+                  >
+                    <Feather
+                      name="minus-circle"
+                      color={colors.primary}
+                      size={24}
+                    />
+                  </TouchableOpacity>
+                  <Text
+                    style={[
+                      styles.title,
+                      {
+                        fontSize: 24,
+                        width: 40,
+                        textAlign: "center",
+                        lineHeight: 24,
+                        paddingTop: 10,
+                      },
+                    ]}
+                  >
+                    {maxNumberOfPlayers}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (maxNumberOfPlayers < 12)
+                        setMaxNumberOfPlayers((oldNum) => oldNum + 1);
+                    }}
+                  >
+                    <Feather
+                      name="plus-circle"
+                      color={colors.primary}
+                      size={24}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
         <View style={styles.nextView}>
           <Button
             mode="contained"
-            style={styles.next}
-            onPress={() => {
-              if (stage < 3)
-                navigation.push("BookCourt", {
-                  data: {
-                    stage: stage + 1,
-                    gameType,
-                    courtType,
-                    searchDate: searchDate.toISOString(),
-                    selectedStartTime,
-                    selectedDuration,
-                    branchSearchText,
-                  },
-                });
-              else if (selectedBranch)
-                navigation.push("BookingPayment", {
-                  venueName: selectedBranch.venue.name,
-                  courtName: gameType,
-                  courtType: gameType,
-                  courtRating: selectedBranch.courts[0].rating,
-                  courtMaxPlayers: 1,
-                  price: selectedBranch.courts[0].price,
-                  branchLatLng: [
-                    selectedBranch.latitude,
-                    selectedBranch.longitude,
-                  ],
-                  bookingDetails: {
-                    date: searchDate.toISOString(),
-                    gameType: gameType,
-                    nbOfPlayers: 3,
-                    time: {
-                      startTime: searchStartTime.toISOString(),
-                      endTime: searchEndTime.toISOString(),
-                    },
-                    courtId: selectedBranch.courts[0].id,
-                  },
-                  profilePhotoUrl: selectedBranch.profilePhotoUrl,
-                });
-            }}
+            style={[
+              styles.next,
+              {
+                backgroundColor: buttonDisabled
+                  ? colors.secondary
+                  : colors.primary,
+              },
+            ]}
+            onPress={
+              buttonDisabled
+                ? undefined
+                : () => {
+                    if (
+                      stage <= Stages.Time ||
+                      (stage == Stages.CourtSelection && selectedCourt)
+                    )
+                      navigation.push("BookCourt", {
+                        data: {
+                          stage:
+                            stage +
+                            (stage === Stages.Time && selectedBranch ? 2 : 1),
+                          gameType,
+                          courtType,
+                          searchDate: searchDate.toISOString(),
+                          selectedStartTime,
+                          selectedDuration,
+                          branchSearchText,
+                          selectedBranch,
+                          selectedCourt,
+                        },
+                        branchId,
+                      });
+                    else if (
+                      stage == Stages.BranchSelection &&
+                      selectedBranch
+                    ) {
+                      navigation.push("BookCourt", {
+                        data: {
+                          stage:
+                            stage + (selectedBranch.courts.length > 1 ? 1 : 2),
+                          gameType,
+                          courtType,
+                          searchDate: searchDate.toISOString(),
+                          selectedStartTime,
+                          selectedDuration,
+                          branchSearchText,
+                          selectedBranch,
+                          selectedCourt:
+                            selectedBranch.courts.length > 1
+                              ? undefined
+                              : selectedBranch.courts[0],
+                        },
+                        branchId,
+                      });
+                    } else if (
+                      stage == Stages.NumPlayers &&
+                      selectedBranch &&
+                      selectedCourt
+                    )
+                      navigation.push("BookingPayment", {
+                        venueName: selectedBranch.venue.name,
+                        courtId: selectedCourt.id,
+                        courtName: gameType,
+                        courtType: gameType,
+                        courtRating: selectedCourt.rating,
+                        price: selectedCourt.price,
+                        branchLatLng: [
+                          selectedBranch.latitude,
+                          selectedBranch.longitude,
+                        ],
+                        date: searchDate.toISOString(),
+                        startTime: searchStartTime.toISOString(),
+                        endTime: searchEndTime.toISOString(),
+                        profilePhotoUrl: selectedBranch.profilePhotoUrl,
+                      });
+                  }
+            }
           >
             Next
           </Button>

@@ -34,6 +34,21 @@ export const Branches = () => {
         .includes(true)
   );
 
+  var branchPrices: string[] = [];
+
+  if (filteredBranches)
+    branchPrices = filteredBranches.map((branch) =>
+      branch.courts.length === 1
+        ? branch.courts[0].price.toString()
+        : `${Math.min.apply(
+            null,
+            branch.courts.map((court) => court.price)
+          )}-${Math.max.apply(
+            null,
+            branch.courts.map((court) => court.price)
+          )}`
+    );
+
   return (
     <AppHeader
       absolutePosition={false}
@@ -92,6 +107,7 @@ export const Branches = () => {
               type="horizontal"
               promoted={false}
               branch={branch}
+              price={branchPrices[index]}
             />
           ))}
         {!isLoading && (!filteredBranches || filteredBranches.length === 0) && (

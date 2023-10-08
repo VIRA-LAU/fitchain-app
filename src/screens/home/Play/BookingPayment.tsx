@@ -35,31 +35,31 @@ export const BookingPayment = ({
 
   const {
     venueName,
+    courtId,
     courtName,
     courtType,
     courtRating,
     price,
     branchLatLng,
-    bookingDetails,
     profilePhotoUrl,
+    date: dateStr,
+    startTime: startTimeStr,
+    endTime: endTimeStr,
   } = route.params;
 
   const { mutate: createGame, isLoading, error } = useCreateGameMutation();
 
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
 
-  const date = new Date(bookingDetails.date);
-  var time = bookingDetails.time;
-  time.startTime = new Date(time.startTime);
-  time.endTime = new Date(time.endTime);
+  const date = new Date(dateStr);
+  const startTime = new Date(startTimeStr);
+  const endTime = new Date(endTimeStr);
 
-  console.log(time.startTime, time.endTime);
   const endHours =
-    time.endTime.getHours() * 60 + time.endTime.getMinutes() === 0
+    endTime.getHours() * 60 + endTime.getMinutes() === 0
       ? 1440
-      : time.endTime.getHours() * 60 + time.endTime.getMinutes();
-  const startHours =
-    time.startTime.getHours() * 60 + time.startTime.getMinutes();
+      : endTime.getHours() * 60 + endTime.getMinutes();
+  const startHours = startTime.getHours() * 60 + startTime.getMinutes();
   const bookedHours = (endHours - startHours) / 60;
 
   useEffect(() => {
@@ -83,7 +83,12 @@ export const BookingPayment = ({
               </Text>
               {/* <Text style={styles.headerContentText}>{courtType}</Text> */}
               <View style={styles.rating}>
-                <FeatherIcon name={`star`} color={colors.tertiary} size={14} />
+                <FeatherIcon
+                  name={`star`}
+                  color={colors.tertiary}
+                  size={16}
+                  style={{ paddingBottom: 3 }}
+                />
                 <Text style={[styles.headerContentText, { marginLeft: 5 }]}>
                   {courtRating.toFixed(1)}
                 </Text>
@@ -146,8 +151,8 @@ export const BookingPayment = ({
             <Text style={styles.labelText}>Time slot</Text>
             <View style={styles.contentIconView}>
               <Text style={[styles.valueText, { marginRight: 10 }]}>
-                {parseTimeFromMinutes(getMins(time.startTime))} -{" "}
-                {parseTimeFromMinutes(getMins(time.endTime))}
+                {parseTimeFromMinutes(getMins(startTime))} -{" "}
+                {parseTimeFromMinutes(getMins(endTime))}
               </Text>
             </View>
           </View>
@@ -195,16 +200,16 @@ export const BookingPayment = ({
                   ? () => {
                       setPlayScreenStillVisible(false);
                       createGame({
-                        courtId: bookingDetails.courtId,
-                        startTime: bookingDetails.time.startTime.toString(),
-                        endTime: bookingDetails.time.endTime.toString(),
-                        type: bookingDetails.gameType,
+                        courtId,
+                        startTime: startTimeStr,
+                        endTime: endTimeStr,
+                        type: courtType,
                       });
                     }
                   : undefined
               }
             >
-              Next
+              Proceed to Payment
             </Button>
           </View>
         </View>
@@ -229,8 +234,8 @@ const makeStyles = (colors: MD3Colors) =>
       paddingHorizontal: 20,
       paddingBottom: 10,
       backgroundColor: colors.secondary,
-      borderBottomLeftRadius: 10,
-      borderBottomRightRadius: 10,
+      borderBottomLeftRadius: 12,
+      borderBottomRightRadius: 12,
     },
     headerContent: {
       flexDirection: "row",
@@ -249,9 +254,7 @@ const makeStyles = (colors: MD3Colors) =>
       marginVertical: 10,
       marginHorizontal: 20,
       padding: 20,
-      borderRadius: 10,
-      borderColor: colors.tertiary,
-      borderWidth: 0.5,
+      borderRadius: 12,
     },
     contentIconView: {
       flexDirection: "row",

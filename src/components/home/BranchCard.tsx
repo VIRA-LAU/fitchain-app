@@ -56,12 +56,14 @@ export const BranchCard = ({
   playScreenBookingDetails,
   isFirst,
   isLast,
+  price,
   pressable = true,
   isSelected,
 }: {
   type: styleOptions;
   promoted?: boolean;
   branch: Branch;
+  price?: string;
   playScreenBookingDetails?: {
     date: string;
     time?: TimeSlot;
@@ -125,11 +127,19 @@ export const BranchCard = ({
         <View style={styles.textView}>
           <Text style={styles.title}>{branch.venue.name}</Text>
           <View style={styles.ratingView}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <IonIcon name={"star"} color={colors.primary} />
-              <Text style={styles.rating}>{branch.rating}</Text>
+            <View style={{ flexDirection: "row" }}>
+              <IonIcon
+                name={"star"}
+                color={colors.primary}
+                size={16}
+                style={{ paddingTop: 2 }}
+              />
+              <Text style={styles.rating}>{branch.rating.toFixed(1)}</Text>
             </View>
-            <Text style={styles.location}>
+            {type === "horizontal" && (
+              <Text style={styles.location}>{price} $/hour</Text>
+            )}
+            <Text style={[styles.location, { color: "#9E9E9E" }]}>
               {type !== "horizontal" && " • "}
               {branch.location}
             </Text>
@@ -167,7 +177,7 @@ const makeStyles = (
       flex: 1,
       flexDirection: isHorizontal ? "column" : "row",
       backgroundColor: colors.secondary,
-      padding: 15,
+      padding: 12,
       borderBottomLeftRadius: isHorizontal ? 0 : 10,
       borderBottomRightRadius: 10,
       borderTopRightRadius: isHorizontal ? 10 : 0,
@@ -202,16 +212,14 @@ const makeStyles = (
       alignItems: isHorizontal ? "flex-start" : "center",
     },
     rating: {
-      color: colors.tertiary,
+      color: colors.primary,
       fontFamily: "Poppins-Regular",
-      fontSize: 12,
       marginLeft: 5,
-      paddingVertical: isHorizontal ? 5 : 0,
+      height: "100%",
+      textAlignVertical: "bottom",
     },
     location: {
       color: colors.tertiary,
       fontFamily: "Poppins-Regular",
-      fontSize: 12,
-      lineHeight: 20,
     },
   });

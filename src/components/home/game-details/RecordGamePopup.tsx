@@ -132,9 +132,7 @@ export const RecordGamePopup = ({
               {
                 // 50% of (75% of screen width - margin (2x20) - margin (2x5) - ?)
                 width: 0.5 * (windowWidth * 0.75 - 40 - 20),
-                backgroundColor: isActive
-                  ? colors.background
-                  : colors.secondary,
+                backgroundColor: isActive ? colors.primary : colors.secondary,
               },
               pressed && { backgroundColor: colors.background },
             ]}

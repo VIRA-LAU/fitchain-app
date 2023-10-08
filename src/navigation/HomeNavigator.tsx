@@ -28,6 +28,7 @@ import {
   Notifications as NotificationsScreen,
   Challenges,
   BookCourt,
+  Games,
 } from "screens";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -35,7 +36,7 @@ import * as Location from "expo-location";
 import * as Notifications from "expo-notifications";
 import { useQueryClient } from "react-query";
 import { useNavigationState } from "@react-navigation/native";
-import { GameType, TimeSlot } from "src/types";
+import { Branch, Court, GameType, TimeSlot } from "src/types";
 import { LatLng } from "react-native-maps";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { Image } from "react-native";
@@ -170,14 +171,18 @@ export type StackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
   BookCourt: {
     data?: {
-      stage: number;
-      gameType: GameType;
-      courtType: "Half Court" | "Full Court";
-      searchDate: string;
+      stage?: number;
+      gameType?: GameType;
+      courtType?: "Half Court" | "Full Court";
+      searchDate?: string;
       selectedStartTime?: string;
       selectedDuration?: number;
-      branchSearchText: string;
+      branchSearchText?: string;
+      selectedBranch?: Branch;
+      selectedCourt?: Court;
     };
+    branchId?: number;
+    courtTypes?: GameType[];
   };
   GameDetails: { id: number };
   InviteUsers: {
@@ -196,6 +201,7 @@ export type StackParamList = {
     profilePhotoUrl?: string;
     coverPhotoUrl?: string;
   };
+  Games: undefined;
   Branches: undefined;
   BranchDetails: {
     id: number;
@@ -228,19 +234,15 @@ export type StackParamList = {
   };
   BookingPayment: {
     venueName: string;
+    courtId: number;
     courtName: string;
-    courtType: string;
+    courtType: GameType;
     courtRating: number;
-    courtMaxPlayers: number;
     price: number;
     branchLatLng: number[];
-    bookingDetails: {
-      courtId: number;
-      date: string;
-      nbOfPlayers: number;
-      time: TimeSlot;
-      gameType: GameType;
-    };
+    date: string;
+    startTime: string;
+    endTime: string;
     profilePhotoUrl?: string;
   };
   ChooseGame: {
@@ -279,6 +281,7 @@ export const HomeNavigator = () => {
         )}
       </Stack.Screen>
       <Stack.Screen name="Branches" component={Branches} />
+      <Stack.Screen name="Games" component={Games} />
       <Stack.Screen name="GameDetails" component={GameDetails} />
       <Stack.Screen name="BranchDetails" component={BranchDetails} />
       <Stack.Screen name="ChooseBranch" component={ChooseBranch} />

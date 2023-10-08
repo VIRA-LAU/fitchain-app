@@ -307,9 +307,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               styles.tabViewItem,
               {
                 width: 0.5 * (windowWidth - 40 - 20),
-                backgroundColor: isActive
-                  ? colors.background
-                  : colors.secondary,
+                backgroundColor: isActive ? colors.primary : colors.secondary,
               },
               pressed && { backgroundColor: colors.background },
             ]}
@@ -320,7 +318,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             <Text
               style={{
                 fontFamily: isActive ? "Poppins-Bold" : "Poppins-Regular",
-                color: colors.tertiary,
+                color: isActive ? colors.background : colors.tertiary,
               }}
             >
               {route.title}
@@ -380,6 +378,13 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       onPress: () => {
                         setRecordingModalVisible(false);
                         setPopupVisible("recordVideo");
+                      },
+                    },
+                    {
+                      text: "Upload Video",
+                      onPress: () => {
+                        setRecordingModalVisible(false);
+                        setPopupVisible("uploadVideo");
                       },
                     },
                   ]
@@ -608,7 +613,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               initialLayout={{ width: windowWidth }}
               swipeEnabled={false}
             />
-            <Image
+            {/* <Image
               style={{
                 height: 120,
                 maxWidth: "100%",
@@ -616,8 +621,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
               }}
               resizeMode="contain"
               source={require("assets/images/home/basketball-court.png")}
-            />
-            <View style={{ marginHorizontal: 20, marginBottom: -10 }}>
+            /> */}
+            <View style={{ marginHorizontal: 20, marginTop: 16 }}>
               {loading ? (
                 <BranchLocationSkeleton />
               ) : (
@@ -625,7 +630,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               )}
             </View>
             <Button
-              style={{ marginTop: 20, alignSelf: "center" }}
+              style={{ marginTop: 10, alignSelf: "center" }}
               icon={"arrow-right-top"}
               onPress={() => {
                 const scheme = Platform.select({

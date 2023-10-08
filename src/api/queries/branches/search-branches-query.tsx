@@ -28,23 +28,23 @@ export const useSearchBranchesQuery = (params: Props) => {
     ["search-branches", params],
     searchBranches(params),
     {
-      select: (branches) =>
-        branches.map((branch) => ({
-          ...branch,
-          courts: branch.courts.map((court) => ({
-            ...court,
-            timeSlots: court.timeSlots.map((timeSlot) => ({
-              ...timeSlot,
-              startTime: new Date(timeSlot.startTime),
-              endTime: new Date(timeSlot.endTime),
-            })),
-            occupiedTimes: court.occupiedTimes?.map((timeSlot) => ({
-              ...timeSlot,
-              startTime: new Date(timeSlot.startTime),
-              endTime: new Date(timeSlot.endTime),
-            })),
-          })),
-        })),
+      // select: (branches) =>
+      //   branches.map((branch) => ({
+      //     ...branch,
+      //     courts: branch.courts.map((court) => ({
+      //       ...court,
+      //       timeSlots: court.timeSlots.map((timeSlot) => ({
+      //         ...timeSlot,
+      //         startTime: new Date(timeSlot.startTime),
+      //         endTime: new Date(timeSlot.endTime),
+      //       })),
+      //       occupiedTimes: court.occupiedTimes?.map((timeSlot) => ({
+      //         ...timeSlot,
+      //         startTime: new Date(timeSlot.startTime),
+      //         endTime: new Date(timeSlot.endTime),
+      //       })),
+      //     })),
+      //   })),
       enabled: false,
     }
   );
