@@ -1,8 +1,6 @@
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
-  BackHandler,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -15,7 +13,7 @@ import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { AppHeader, BranchCard, BranchCardSkeleton } from "src/components";
 import { StackParamList } from "src/navigation";
-import { Branch, TimeSlot } from "src/types";
+import { Branch, GameType } from "src/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useSearchBranchesQuery } from "src/api";
 
@@ -31,14 +29,14 @@ const stageTitles = [
   "",
 ];
 
-const GameType = ({
+const GameTypeCard = ({
   gameType,
   selectedGameType,
   setGameType,
 }: {
-  gameType: "Basketball" | "Football" | "Tennis";
-  selectedGameType: "Basketball" | "Football" | "Tennis";
-  setGameType: Dispatch<SetStateAction<"Basketball" | "Football" | "Tennis">>;
+  gameType: GameType;
+  selectedGameType: GameType;
+  setGameType: Dispatch<SetStateAction<GameType>>;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -113,21 +111,161 @@ const CourtType = ({
   );
 };
 
+const TimeCard = ({
+  time,
+  selectedTime,
+  setTime,
+}: {
+  time: string;
+  selectedTime: string;
+  setTime: Dispatch<SetStateAction<string>>;
+}) => {
+  const { colors } = useTheme();
+  const styles = makeStyles(colors);
+
+  return (
+    <TouchableOpacity
+      activeOpacity={0.6}
+      style={[
+        styles.gameType,
+        { minWidth: 112, alignItems: "center", marginBottom: 0 },
+        time === selectedTime
+          ? {
+              backgroundColor: colors.primary,
+            }
+          : {},
+      ]}
+      onPress={() => setTime(time)}
+    >
+      <Text
+        style={[
+          styles.title,
+          time === selectedTime
+            ? {
+                color: colors.background,
+              }
+            : {},
+        ]}
+      >
+        {time}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
+const DurationCard = ({
+  duration,
+  selectedDuration,
+  setDuration,
+}: {
+  duration: number;
+  selectedDuration: number;
+  setDuration: Dispatch<SetStateAction<number>>;
+}) => {
+  const { colors } = useTheme();
+  const styles = makeStyles(colors);
+
+  return (
+    <TouchableOpacity
+      activeOpacity={0.6}
+      style={[
+        styles.gameType,
+        { minWidth: 112, alignItems: "center", marginBottom: 0 },
+        duration === selectedDuration
+          ? {
+              backgroundColor: colors.primary,
+            }
+          : {},
+      ]}
+      onPress={() => setDuration(duration)}
+    >
+      <Text
+        style={[
+          styles.title,
+          duration === selectedDuration
+            ? {
+                color: colors.background,
+              }
+            : {},
+        ]}
+      >
+        {duration === 0.5
+          ? "30 mins"
+          : duration === 1
+          ? "1 hour"
+          : `${duration} hours`}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+
 export const BookCourt = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
   const { width: windowWidth } = useWindowDimensions();
 
-  const [stage, setStage] = useState<number>(0);
-  const [gameType, setGameType] = useState<
-    "Basketball" | "Football" | "Tennis"
-  >("Basketball");
-  const [courtType, setCourtType] = useState<"Half Court" | "Full Court">(
-    "Half Court"
+  const { data } = route.params;
+  const stage = data?.stage ?? 0;
+
+  const [gameType, setGameType] = useState<GameType>(
+    data?.gameType ?? "Basketball"
   );
-  const [searchDate, setSearchDate] = useState<Date>(new Date());
-  const [searchTime, setSearchTime] = useState<TimeSlot>();
-  const [branchSearchText, setBranchSearchText] = useState<string>("");
+  const [courtType, setCourtType] = useState<"Half Court" | "Full Court">(
+    data?.courtType ?? "Half Court"
+  );
+  const [searchDate, setSearchDate] = useState<Date>(
+    data?.searchDate ? new Date(data.searchDate) : new Date()
+  );
+  const [selectedStartTime, setSelectedStartTime] = useState<string>(
+    data?.selectedStartTime ?? "08:00"
+  );
+  const [selectedDuration, setSelectedDuration] = useState<number>(
+    data?.selectedDuration ?? 0.5
+  );
+  const [branchSearchText, setBranchSearchText] = useState<string>(
+    data?.branchSearchText ?? ""
+  );
+  const [selectedBranch, setSelectedBranch] = useState<Branch>();
+
+  const searchStartTime = new Date(searchDate);
+  searchStartTime.setHours(
+    parseInt(selectedStartTime.substring(0, selectedStartTime.indexOf(":"))),
+    parseInt(selectedStartTime.substring(selectedStartTime.indexOf(":") + 1)),
+    0,
+    0
+  );
+
+  var endTimeMins =
+    parseInt(selectedStartTime.substring(selectedStartTime.indexOf(":") + 1)) +
+    selectedDuration * 60;
+  var endTimeHours = Math.floor(endTimeMins / 60);
+  endTimeMins = endTimeMins % 60;
+
+  const searchEndTime = new Date(searchDate);
+  searchEndTime.setHours(
+    parseInt(selectedStartTime.substring(0, selectedStartTime.indexOf(":"))) +
+      endTimeHours,
+    endTimeMins,
+    0,
+    0
+  );
+
+  const timeSlotStartTime = new Date("2000-01-01");
+  timeSlotStartTime.setHours(
+    parseInt(selectedStartTime.substring(0, selectedStartTime.indexOf(":"))),
+    parseInt(selectedStartTime.substring(selectedStartTime.indexOf(":") + 1)),
+    0,
+    0
+  );
+
+  const timeSlotEndTime = new Date("2000-01-01");
+  timeSlotEndTime.setHours(
+    parseInt(selectedStartTime.substring(0, selectedStartTime.indexOf(":"))) +
+      endTimeHours,
+    endTimeMins,
+    0,
+    0
+  );
 
   const {
     data: branches,
@@ -139,34 +277,22 @@ export const BookCourt = ({ navigation, route }: Props) => {
       (searchDate.getMonth() + 1)
     ).slice(-2)}-${("0" + searchDate.getDate()).slice(-2)}`,
     gameType,
-    startTime: undefined,
-    endTime: undefined,
+    startTime: timeSlotStartTime.toISOString(),
+    endTime: timeSlotEndTime.toISOString(),
     nbOfPlayers: 1,
   });
 
   useEffect(() => {
-    const handleBack = () => {
-      if (stage > 0) {
-        setStage(stage - 1);
-        return true;
-      } else return false;
-    };
-    BackHandler.addEventListener("hardwareBackPress", handleBack);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBack);
-    };
+    if (stage === 3) fetchBranches();
   }, [stage]);
 
   return (
-    <AppHeader
-      absolutePosition={false}
-      title={"Book a Court"}
-      backEnabled
-      onBack={(goBack: Function) => {
-        if (stage > 0) setStage(stage - 1);
-        else goBack();
-      }}
-    >
+    <AppHeader absolutePosition={false} title={"Book a Court"} backEnabled>
+      <View style={styles.stageBarBack}>
+        <View
+          style={[styles.stageBar, { width: (windowWidth / 4) * (stage + 1) }]}
+        />
+      </View>
       <ScrollView contentContainerStyle={styles.wrapper}>
         {stage <= 2 && (
           <Text style={[styles.title, { marginBottom: 16 }]}>
@@ -175,17 +301,17 @@ export const BookCourt = ({ navigation, route }: Props) => {
         )}
         {stage === 0 && (
           <View style={styles.gameTypes}>
-            <GameType
+            <GameTypeCard
               gameType="Basketball"
               selectedGameType={gameType}
               setGameType={setGameType}
             />
-            <GameType
+            <GameTypeCard
               gameType="Football"
               selectedGameType={gameType}
               setGameType={setGameType}
             />
-            <GameType
+            <GameTypeCard
               gameType="Tennis"
               selectedGameType={gameType}
               setGameType={setGameType}
@@ -217,7 +343,7 @@ export const BookCourt = ({ navigation, route }: Props) => {
           </View>
         )}
         {stage === 2 && (
-          <View style={{ flexGrow: 1 }}>
+          <View style={{ marginBottom: 16 }}>
             <CalendarPicker
               width={windowWidth * 0.9}
               textStyle={{
@@ -236,12 +362,66 @@ export const BookCourt = ({ navigation, route }: Props) => {
               selectedStartDate={searchDate ?? new Date()}
             />
             <Text style={[styles.title, { marginTop: 24, marginBottom: 16 }]}>
-              Duration ??
+              Start Time
             </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {[
+                "08:00",
+                "08:30",
+                "09:00",
+                "09:30",
+                "10:00",
+                "10:30",
+                "11:00",
+                "11:30",
+                "12:00",
+                "12:30",
+                "13:00",
+                "13:30",
+                "14:00",
+                "14:30",
+                "15:00",
+                "15:30",
+                "16:00",
+                "16:30",
+                "17:00",
+                "17:30",
+                "18:00",
+                "18:30",
+                "19:00",
+                "19:30",
+                "20:00",
+                "20:30",
+                "21:00",
+                "21:30",
+                "22:00",
+                "22:30",
+              ].map((time, index) => (
+                <TimeCard
+                  key={index}
+                  time={time}
+                  setTime={setSelectedStartTime}
+                  selectedTime={selectedStartTime}
+                />
+              ))}
+            </ScrollView>
+            <Text style={[styles.title, { marginTop: 24, marginBottom: 16 }]}>
+              Duration
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {[0.5, 1, 1.5, 2].map((duration, index) => (
+                <DurationCard
+                  key={index}
+                  duration={duration}
+                  setDuration={setSelectedDuration}
+                  selectedDuration={selectedDuration}
+                />
+              ))}
+            </ScrollView>
           </View>
         )}
         {stage === 3 && (
-          <View style={{ flexGrow: 1 }}>
+          <View style={{ marginBottom: 16 }}>
             <View style={styles.searchView}>
               <View style={styles.searchBarView}>
                 <TextInput
@@ -287,12 +467,19 @@ export const BookCourt = ({ navigation, route }: Props) => {
               {branchesLoading && <BranchCardSkeleton type="horizontal" />}
               {!branchesLoading &&
                 branches?.map((branch: Branch, index: number) => (
-                  <BranchCard
+                  <TouchableOpacity
+                    activeOpacity={0.8}
                     key={index}
-                    type="horizontal"
-                    promoted={false}
-                    branch={branch}
-                  />
+                    onPress={() => setSelectedBranch(branch)}
+                  >
+                    <BranchCard
+                      type="horizontal"
+                      promoted={false}
+                      branch={branch}
+                      pressable={false}
+                      isSelected={selectedBranch?.id === branch.id}
+                    />
+                  </TouchableOpacity>
                 ))}
               {!branchesLoading && (!branches || branches.length === 0) && (
                 <View style={styles.placeholder}>
@@ -309,8 +496,42 @@ export const BookCourt = ({ navigation, route }: Props) => {
             mode="contained"
             style={styles.next}
             onPress={() => {
-              if (stage === 2) fetchBranches();
-              setStage(stage + 1);
+              if (stage < 3)
+                navigation.push("BookCourt", {
+                  data: {
+                    stage: stage + 1,
+                    gameType,
+                    courtType,
+                    searchDate: searchDate.toISOString(),
+                    selectedStartTime,
+                    selectedDuration,
+                    branchSearchText,
+                  },
+                });
+              else if (selectedBranch)
+                navigation.push("BookingPayment", {
+                  venueName: selectedBranch.venue.name,
+                  courtName: gameType,
+                  courtType: gameType,
+                  courtRating: selectedBranch.courts[0].rating,
+                  courtMaxPlayers: 1,
+                  price: selectedBranch.courts[0].price,
+                  branchLatLng: [
+                    selectedBranch.latitude,
+                    selectedBranch.longitude,
+                  ],
+                  bookingDetails: {
+                    date: searchDate.toISOString(),
+                    gameType: gameType,
+                    nbOfPlayers: 3,
+                    time: {
+                      startTime: searchStartTime.toISOString(),
+                      endTime: searchEndTime.toISOString(),
+                    },
+                    courtId: selectedBranch.courts[0].id,
+                  },
+                  profilePhotoUrl: selectedBranch.profilePhotoUrl,
+                });
             }}
           >
             Next
@@ -324,6 +545,17 @@ export const BookCourt = ({ navigation, route }: Props) => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapper: { flexGrow: 1, padding: 16 },
+    stageBarBack: {
+      width: "100%",
+      height: 8,
+      backgroundColor: colors.secondary,
+    },
+    stageBar: {
+      height: 8,
+      backgroundColor: colors.primary,
+      borderTopRightRadius: 20,
+      borderBottomRightRadius: 20,
+    },
     title: {
       fontFamily: "Poppins-Bold",
       color: colors.tertiary,
@@ -334,8 +566,10 @@ const makeStyles = (colors: MD3Colors) =>
     },
     nextView: {
       borderColor: colors.secondary,
-      borderTopWidth: 1,
-      marginTop: 16,
+      borderWidth: 1,
+      borderBottomWidth: 0,
+      borderRadius: 12,
+      marginTop: "auto",
       marginHorizontal: -16,
     },
     next: {
@@ -349,6 +583,7 @@ const makeStyles = (colors: MD3Colors) =>
       flexDirection: "row",
       flexWrap: "wrap",
       flexGrow: 1,
+      marginBottom: 16,
     },
     gameType: {
       padding: 16,

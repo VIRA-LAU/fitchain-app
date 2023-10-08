@@ -2,6 +2,7 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { Image, ScrollView, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
+import { LogoSvg } from "src/assets/images/LogoSvg";
 import { AppHeader } from "src/components";
 import { BottomTabParamList } from "src/navigation";
 
@@ -34,7 +35,7 @@ export const Challenges = ({ navigation, route }: Props) => {
         </Text>
         <Text style={[styles.title, { fontSize: 20 }]}>Activity</Text>
         <View style={styles.activity}>
-          <Image
+          {/* <Image
             source={require("assets/images/logo.png")}
             style={{
               resizeMode: "contain",
@@ -42,8 +43,14 @@ export const Challenges = ({ navigation, route }: Props) => {
               height: "auto",
               aspectRatio: 1,
             }}
-          />
-          <Text style={[styles.text, { color: colors.primary, fontSize: 12 }]}>
+          /> */}
+          <LogoSvg />
+          <Text
+            style={[
+              styles.text,
+              { color: colors.primary, fontSize: 12, marginTop: 23 },
+            ]}
+          >
             50% Completed
           </Text>
           <Text style={[styles.title, { fontSize: 14 }]}>
@@ -243,7 +250,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     activity: {
       alignItems: "center",
-      marginTop: 16,
+      marginTop: 32,
       marginBottom: 24,
     },
     challenges: {

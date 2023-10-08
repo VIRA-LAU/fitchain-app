@@ -141,7 +141,7 @@ const BottomTabNavigator = ({
           style={styles.playIconView}
           onPress={() => {
             // setPlayScreenVisible(true);
-            navigation.push("BookCourt");
+            navigation.push("BookCourt", {});
           }}
         >
           <View style={styles.playIcon}>
@@ -168,7 +168,17 @@ const BottomTabNavigator = ({
 
 export type StackParamList = {
   BottomBar: NavigatorScreenParams<BottomTabParamList>;
-  BookCourt: undefined;
+  BookCourt: {
+    data?: {
+      stage: number;
+      gameType: GameType;
+      courtType: "Half Court" | "Full Court";
+      searchDate: string;
+      selectedStartTime?: string;
+      selectedDuration?: number;
+      branchSearchText: string;
+    };
+  };
   GameDetails: { id: number };
   InviteUsers: {
     gameId: number;

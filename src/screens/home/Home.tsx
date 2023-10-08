@@ -18,17 +18,8 @@ import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
   AppHeader,
-  UpcomingGameCard,
-  ActivityCard,
-  BookingCard,
-  InvitationCard,
   BranchCard,
-  SportTypeDropdown,
-  BookingCardSkeleton,
-  UpcomingGameCardSkeleton,
   BranchCardSkeleton,
-  InvitationCardSkeleton,
-  ActivityCardSkeleton,
   HomeCard,
 } from "components";
 import { BottomTabParamList } from "src/navigation/tabScreenOptions";

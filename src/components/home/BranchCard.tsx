@@ -56,6 +56,8 @@ export const BranchCard = ({
   playScreenBookingDetails,
   isFirst,
   isLast,
+  pressable = true,
+  isSelected,
 }: {
   type: styleOptions;
   promoted?: boolean;
@@ -68,6 +70,8 @@ export const BranchCard = ({
   };
   isFirst?: boolean;
   isLast?: boolean;
+  pressable?: boolean;
+  isSelected?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, type === "horizontal", type === "focused");
@@ -86,7 +90,9 @@ export const BranchCard = ({
         styles.wrapper,
         isFirst ? { marginLeft: 20 } : {},
         isLast ? { marginRight: 20 } : {},
+        isSelected ? { borderColor: colors.primary } : {},
       ]}
+      disabled={!pressable}
       onPress={() => {
         navigation.push("BranchDetails", {
           id: branch.id,
@@ -147,6 +153,8 @@ const makeStyles = (
       marginBottom: isHorizontal || isFocused ? 16 : 0,
       borderRadius: 12,
       minWidth: isHorizontal ? "auto" : 200,
+      borderWidth: 2,
+      borderColor: "transparent",
     },
     image: {
       height: isHorizontal ? "100%" : 128,

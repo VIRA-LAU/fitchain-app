@@ -15,7 +15,6 @@ import {
   getMins,
   parseTimeFromMinutes,
 } from "src/components";
-import IonIcon from "react-native-vector-icons/Ionicons";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParamList } from "src/navigation";
@@ -39,7 +38,6 @@ export const BookingPayment = ({
     courtName,
     courtType,
     courtRating,
-    courtMaxPlayers,
     price,
     branchLatLng,
     bookingDetails,
@@ -55,6 +53,7 @@ export const BookingPayment = ({
   time.startTime = new Date(time.startTime);
   time.endTime = new Date(time.endTime);
 
+  console.log(time.startTime, time.endTime);
   const endHours =
     time.endTime.getHours() * 60 + time.endTime.getMinutes() === 0
       ? 1440
@@ -69,14 +68,7 @@ export const BookingPayment = ({
   }, [error]);
 
   return (
-    <AppHeader
-      absolutePosition={false}
-      title={venueName}
-      // right={
-      //   <IonIcon name="ellipsis-horizontal" color={colors.tertiary} size={24} />
-      // }
-      backEnabled
-    >
+    <AppHeader absolutePosition={false} title={"Booking Summary"} backEnabled>
       <ScrollView contentContainerStyle={styles.wrapperView}>
         <View style={styles.header}>
           <View style={styles.headerContent}>
@@ -85,11 +77,11 @@ export const BookingPayment = ({
             />
             <View style={styles.headerContentInfo}>
               <Text
-                style={{ color: colors.tertiary, fontFamily: "Poppins-Medium" }}
+                style={{ color: colors.primary, fontFamily: "Poppins-Medium" }}
               >
                 {courtName}
               </Text>
-              <Text style={styles.headerContentText}>{courtType}</Text>
+              {/* <Text style={styles.headerContentText}>{courtType}</Text> */}
               <View style={styles.rating}>
                 <FeatherIcon name={`star`} color={colors.tertiary} size={14} />
                 <Text style={[styles.headerContentText, { marginLeft: 5 }]}>
@@ -112,7 +104,6 @@ export const BookingPayment = ({
             )}
           </View>
           <Button
-            textColor={colors.tertiary}
             style={{ alignSelf: "center" }}
             icon={"arrow-right-top"}
             onPress={() => {
@@ -193,68 +184,30 @@ export const BookingPayment = ({
             </Text>
           </View>
         </View>
-        {isLoading ? (
-          <View style={styles.paymentViewWrapper}>
-            <ActivityIndicator size="large" style={{ marginVertical: 20 }} />
-          </View>
-        ) : (
-          <View style={styles.paymentViewWrapper}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.paymentView}
-              onPress={() => {
-                const startTime = new Date(date);
-                startTime.setHours(
-                  (time.startTime as Date).getHours(),
-                  (time.startTime as Date).getMinutes(),
-                  0,
-                  0
-                );
-                const endTime = new Date(date);
-                endTime.setHours(
-                  (time.endTime as Date).getHours() === 0
-                    ? 24
-                    : (time.endTime as Date).getHours(),
-                  (time.endTime as Date).getMinutes(),
-                  0,
-                  0
-                );
-                setPlayScreenStillVisible(false);
-                createGame({
-                  courtId: bookingDetails.courtId,
-                  startTime: startTime.toISOString(),
-                  endTime: endTime.toISOString(),
-                  type: bookingDetails.gameType,
-                });
-              }}
+        <View style={{ marginTop: "auto" }}>
+          <View style={styles.nextView}>
+            <Button
+              mode="contained"
+              style={styles.next}
+              loading={isLoading}
+              onPress={
+                !isLoading
+                  ? () => {
+                      setPlayScreenStillVisible(false);
+                      createGame({
+                        courtId: bookingDetails.courtId,
+                        startTime: bookingDetails.time.startTime.toString(),
+                        endTime: bookingDetails.time.endTime.toString(),
+                        type: bookingDetails.gameType,
+                      });
+                    }
+                  : undefined
+              }
             >
-              <View>
-                <Text
-                  style={{
-                    fontFamily: "Poppins-Regular",
-                    fontSize: 10,
-                    color: colors.onPrimary,
-                  }}
-                >
-                  TOTAL
-                </Text>
-                <Text
-                  style={{
-                    fontFamily: "Poppins-Regular",
-                    color: colors.onPrimary,
-                  }}
-                >
-                  USD {price * bookedHours}
-                </Text>
-              </View>
-              <Text
-                style={{ fontFamily: "Poppins-Bold", color: colors.onPrimary }}
-              >
-                Continue To Payment
-              </Text>
-            </TouchableOpacity>
+              Next
+            </Button>
           </View>
-        )}
+        </View>
       </ScrollView>
       <GenericDialog
         visible={errorDialogVisible}
@@ -323,16 +276,19 @@ const makeStyles = (colors: MD3Colors) =>
       flexDirection: "row",
       alignItems: "center",
     },
-    paymentViewWrapper: {
-      marginTop: "auto",
+    nextView: {
+      borderColor: colors.secondary,
+      borderWidth: 1,
+      borderBottomWidth: 0,
+      borderRadius: 12,
+      marginTop: 16,
+      marginBottom: 16,
     },
-    paymentView: {
-      height: 65,
-      backgroundColor: colors.primary,
-      marginTop: 20,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      paddingHorizontal: 20,
+    next: {
+      height: 44,
+      justifyContent: "center",
+      marginTop: 24,
+      marginBottom: 34,
+      marginHorizontal: 16,
     },
   });

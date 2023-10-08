@@ -31,7 +31,6 @@ export const AppHeader = ({
   right,
   middle,
   backEnabled = false,
-  onBack,
   invertColors = false,
   backgroundImage,
   middleTitle = false,
@@ -43,7 +42,6 @@ export const AppHeader = ({
   right?: JSX.Element;
   middle?: JSX.Element;
   backEnabled?: boolean;
-  onBack?: Function;
   invertColors?: boolean;
   backgroundImage?: "Basketball" | "Football" | "Tennis";
   middleTitle?: boolean;
@@ -80,12 +78,7 @@ export const AppHeader = ({
             }}
           >
             {backEnabled && (
-              <TouchableOpacity
-                onPress={() => {
-                  if (onBack) onBack(navigation.goBack);
-                  else navigation.goBack();
-                }}
-              >
+              <TouchableOpacity onPress={() => navigation.goBack()}>
                 <FeatherIcon
                   name="chevron-left"
                   color={!invertColors ? colors.tertiary : colors.onPrimary}

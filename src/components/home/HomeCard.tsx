@@ -45,7 +45,7 @@ export const HomeCard = ({
       ]}
       onPress={() => {
         if (type === "book") navigation.push("Branches");
-        else if (type === "play") navigation.push("BookCourt");
+        else if (type === "play") navigation.push("BookCourt", {});
       }}
     >
       <Image

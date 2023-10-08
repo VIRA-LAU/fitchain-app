@@ -94,7 +94,7 @@ export const tabScreenOptions = ({
     tabBarActiveTintColor: colors.primary,
     tabBarInactiveTintColor: colors.tertiary,
     tabBarStyle: {
-      height: 80,
+      height: 70,
       borderColor: colors.tertiary,
       position: "relative",
       backgroundColor: colors.secondary,
@@ -104,7 +104,7 @@ export const tabScreenOptions = ({
     tabBarLabelStyle: {
       fontFamily: "Poppins-Medium",
     },
-    tabBarItemStyle: { paddingVertical: 12 },
+    tabBarItemStyle: { paddingBottom: 7 },
     tabBarActiveBackgroundColor: colors.background,
     tabBarInactiveBackgroundColor: colors.background,
   };
