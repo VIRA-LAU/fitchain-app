@@ -36,26 +36,27 @@ export const ActivityCard = ({
 }: Activity) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const dateHeader = useMemo(() => {
-    const bookingDate = new Date(
-      startTime
-        .toISOString()
-        .substring(0, new Date(startTime).toISOString().indexOf("T"))
-    );
-    const todayDate = new Date(
-      new Date()
-        .toISOString()
-        .substring(0, new Date().toISOString().indexOf("T"))
-    );
-    const dayDiff =
-      (todayDate.getTime() - bookingDate.getTime()) / (1000 * 60 * 60 * 24);
 
-    if (dayDiff === 0) return "Today";
-    else if (dayDiff === 1) return "Yesterday";
-    else if (dayDiff <= 7) return "Last Week";
-    else if (dayDiff <= 30) return "Last Month";
-    else return "In the Past";
-  }, []);
+  // const dateHeader = useMemo(() => {
+  //   const bookingDate = new Date(
+  //     startTime
+  //       .toISOString()
+  //       .substring(0, new Date(startTime).toISOString().indexOf("T"))
+  //   );
+  //   const todayDate = new Date(
+  //     new Date()
+  //       .toISOString()
+  //       .substring(0, new Date().toISOString().indexOf("T"))
+  //   );
+  //   const dayDiff =
+  //     (todayDate.getTime() - bookingDate.getTime()) / (1000 * 60 * 60 * 24);
+
+  //   if (dayDiff === 0) return "Today";
+  //   else if (dayDiff === 1) return "Yesterday";
+  //   else if (dayDiff <= 7) return "Last Week";
+  //   else if (dayDiff <= 30) return "Last Month";
+  //   else return "In the Past";
+  // }, []);
 
   const navigation =
     useNavigation<
@@ -93,7 +94,7 @@ export const ActivityCard = ({
             {type.substring(1)} game.
           </Text>
         )}
-        <Text style={[styles.greyText, { fontSize: 10 }]}>{dateHeader}</Text>
+        {/* <Text style={[styles.greyText, { fontSize: 10 }]}>{dateHeader}</Text> */}
       </View>
 
       <FeatherIcon
@@ -114,6 +115,7 @@ const makeStyles = (colors: MD3Colors) =>
       backgroundColor: colors.secondary,
       padding: 16,
       marginBottom: 10,
+      alignItems: "center",
     },
     gameIcon: {
       width: 35,

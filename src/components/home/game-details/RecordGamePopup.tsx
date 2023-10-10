@@ -61,8 +61,10 @@ export const RecordGamePopup = ({
             Upload While Recording
           </Text>
           <Switch
-            trackColor={{ false: colors.secondary, true: colors.tertiary }}
-            thumbColor={uploadWhileRecording ? colors.primary : colors.tertiary}
+            trackColor={{ false: colors.secondary, true: colors.secondary }}
+            thumbColor={
+              uploadWhileRecording ? colors.primary : colors.secondary
+            }
             onValueChange={() => setUploadWhileRecording(!uploadWhileRecording)}
             value={uploadWhileRecording}
           />
@@ -75,8 +77,8 @@ export const RecordGamePopup = ({
             Show Modified Video
           </Text>
           <Switch
-            trackColor={{ false: colors.secondary, true: colors.tertiary }}
-            thumbColor={showModifiedVid ? colors.primary : colors.tertiary}
+            trackColor={{ false: colors.secondary, true: colors.secondary }}
+            thumbColor={showModifiedVid ? colors.primary : colors.secondary}
             onValueChange={() => setShowModifiedVid(!showModifiedVid)}
             value={showModifiedVid}
           />

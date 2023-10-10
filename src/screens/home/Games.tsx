@@ -376,16 +376,6 @@ export const Games = () => {
   return (
     <AppHeader
       absolutePosition={false}
-      right={
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => {
-            setSearchBarVisible(true);
-          }}
-        >
-          <IonIcon name="search-outline" color={colors.tertiary} size={24} />
-        </TouchableOpacity>
-      }
       middle={
         <GameTimeDropdown index={durationIndex} setIndex={setDurationIndex} />
       }

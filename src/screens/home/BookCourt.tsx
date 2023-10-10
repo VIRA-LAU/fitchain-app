@@ -214,6 +214,53 @@ const stageTitles = [
   "Invite Friends",
 ];
 
+const times = [
+  "08:00",
+  "08:30",
+  "09:00",
+  "09:30",
+  "10:00",
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "12:30",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
+  "20:00",
+  "20:30",
+  "21:00",
+  "21:30",
+  "22:00",
+  "22:30",
+];
+
+const today = new Date();
+const todayHours = today.getHours();
+const todayMins = today.getMinutes();
+const filteredTimes = times.filter((time) => {
+  const hours = parseInt(time.substring(0, time.indexOf(":")));
+  const mins = parseInt(time.substring(time.indexOf(":") + 1));
+
+  if (todayHours > hours) return false;
+  if (todayHours < hours) return true;
+  if (todayHours === hours) {
+    if (todayMins >= mins) return false;
+    else return true;
+  }
+});
 export const BookCourt = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -229,10 +276,12 @@ export const BookCourt = ({ navigation, route }: Props) => {
     data?.courtType ?? "Half Court"
   );
   const [searchDate, setSearchDate] = useState<Date>(
-    data?.searchDate ? new Date(data.searchDate) : new Date()
+    data?.searchDate ? new Date(data.searchDate) : today
   );
   const [selectedStartTime, setSelectedStartTime] = useState<string>(
-    data?.selectedStartTime ?? "08:00"
+    data?.selectedStartTime ?? filteredTimes.length > 0
+      ? filteredTimes[0]
+      : "00:00"
   );
   const [selectedDuration, setSelectedDuration] = useState<number>(
     data?.selectedDuration ?? 0.5
@@ -425,54 +474,27 @@ export const BookCourt = ({ navigation, route }: Props) => {
                   color: colors.tertiary,
                   fontFamily: "Poppins-Medium",
                 }}
-                minDate={new Date()}
+                minDate={today}
+                todayTextStyle={{ color: colors.tertiary }}
                 todayBackgroundColor={colors.secondary}
                 selectedDayStyle={{ backgroundColor: colors.primary }}
                 selectedDayTextColor={colors.background}
-                initialDate={searchDate ?? new Date()}
+                initialDate={searchDate ?? today}
                 onDateChange={(date) => {
                   const parsedDate = date.toDate();
                   setSearchDate(parsedDate);
                 }}
-                selectedStartDate={searchDate ?? new Date()}
+                selectedStartDate={searchDate ?? today}
               />
             </View>
             <Text style={[styles.title, { marginTop: 24, marginBottom: 16 }]}>
               Start Time
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {[
-                "08:00",
-                "08:30",
-                "09:00",
-                "09:30",
-                "10:00",
-                "10:30",
-                "11:00",
-                "11:30",
-                "12:00",
-                "12:30",
-                "13:00",
-                "13:30",
-                "14:00",
-                "14:30",
-                "15:00",
-                "15:30",
-                "16:00",
-                "16:30",
-                "17:00",
-                "17:30",
-                "18:00",
-                "18:30",
-                "19:00",
-                "19:30",
-                "20:00",
-                "20:30",
-                "21:00",
-                "21:30",
-                "22:00",
-                "22:30",
-              ].map((time, index) => (
+              {(searchDate.toDateString() === today.toDateString()
+                ? filteredTimes
+                : times
+              ).map((time, index) => (
                 <TimeCard
                   key={index}
                   time={time}

@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
-import { View } from "react-native";
 import { useTheme } from "react-native-paper";
-import Svg, { Circle, Polygon, Text } from "react-native-svg";
+import Svg, { Polygon, Text } from "react-native-svg";
 
 const degToRadians = (deg: number) => (deg * Math.PI) / 180;
 
@@ -67,7 +66,10 @@ export const RadarChart = ({
       <Polygon
         fill={colors.primary}
         points={`${radarData.map((r, i) => {
-          const edgePoint = calculateEdgePoint(i * 60, r.value / 100);
+          const edgePoint = calculateEdgePoint(
+            i * 60,
+            (r.value * 0.8) / 100 + 0.2
+          );
           return `${edgePoint[0]},${edgePoint[1]}`;
         })}`}
       />

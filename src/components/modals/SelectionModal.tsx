@@ -71,8 +71,6 @@ export const modalStyles = (colors: MD3Colors) =>
       borderRadius: 20,
       paddingHorizontal: 25,
       paddingVertical: 10,
-      borderColor: colors.tertiary,
-      borderWidth: 1,
       shadowColor: "#000000",
       shadowOffset: {
         width: 0,

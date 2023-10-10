@@ -9,10 +9,12 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { BottomTabParamList, StackParamList } from "src/navigation";
 
 type Request = {
-  performance: number;
+  defense: number;
+  offense: number;
+  general: number;
+  skill: number;
+  teamplay: number;
   punctuality: number;
-  fairplay: number;
-  teamPlayer: number;
   gameId: number;
   playerId: number;
 };

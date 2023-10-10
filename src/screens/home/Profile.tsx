@@ -18,6 +18,7 @@ import {
   SelectionModal,
   Skeleton,
   RadarChart,
+  DatePicker,
 } from "src/components";
 import { BottomTabParamList, StackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -33,6 +34,9 @@ import {
 import { StackScreenProps } from "@react-navigation/stack";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import { TabBar, TabView } from "react-native-tab-view";
+
+const todayStr = new Date().toISOString();
+const today = todayStr.substring(0, todayStr.indexOf("T"));
 
 type Props =
   | BottomTabScreenProps<BottomTabParamList>
@@ -52,6 +56,20 @@ export const Profile = ({
 
   const { userData, setUserData } = useContext(UserContext);
   const { firstName, lastName, userId } = userData!;
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [permissionDialogVisible, setPermissionDialogVisible] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [profilePhotoToUpload, setProfilePhotoToUpload] = useState<string>();
+  const [activitiesDate, setActivitiesDate] = useState<Date>(new Date());
+
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: "Timeline", title: "Timeline" },
+    { key: "Stats", title: "Stats" },
+    { key: "Teams", title: "Teams" },
+  ]);
+
   const { data: gameCount, isLoading: gameCountLoading } = useGameCountQuery(
     route.params?.playerId || userId
   );
@@ -60,18 +78,15 @@ export const Profile = ({
   const { data: activities, isLoading: activitiesLoading } = useActivitiesQuery(
     route.params?.playerId || userId
   );
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [permissionDialogVisible, setPermissionDialogVisible] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [profilePhotoToUpload, setProfilePhotoToUpload] = useState<string>();
-
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: "Timeline", title: "Timeline" },
-    { key: "Stats", title: "Stats" },
-    { key: "Teams", title: "Teams" },
-  ]);
+  const filteredActivities = activities?.filter(
+    (activity) =>
+      activity.startTime
+        .toISOString()
+        .substring(0, activity.startTime.toISOString().indexOf("T")) ===
+      activitiesDate
+        .toISOString()
+        .substring(0, activitiesDate.toISOString().indexOf("T"))
+  );
 
   const { mutate: updateUserData, isSuccess: updateUserSuccess } =
     useUpdateUserMutation();
@@ -81,24 +96,34 @@ export const Profile = ({
     switch (tabViewRoute.key) {
       case "Timeline":
         return (
-          <View
-            style={{ marginTop: 24, marginBottom: -10, marginHorizontal: 16 }}
-          >
+          <View style={{ marginBottom: -10, marginHorizontal: 16 }}>
+            <View
+              style={{
+                marginHorizontal: 8,
+                alignItems: "center",
+              }}
+            >
+              <DatePicker
+                currentDate={activitiesDate}
+                setCurrentDate={setActivitiesDate}
+              />
+            </View>
             {activitiesLoading && <ActivityCardSkeleton />}
             {!activitiesLoading &&
-              activities?.map((activity: Activity, index: number) => (
+              filteredActivities?.map((activity: Activity, index: number) => (
                 <ActivityCard key={index} {...activity} />
               ))}
-            {!activitiesLoading && (!activities || activities.length === 0) && (
-              <View style={styles.placeholder}>
-                <Text style={styles.placeholderText}>
-                  {route.params?.firstName
-                    ? `${route.params.firstName} has `
-                    : "You have "}
-                  no recent activities.
-                </Text>
-              </View>
-            )}
+            {!activitiesLoading &&
+              (!filteredActivities || filteredActivities.length === 0) && (
+                <View style={styles.placeholder}>
+                  <Text style={styles.placeholderText}>
+                    {route.params?.firstName
+                      ? `${route.params.firstName} `
+                      : "You "}
+                    didn't play on this date.
+                  </Text>
+                </View>
+              )}
           </View>
         );
       case "Stats":
@@ -336,7 +361,7 @@ export const Profile = ({
                         )}${userDetails?.lastName.charAt(0)}`
                       : ""
                   }
-                  labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 60 }}
+                  labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 30 }}
                   style={{
                     backgroundColor: colors.secondary,
                   }}
@@ -413,12 +438,12 @@ export const Profile = ({
         >
           <RadarChart
             radarData={[
-              { label: "Skill", value: 80 },
-              { label: "Offense", value: 30 },
-              { label: "Defense", value: 70 },
-              { label: "General", value: 50 },
-              { label: "Teamplay", value: 80 },
-              { label: "Punctuality", value: 50 },
+              { label: "Skill", value: userDetails?.skill ?? 0 },
+              { label: "Offense", value: userDetails?.offense ?? 0 },
+              { label: "Defense", value: userDetails?.defense ?? 0 },
+              { label: "General", value: userDetails?.general ?? 0 },
+              { label: "Teamplay", value: userDetails?.teamplay ?? 0 },
+              { label: "Punctuality", value: userDetails?.punctuality ?? 0 },
             ]}
             size={0.5 * windowWidth}
           />
@@ -478,7 +503,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
     placeholder: {
       height: 50,
       justifyContent: "center",
-      marginBottom: -10,
+      marginBottom: 30,
     },
     placeholderText: {
       fontFamily: "Poppins-Regular",

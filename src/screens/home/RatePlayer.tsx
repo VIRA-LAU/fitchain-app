@@ -26,20 +26,19 @@ export const RatePlayer = ({ navigation, route }: Props) => {
   const { mutate: createRating } = useCreateRatingMutation();
 
   const [ratings, setRatings] = useState({
-    PERFORMANCE: 3,
-    PUNCTUALITY: 3,
-    FAIRPLAY: 3,
-    "TEAM PLAYER": 3,
+    defense: 3,
+    offense: 3,
+    general: 3,
+    skill: 3,
+    teamplay: 3,
+    punctuality: 3,
   });
 
   function handleRatePlayer() {
     const rating = {
-      performance: ratings["PERFORMANCE"],
-      punctuality: ratings["PUNCTUALITY"],
-      fairplay: ratings["FAIRPLAY"],
-      teamPlayer: ratings["TEAM PLAYER"],
-      gameId: gameId,
-      playerId: playerId,
+      ...ratings,
+      gameId,
+      playerId,
     };
     createRating(rating);
   }
@@ -47,7 +46,7 @@ export const RatePlayer = ({ navigation, route }: Props) => {
   function handleChangeRating(name: string, rating: number) {
     setRatings({
       ...ratings,
-      [name]: rating,
+      [name.toLowerCase()]: rating,
     });
   }
 
@@ -55,16 +54,7 @@ export const RatePlayer = ({ navigation, route }: Props) => {
     <AppHeader title={`Rate Player`} backEnabled>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.headerView}>
-          <Image
-            source={
-              coverPhotoUrl
-                ? {
-                    uri: coverPhotoUrl,
-                  }
-                : require("assets/images/home/profile-background.png")
-            }
-            style={styles.headerImage}
-          />
+          <View style={styles.headerImage} />
           <View
             style={{
               marginTop: (-0.33 * windowWidth) / 2,
@@ -99,22 +89,15 @@ export const RatePlayer = ({ navigation, route }: Props) => {
             How would you rate {firstName} based on this game?
           </Text>
           <View style={styles.rateCriteria}>
+            <RateCriteria name="Defense" onRatingChange={handleChangeRating} />
+            <RateCriteria name="Offense" onRatingChange={handleChangeRating} />
+            <RateCriteria name="General" onRatingChange={handleChangeRating} />
+            <RateCriteria name="Skill" onRatingChange={handleChangeRating} />
+            <RateCriteria name="Teamplay" onRatingChange={handleChangeRating} />
             <RateCriteria
-              name="PERFORMANCE"
+              name="Punctuality"
               onRatingChange={handleChangeRating}
-            ></RateCriteria>
-            <RateCriteria
-              name="PUNCTUALITY"
-              onRatingChange={handleChangeRating}
-            ></RateCriteria>
-            <RateCriteria
-              name="FAIRPLAY"
-              onRatingChange={handleChangeRating}
-            ></RateCriteria>
-            <RateCriteria
-              name="TEAM PLAYER"
-              onRatingChange={handleChangeRating}
-            ></RateCriteria>
+            />
           </View>
 
           <View style={styles.rateButtonView}>
