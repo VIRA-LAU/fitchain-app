@@ -125,16 +125,16 @@ export const ResultCard = ({
             ) : (
               <Text
                 style={{
-                  color: team === "HOME" ? "white" : colors.tertiary,
+                  color: team === "HOME" ? colors.tertiary : "#979797",
                   fontSize: 70,
                 }}
               >
-                {game.updatedHomePoints}
+                {game.updatedHomePoints.toString()}
               </Text>
             )}
             <Text
               style={{
-                color: team === "HOME" ? "white" : colors.tertiary,
+                color: team === "HOME" ? colors.tertiary : "#979797",
                 fontWeight: "800",
               }}
             >
@@ -172,7 +172,7 @@ export const ResultCard = ({
             ) : (
               <Text
                 style={{
-                  color: team === "AWAY" ? "white" : colors.tertiary,
+                  color: team === "AWAY" ? colors.tertiary : "#979797",
                   fontSize: 70,
                 }}
               >
@@ -181,7 +181,7 @@ export const ResultCard = ({
             )}
             <Text
               style={{
-                color: team === "AWAY" ? "white" : colors.tertiary,
+                color: team === "AWAY" ? colors.tertiary : "#979797",
                 fontWeight: "800",
               }}
             >

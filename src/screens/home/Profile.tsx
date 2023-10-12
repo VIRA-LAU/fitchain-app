@@ -437,14 +437,43 @@ export const Profile = ({
           }}
         >
           <RadarChart
-            radarData={[
-              { label: "Skill", value: userDetails?.skill ?? 0 },
-              { label: "Offense", value: userDetails?.offense ?? 0 },
-              { label: "Defense", value: userDetails?.defense ?? 0 },
-              { label: "General", value: userDetails?.general ?? 0 },
-              { label: "Teamplay", value: userDetails?.teamplay ?? 0 },
-              { label: "Punctuality", value: userDetails?.punctuality ?? 0 },
-            ]}
+            radarData={
+              userDetails
+                ? [
+                    {
+                      label: "Skill",
+                      value: (userDetails.skill * 100) / 5,
+                    },
+                    {
+                      label: "Offense",
+                      value: (userDetails.offense * 100) / 5,
+                    },
+                    {
+                      label: "Defense",
+                      value: (userDetails.defense * 100) / 5,
+                    },
+                    {
+                      label: "General",
+                      value: (userDetails.general * 100) / 5,
+                    },
+                    {
+                      label: "Teamplay",
+                      value: (userDetails.teamplay * 100) / 5,
+                    },
+                    {
+                      label: "Punctuality",
+                      value: (userDetails.punctuality * 100) / 5,
+                    },
+                  ]
+                : [
+                    { label: "Skill", value: 0 },
+                    { label: "Offense", value: 0 },
+                    { label: "Defense", value: 0 },
+                    { label: "General", value: 0 },
+                    { label: "Teamplay", value: 0 },
+                    { label: "Punctuality", value: 0 },
+                  ]
+            }
             size={0.5 * windowWidth}
           />
         </View>
