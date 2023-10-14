@@ -1,4 +1,10 @@
-import React, { useState, Dispatch, SetStateAction, Fragment } from "react";
+import React, {
+  useState,
+  Dispatch,
+  SetStateAction,
+  Fragment,
+  useEffect,
+} from "react";
 import {
   View,
   StyleSheet,
@@ -254,8 +260,15 @@ export const UploadVideoPopup = ({
   const [permissionDialogVisible, setPermissionDialogVisible] =
     useState<boolean>(false);
 
-  const { mutate: uploadGameVideo, isLoading: uploadLoading } =
-    useUploadGameVideoMutation(game?.id);
+  const {
+    mutate: uploadGameVideo,
+    isLoading: uploadLoading,
+    isSuccess: uploadSuccess,
+  } = useUploadGameVideoMutation(game?.id);
+
+  useEffect(() => {
+    if (uploadSuccess) setPopupVisible(null);
+  }, [uploadSuccess]);
 
   return (
     <Fragment>
@@ -285,22 +298,26 @@ export const UploadVideoPopup = ({
         {tempVideoToUpload && (
           <Button
             mode="contained"
-            onPress={() => {
-              const formData = new FormData();
+            loading={uploadLoading}
+            onPress={
+              !uploadLoading
+                ? () => {
+                    const formData = new FormData();
 
-              let fileName = tempVideoToUpload.split("/").pop();
-              let match = /\.(\w+)$/.exec(fileName!);
-              let type = match ? `video/${match[1]}` : `video`;
+                    let fileName = tempVideoToUpload.split("/").pop();
+                    let match = /\.(\w+)$/.exec(fileName!);
+                    let type = match ? `video/${match[1]}` : `video`;
 
-              formData.append(`video`, {
-                uri: tempVideoToUpload,
-                name: `${game?.id}.${match ? match[1] : ""}`,
-                type,
-              });
+                    formData.append(`video`, {
+                      uri: tempVideoToUpload,
+                      name: `${game?.id}.${match ? match[1] : ""}`,
+                      type,
+                    });
 
-              uploadGameVideo(formData);
-              setPopupVisible(null);
-            }}
+                    uploadGameVideo(formData);
+                  }
+                : undefined
+            }
           >
             Upload Video
           </Button>

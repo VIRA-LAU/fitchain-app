@@ -19,7 +19,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "13",
+      "buildNumber": "14",
       "supportsTablet": true,
       "bundleIdentifier": "ee8ec30aa5a0f3bc41b762e2b0ca14b5",
       "config": {
