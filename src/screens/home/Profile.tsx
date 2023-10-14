@@ -138,7 +138,7 @@ export const Profile = ({
                 }}
               >
                 <Text style={styles.statsTitle}>RPG</Text>
-                <Text style={styles.statsValue}>28.9</Text>
+                <Text style={styles.statsValue}>31.4</Text>
               </View>
               <View
                 style={{
@@ -161,11 +161,11 @@ export const Profile = ({
               >
                 <View>
                   <Text style={styles.statsTitle}>2 PTS</Text>
-                  <Text style={styles.statsValue}>28.9</Text>
+                  <Text style={styles.statsValue}>38.1</Text>
                 </View>
               </View>
             </View>
-            <View style={{ flexDirection: "row" }}>
+            {/* <View style={{ flexDirection: "row" }}>
               <View
                 style={{
                   flex: 1,
@@ -199,8 +199,8 @@ export const Profile = ({
                   <Text style={styles.statsTitle}>2 PTS</Text>
                   <Text style={styles.statsValue}>28.9</Text>
                 </View>
-              </View>
-            </View>
+              </View> 
+            </View>*/}
           </View>
         );
       case "Teams":

@@ -14,9 +14,16 @@ export const Community = ({ navigation, route }: Props) => {
   return (
     <AppHeader absolutePosition={false} title={"Community"}>
       <ScrollView contentContainerStyle={styles.wrapper}>
-        <CommunityPost />
-        <CommunityPost image />
-        <CommunityPost />
+        <CommunityPost
+          profileImage={require("assets/images/home/profile1.jpg")}
+        />
+        <CommunityPost
+          image
+          profileImage={require("assets/images/home/profile2.jpg")}
+        />
+        <CommunityPost
+          profileImage={require("assets/images/home/profile3.jpg")}
+        />
       </ScrollView>
     </AppHeader>
   );

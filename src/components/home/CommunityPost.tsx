@@ -1,8 +1,14 @@
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, ImageSourcePropType } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 
-export const CommunityPost = ({ image = false }: { image?: boolean }) => {
+export const CommunityPost = ({
+  profileImage,
+  image = false,
+}: {
+  profileImage: ImageSourcePropType;
+  image?: boolean;
+}) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -10,7 +16,7 @@ export const CommunityPost = ({ image = false }: { image?: boolean }) => {
     <View>
       <View style={styles.content}>
         <View style={styles.header}>
-          <View style={styles.profilePicture} />
+          <Image style={styles.profilePicture} source={profileImage} />
           <View style={{ marginLeft: 12 }}>
             <Text style={styles.title}>Name Last Name</Text>
             <Text style={styles.date}>18 Jul</Text>

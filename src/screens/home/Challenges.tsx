@@ -137,7 +137,7 @@ export const Challenges = ({ navigation, route }: Props) => {
         >
           <View style={[styles.award, { marginLeft: 16 }]}>
             <Image
-              source={require("assets/images/home/award.png")}
+              source={require("assets/images/home/3-pt-assassin.png")}
               style={{
                 resizeMode: "contain",
                 width: 70,
@@ -150,7 +150,30 @@ export const Challenges = ({ navigation, route }: Props) => {
               style={[
                 styles.title,
                 {
-                  color: colors.primary,
+                  color: colors.tertiary,
+                  textTransform: "uppercase",
+                },
+              ]}
+            >
+              3 Pt Assassin
+            </Text>
+          </View>
+          <View style={styles.award}>
+            <Image
+              source={require("assets/images/home/mvp.png")}
+              style={{
+                resizeMode: "contain",
+                width: 70,
+                height: "auto",
+                aspectRatio: 1,
+                marginBottom: 10,
+              }}
+            />
+            <Text
+              style={[
+                styles.title,
+                {
+                  color: colors.tertiary,
                   textTransform: "uppercase",
                 },
               ]}
@@ -160,7 +183,7 @@ export const Challenges = ({ navigation, route }: Props) => {
           </View>
           <View style={styles.award}>
             <Image
-              source={require("assets/images/home/award.png")}
+              source={require("assets/images/home/playmaker.png")}
               style={{
                 resizeMode: "contain",
                 width: 70,
@@ -173,17 +196,17 @@ export const Challenges = ({ navigation, route }: Props) => {
               style={[
                 styles.title,
                 {
-                  color: colors.primary,
+                  color: colors.tertiary,
                   textTransform: "uppercase",
                 },
               ]}
             >
-              MVP
+              Playmaker
             </Text>
           </View>
           <View style={styles.award}>
             <Image
-              source={require("assets/images/home/award.png")}
+              source={require("assets/images/home/lockdown-defender.png")}
               style={{
                 resizeMode: "contain",
                 width: 70,
@@ -196,35 +219,13 @@ export const Challenges = ({ navigation, route }: Props) => {
               style={[
                 styles.title,
                 {
-                  color: colors.primary,
+                  color: colors.tertiary,
                   textTransform: "uppercase",
+                  textAlign: "center",
                 },
               ]}
             >
-              MVP
-            </Text>
-          </View>
-          <View style={styles.award}>
-            <Image
-              source={require("assets/images/home/award.png")}
-              style={{
-                resizeMode: "contain",
-                width: 70,
-                height: "auto",
-                aspectRatio: 1,
-                marginBottom: 10,
-              }}
-            />
-            <Text
-              style={[
-                styles.title,
-                {
-                  color: colors.primary,
-                  textTransform: "uppercase",
-                },
-              ]}
-            >
-              MVP
+              Lockdown{"\n"}Defender
             </Text>
           </View>
         </ScrollView>
@@ -276,5 +277,6 @@ const makeStyles = (colors: MD3Colors) =>
       minWidth: 140,
       marginRight: 16,
       alignItems: "center",
+      justifyContent: "center",
     },
   });
