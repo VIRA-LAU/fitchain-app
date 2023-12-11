@@ -8,55 +8,14 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, StackParamList } from "src/navigation";
 import "intl";
 import "intl/locale-data/jsonp/en";
-import { Game } from "src/types";
-import { Skeleton } from "./Skeleton";
+import { StatisticsGame } from "src/types";
 import { getMins, parseTimeFromMinutes } from "./TimeSlotPicker";
-import { GameType } from "src/enum-types";
+import { GameType, StatisticsGameStatus } from "src/enum-types";
 
-export const BookingCardSkeleton = () => {
-  const { colors } = useTheme();
-  const styles = makeStyles(colors);
-  return (
-    <View style={[styles.wrapper, { height: 108 }]}>
-      <View style={styles.leftImageView}>
-        <Skeleton style={styles.leftImage} />
-      </View>
-      <View style={[styles.content, { justifyContent: "space-between" }]}>
-        <Skeleton height={20} width={"100%"} />
-        <View style={styles.textRow}>
-          <IonIcon
-            name={"location-outline"}
-            size={14}
-            color={colors.tertiary}
-            style={{ marginRight: 5 }}
-          />
-          <Skeleton height={20} width={100} />
-        </View>
-        <View style={styles.textRow}>
-          <FeatherIcon
-            name={"calendar"}
-            size={14}
-            color={colors.tertiary}
-            style={{ marginRight: 5 }}
-          />
-          <Skeleton height={20} width={100} />
-        </View>
-      </View>
-    </View>
-  );
-};
-
-export const BookingCard = ({
-  booking,
-  isPrevious,
-}: {
-  booking: Game;
-  isPrevious: boolean;
-}) => {
+export const StatisticsGameCard = ({ game }: { game: StatisticsGame }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
@@ -65,10 +24,10 @@ export const BookingCard = ({
     month: "short",
     day: "numeric",
   });
-  const dateString = dateFormatter.format(booking.startTime);
+  const dateString = dateFormatter.format(game.startTime);
   const dateAndTime = `${dateString} - ${parseTimeFromMinutes(
-    getMins(booking.startTime)
-  )} till ${parseTimeFromMinutes(getMins(booking.endTime))}`;
+    getMins(game.startTime)
+  )} till ${parseTimeFromMinutes(getMins(game.endTime))}`;
 
   const navigation =
     useNavigation<
@@ -82,14 +41,14 @@ export const BookingCard = ({
     <TouchableOpacity
       activeOpacity={0.8}
       style={styles.wrapper}
-      onPress={() => navigation.push("GameDetails", { id: booking.id })}
+      onPress={() => navigation.push("StatisticsGameDetails", { id: game.id })}
     >
       <View style={styles.leftImageView}>
         <Image
           source={
-            booking.type === GameType.Basketball
+            game.type === GameType.Basketball
               ? require("assets/images/home/basketball.png")
-              : booking.type === GameType.Football
+              : game.type === GameType.Football
               ? require("assets/images/home/football.png")
               : require("assets/images/home/tennis.png")
           }
@@ -97,22 +56,6 @@ export const BookingCard = ({
         />
       </View>
       <View style={styles.content}>
-        <Text style={[styles.greyText, { fontSize: 14 }]}>
-          At <Text style={styles.text}>{booking.court.branch.venue.name}</Text>{" "}
-          By{" "}
-          <Text style={styles.text}>
-            {booking?.admin?.firstName + " " + booking?.admin?.lastName}
-          </Text>
-        </Text>
-        <View style={styles.textRow}>
-          <IonIcon
-            name={"location-outline"}
-            size={14}
-            color={colors.tertiary}
-            style={{ marginRight: 5 }}
-          />
-          <Text style={styles.greyText}>{booking.court.branch.location}</Text>
-        </View>
         <View style={styles.textRow}>
           <FeatherIcon
             name={"calendar"}
@@ -121,6 +64,30 @@ export const BookingCard = ({
             style={{ marginRight: 5 }}
           />
           <Text style={styles.greyText}>{dateAndTime}</Text>
+        </View>
+        <View style={styles.textRow}>
+          <FeatherIcon
+            name={"loader"}
+            size={14}
+            color={colors.tertiary}
+            style={{ marginRight: 5 }}
+          />
+          <Text>Status: </Text>
+          <Text
+            style={{
+              textTransform: "capitalize",
+              color:
+                game.status === StatisticsGameStatus.PENDING ||
+                game.status === StatisticsGameStatus.INPROGRESS
+                  ? "brown"
+                  : "green",
+            }}
+          >
+            {game.status === StatisticsGameStatus.PENDING ||
+            game.status === StatisticsGameStatus.INPROGRESS
+              ? "In Progress"
+              : game.status}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -135,6 +102,7 @@ const makeStyles = (colors: MD3Colors) =>
       borderRadius: 10,
       marginBottom: 10,
       paddingLeft: 55,
+      minHeight: 100,
     },
     content: {
       padding: 15,

@@ -2,7 +2,7 @@ import { Image, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Skeleton, getMins, parseTimeFromMinutes } from "../home";
-import { GameType } from "src/types";
+import { GameType } from "src/enum-types";
 
 export const BranchBookingSkeleton = () => {
   const { colors } = useTheme();
@@ -47,9 +47,9 @@ export const BranchBooking = ({
       >
         <Image
           source={
-            gameType === "Basketball"
+            gameType === GameType.Basketball
               ? require("assets/images/home/basketball.png")
-              : gameType === "Football"
+              : gameType === GameType.Football
               ? require("assets/images/home/football.png")
               : require("assets/images/home/tennis.png")
           }

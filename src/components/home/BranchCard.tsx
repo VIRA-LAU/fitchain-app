@@ -9,8 +9,9 @@ import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, StackParamList } from "src/navigation";
-import { GameType, Branch, TimeSlot } from "src/types";
+import { Branch, TimeSlot } from "src/types";
 import { Skeleton } from "./Skeleton";
+import { GameType } from "src/enum-types";
 
 type styleOptions = "vertical" | "horizontal" | "focused";
 

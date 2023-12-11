@@ -3,7 +3,7 @@ import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { VenueBottomTabParamList } from "src/navigation";
+import { BranchBottomTabParamList } from "src/navigation";
 import CalendarPicker from "react-native-calendar-picker";
 import {
   SportSelection,
@@ -14,8 +14,9 @@ import {
 import { useContext, useState } from "react";
 import { UserContext } from "src/utils";
 import { useBookingsInBranchQuery } from "src/api";
+import { GameType } from "src/enum-types";
 
-type Props = BottomTabScreenProps<VenueBottomTabParamList>;
+type Props = BottomTabScreenProps<BranchBottomTabParamList>;
 
 export const BranchHome = ({ navigation, route }: Props & {}) => {
   const { colors } = useTheme();
@@ -47,7 +48,7 @@ export const BranchHome = ({ navigation, route }: Props & {}) => {
   }));
 
   mappedBookings = mappedBookings?.filter(
-    (slot) => selectedSports[slot.gameType]
+    (slot) => selectedSports[slot.gameType as GameType]
   );
   mappedBookings = mappedBookings?.sort((a, b) =>
     a.startTime <= b.startTime ? -1 : 1

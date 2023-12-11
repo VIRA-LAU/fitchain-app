@@ -22,6 +22,7 @@ import {
 import { BottomTabParamList, StackParamList } from "src/navigation";
 import { Game } from "src/types";
 import { Skeleton } from "./Skeleton";
+import { GameType } from "src/enum-types";
 
 export const InvitationCardSkeleton = () => {
   const { colors } = useTheme();
@@ -103,9 +104,9 @@ export const InvitationCard = ({
     >
       <Image
         source={
-          game.type === "Basketball"
+          game.type === GameType.Basketball
             ? require("assets/images/home/basketball.png")
-            : game.type === "Football"
+            : game.type === GameType.Football
             ? require("assets/images/home/football.png")
             : require("assets/images/home/tennis.png")
         }

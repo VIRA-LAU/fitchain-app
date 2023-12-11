@@ -1,8 +1,9 @@
+import { GameType, CourtType, StatisticsGameStatus } from "./enum-types";
+
 export interface User {
   id?: number;
   firstName: string;
   lastName: string;
-  description: string;
   email: string;
   phoneNumber: number;
   description: string;
@@ -23,8 +24,6 @@ export interface User {
   punctuality: number;
 }
 
-export type GameType = "Basketball" | "Football" | "Tennis";
-
 export interface TimeSlot {
   id?: number;
   startTime: Date | string;
@@ -43,7 +42,7 @@ export interface PlayerStatistics {
 }
 
 export interface Game {
-  id;
+  id: number;
   startTime: Date;
   endTime: Date;
   type: GameType;
@@ -59,6 +58,36 @@ export interface Game {
   playersStatistics: PlayerStatistics[];
   highlights: string[];
   isRecording: boolean;
+}
+
+export interface StatisticsGame {
+  id: number;
+  admin: User;
+  startTime: Date;
+  endTime: Date;
+  type: GameType;
+  courtType: CourtType;
+  status: StatisticsGameStatus;
+  playerStatistics: StatisticsGamePlayer[];
+  adminId: number;
+}
+
+export interface StatisticsGamePlayer {
+  id: number;
+  gameNumber: number;
+  name: string;
+  team: string;
+  twoPointsMade: number;
+  twoPointsMissed: number;
+  threePointsMade: number;
+  threePointsMissed: number;
+  assists: number;
+  blocks: number;
+  rebounds: number;
+  steals: number;
+  game: StatisticsGame;
+  user?: User;
+  statisticsGameId: number;
 }
 
 export interface Invitation {

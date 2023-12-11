@@ -1,6 +1,6 @@
 import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
-import { GameType } from "src/types";
+import { GameType } from "src/enum-types";
 import {
   CompositeNavigationProp,
   useNavigation,

@@ -1,7 +1,8 @@
 import { useQuery } from "react-query";
 import queryBuilder from "src/api/queryBuilder";
-import { Game, GameType } from "src/types";
+import { Game } from "src/types";
 import client from "../../client";
+import { GameType } from "src/enum-types";
 
 type Props = {
   gameType: GameType;

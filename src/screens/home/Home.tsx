@@ -261,7 +261,7 @@ export const Home = ({
           />
           <HomeCard
             type="guide"
-            title="User Guide"
+            title="Statistics Games"
             body="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
           />
         </View>

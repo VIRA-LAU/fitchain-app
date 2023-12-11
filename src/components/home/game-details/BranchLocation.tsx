@@ -152,7 +152,7 @@ export const BranchLocation = ({
           )}
           {type === "branch" && (
             <View>
-              <Text style={styles.title}>{branch?.rating}</Text>
+              <Text style={styles.title}>{branch?.rating.toFixed(1)}</Text>
             </View>
           )}
         </View>

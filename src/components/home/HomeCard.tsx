@@ -46,6 +46,7 @@ export const HomeCard = ({
         if (type === "book") navigation.push("Branches");
         else if (type === "play") navigation.push("Games");
         else if (type === "challenges") navigation.navigate("Challenges");
+        else if (type === "guide") navigation.navigate("StatisticsGames");
       }}
     >
       <Image

@@ -19,7 +19,8 @@ import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import MatComIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
-import { GameType, TimeSlot } from "src/types";
+import { TimeSlot } from "src/types";
+import { GameType } from "src/enum-types";
 import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useCreateCourtMutation, useUpdateCourtMutation } from "src/api";
 import {
@@ -39,7 +40,7 @@ export const CreateCourt = ({
     courtId: 0,
     name: "",
     price: "",
-    courtType: "Basketball",
+    courtType: GameType.Basketball,
     numOfPlayers: 6,
     timeSlots: [],
   },
@@ -65,7 +66,7 @@ export const CreateCourt = ({
   const resetFields = () => {
     setName("");
     setPrice("");
-    setCourtType("Basketball");
+    setCourtType(GameType.Basketball);
     setNumOfPlayers(6);
     setTimeSlots([]);
   };
@@ -163,12 +164,12 @@ export const CreateCourt = ({
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => {
-                setCourtType("Basketball");
+                setCourtType(GameType.Basketball);
               }}
               style={[
                 styles.sportType,
                 { marginLeft: 20 },
-                courtType === "Basketball"
+                courtType === GameType.Basketball
                   ? { borderColor: colors.primary }
                   : {},
               ]}
@@ -176,7 +177,9 @@ export const CreateCourt = ({
               <Text
                 style={[
                   styles.sportText,
-                  courtType === "Basketball" ? { color: colors.primary } : {},
+                  courtType === GameType.Basketball
+                    ? { color: colors.primary }
+                    : {},
                 ]}
               >
                 Basketball
@@ -189,17 +192,21 @@ export const CreateCourt = ({
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => {
-                setCourtType("Football");
+                setCourtType(GameType.Football);
               }}
               style={[
                 styles.sportType,
-                courtType === "Football" ? { borderColor: colors.primary } : {},
+                courtType === GameType.Football
+                  ? { borderColor: colors.primary }
+                  : {},
               ]}
             >
               <Text
                 style={[
                   styles.sportText,
-                  courtType === "Football" ? { color: colors.primary } : {},
+                  courtType === GameType.Football
+                    ? { color: colors.primary }
+                    : {},
                 ]}
               >
                 Football
@@ -212,18 +219,22 @@ export const CreateCourt = ({
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => {
-                setCourtType("Tennis");
+                setCourtType(GameType.Tennis);
               }}
               style={[
                 styles.sportType,
                 { marginRight: 20 },
-                courtType === "Tennis" ? { borderColor: colors.primary } : {},
+                courtType === GameType.Tennis
+                  ? { borderColor: colors.primary }
+                  : {},
               ]}
             >
               <Text
                 style={[
                   styles.sportText,
-                  courtType === "Tennis" ? { color: colors.primary } : {},
+                  courtType === GameType.Tennis
+                    ? { color: colors.primary }
+                    : {},
                 ]}
               >
                 Tennis

@@ -14,3 +14,4 @@ export * from "./Notification";
 export * from "./CommunityPost";
 export * from "./RadarChart";
 export * from "./DatePicker";
+export * from "./StatisticsGameCard";

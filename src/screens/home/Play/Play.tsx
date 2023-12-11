@@ -28,7 +28,7 @@ import {
 import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabParamList, StackParamList } from "src/navigation";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { Branch, GameType, TimeSlot } from "src/types";
+import { Branch, TimeSlot } from "src/types";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {
   BottomModal,
@@ -42,6 +42,7 @@ import * as Location from "expo-location";
 import { useLocationNameQuery } from "src/api";
 import CalendarPicker from "react-native-calendar-picker";
 import { Slider } from "@miblanchard/react-native-slider";
+import { GameType } from "src/enum-types";
 
 export const Play = ({
   visible,
@@ -56,7 +57,7 @@ export const Play = ({
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const [gameType, setGameType] = useState<GameType>("Basketball");
+  const [gameType, setGameType] = useState<GameType>(GameType.Basketball);
   const [dateTimePickerVisible, setDateTimePickerVisible] = useState(false);
   const [timeSlotPickerVisible, setTimeSlotPickerVisible] = useState(false);
 
@@ -177,16 +178,16 @@ export const Play = ({
             >
               <View style={{ flexDirection: "row", marginHorizontal: 15 }}>
                 {branch?.courts.findIndex(
-                  (court) => court.courtType === "Basketball"
+                  (court) => court.courtType === GameType.Basketball
                 ) !== -1 && (
                   <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
-                      setGameType("Basketball");
+                      setGameType(GameType.Basketball);
                     }}
                     style={[
                       styles.sportType,
-                      gameType === "Basketball" && {
+                      gameType === GameType.Basketball && {
                         borderColor: colors.primary,
                       },
                     ]}
@@ -194,7 +195,7 @@ export const Play = ({
                     <Text
                       style={[
                         styles.sportText,
-                        gameType === "Basketball" && {
+                        gameType === GameType.Basketball && {
                           color: colors.primary,
                         },
                       ]}
@@ -208,16 +209,16 @@ export const Play = ({
                   </TouchableOpacity>
                 )}
                 {branch?.courts.findIndex(
-                  (court) => court.courtType === "Football"
+                  (court) => court.courtType === GameType.Football
                 ) !== -1 && (
                   <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
-                      setGameType("Football");
+                      setGameType(GameType.Football);
                     }}
                     style={[
                       styles.sportType,
-                      gameType === "Football" && {
+                      gameType === GameType.Football && {
                         borderColor: colors.primary,
                       },
                     ]}
@@ -225,7 +226,9 @@ export const Play = ({
                     <Text
                       style={[
                         styles.sportText,
-                        gameType === "Football" && { color: colors.primary },
+                        gameType === GameType.Football && {
+                          color: colors.primary,
+                        },
                       ]}
                     >
                       Football
@@ -237,16 +240,16 @@ export const Play = ({
                   </TouchableOpacity>
                 )}
                 {branch?.courts.findIndex(
-                  (court) => court.courtType === "Tennis"
+                  (court) => court.courtType === GameType.Tennis
                 ) !== -1 && (
                   <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => {
-                      setGameType("Tennis");
+                      setGameType(GameType.Tennis);
                     }}
                     style={[
                       styles.sportType,
-                      gameType === "Tennis" && {
+                      gameType === GameType.Tennis && {
                         borderColor: colors.primary,
                       },
                     ]}
@@ -254,7 +257,9 @@ export const Play = ({
                     <Text
                       style={[
                         styles.sportText,
-                        gameType === "Tennis" && { color: colors.primary },
+                        gameType === GameType.Tennis && {
+                          color: colors.primary,
+                        },
                       ]}
                     >
                       Tennis

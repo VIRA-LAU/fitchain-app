@@ -11,3 +11,6 @@ export * from "./Notifications";
 export * from "./InviteUsers";
 export * from "./RatePlayer";
 export * from "./Games";
+export * from "./CreateStatisticsGame";
+export * from "./StatisticsGames";
+export * from "./StatisticsGameDetails";

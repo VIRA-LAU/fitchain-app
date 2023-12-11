@@ -29,6 +29,9 @@ import {
   Challenges,
   BookCourt,
   Games,
+  CreateStatisticsGame,
+  StatisticsGames,
+  StatisticsGameDetails,
 } from "screens";
 import { BottomTabParamList, tabScreenOptions } from "./tabScreenOptions";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -36,10 +39,11 @@ import * as Location from "expo-location";
 import * as Notifications from "expo-notifications";
 import { useQueryClient } from "react-query";
 import { useNavigationState } from "@react-navigation/native";
-import { Branch, Court, GameType, TimeSlot } from "src/types";
+import { Branch, Court, TimeSlot } from "src/types";
 import { LatLng } from "react-native-maps";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { Image } from "react-native";
+import { CourtType, GameType } from "src/enum-types";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 type Props = StackScreenProps<StackParamList, "BottomBar">;
@@ -142,7 +146,7 @@ const BottomTabNavigator = ({
           style={styles.playIconView}
           onPress={() => {
             // setPlayScreenVisible(true);
-            navigation.push("BookCourt", {});
+            navigation.push("CreateStatisticsGame", {});
           }}
         >
           <View style={styles.playIcon}>
@@ -184,7 +188,23 @@ export type StackParamList = {
     branchId?: number;
     courtTypes?: GameType[];
   };
+  CreateStatisticsGame: {
+    data?: {
+      stage?: number;
+      gameType?: GameType;
+      courtType?: CourtType;
+      searchDate?: string;
+      selectedStartTime?: string;
+      selectedDuration?: number;
+      branchSearchText?: string;
+      selectedBranch?: Branch;
+      selectedCourt?: Court;
+    };
+    branchId?: number;
+    courtTypes?: GameType[];
+  };
   GameDetails: { id: number };
+  StatisticsGameDetails: { id: number };
   InviteUsers: {
     gameId: number;
   };
@@ -202,6 +222,7 @@ export type StackParamList = {
     coverPhotoUrl?: string;
   };
   Games: undefined;
+  StatisticsGames: undefined;
   Branches: undefined;
   BranchDetails: {
     id: number;
@@ -292,6 +313,15 @@ export const HomeNavigator = () => {
       <Stack.Screen name="PlayerProfile" component={Profile} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
       <Stack.Screen name="BookCourt" component={BookCourt} />
+      <Stack.Screen
+        name="CreateStatisticsGame"
+        component={CreateStatisticsGame}
+      />
+      <Stack.Screen name="StatisticsGames" component={StatisticsGames} />
+      <Stack.Screen
+        name="StatisticsGameDetails"
+        component={StatisticsGameDetails}
+      />
     </Stack.Navigator>
   );
 };

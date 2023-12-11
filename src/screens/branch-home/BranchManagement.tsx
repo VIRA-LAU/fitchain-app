@@ -39,7 +39,8 @@ import {
   Skeleton,
 } from "src/components";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import { GameType, TimeSlot } from "src/types";
+import { TimeSlot } from "src/types";
+import { GameType } from "src/enum-types";
 
 type Props = BottomTabScreenProps<BranchBottomTabParamList>;
 

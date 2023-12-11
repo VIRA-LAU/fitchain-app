@@ -11,6 +11,7 @@ import {
 import { Game } from "src/types";
 import { useMemo } from "react";
 import { Skeleton } from "./Skeleton";
+import { GameType } from "src/enum-types";
 
 export const UpcomingGameCardSkeleton = () => {
   const { colors } = useTheme();
@@ -84,9 +85,9 @@ export const UpcomingGameCard = ({ game }: { game: Game }) => {
       </View>
       <Image
         source={
-          game.type === "Basketball"
+          game.type === GameType.Basketball
             ? require("assets/images/home/basketball.png")
-            : game.type === "Football"
+            : game.type === GameType.Football
             ? require("assets/images/home/football.png")
             : require("assets/images/home/tennis.png")
         }

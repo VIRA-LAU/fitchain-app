@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
-import { Court, GameType, TimeSlot } from "src/types";
+import { Court, TimeSlot } from "src/types";
 import client from "../../client";
+import { GameType } from "src/enum-types";
 
 type Response = {
   timeSlot: TimeSlot;

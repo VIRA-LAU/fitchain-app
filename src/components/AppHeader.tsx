@@ -17,6 +17,7 @@ import {
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { SignUpStackParamList, StackParamList } from "src/navigation";
+import { GameType } from "src/enum-types";
 
 const sportBackground = {
   Basketball: <Image source={require("assets/images/home/basketball.png")} />,
@@ -43,7 +44,7 @@ export const AppHeader = ({
   middle?: JSX.Element;
   backEnabled?: boolean;
   invertColors?: boolean;
-  backgroundImage?: "Basketball" | "Football" | "Tennis";
+  backgroundImage?: GameType;
   middleTitle?: boolean;
 }) => {
   const { colors } = useTheme();

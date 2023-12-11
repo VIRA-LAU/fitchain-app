@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { useTheme, Text } from "react-native-paper";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import { GameType } from "src/types";
+import { GameType } from "src/enum-types";
 import { modalStyles } from "./SelectionModal";
 
 export type SportSelection = {
@@ -46,30 +46,30 @@ export const SportTypeDropdown = ({
 
   const sports = (absolute = false): SportOption[] => [
     {
-      type: "Basketball",
+      type: GameType.Basketball,
       image: (
         <Image
-          key="basketball"
+          key={GameType.Basketball}
           source={require("assets/images/home/basketball.png")}
           style={[styles.gameIcon, absolute ? { marginRight: -27.5 } : null]}
         />
       ),
     },
     {
-      type: "Football",
+      type: GameType.Football,
       image: (
         <Image
-          key="football"
+          key={GameType.Football}
           source={require("assets/images/home/football.png")}
           style={[styles.gameIcon, absolute ? { marginRight: -27.5 } : null]}
         />
       ),
     },
     {
-      type: "Tennis",
+      type: GameType.Tennis,
       image: (
         <Image
-          key="tennis"
+          key={GameType.Tennis}
           source={require("assets/images/home/tennis.png")}
           style={[styles.gameIcon, absolute ? { marginRight: -27.5 } : null]}
         />

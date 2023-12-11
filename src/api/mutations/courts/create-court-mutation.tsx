@@ -2,7 +2,8 @@ import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
 import { UserContext } from "../../../utils/UserContext";
 import { useContext } from "react";
-import { Court, GameType, TimeSlot } from "src/types";
+import { Court, TimeSlot } from "src/types";
+import { GameType } from "src/enum-types";
 
 type Request = {
   name: string;

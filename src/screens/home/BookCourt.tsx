@@ -18,7 +18,8 @@ import {
   CourtCard,
 } from "src/components";
 import { StackParamList } from "src/navigation";
-import { Branch, Court, GameType } from "src/types";
+import { Branch, Court } from "src/types";
+import { GameType } from "src/enum-types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { useSearchBranchesQuery } from "src/api";
 import Feather from "react-native-vector-icons/Feather";
@@ -66,7 +67,7 @@ const GameTypeCard = ({
   );
 };
 
-const CourtType = ({
+const CourtTypeCard = ({
   courtType,
   selectedCourtType,
   setCourtType,
@@ -270,7 +271,7 @@ export const BookCourt = ({ navigation, route }: Props) => {
   const stage = data?.stage ?? 0;
 
   const [gameType, setGameType] = useState<GameType>(
-    data?.gameType ?? "Basketball"
+    data?.gameType ?? GameType.Basketball
   );
   const [courtType, setCourtType] = useState<"Half Court" | "Full Court">(
     data?.courtType ?? "Half Court"
@@ -420,23 +421,23 @@ export const BookCourt = ({ navigation, route }: Props) => {
         )}
         {stage === Stages.GameType && (
           <View style={styles.gameTypes}>
-            {(!courtTypes || courtTypes.includes("Basketball")) && (
+            {(!courtTypes || courtTypes.includes(GameType.Basketball)) && (
               <GameTypeCard
-                gameType="Basketball"
+                gameType={GameType.Basketball}
                 selectedGameType={gameType}
                 setGameType={setGameType}
               />
             )}
-            {(!courtTypes || courtTypes.includes("Football")) && (
+            {(!courtTypes || courtTypes.includes(GameType.Football)) && (
               <GameTypeCard
-                gameType="Football"
+                gameType={GameType.Football}
                 selectedGameType={gameType}
                 setGameType={setGameType}
               />
             )}
-            {(!courtTypes || courtTypes.includes("Tennis")) && (
+            {(!courtTypes || courtTypes.includes(GameType.Tennis)) && (
               <GameTypeCard
-                gameType="Tennis"
+                gameType={GameType.Tennis}
                 selectedGameType={gameType}
                 setGameType={setGameType}
               />
@@ -445,12 +446,12 @@ export const BookCourt = ({ navigation, route }: Props) => {
         )}
         {stage === Stages.CourtType && (
           <View style={styles.gameTypes}>
-            <CourtType
+            <CourtTypeCard
               courtType="Half Court"
               selectedCourtType={courtType}
               setCourtType={setCourtType}
             />
-            <CourtType
+            <CourtTypeCard
               courtType="Full Court"
               selectedCourtType={courtType}
               setCourtType={setCourtType}

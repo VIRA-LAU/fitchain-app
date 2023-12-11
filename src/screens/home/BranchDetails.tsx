@@ -214,7 +214,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                   color: colors.primary,
                 }}
               >
-                {branch?.rating}{" "}
+                {branch?.rating.toFixed(1)}{" "}
                 <Text
                   style={{
                     fontFamily: "Poppins-Regular",
