@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -13,6 +13,9 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { AppHeader } from "src/components";
 import { StackParamList } from "src/navigation";
 import { CourtType, GameType } from "src/enum-types";
+import { DurationCard, GameTypeCard, TimeCard, times } from "./BookCourt";
+import { useCreateStatisticsGameMutation } from "src/api";
+import { UserContext } from "src/utils";
 
 type Props = StackScreenProps<StackParamList, "CreateStatisticsGame">;
 
@@ -58,134 +61,6 @@ const CourtTypeCard = ({
   );
 };
 
-const GameTypeCard = ({
-  gameType,
-  selectedGameType,
-  setGameType,
-}: {
-  gameType: GameType;
-  selectedGameType: GameType;
-  setGameType: Dispatch<SetStateAction<GameType>>;
-}) => {
-  const { colors } = useTheme();
-  const styles = makeStyles(colors);
-
-  return (
-    <TouchableOpacity
-      activeOpacity={0.6}
-      style={[
-        styles.gameType,
-        gameType === selectedGameType
-          ? {
-              backgroundColor: colors.primary,
-            }
-          : {},
-      ]}
-      onPress={() => setGameType(gameType)}
-    >
-      <Text
-        style={[
-          styles.title,
-          gameType === selectedGameType
-            ? {
-                color: colors.background,
-              }
-            : {},
-        ]}
-      >
-        {gameType}
-      </Text>
-    </TouchableOpacity>
-  );
-};
-
-const TimeCard = ({
-  time,
-  selectedTime,
-  setTime,
-}: {
-  time: string;
-  selectedTime: string;
-  setTime: Dispatch<SetStateAction<string>>;
-}) => {
-  const { colors } = useTheme();
-  const styles = makeStyles(colors);
-
-  return (
-    <TouchableOpacity
-      activeOpacity={0.6}
-      style={[
-        styles.gameType,
-        { minWidth: 112, alignItems: "center", marginBottom: 0 },
-        time === selectedTime
-          ? {
-              backgroundColor: colors.primary,
-            }
-          : {},
-      ]}
-      onPress={() => setTime(time)}
-    >
-      <Text
-        style={[
-          styles.title,
-          time === selectedTime
-            ? {
-                color: colors.background,
-              }
-            : {},
-        ]}
-      >
-        {time}
-      </Text>
-    </TouchableOpacity>
-  );
-};
-
-const DurationCard = ({
-  duration,
-  selectedDuration,
-  setDuration,
-}: {
-  duration: number;
-  selectedDuration: number;
-  setDuration: Dispatch<SetStateAction<number>>;
-}) => {
-  const { colors } = useTheme();
-  const styles = makeStyles(colors);
-
-  return (
-    <TouchableOpacity
-      activeOpacity={0.6}
-      style={[
-        styles.gameType,
-        { minWidth: 112, alignItems: "center", marginBottom: 0 },
-        duration === selectedDuration
-          ? {
-              backgroundColor: colors.primary,
-            }
-          : {},
-      ]}
-      onPress={() => setDuration(duration)}
-    >
-      <Text
-        style={[
-          styles.title,
-          duration === selectedDuration
-            ? {
-                color: colors.background,
-              }
-            : {},
-        ]}
-      >
-        {duration === 0.5
-          ? "30 mins"
-          : duration === 1
-          ? "1 hour"
-          : `${duration} hours`}
-      </Text>
-    </TouchableOpacity>
-  );
-};
 const numOfStages = 3;
 enum Stages {
   GameType = 0,
@@ -202,38 +77,6 @@ const stageTitles = [
   "Invite Friends",
 ];
 
-const times = [
-  "08:00",
-  "08:30",
-  "09:00",
-  "09:30",
-  "10:00",
-  "10:30",
-  "11:00",
-  "11:30",
-  "12:00",
-  "12:30",
-  "13:00",
-  "13:30",
-  "14:00",
-  "14:30",
-  "15:00",
-  "15:30",
-  "16:00",
-  "16:30",
-  "17:00",
-  "17:30",
-  "18:00",
-  "18:30",
-  "19:00",
-  "19:30",
-  "20:00",
-  "20:30",
-  "21:00",
-  "21:30",
-  "22:00",
-  "22:30",
-];
 const today = new Date();
 const todayHours = today.getHours();
 const todayMins = today.getMinutes();
@@ -254,6 +97,8 @@ export const CreateStatisticsGame = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const { width: windowWidth } = useWindowDimensions();
 
+  const { userData } = useContext(UserContext);
+
   const { data, branchId, courtTypes } = route.params;
   const stage = data?.stage ?? 0;
 
@@ -263,8 +108,8 @@ export const CreateStatisticsGame = ({ navigation, route }: Props) => {
   const [courtType, setCourtType] = useState<CourtType>(
     data?.courtType ?? CourtType.HalfCourt
   );
-  const [searchDate, setSearchDate] = useState<Date>(
-    data?.searchDate ? new Date(data.searchDate) : today
+  const [date, setDate] = useState<Date>(
+    data?.date ? new Date(data.date) : today
   );
   const [selectedStartTime, setSelectedStartTime] = useState<string>(
     data?.selectedStartTime ?? filteredTimes.length > 0
@@ -275,8 +120,11 @@ export const CreateStatisticsGame = ({ navigation, route }: Props) => {
     data?.selectedDuration ?? 0.5
   );
 
-  const searchStartTime = new Date(searchDate);
-  searchStartTime.setHours(
+  const { mutate: createStatisticsGame, isLoading } =
+    useCreateStatisticsGameMutation(userData?.userId);
+
+  const startTime = new Date(date);
+  startTime.setHours(
     parseInt(selectedStartTime.substring(0, selectedStartTime.indexOf(":"))),
     parseInt(selectedStartTime.substring(selectedStartTime.indexOf(":") + 1)),
     0,
@@ -289,8 +137,8 @@ export const CreateStatisticsGame = ({ navigation, route }: Props) => {
   var endTimeHours = Math.floor(endTimeMins / 60);
   endTimeMins = endTimeMins % 60;
 
-  const searchEndTime = new Date(searchDate);
-  searchEndTime.setHours(
+  const endTime = new Date(date);
+  endTime.setHours(
     parseInt(selectedStartTime.substring(0, selectedStartTime.indexOf(":"))) +
       endTimeHours,
     endTimeMins,
@@ -392,19 +240,19 @@ export const CreateStatisticsGame = ({ navigation, route }: Props) => {
                 todayBackgroundColor={colors.secondary}
                 selectedDayStyle={{ backgroundColor: colors.primary }}
                 selectedDayTextColor={colors.background}
-                initialDate={searchDate ?? today}
+                initialDate={date ?? today}
                 onDateChange={(date) => {
                   const parsedDate = date.toDate();
-                  setSearchDate(parsedDate);
+                  setDate(parsedDate);
                 }}
-                selectedStartDate={searchDate ?? today}
+                selectedStartDate={date ?? today}
               />
             </View>
             <Text style={[styles.title, { marginTop: 24, marginBottom: 16 }]}>
               Start Time
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {(searchDate.toDateString() === today.toDateString()
+              {(date.toDateString() === today.toDateString()
                 ? filteredTimes
                 : times
               ).map((time, index) => (
@@ -436,38 +284,33 @@ export const CreateStatisticsGame = ({ navigation, route }: Props) => {
           <Button
             mode="contained"
             style={styles.next}
-            onPress={() => {
-              if (stage < Stages.Time)
-                navigation.push("CreateStatisticsGame", {
-                  data: {
-                    stage: stage + 1,
-                    gameType,
-                    courtType,
-                    searchDate: searchDate.toISOString(),
-                    selectedStartTime,
-                    selectedDuration,
-                  },
-                  branchId,
-                });
-              else {
-              }
-              // navigation.push("BookingPayment", {
-              //   venueName: selectedBranch.venue.name,
-              //   courtId: selectedCourt.id,
-              //   courtName: gameType,
-              //   courtType: gameType,
-              //   courtRating: selectedCourt.rating,
-              //   price: selectedCourt.price,
-              //   branchLatLng: [
-              //     selectedBranch.latitude,
-              //     selectedBranch.longitude,
-              //   ],
-              //   date: searchDate.toISOString(),
-              //   startTime: searchStartTime.toISOString(),
-              //   endTime: searchEndTime.toISOString(),
-              //   profilePhotoUrl: selectedBranch.profilePhotoUrl,
-              // });
-            }}
+            loading={isLoading}
+            onPress={
+              isLoading
+                ? undefined
+                : () => {
+                    if (stage < Stages.Time)
+                      navigation.push("CreateStatisticsGame", {
+                        data: {
+                          stage: stage + 1,
+                          gameType,
+                          courtType,
+                          date: date.toISOString(),
+                          selectedStartTime,
+                          selectedDuration,
+                        },
+                        branchId,
+                      });
+                    else {
+                      createStatisticsGame({
+                        startTime: startTime.toISOString(),
+                        endTime: endTime.toISOString(),
+                        type: gameType,
+                        courtType,
+                      });
+                    }
+                  }
+            }
           >
             {stage < Stages.Time ? "Next" : "Complete"}
           </Button>

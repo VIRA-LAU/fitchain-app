@@ -26,7 +26,7 @@ import Feather from "react-native-vector-icons/Feather";
 
 type Props = StackScreenProps<StackParamList, "BookCourt">;
 
-const GameTypeCard = ({
+export const GameTypeCard = ({
   gameType,
   selectedGameType,
   setGameType,
@@ -108,7 +108,7 @@ const CourtTypeCard = ({
   );
 };
 
-const TimeCard = ({
+export const TimeCard = ({
   time,
   selectedTime,
   setTime,
@@ -150,7 +150,7 @@ const TimeCard = ({
   );
 };
 
-const DurationCard = ({
+export const DurationCard = ({
   duration,
   selectedDuration,
   setDuration,
@@ -215,7 +215,7 @@ const stageTitles = [
   "Invite Friends",
 ];
 
-const times = [
+export const times = [
   "08:00",
   "08:30",
   "09:00",

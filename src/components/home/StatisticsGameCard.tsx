@@ -39,7 +39,7 @@ export const StatisticsGameCard = ({ game }: { game: StatisticsGame }) => {
 
   return (
     <TouchableOpacity
-      activeOpacity={0.8}
+      activeOpacity={0.6}
       style={styles.wrapper}
       onPress={() => navigation.push("StatisticsGameDetails", { id: game.id })}
     >

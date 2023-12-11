@@ -4,3 +4,4 @@ export * from "./users";
 export * from "./requests";
 export * from "./courts";
 export * from "./branches";
+export * from "./statistics-games";

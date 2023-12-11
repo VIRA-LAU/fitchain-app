@@ -18,7 +18,6 @@ export const StatisticsGames = () => {
     refetch,
   } = useStatisticsGamesQuery(userData?.userId);
 
-  console.log(games);
   return (
     <AppHeader title="Games" absolutePosition={false} backEnabled>
       <ScrollView

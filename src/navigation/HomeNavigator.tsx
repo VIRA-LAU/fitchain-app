@@ -193,7 +193,7 @@ export type StackParamList = {
       stage?: number;
       gameType?: GameType;
       courtType?: CourtType;
-      searchDate?: string;
+      date?: string;
       selectedStartTime?: string;
       selectedDuration?: number;
       branchSearchText?: string;

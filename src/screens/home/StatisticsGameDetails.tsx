@@ -1,7 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
-  RefreshControl,
   ScrollView,
   StyleSheet,
   View,
@@ -9,14 +8,10 @@ import {
 } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import {
-  useStatisticsGameDetailsQuery,
-  useStatisticsGamesQuery,
-} from "src/api";
-import { AppHeader, StatisticsGameCard } from "src/components";
+import { useStatisticsGameDetailsQuery } from "src/api";
+import { AppHeader } from "src/components";
 import { StatisticsGameStatus } from "src/enum-types";
 import { StackParamList } from "src/navigation";
-import { UserContext } from "src/utils";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { StatisticsGamePlayer } from "src/types";
 
@@ -32,9 +27,35 @@ export const GameNDetails = ({
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
-  playerStatistics = playerStatistics.filter(
-    (player) => player.gameNumber === gameNumber
-  );
+  if (gameNumber !== -1)
+    playerStatistics = playerStatistics.filter(
+      (player) => player.gameNumber === gameNumber
+    );
+  else {
+    var initial: { [key: string]: StatisticsGamePlayer[] } = {};
+
+    const grouped = playerStatistics.reduce(
+      (acc, current) => ({
+        ...acc,
+        [current.name]: (acc[current.name] || []).concat(current),
+      }),
+      initial
+    );
+
+    playerStatistics = Object.keys(grouped).map((key) =>
+      grouped[key].reduce((acc, current) => ({
+        ...acc,
+        twoPointsMade: acc.twoPointsMade + current.twoPointsMade,
+        twoPointsMissed: acc.twoPointsMissed + current.twoPointsMissed,
+        threePointsMade: acc.threePointsMade + current.threePointsMade,
+        threePointsMissed: acc.threePointsMissed + current.threePointsMissed,
+        assists: acc.assists + current.assists,
+        blocks: acc.blocks + current.blocks,
+        rebounds: acc.rebounds + current.rebounds,
+        steals: acc.steals + current.steals,
+      }))
+    );
+  }
 
   const teams = [
     ...new Set(playerStatistics.map((player) => player.team)),
@@ -133,7 +154,7 @@ const Tabs = ({
         key: `game${i}`,
         title: `Game ${i + 1}`,
       }))
-      .concat([{ key: "total", title: "Total" }])
+      .concat(arr.length === 1 ? [] : [{ key: "total", title: "Total" }])
   );
 
   const sceneMap: any = {};
@@ -195,7 +216,8 @@ export const StatisticsGameDetails = ({ navigation, route }: Props) => {
   return (
     <AppHeader title="Game Details" absolutePosition={false} backEnabled>
       {gameDetails.status === StatisticsGameStatus.PENDING ||
-      gameDetails.status === StatisticsGameStatus.INPROGRESS ? (
+      gameDetails.status === StatisticsGameStatus.INPROGRESS ||
+      gameDetails.playerStatistics.length === 0 ? (
         <View style={styles.placeholder}>
           <Text style={styles.placeholderText}>
             Your request is being processed, please check again later.
