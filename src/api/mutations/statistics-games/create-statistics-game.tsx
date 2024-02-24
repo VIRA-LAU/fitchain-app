@@ -7,7 +7,7 @@ import {
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { BottomTabParamList, StackParamList } from "src/navigation";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { AxiosError } from "axios";
 
 type Request = {
@@ -33,7 +33,7 @@ export const useCreateStatisticsGameMutation = (userId?: number) => {
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<StackParamList>,
+        StackNavigationProp<HomeStackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

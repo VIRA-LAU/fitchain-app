@@ -1,4 +1,4 @@
-export * from "./SignUpNavigator";
-export * from "./HomeNavigator";
-export * from "./Authenticator";
+export * from "./authentication";
 export * from "./tabScreenOptions";
+export * from "./home";
+export * from "./branch";

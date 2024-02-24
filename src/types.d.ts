@@ -118,12 +118,12 @@ export interface Court {
   name: string;
   courtType: GameType;
   price: number;
-  rating: number;
-  nbOfPlayers: number;
-  timeSlots: TimeSlot[];
+  rating?: number;
+  nbOfPlayers?: number;
+  timeSlots?: TimeSlot[];
   occupiedTimes?: TimeSlot[];
-  branchId: number;
-  branch: {
+  branchId?: number;
+  branch?: {
     location: string;
     latitude: number;
     longitude: number;
@@ -136,31 +136,28 @@ export interface Court {
 
 export interface Venue {
   id: number;
-  createdAt: string;
-  updatedAt: string;
   name: string;
-  description: string;
-  branches: Branch[];
-  rating: number;
+  description?: string;
+  branches?: Branch[];
+  rating?: number;
 }
 
 export interface Branch {
   id: number;
-  location: string;
-  latitude: number;
-  longitude: number;
+  location?: string;
+  latitude?: number;
+  longitude?: number;
   venue: Venue;
-  photoDirectoryUrl: string;
-  profilePhotoUrl: string;
-  coverPhotoUrl: string;
-  branchPhotoUrl: string;
+  photoDirectoryUrl?: string;
+  profilePhotoUrl?: string;
+  coverPhotoUrl?: string;
+  branchPhotoUrl?: string;
   courts: Court[];
-  rating: number;
-  managerFirstName: string;
-  managerLastName: string;
-  email: string;
-  phoneNumber: number;
-  hash: string;
+  rating?: number;
+  managerFirstName?: string;
+  managerLastName?: string;
+  email?: string;
+  phoneNumber?: number;
 }
 
 export interface Activity {

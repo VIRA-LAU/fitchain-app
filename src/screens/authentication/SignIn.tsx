@@ -8,14 +8,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
-import { SignUpStackParamList } from "navigation";
+import { AuthStackParamList } from "navigation";
 import { Button, useTheme, Text } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { useEffect, useRef, useState } from "react";
 import { AppHeader } from "src/components";
 import { useLoginUserMutation } from "src/api";
 
-type Props = StackScreenProps<SignUpStackParamList, "SignIn">;
+type Props = StackScreenProps<AuthStackParamList, "SignIn">;
 
 export const SignIn = ({ navigation, route }: Props) => {
   const { colors } = useTheme();

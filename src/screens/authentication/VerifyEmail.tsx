@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { SignUpStackParamList } from "navigation";
+import { AuthStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
@@ -17,7 +17,7 @@ import {
   useResendVerificationEmailMutation,
 } from "src/api";
 
-type Props = StackScreenProps<SignUpStackParamList, "VerifyEmail">;
+type Props = StackScreenProps<AuthStackParamList, "VerifyEmail">;
 
 export const VerifyEmail = ({
   navigation,

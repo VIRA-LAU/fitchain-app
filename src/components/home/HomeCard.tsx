@@ -7,7 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { BottomTabParamList, StackParamList } from "src/navigation";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 
 export const HomeCard = ({
   type,
@@ -26,7 +26,7 @@ export const HomeCard = ({
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<StackParamList>,
+        StackNavigationProp<HomeStackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
@@ -38,12 +38,12 @@ export const HomeCard = ({
         styles.wrapper,
         {
           marginRight: addMarginRight ? 16 : 0,
-          flexDirection: type === "leaderboard" ? "row" : "column",
-          alignItems: type === "leaderboard" ? "center" : "flex-start",
+          // flexDirection: type === "leaderboard" ? "row" : "column",
+          // alignItems: type === "leaderboard" ? "center" : "flex-start",
         },
       ]}
       onPress={() => {
-        if (type === "book") navigation.push("Branches");
+        if (type === "book") navigation.push("CreateGame", {});
         else if (type === "play") navigation.push("Games");
         else if (type === "challenges") navigation.navigate("Challenges");
         else if (type === "guide") navigation.navigate("StatisticsGames");
@@ -63,9 +63,10 @@ export const HomeCard = ({
         }
         style={[
           styles.icon,
-          type === "leaderboard"
-            ? { width: "15%", marginRight: 16 }
-            : { marginBottom: 16 },
+          { marginBottom: 16 },
+          // type === "leaderboard"
+          //   ? { width: "15%", marginRight: 16 }
+          //   : { marginBottom: 16 },
         ]}
       />
       <View style={{ flex: 1 }}>

@@ -8,7 +8,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import { BottomTabParamList, StackParamList } from "src/navigation";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import "intl";
 import "intl/locale-data/jsonp/en";
 import { StatisticsGame } from "src/types";
@@ -32,7 +32,7 @@ export const StatisticsGameCard = ({ game }: { game: StatisticsGame }) => {
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<StackParamList>,
+        StackNavigationProp<HomeStackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

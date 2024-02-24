@@ -1,12 +1,12 @@
 import type { StackScreenProps } from "@react-navigation/stack";
 import { StyleSheet, View, TextInput, Image, ScrollView } from "react-native";
-import { SignUpStackParamList } from "navigation";
+import { AuthStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import React, { useRef, useState } from "react";
 
-type Props = StackScreenProps<SignUpStackParamList, "VerifyNumber">;
+type Props = StackScreenProps<AuthStackParamList, "VerifyNumber">;
 
 const CodeInput = ({
   index,

@@ -7,24 +7,29 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { SignUpStackParamList } from "navigation";
+import { AuthStackParamList } from "navigation";
 import { AppHeader } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text } from "react-native-paper";
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { useCreateUserMutation } from "src/api";
-type Props = StackScreenProps<SignUpStackParamList, "SignUpWithEmail">;
+type Props = StackScreenProps<AuthStackParamList, "SignUpWithEmail">;
 
 export const SignUpWithEmail = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
+
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [scrollPosition, setScrollPosition] = useState(0);
+
+  const nameArr = fullName.replace(/\s\s+/g, " ").trim().split(" ");
+  const firstName = nameArr[0];
+  const lastName = nameArr.length > 1 ? nameArr.slice(1).join(" ") : "";
 
   const {
     mutate: createUser,
@@ -38,28 +43,23 @@ export const SignUpWithEmail = ({ navigation, route }: Props) => {
   };
 
   const signUp = () => {
-    if (
-      checkPasswordValidity(password) &&
-      validateEmail(email) &&
-      fullName.length > 0
-    ) {
+    if (!checkPasswordValidity(password))
+      setErrorMessage(
+        "Make sure your password includes at least an upper case, a lower case, a digit, and 8 characters."
+      );
+    else if (validateEmail(email) && fullName.length > 0) {
       let data = {
-        firstName:
-          fullName.trim().substring(0, fullName.trim().indexOf(" ")) ||
-          fullName.trim(),
-        lastName: fullName.trim().substring(fullName.trim().indexOf(" ") + 1),
+        firstName,
+        lastName,
         email,
         password,
       };
       setErrorMessage("");
       createUser(data);
-    } else {
-      setErrorMessage("Make sure all fields are valid.");
-    }
+    } else setErrorMessage("Make sure all fields are valid.");
   };
 
   const checkPasswordValidity = (currentPassword: string) => {
-    setPassword(currentPassword);
     const upperCaseLetters = /[A-Z]/g;
     const lowerCaseLetters = /[a-z]/g;
     const numbers = /[0-9]/g;
@@ -69,15 +69,9 @@ export const SignUpWithEmail = ({ navigation, route }: Props) => {
       currentPassword.match(lowerCaseLetters) &&
       currentPassword.match(numbers) &&
       currentPassword.length >= 8
-    ) {
-      setErrorMessage("");
+    )
       return true;
-    } else {
-      setErrorMessage(
-        "Make sure your password includes at least an upper case, a lower case, a digit, and 8 characters."
-      );
-      return false;
-    }
+    return false;
   };
 
   useEffect(() => {
@@ -135,6 +129,7 @@ export const SignUpWithEmail = ({ navigation, route }: Props) => {
             value={fullName}
             style={styles.textInput}
             selectionColor={colors.primary}
+            autoCapitalize="words"
             onSubmitEditing={() => {
               emailRef.current?.focus();
               scrollRef.current?.scrollTo({
@@ -183,7 +178,8 @@ export const SignUpWithEmail = ({ navigation, route }: Props) => {
               ref={passwordRef}
               value={password}
               onChangeText={(password) => {
-                checkPasswordValidity(password.trim());
+                setPassword(password.trim());
+                setErrorMessage("");
                 scrollRef.current?.scrollToEnd({
                   animated: true,
                 });

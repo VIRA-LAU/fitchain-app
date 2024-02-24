@@ -7,7 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Avatar, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { BottomTabParamList, StackParamList } from "src/navigation";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { Game } from "src/types";
 
 export const Notification = ({
@@ -29,7 +29,7 @@ export const Notification = ({
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<StackParamList>,
+        StackNavigationProp<HomeStackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

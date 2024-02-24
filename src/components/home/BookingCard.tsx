@@ -9,7 +9,7 @@ import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { BottomTabParamList, StackParamList } from "src/navigation";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import "intl";
 import "intl/locale-data/jsonp/en";
 import { Game } from "src/types";
@@ -73,7 +73,7 @@ export const BookingCard = ({
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<StackParamList>,
+        StackNavigationProp<HomeStackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();

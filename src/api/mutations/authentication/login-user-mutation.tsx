@@ -6,7 +6,7 @@ import { Branch, User } from "src/types";
 import { AxiosError } from "axios";
 import { getExpoPushTokenAsync } from "expo-notifications";
 import { useNavigation } from "@react-navigation/native";
-import { SignUpStackParamList } from "src/navigation";
+import { AuthStackParamList } from "src/navigation";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 type Request = {
@@ -46,7 +46,7 @@ export const useLoginUserMutation = (
   } = { isVerifyingEmail: false }
 ) => {
   const { setUserData, setBranchData } = useContext(UserContext);
-  const navigation = useNavigation<StackNavigationProp<SignUpStackParamList>>();
+  const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
   return useMutation<
     Response,
     AxiosError<{

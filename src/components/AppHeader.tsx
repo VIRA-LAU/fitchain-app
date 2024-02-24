@@ -16,7 +16,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { SignUpStackParamList, StackParamList } from "src/navigation";
+import { AuthStackParamList, HomeStackParamList } from "src/navigation";
 import { GameType } from "src/enum-types";
 
 const sportBackground = {
@@ -52,8 +52,8 @@ export const AppHeader = ({
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<StackParamList>,
-        StackNavigationProp<SignUpStackParamList>
+        StackNavigationProp<HomeStackParamList>,
+        StackNavigationProp<AuthStackParamList>
       >
     >();
   const styles = makeStyles(

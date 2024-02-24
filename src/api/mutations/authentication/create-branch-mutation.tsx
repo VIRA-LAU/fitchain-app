@@ -2,7 +2,7 @@ import client from "../../client";
 import { useMutation } from "react-query";
 import { AxiosError } from "axios";
 import { useNavigation } from "@react-navigation/native";
-import { SignUpStackParamList } from "src/navigation";
+import { AuthStackParamList } from "src/navigation";
 import { getExpoPushTokenAsync } from "expo-notifications";
 import { StackNavigationProp } from "@react-navigation/stack";
 
@@ -31,7 +31,7 @@ const createBranch = async (data: Request) => {
 };
 
 export const useCreateBranchMutation = () => {
-  const navigation = useNavigation<StackNavigationProp<SignUpStackParamList>>();
+  const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
   return useMutation<number, AxiosError<{ message: string }>, Request>({
     mutationFn: createBranch,
     onSuccess: async (data, variables) => {

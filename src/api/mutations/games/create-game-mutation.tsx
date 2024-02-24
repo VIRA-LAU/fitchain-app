@@ -1,13 +1,6 @@
 import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
 import { GameType } from "src/enum-types";
-import {
-  CompositeNavigationProp,
-  useNavigation,
-} from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { BottomTabParamList, StackParamList } from "src/navigation";
 import { AxiosError } from "axios";
 
 type Request = {
@@ -29,20 +22,11 @@ const createGame = async (data: Request) => {
 
 export const useCreateGameMutation = () => {
   const queryClient = useQueryClient();
-  const navigation =
-    useNavigation<
-      CompositeNavigationProp<
-        StackNavigationProp<StackParamList>,
-        BottomTabNavigationProp<BottomTabParamList>
-      >
-    >();
   return useMutation<unknown, AxiosError<{ message: string }>, Request>({
     mutationFn: createGame,
     onSuccess: () => {
       queryClient.refetchQueries(["games"]);
       queryClient.refetchQueries(["bookings"]);
-      navigation.pop(4);
-      navigation.navigate("Home");
     },
     onError: (e) => {
       if (e.response?.data.message === "EXISTING_GAME_OVERLAP")

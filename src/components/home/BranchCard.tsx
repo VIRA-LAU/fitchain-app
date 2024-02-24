@@ -5,10 +5,10 @@ import {
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { useTheme } from "react-native-paper";
+import { TouchableRipple, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { BottomTabParamList, StackParamList } from "src/navigation";
+import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { Branch, TimeSlot } from "src/types";
 import { Skeleton } from "./Skeleton";
 import { GameType } from "src/enum-types";
@@ -20,9 +20,7 @@ export const BranchCardSkeleton = ({ type }: { type: styleOptions }) => {
   const styles = makeStyles(colors, type === "horizontal", type === "focused");
 
   return (
-    <View
-      style={[styles.wrapper, type === "vertical" ? { marginLeft: 20 } : {}]}
-    >
+    <View style={styles.wrapper}>
       <Skeleton style={styles.image} />
       <View style={styles.content}>
         <Skeleton
@@ -55,11 +53,8 @@ export const BranchCard = ({
   promoted = true,
   branch,
   playScreenBookingDetails,
-  isFirst,
-  isLast,
   price,
-  pressable = true,
-  isSelected,
+  disabled = false,
 }: {
   type: styleOptions;
   promoted?: boolean;
@@ -71,31 +66,23 @@ export const BranchCard = ({
     gameType: GameType;
     nbOfPlayers: number;
   };
-  isFirst?: boolean;
-  isLast?: boolean;
-  pressable?: boolean;
-  isSelected?: boolean;
+  disabled?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors, type === "horizontal", type === "focused");
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<StackParamList>,
+        StackNavigationProp<HomeStackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      style={[
-        styles.wrapper,
-        isFirst ? { marginLeft: 20 } : {},
-        isLast ? { marginRight: 20 } : {},
-        isSelected ? { borderColor: colors.primary } : {},
-      ]}
-      disabled={!pressable}
+    <TouchableRipple
+      borderless
+      style={styles.wrapper}
+      disabled={disabled}
       onPress={() => {
         navigation.push("BranchDetails", {
           id: branch.id,
@@ -103,51 +90,53 @@ export const BranchCard = ({
         });
       }}
     >
-      <Image
-        source={
-          branch?.coverPhotoUrl
-            ? { uri: branch.coverPhotoUrl }
-            : require("assets/images/home/basketball-hub.png")
-        }
-        style={styles.image}
-      />
-      <View style={styles.content}>
-        {promoted && (
-          <View style={styles.promotedView}>
-            <Text style={styles.promoted}>Promoted</Text>
-          </View>
-        )}
-        {branch?.profilePhotoUrl && (
-          <Image
-            source={{
-              uri: branch?.profilePhotoUrl,
-            }}
-            style={{ width: 35, aspectRatio: 1 }}
-          />
-        )}
-        <View style={styles.textView}>
-          <Text style={styles.title}>{branch.venue.name}</Text>
-          <View style={styles.ratingView}>
-            <View style={{ flexDirection: "row" }}>
-              <IonIcon
-                name={"star"}
-                color={colors.primary}
-                size={16}
-                style={{ paddingTop: 2 }}
-              />
-              <Text style={styles.rating}>{branch.rating.toFixed(1)}</Text>
+      <View style={styles.wrapperContent}>
+        <Image
+          source={
+            branch?.coverPhotoUrl
+              ? { uri: branch.coverPhotoUrl }
+              : require("assets/images/home/basketball-hub.png")
+          }
+          style={styles.image}
+        />
+        <View style={styles.content}>
+          {promoted && (
+            <View style={styles.promotedView}>
+              <Text style={styles.promoted}>Promoted</Text>
             </View>
-            {type === "horizontal" && (
-              <Text style={styles.location}>{price} $/hour</Text>
-            )}
-            <Text style={[styles.location, { color: "#9E9E9E" }]}>
-              {type !== "horizontal" && " • "}
-              {branch.location}
-            </Text>
+          )}
+          {branch?.profilePhotoUrl && (
+            <Image
+              source={{
+                uri: branch?.profilePhotoUrl,
+              }}
+              style={{ width: 35, aspectRatio: 1 }}
+            />
+          )}
+          <View style={styles.textView}>
+            <Text style={styles.title}>{branch.venue.name}</Text>
+            <View style={styles.ratingView}>
+              <View style={{ flexDirection: "row" }}>
+                <IonIcon
+                  name={"star"}
+                  color={colors.primary}
+                  size={16}
+                  style={{ paddingTop: 2 }}
+                />
+                <Text style={styles.rating}>{branch.rating?.toFixed(1)}</Text>
+              </View>
+              {type === "horizontal" && (
+                <Text style={styles.location}>{price} $/hour</Text>
+              )}
+              <Text style={[styles.location, { color: "#9E9E9E" }]}>
+                {type !== "horizontal" && " • "}
+                {branch.location}
+              </Text>
+            </View>
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </TouchableRipple>
   );
 };
 
@@ -158,14 +147,12 @@ const makeStyles = (
 ) =>
   StyleSheet.create({
     wrapper: {
-      flexDirection: isHorizontal ? "row" : "column",
-      justifyContent: "flex-end",
-      marginHorizontal: isHorizontal || isFocused ? 0 : 5,
-      marginBottom: isHorizontal || isFocused ? 16 : 0,
       borderRadius: 12,
       minWidth: isHorizontal ? "auto" : 200,
-      borderWidth: 2,
-      borderColor: "transparent",
+    },
+    wrapperContent: {
+      flexDirection: isHorizontal ? "row" : "column",
+      justifyContent: "flex-end",
     },
     image: {
       height: isHorizontal ? "100%" : 128,

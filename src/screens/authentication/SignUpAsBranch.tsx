@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { SignUpStackParamList } from "navigation";
+import { AuthStackParamList } from "navigation";
 import { AppHeader, MapComponent } from "components";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Button, useTheme, Text, ActivityIndicator } from "react-native-paper";
@@ -18,7 +18,7 @@ import { LatLng, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 
-type Props = StackScreenProps<SignUpStackParamList, "SignUpAsBranch">;
+type Props = StackScreenProps<AuthStackParamList, "SignUpAsBranch">;
 
 export const SignUpAsBranch = ({ navigation, route }: Props) => {
   const { colors } = useTheme();

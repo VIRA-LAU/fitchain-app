@@ -1,3 +1,3 @@
 export * from "./authentication";
 export * from "./home";
-export * from "./branch-home";
+export * from "./branch";

@@ -1,7 +1,7 @@
 import client from "../../client";
 import { useMutation } from "react-query";
 import { useNavigation } from "@react-navigation/native";
-import { SignUpStackParamList } from "src/navigation";
+import { AuthStackParamList } from "src/navigation";
 import { AxiosError } from "axios";
 import { getExpoPushTokenAsync } from "expo-notifications";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -25,7 +25,7 @@ const createUser = async (data: Request) => {
 };
 
 export const useCreateUserMutation = () => {
-  const navigation = useNavigation<StackNavigationProp<SignUpStackParamList>>();
+  const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
   return useMutation<number, AxiosError<{ message: string }>, Request>({
     mutationFn: createUser,
     onSuccess: async (data, variables) => {

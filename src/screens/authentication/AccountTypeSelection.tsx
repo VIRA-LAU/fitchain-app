@@ -1,12 +1,12 @@
 import { View, Image } from "react-native";
 import { StyleSheet } from "react-native";
 import type { StackScreenProps } from "@react-navigation/stack";
-import { SignUpStackParamList } from "navigation";
+import { AuthStackParamList } from "navigation";
 import { Button, useTheme, Text } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { AppHeader } from "src/components";
 
-type Props = StackScreenProps<SignUpStackParamList, "AccountTypeSelection">;
+type Props = StackScreenProps<AuthStackParamList, "AccountTypeSelection">;
 
 export const AccountTypeSelection = ({
   navigation,

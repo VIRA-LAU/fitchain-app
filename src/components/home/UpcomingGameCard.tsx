@@ -3,7 +3,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { StackParamList, BottomTabParamList } from "src/navigation";
+import { HomeStackParamList, BottomTabParamList } from "src/navigation";
 import {
   CompositeNavigationProp,
   useNavigation,
@@ -42,7 +42,7 @@ export const UpcomingGameCard = ({ game }: { game: Game }) => {
   const navigation =
     useNavigation<
       CompositeNavigationProp<
-        StackNavigationProp<StackParamList>,
+        StackNavigationProp<HomeStackParamList>,
         BottomTabNavigationProp<BottomTabParamList>
       >
     >();
