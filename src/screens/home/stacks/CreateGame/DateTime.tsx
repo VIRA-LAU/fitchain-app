@@ -61,9 +61,11 @@ const filteredTimes = times.filter((time) => {
 export const DateTime = ({
   gameDetails,
   setGameDetails,
+  isBooking,
 }: {
   gameDetails: GameCreationType;
   setGameDetails: Dispatch<SetStateAction<GameCreationType>>;
+  isBooking?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -150,103 +152,108 @@ export const DateTime = ({
           selectedStartDate={searchDate ?? today}
         />
       </View>
-      <Text style={[styles.title, { marginTop: 24, marginBottom: 16 }]}>
-        Start Time
-      </Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ marginHorizontal: -16 }}
-        contentContainerStyle={{ paddingHorizontal: 16, gap: 16 }}
-      >
-        {(searchDate.toDateString() === today.toDateString()
-          ? filteredTimes
-          : times
-        ).map((time, index) => (
-          <TouchableRipple
-            key={index}
-            borderless
-            style={[
-              styles.gameType,
-              {
-                backgroundColor:
-                  time === selectedStartTime
-                    ? colors.primary
-                    : colors.secondary,
-              },
-            ]}
-            onPress={() =>
-              setGameDetails({
-                ...gameDetails,
-                startTime: time,
-              })
-            }
+
+      {isBooking && (
+        <View>
+          <Text style={[styles.title, { marginTop: 24, marginBottom: 16 }]}>
+            Start Time
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginHorizontal: -16 }}
+            contentContainerStyle={{ paddingHorizontal: 16, gap: 16 }}
           >
-            <Text
-              style={[
-                styles.title,
-                {
-                  color:
-                    time === selectedStartTime
-                      ? colors.background
-                      : colors.tertiary,
-                },
-              ]}
-            >
-              {time}
-            </Text>
-          </TouchableRipple>
-        ))}
-      </ScrollView>
-      <Text style={[styles.title, { marginTop: 24, marginBottom: 16 }]}>
-        Duration
-      </Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ marginHorizontal: -16 }}
-        contentContainerStyle={{ paddingHorizontal: 16, gap: 16 }}
-      >
-        {[0.5, 1, 1.5, 2].map((duration, index) => (
-          <TouchableRipple
-            key={index}
-            borderless
-            style={[
-              styles.gameType,
-              {
-                backgroundColor:
-                  duration === selectedDuration
-                    ? colors.primary
-                    : colors.secondary,
-              },
-            ]}
-            onPress={() =>
-              setGameDetails({
-                ...gameDetails,
-                duration,
-              })
-            }
+            {(searchDate.toDateString() === today.toDateString()
+              ? filteredTimes
+              : times
+            ).map((time, index) => (
+              <TouchableRipple
+                key={index}
+                borderless
+                style={[
+                  styles.gameType,
+                  {
+                    backgroundColor:
+                      time === selectedStartTime
+                        ? colors.primary
+                        : colors.secondary,
+                  },
+                ]}
+                onPress={() =>
+                  setGameDetails({
+                    ...gameDetails,
+                    startTime: time,
+                  })
+                }
+              >
+                <Text
+                  style={[
+                    styles.title,
+                    {
+                      color:
+                        time === selectedStartTime
+                          ? colors.background
+                          : colors.tertiary,
+                    },
+                  ]}
+                >
+                  {time}
+                </Text>
+              </TouchableRipple>
+            ))}
+          </ScrollView>
+          <Text style={[styles.title, { marginTop: 24, marginBottom: 16 }]}>
+            Duration
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{ marginHorizontal: -16 }}
+            contentContainerStyle={{ paddingHorizontal: 16, gap: 16 }}
           >
-            <Text
-              style={[
-                styles.title,
-                {
-                  color:
-                    duration === selectedDuration
-                      ? colors.background
-                      : colors.tertiary,
-                },
-              ]}
-            >
-              {duration === 0.5
-                ? "30 mins"
-                : duration === 1
-                ? "1 hour"
-                : `${duration} hours`}
-            </Text>
-          </TouchableRipple>
-        ))}
-      </ScrollView>
+            {[0.5, 1, 1.5, 2].map((duration, index) => (
+              <TouchableRipple
+                key={index}
+                borderless
+                style={[
+                  styles.gameType,
+                  {
+                    backgroundColor:
+                      duration === selectedDuration
+                        ? colors.primary
+                        : colors.secondary,
+                  },
+                ]}
+                onPress={() =>
+                  setGameDetails({
+                    ...gameDetails,
+                    duration,
+                  })
+                }
+              >
+                <Text
+                  style={[
+                    styles.title,
+                    {
+                      color:
+                        duration === selectedDuration
+                          ? colors.background
+                          : colors.tertiary,
+                    },
+                  ]}
+                >
+                  {duration === 0.5
+                    ? "30 mins"
+                    : duration === 1
+                    ? "1 hour"
+                    : `${duration} hours`}
+                </Text>
+              </TouchableRipple>
+            ))}
+          </ScrollView>
+        </View>
+      )}
     </View>
   );
 };

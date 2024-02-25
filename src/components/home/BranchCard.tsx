@@ -12,6 +12,7 @@ import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import { Branch, TimeSlot } from "src/types";
 import { Skeleton } from "./Skeleton";
 import { GameType } from "src/enum-types";
+import MaterialCommunityIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
 type styleOptions = "vertical" | "horizontal" | "focused";
 
@@ -99,6 +100,24 @@ export const BranchCard = ({
           }
           style={styles.image}
         />
+        {type === "horizontal" && branch.allowsBooking && (
+          <View
+            style={{
+              position: "absolute",
+              top: 12,
+              left: 12,
+              backgroundColor: colors.background,
+              padding: 8,
+              borderRadius: 30,
+            }}
+          >
+            <MaterialCommunityIcon
+              name="calendar-check"
+              size={20}
+              color={"green"}
+            />
+          </View>
+        )}
         <View style={styles.content}>
           {promoted && (
             <View style={styles.promotedView}>
@@ -156,7 +175,7 @@ const makeStyles = (
     },
     image: {
       height: isHorizontal ? "100%" : 128,
-      width: isHorizontal ? "50%" : "100%",
+      width: isHorizontal ? "45%" : "100%",
       borderTopLeftRadius: 10,
       borderTopRightRadius: isHorizontal ? 0 : 10,
       borderBottomLeftRadius: isHorizontal ? 10 : 0,

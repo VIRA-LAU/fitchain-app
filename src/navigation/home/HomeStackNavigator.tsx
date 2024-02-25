@@ -24,6 +24,7 @@ export type HomeStackParamList = {
   CreateGame: {
     stage?: number;
     gameDetails?: GameCreationType;
+    isBooking?: boolean;
   };
   CreateStatisticsGame: {
     data?: {

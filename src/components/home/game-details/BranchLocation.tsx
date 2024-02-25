@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BottomTabParamList, HomeStackParamList } from "navigation";
 import { Court } from "src/types";
@@ -96,92 +96,98 @@ export const BranchLocation = ({
     >();
 
   return (
-    <TouchableOpacity
-      style={[styles.wrapperView]}
+    <TouchableRipple
+      borderless
+      style={styles.wrapperView}
       disabled={!pressable}
-      activeOpacity={0.8}
       onPress={() => {
-        navigation.push("BranchDetails", { id: court!.branchId });
+        if (court?.branchId)
+          navigation.push("BranchDetails", { id: court.branchId });
       }}
     >
-      <View style={styles.background}>
-        {branch && (
-          <MiniMapComponent
-            locationMarker={{
-              latitude: branch.latitude,
-              longitude: branch.longitude,
-            }}
-          />
-        )}
-        {court && (
-          <MiniMapComponent
-            locationMarker={{
-              latitude: court.branch.latitude,
-              longitude: court.branch.longitude,
-            }}
-          />
-        )}
-      </View>
-      <View style={styles.dataView}>
-        <View style={styles.headerView}>
-          {(branch?.profilePhotoUrl || court?.branch.profilePhotoUrl) && (
-            <Image
-              source={{
-                uri: branch?.profilePhotoUrl || court?.branch.profilePhotoUrl,
+      <View style={styles.wrapperContentView}>
+        <View style={styles.background}>
+          {branch && (
+            <MiniMapComponent
+              locationMarker={{
+                latitude: branch.latitude,
+                longitude: branch.longitude,
               }}
-              style={{ width: 35, aspectRatio: 1, marginRight: 10 }}
             />
           )}
-          <View>
-            <Text style={styles.title}>
-              {type === "court" ? court?.branch.venue.name : branch?.location}
-            </Text>
-            {type === "court" && (
-              <Text style={styles.subtitle}>
-                {type === "court" && court?.branch.location}
+          {court && (
+            <MiniMapComponent
+              locationMarker={{
+                latitude: court.branch?.latitude ?? 0,
+                longitude: court.branch?.longitude ?? 0,
+              }}
+            />
+          )}
+        </View>
+        <View style={styles.dataView}>
+          <View style={styles.headerView}>
+            {(branch?.profilePhotoUrl || court?.branch?.profilePhotoUrl) && (
+              <Image
+                source={{
+                  uri:
+                    branch?.profilePhotoUrl || court?.branch?.profilePhotoUrl,
+                }}
+                style={{ width: 35, aspectRatio: 1, marginRight: 10 }}
+              />
+            )}
+            <View>
+              <Text style={styles.title}>
+                {type === "court"
+                  ? court?.branch?.venue.name
+                  : branch?.location}
               </Text>
+              {type === "court" && (
+                <Text style={styles.subtitle}>
+                  {type === "court" && court?.branch?.location}
+                </Text>
+              )}
+            </View>
+            {type === "branch" && (
+              <FeatherIcon
+                name={"star"}
+                color={colors.tertiary}
+                size={14}
+                style={{ marginLeft: "auto", marginRight: 5 }}
+              />
+            )}
+            {type === "branch" && (
+              <View>
+                <Text style={styles.title}>{branch?.rating.toFixed(1)}</Text>
+              </View>
             )}
           </View>
-          {type === "branch" && (
-            <FeatherIcon
-              name={"star"}
-              color={colors.tertiary}
-              size={14}
-              style={{ marginLeft: "auto", marginRight: 5 }}
-            />
+          {type === "court" && (
+            <View style={styles.rowView}>
+              <Text style={styles.rowKey}>COURT</Text>
+              <Text style={styles.rowValue}>{court?.name}</Text>
+            </View>
+          )}
+          {type === "court" && (
+            <View style={styles.rowView}>
+              <Text style={styles.rowKey}>PRICE</Text>
+              <Text style={styles.rowValue}>USD {court?.price}/hr</Text>
+            </View>
           )}
           {type === "branch" && (
-            <View>
-              <Text style={styles.title}>{branch?.rating.toFixed(1)}</Text>
+            <View style={styles.rowView}>
+              <Text style={styles.rowKey}>COURTS</Text>
+              <Text style={styles.rowValue}>{courtsStr}</Text>
+            </View>
+          )}
+          {type === "branch" && (
+            <View style={styles.rowView}>
+              <Text style={styles.rowKey}>PRICE</Text>
+              <Text style={styles.rowValue}>USD {prices}/hr</Text>
             </View>
           )}
         </View>
-        {type === "court" && (
-          <View style={styles.rowView}>
-            <Text style={styles.rowKey}>COURT</Text>
-            <Text style={styles.rowValue}>{court?.name}</Text>
-          </View>
-        )}
-        {type === "court" && (
-          <View style={styles.rowView}>
-            <Text style={styles.rowKey}>PRICE</Text>
-            <Text style={styles.rowValue}>USD {court?.price}/hr</Text>
-          </View>
-        )}
-        {type === "branch" && (
-          <View style={styles.rowView}>
-            <Text style={styles.rowKey}>COURTS</Text>
-            <Text style={styles.rowValue}>{courtsStr}</Text>
-          </View>
-        )}
-        {type === "branch" && (
-          <View style={styles.rowView}>
-            <Text style={styles.rowKey}>PRICE</Text>
-            <Text style={styles.rowValue}>USD {prices}/hr</Text>
-          </View>
-        )}
       </View>
-    </TouchableOpacity>
+    </TouchableRipple>
   );
 };
 
@@ -189,9 +195,12 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
       borderRadius: 10,
+      width: "100%",
+    },
+    wrapperContentView: {
+      borderRadius: 10,
       flexDirection: "row",
       alignItems: "center",
-      width: "100%",
     },
     background: {
       position: "absolute",

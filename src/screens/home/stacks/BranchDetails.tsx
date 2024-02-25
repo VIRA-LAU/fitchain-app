@@ -120,49 +120,6 @@ export const BranchDetails = ({ navigation, route }: Props) => {
             ) : (
               <View style={{ marginBottom: 15 }} />
             )}
-            {/* {!playScreenBookingDetails && (
-              <View style={styles.buttonsView}>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.headerBookCourtPressable}
-                  onPress={() => {
-                    setPlayScreenVisible(true);
-                  }}
-                >
-                  <IonIcon
-                    name={"basketball-outline"}
-                    size={30}
-                    color={colors.secondary}
-                  />
-                  <View style={{ marginLeft: 5 }}>
-                    <Text variant="titleSmall" style={styles.bookCourtButton}>
-                      Book Court
-                    </Text>
-                    <Text
-                      variant="labelMedium"
-                      style={{ color: colors.secondary }}
-                    >
-                      USD {pricesStr}/hr
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-
-                <View style={{ width: "50%" }}>
-                  <Button
-                    icon={() => (
-                      <FeatherIcon
-                        name="thumbs-up"
-                        size={22}
-                        color={colors.tertiary}
-                      />
-                    )}
-                    textColor={colors.tertiary}
-                  >
-                    Follow Venue
-                  </Button>
-                </View>
-              </View>
-            )} */}
           </View>
         </View>
 
@@ -214,7 +171,7 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                   color: colors.primary,
                 }}
               >
-                {branch?.rating.toFixed(1)}{" "}
+                {branch?.rating?.toFixed(1)}{" "}
                 <Text
                   style={{
                     fontFamily: "Poppins-Regular",
@@ -252,49 +209,6 @@ export const BranchDetails = ({ navigation, route }: Props) => {
 
           <ImageList images={branch?.branchPhotoUrl} isLoading={isLoading} />
 
-          <Button
-            mode="contained"
-            style={{ height: 45, justifyContent: "center", marginVertical: 24 }}
-            onPress={() => {
-              navigation.push("BookCourt", {
-                branchId: branch?.id,
-                courtTypes: branch?.courts.map((court) => court.courtType),
-              });
-            }}
-          >
-            Book Court
-          </Button>
-
-          {/* <View style={styles.bookCourtPressableView}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.bookCourtPressable}
-              onPress={() => {
-                navigation.push("ChooseCourt", {
-                  branchId: branch!.id,
-                  branchLocation: branch!.location,
-                  venueName: branch!.venue!.name,
-                  bookingDetails: playScreenBookingDetails!,
-                  profilePhotoUrl: branch!.profilePhotoUrl,
-                });
-              }}
-            >
-              <IonIcon
-                name={"basketball-outline"}
-                size={30}
-                color={colors.secondary}
-              />
-              <View style={{ marginLeft: 5 }}>
-                <Text variant="titleSmall" style={styles.bookCourtButton}>
-                  Book Court
-                </Text>
-                <Text variant="labelMedium" style={{ color: colors.secondary }}>
-                  USD {pricesStr}/hr
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View> */}
-
           <View>
             <Text
               variant="labelLarge"
@@ -314,12 +228,12 @@ export const BranchDetails = ({ navigation, route }: Props) => {
                 type="branch"
                 branch={{
                   id: branch!.id,
-                  location: branch!.location,
+                  location: branch!.location ?? "",
                   courts: branch!.courts,
-                  rating: branch!.rating,
+                  rating: branch!.rating ?? 0,
                   venueName: branch!.venue.name,
-                  latitude: branch!.latitude,
-                  longitude: branch!.longitude,
+                  latitude: branch!.latitude ?? 0,
+                  longitude: branch!.longitude ?? 0,
                   profilePhotoUrl: branch!.profilePhotoUrl,
                 }}
               />
@@ -396,6 +310,7 @@ const makeStyles = (
     contentView: {
       padding: 16,
       flex: 1,
+      marginTop: 16,
     },
     headerBookCourtPressable: {
       borderRadius: 5,

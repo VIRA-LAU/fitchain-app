@@ -20,8 +20,11 @@ import {
   parseTimeFromMinutes,
   Team,
   AssignPlayer,
-  PopupType,
-  PopupContainer,
+  JoinGamePopup,
+  CancelJoinGamePopup,
+  RespondToInvitationPopup,
+  RecordGamePopup,
+  UploadVideoPopup,
 } from "src/components";
 import {
   View,
@@ -33,13 +36,14 @@ import {
   ScrollView,
   Linking,
   Image,
+  Dimensions,
 } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
-import { Button, Text, useTheme } from "react-native-paper";
+import { Button, Text, TouchableRipple, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { TabBar, TabView } from "react-native-tab-view";
 import {
@@ -69,11 +73,20 @@ export const GameDetails = ({ navigation, route }: Props) => {
 
   const { userData } = useContext(UserContext);
 
-  const [popupVisible, setPopupVisible] = useState<PopupType | null>(null);
+  const [joinGamePopupVisible, setJoinGamePopupVisible] = useState(false);
+  const [cancelJoinGamePopupVisible, setCancelJoinGamePopupVisible] =
+    useState(false);
+  const [respondToInvitationPopupVisible, setRespondToInvitationPopupVisible] =
+    useState(false);
+  const [recordingPopupVisible, setRecordingPopupVisible] =
+    useState<boolean>(false);
+  const [uploadPopupVisible, setUploadPopupVisible] = useState<boolean>(false);
   const [recordingModalVisible, setRecordingModalVisible] =
     useState<boolean>(false);
+
   const [assignPlayerVisible, setAssignPlayerVisible] =
     useState<PlayerStatistics | null>(null);
+
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: "Home", title: "Home" },
@@ -159,7 +172,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
 
   let updateCards: { card: ReactNode; date: Date }[] = [];
 
-  if (gameUpdates) {
+  if (gameUpdates && game?.id) {
     updateCards.push({
       card: (
         <UpdateCard
@@ -168,7 +181,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
           name={`${gameUpdates.admin.firstName} ${gameUpdates.admin.lastName}`}
           profilePhotoUrl={gameUpdates.admin.profilePhotoUrl}
           date={new Date(gameUpdates.createdAt)}
-          gameId={game?.id}
+          gameId={game.id}
           profileId={gameUpdates.admin.id}
           playerStatus={playerStatus}
         />
@@ -293,35 +306,41 @@ export const GameDetails = ({ navigation, route }: Props) => {
       style={{
         backgroundColor: colors.secondary,
         borderRadius: 10,
-        marginHorizontal: 20,
+        marginHorizontal: 16,
         marginBottom: 10,
       }}
+      contentContainerStyle={{ gap: 3 }}
       renderTabBarItem={({ route }) => {
         let isActive = route.key === props.navigationState.routes[index].key;
         return (
-          <Pressable
+          <TouchableRipple
             key={route.key}
-            style={({ pressed }) => [
-              styles.tabViewItem,
-              {
-                flex: 1,
-                backgroundColor: isActive ? colors.primary : colors.secondary,
-              },
-              pressed && { backgroundColor: "rgba(247, 126, 5, 0.1)" },
-            ]}
+            borderless
+            style={{
+              borderRadius: 10,
+            }}
             onPress={() => {
               setIndex(routes.findIndex(({ key }) => route.key === key));
             }}
           >
-            <Text
-              style={{
-                fontFamily: isActive ? "Poppins-Bold" : "Poppins-Regular",
-                color: isActive ? colors.background : colors.tertiary,
-              }}
+            <View
+              style={[
+                styles.tabViewItem,
+                {
+                  backgroundColor: isActive ? colors.primary : colors.secondary,
+                },
+              ]}
             >
-              {route.title}
-            </Text>
-          </Pressable>
+              <Text
+                style={{
+                  fontFamily: isActive ? "Poppins-Bold" : "Poppins-Regular",
+                  color: isActive ? colors.background : colors.tertiary,
+                }}
+              >
+                {route.title}
+              </Text>
+            </View>
+          </TouchableRipple>
         );
       }}
       renderIndicator={() => <View style={{ width: 0 }} />}
@@ -330,18 +349,51 @@ export const GameDetails = ({ navigation, route }: Props) => {
 
   return (
     <Fragment>
-      {popupVisible && (
-        <PopupContainer
-          game={game}
-          popupVisible={popupVisible}
-          setPopupVisible={setPopupVisible}
-          followedGames={followedGames}
-          playerStatus={playerStatus}
+      {joinGamePopupVisible && (
+        <JoinGamePopup
+          visible={joinGamePopupVisible}
+          setVisible={setJoinGamePopupVisible}
+          followGame={followGame}
           joinGame={joinGame}
+          followedGames={followedGames}
+          game={game}
+        />
+      )}
+      {cancelJoinGamePopupVisible && (
+        <CancelJoinGamePopup
+          visible={cancelJoinGamePopupVisible}
+          setVisible={setCancelJoinGamePopupVisible}
           cancelRequest={cancelRequest}
           respondToInvite={respondToInvite}
-          followGame={followGame}
           unfollowGame={unfollowGame}
+          followedGames={followedGames}
+          game={game}
+          playerStatus={playerStatus}
+        />
+      )}
+      {respondToInvitationPopupVisible && (
+        <RespondToInvitationPopup
+          visible={respondToInvitationPopupVisible}
+          setVisible={setRespondToInvitationPopupVisible}
+          followGame={followGame}
+          respondToInvite={respondToInvite}
+          playerStatus={playerStatus}
+          followedGames={followedGames}
+          game={game}
+        />
+      )}
+      {recordingPopupVisible && (
+        <RecordGamePopup
+          visible={recordingPopupVisible}
+          setVisible={setRecordingPopupVisible}
+          game={game}
+        />
+      )}
+      {uploadPopupVisible && (
+        <UploadVideoPopup
+          visible={uploadPopupVisible}
+          setVisible={setUploadPopupVisible}
+          game={game}
         />
       )}
       <AppHeader
@@ -375,14 +427,14 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       text: "Record Game",
                       onPress: () => {
                         setRecordingModalVisible(false);
-                        setPopupVisible("recordVideo");
+                        setRecordingPopupVisible(true);
                       },
                     },
                     {
                       text: "Upload Video",
                       onPress: () => {
                         setRecordingModalVisible(false);
-                        setPopupVisible("uploadVideo");
+                        setUploadPopupVisible(true);
                       },
                     },
                   ]
@@ -391,7 +443,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       text: "Upload Video",
                       onPress: () => {
                         setRecordingModalVisible(false);
-                        setPopupVisible("uploadVideo");
+                        setUploadPopupVisible(true);
                       },
                     },
                   ]
@@ -486,16 +538,10 @@ export const GameDetails = ({ navigation, route }: Props) => {
                           ? playerStatus?.hasRequestedtoJoin === "APPROVED" ||
                             playerStatus?.hasRequestedtoJoin === "PENDING" ||
                             playerStatus?.hasBeenInvited === "APPROVED"
-                            ? () => {
-                                setPopupVisible("cancelJoinGame");
-                              }
+                            ? () => setCancelJoinGamePopupVisible(true)
                             : playerStatus?.hasBeenInvited === "PENDING"
-                            ? () => {
-                                setPopupVisible("respondToInvitation");
-                              }
-                            : () => {
-                                setPopupVisible("joinGame");
-                              }
+                            ? () => setRespondToInvitationPopupVisible(true)
+                            : () => setJoinGamePopupVisible(true)
                           : undefined
                       }
                     >
@@ -570,7 +616,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
                       <Feather name="user-plus" size={size} color={color} />
                     )}
                     onPress={() => {
-                      navigation.push("InviteUsers", { gameId: game?.id });
+                      if (game?.id)
+                        navigation.push("InviteUsers", { gameId: game.id });
                     }}
                   >
                     Invite Players
@@ -599,18 +646,20 @@ export const GameDetails = ({ navigation, route }: Props) => {
             )}
             <Text
               variant="labelLarge"
-              style={{ color: colors.tertiary, margin: 20 }}
+              style={{ color: colors.tertiary, margin: 16 }}
             >
               Team Players
             </Text>
-            <TabView
-              navigationState={{ index, routes }}
-              renderTabBar={renderTabBar}
-              renderScene={renderScene}
-              onIndexChange={setIndex}
-              initialLayout={{ width: windowWidth }}
-              swipeEnabled={false}
-            />
+            <View style={{ height: 360 }}>
+              <TabView
+                navigationState={{ index, routes }}
+                renderTabBar={renderTabBar}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={{ width: windowWidth }}
+                swipeEnabled={false}
+              />
+            </View>
             {/* <Image
               style={{
                 height: 120,
@@ -620,7 +669,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               resizeMode="contain"
               source={require("assets/images/home/basketball-court.png")}
             /> */}
-            <View style={{ marginHorizontal: 20, marginTop: 16 }}>
+            <View style={{ marginHorizontal: 16, marginTop: 16 }}>
               {loading ? (
                 <BranchLocationSkeleton />
               ) : (
@@ -635,8 +684,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
                   ios: "maps://0,0?q=",
                   android: "geo:0,0?q=",
                 });
-                const latLng = `${game?.court.branch.latitude},${game?.court.branch.longitude}`;
-                const label = game?.court.branch.venue.name;
+                const latLng = `${game?.court.branch?.latitude},${game?.court.branch?.longitude}`;
+                const label = game?.court.branch?.venue.name;
 
                 Linking.openURL(
                   Platform.select({
@@ -651,7 +700,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
             <View style={styles.divider} />
             <Text
               variant="labelLarge"
-              style={{ color: colors.tertiary, margin: 20 }}
+              style={{ color: colors.tertiary, margin: 16 }}
             >
               Updates
             </Text>
@@ -710,7 +759,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     headerView: {
       paddingVertical: 10,
-      paddingHorizontal: 20,
+      paddingHorizontal: 16,
       borderRadius: 10,
       backgroundColor: colors.secondary,
     },
@@ -726,10 +775,10 @@ const makeStyles = (colors: MD3Colors) =>
     },
     tabViewItem: {
       height: 40,
-      margin: 5,
       borderRadius: 10,
       justifyContent: "center",
       alignItems: "center",
+      width: (Dimensions.get("screen").width - 32 - 3) / 2,
     },
     divider: {
       borderColor: colors.secondary,
@@ -737,6 +786,6 @@ const makeStyles = (colors: MD3Colors) =>
       marginTop: 10,
     },
     updatesView: {
-      marginHorizontal: 20,
+      marginHorizontal: 16,
     },
   });

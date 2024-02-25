@@ -24,10 +24,23 @@ export const CreateGameChoicePopup = ({
       setVisible={setVisible}
     >
       <View style={{ gap: 16 }}>
-        <Button mode="contained" onPress={() => bookCourt()}>
+        <Button
+          mode="contained"
+          onPress={() => {
+            setVisible(false);
+            bookCourt();
+          }}
+        >
           Book Court
         </Button>
-        <Button onPress={() => skipBooking()}>Create Game</Button>
+        <Button
+          onPress={() => {
+            setVisible(false);
+            skipBooking();
+          }}
+        >
+          Create Game
+        </Button>
       </View>
     </PopupContainer>
   );

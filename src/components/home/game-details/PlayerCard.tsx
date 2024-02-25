@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { Avatar, Text, useTheme } from "react-native-paper";
+import { Avatar, Text, TouchableRipple, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
@@ -84,7 +84,7 @@ export const PlayerCard = ({
   isActive?: boolean;
   player: TeamPlayer;
   isPrevious: boolean;
-  gameId: number;
+  gameId?: number;
   playerStatus?: PlayerStatus;
   isFirst: boolean;
   isLast: boolean;
@@ -115,8 +115,8 @@ export const PlayerCard = ({
     playerStatus?.isAdmin;
 
   return (
-    <TouchableOpacity
-      activeOpacity={isPressable ? (isActive ? 0.8 : 0.6) : isActive ? 1 : 0.6}
+    <TouchableRipple
+      borderless
       style={[
         styles.wrapperView,
         isActive
@@ -147,105 +147,108 @@ export const PlayerCard = ({
             }
       }
     >
-      <Image
-        source={
-          coverPhotoUrl
-            ? {
-                uri: coverPhotoUrl,
-              }
-            : require("assets/images/home/profile-background.png")
-        }
-        style={styles.header}
-      />
-      <View
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          paddingTop: 40,
-          flexGrow: 1,
-        }}
-      >
-        <View style={styles.profilePicture}>
-          {profilePhotoUrl ? (
-            <Avatar.Image
-              source={{ uri: profilePhotoUrl }}
-              style={{ backgroundColor: "transparent" }}
-            />
-          ) : (
-            <Avatar.Text
-              label={
-                firstName ? `${firstName.charAt(0)}${lastName.charAt(0)}` : ""
-              }
-              labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 28 }}
-              style={{
-                backgroundColor: colors.background,
-              }}
-            />
-          )}
-        </View>
-        <Text style={styles.name}>
-          {firstName} {lastName}
-        </Text>
-        <View style={styles.ratingView}>
-          <IonIcon name={"star"} color={colors.tertiary} />
-          <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
-        </View>
-        {isPressable && (
-          <TouchableOpacity
-            disabled={!isPrevious || rated || id === userData?.userId}
-            style={[
-              styles.statusView,
-              {
-                backgroundColor:
-                  isPrevious && (rated || userData?.userId == id)
-                    ? colors.primary
-                    : colors.background,
-                borderWidth:
-                  isPrevious && (rated || userData?.userId == id || !isInGame)
-                    ? 0
-                    : 1,
-              },
-            ]}
-            onPress={() =>
-              navigation.push("RatePlayer", {
-                playerId: id,
-                firstName,
-                lastName,
-                gameId,
-                profilePhotoUrl,
-                coverPhotoUrl,
-              })
-            }
-          >
-            {isPrevious ? (
-              isInGame && (
-                <Text
-                  style={[
-                    styles.statusText,
-                    {
-                      color:
-                        rated || userData?.userId == id
-                          ? colors.background
-                          : colors.tertiary,
-                    },
-                  ]}
-                >
-                  {id == userData?.userId ? "You" : rated ? "Rated" : "Rate"}
-                </Text>
-              )
-            ) : (
-              <Text style={[styles.statusText]}>{displayedStatus}</Text>
-            )}
-          </TouchableOpacity>
-        )}
-        <IonIcon
-          name="ellipsis-horizontal"
-          color={colors.tertiary}
-          size={24}
-          style={{ marginVertical: 5 }}
+      <View style={[styles.wrapperContentView]}>
+        <Image
+          source={
+            coverPhotoUrl
+              ? {
+                  uri: coverPhotoUrl,
+                }
+              : require("assets/images/home/profile-background.png")
+          }
+          style={styles.header}
         />
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            paddingTop: 40,
+            flexGrow: 1,
+          }}
+        >
+          <View style={styles.profilePicture}>
+            {profilePhotoUrl ? (
+              <Avatar.Image
+                source={{ uri: profilePhotoUrl }}
+                style={{ backgroundColor: "transparent" }}
+              />
+            ) : (
+              <Avatar.Text
+                label={
+                  firstName ? `${firstName.charAt(0)}${lastName.charAt(0)}` : ""
+                }
+                labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 28 }}
+                style={{
+                  backgroundColor: colors.background,
+                }}
+              />
+            )}
+          </View>
+          <Text style={styles.name}>
+            {firstName} {lastName}
+          </Text>
+          <View style={styles.ratingView}>
+            <IonIcon name={"star"} color={colors.tertiary} />
+            <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
+          </View>
+          {isPressable && (
+            <TouchableOpacity
+              disabled={!isPrevious || rated || id === userData?.userId}
+              style={[
+                styles.statusView,
+                {
+                  backgroundColor:
+                    isPrevious && (rated || userData?.userId == id)
+                      ? colors.primary
+                      : colors.background,
+                  borderWidth:
+                    isPrevious && (rated || userData?.userId == id || !isInGame)
+                      ? 0
+                      : 1,
+                },
+              ]}
+              onPress={() => {
+                if (gameId)
+                  navigation.push("RatePlayer", {
+                    playerId: id,
+                    firstName,
+                    lastName,
+                    gameId,
+                    profilePhotoUrl,
+                    coverPhotoUrl,
+                  });
+              }}
+            >
+              {isPrevious ? (
+                isInGame && (
+                  <Text
+                    style={[
+                      styles.statusText,
+                      {
+                        color:
+                          rated || userData?.userId == id
+                            ? colors.background
+                            : colors.tertiary,
+                      },
+                    ]}
+                  >
+                    {id == userData?.userId ? "You" : rated ? "Rated" : "Rate"}
+                  </Text>
+                )
+              ) : (
+                <Text style={[styles.statusText]}>{displayedStatus}</Text>
+              )}
+            </TouchableOpacity>
+          )}
+          <IonIcon
+            name="ellipsis-horizontal"
+            color={colors.tertiary}
+            size={24}
+            style={{ marginVertical: 5 }}
+          />
+        </View>
       </View>
-    </TouchableOpacity>
+    </TouchableRipple>
   );
 };
 
@@ -254,10 +257,12 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
     wrapperView: {
       width: 0.4 * windowWidth,
       height: 245,
+      borderRadius: 10,
+    },
+    wrapperContentView: {
       backgroundColor: colors.secondary,
       borderRadius: 10,
       alignItems: "center",
-      marginRight: 5,
     },
     header: {
       height: 75,

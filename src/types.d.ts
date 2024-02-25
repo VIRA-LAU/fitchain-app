@@ -153,6 +153,7 @@ export interface Branch {
   coverPhotoUrl?: string;
   branchPhotoUrl?: string;
   courts: Court[];
+  allowsBooking: boolean;
   rating?: number;
   managerFirstName?: string;
   managerLastName?: string;

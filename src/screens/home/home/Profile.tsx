@@ -2,13 +2,12 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import {
   StyleSheet,
   View,
-  useWindowDimensions,
   ScrollView,
   TouchableOpacity,
   BackHandler,
-  Pressable,
+  Dimensions,
 } from "react-native";
-import { Avatar, Text, useTheme } from "react-native-paper";
+import { Avatar, Text, TouchableRipple, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
   ActivityCard,
@@ -33,10 +32,7 @@ import {
 } from "src/api";
 import { StackScreenProps } from "@react-navigation/stack";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import { TabBar, TabView } from "react-native-tab-view";
-
-const todayStr = new Date().toISOString();
-const today = todayStr.substring(0, todayStr.indexOf("T"));
+import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 
 type Props =
   | BottomTabScreenProps<BottomTabParamList>
@@ -51,8 +47,7 @@ export const Profile = ({
 }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const { width: windowWidth } = useWindowDimensions();
-  const styles = makeStyles(colors, windowWidth);
+  const styles = makeStyles(colors);
 
   const { userData, setUserData } = useContext(UserContext);
   const { firstName, lastName, userId } = userData!;
@@ -65,9 +60,9 @@ export const Profile = ({
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    { key: "Timeline", title: "Timeline" },
-    { key: "Stats", title: "Stats" },
-    { key: "Teams", title: "Teams" },
+    { key: "timeline", title: "Timeline" },
+    { key: "stats", title: "Stats" },
+    { key: "teams", title: "Teams" },
   ]);
 
   const { data: gameCount, isLoading: gameCountLoading } = useGameCountQuery(
@@ -91,81 +86,83 @@ export const Profile = ({
   const { mutate: updateUserData, isSuccess: updateUserSuccess } =
     useUpdateUserMutation();
 
-  const renderScene = () => {
-    const tabViewRoute = routes[index];
-    switch (tabViewRoute.key) {
-      case "Timeline":
-        return (
-          <View style={{ marginBottom: -10, marginHorizontal: 16 }}>
-            <View
-              style={{
-                marginHorizontal: 8,
-                alignItems: "center",
-              }}
-            >
-              <DatePicker
-                currentDate={activitiesDate}
-                setCurrentDate={setActivitiesDate}
-              />
+  const renderScene = SceneMap({
+    timeline: () => (
+      <View
+        style={{
+          flex: 1,
+          marginBottom: -10,
+          marginHorizontal: 16,
+        }}
+      >
+        <View
+          style={{
+            marginHorizontal: 8,
+            alignItems: "center",
+          }}
+        >
+          <DatePicker
+            currentDate={activitiesDate}
+            setCurrentDate={setActivitiesDate}
+          />
+        </View>
+        {activitiesLoading && <ActivityCardSkeleton />}
+        {!activitiesLoading &&
+          filteredActivities?.map((activity: Activity, index: number) => (
+            <ActivityCard key={index} {...activity} />
+          ))}
+        {!activitiesLoading &&
+          (!filteredActivities || filteredActivities.length === 0) && (
+            <View style={styles.placeholder}>
+              <Text style={styles.placeholderText}>
+                {route.params?.firstName
+                  ? `${route.params.firstName} `
+                  : "You "}
+                didn't play on this date.
+              </Text>
             </View>
-            {activitiesLoading && <ActivityCardSkeleton />}
-            {!activitiesLoading &&
-              filteredActivities?.map((activity: Activity, index: number) => (
-                <ActivityCard key={index} {...activity} />
-              ))}
-            {!activitiesLoading &&
-              (!filteredActivities || filteredActivities.length === 0) && (
-                <View style={styles.placeholder}>
-                  <Text style={styles.placeholderText}>
-                    {route.params?.firstName
-                      ? `${route.params.firstName} `
-                      : "You "}
-                    didn't play on this date.
-                  </Text>
-                </View>
-              )}
+          )}
+      </View>
+    ),
+    stats: () => (
+      <View style={{ marginTop: 24, marginHorizontal: 30 }}>
+        <View style={{ flexDirection: "row", marginBottom: 16 }}>
+          <View
+            style={{
+              flex: 1,
+              borderRightWidth: 1,
+              borderColor: colors.primary,
+            }}
+          >
+            <Text style={styles.statsTitle}>RPG</Text>
+            <Text style={styles.statsValue}>31.4</Text>
           </View>
-        );
-      case "Stats":
-        return (
-          <View style={{ marginTop: 24, marginHorizontal: 30 }}>
-            <View style={{ flexDirection: "row", marginBottom: 16 }}>
-              <View
-                style={{
-                  flex: 1,
-                  borderRightWidth: 1,
-                  borderColor: colors.primary,
-                }}
-              >
-                <Text style={styles.statsTitle}>RPG</Text>
-                <Text style={styles.statsValue}>31.4</Text>
-              </View>
-              <View
-                style={{
-                  flex: 1.25,
-                  borderRightWidth: 1,
-                  borderColor: colors.primary,
-                  alignItems: "center",
-                }}
-              >
-                <View>
-                  <Text style={styles.statsTitle}>3 PTS</Text>
-                  <Text style={styles.statsValue}>28.9</Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "flex-end",
-                }}
-              >
-                <View>
-                  <Text style={styles.statsTitle}>2 PTS</Text>
-                  <Text style={styles.statsValue}>38.1</Text>
-                </View>
-              </View>
+          <View
+            style={{
+              flex: 1.25,
+              borderRightWidth: 1,
+              borderColor: colors.primary,
+              alignItems: "center",
+            }}
+          >
+            <View>
+              <Text style={styles.statsTitle}>3 PTS</Text>
+              <Text style={styles.statsValue}>28.9</Text>
             </View>
-            {/* <View style={{ flexDirection: "row" }}>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              alignItems: "flex-end",
+            }}
+          >
+            <View>
+              <Text style={styles.statsTitle}>2 PTS</Text>
+              <Text style={styles.statsValue}>38.1</Text>
+            </View>
+          </View>
+        </View>
+        {/* <View style={{ flexDirection: "row" }}>
               <View
                 style={{
                   flex: 1,
@@ -201,29 +198,23 @@ export const Profile = ({
                 </View>
               </View> 
             </View>*/}
-          </View>
-        );
-      case "Teams":
-        return (
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              marginVertical: 40,
-            }}
-          >
-            <Text
-              style={{ fontFamily: "Poppins-Regular", color: colors.tertiary }}
-            >
-              {isUserProfile ? "You are" : `${route.params?.firstName} is`} not
-              part of any team yet.
-            </Text>
-          </View>
-        );
-      default:
-        return <View />;
-    }
-  };
+      </View>
+    ),
+    teams: () => (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          marginVertical: 40,
+        }}
+      >
+        <Text style={{ fontFamily: "Poppins-Regular", color: colors.tertiary }}>
+          {isUserProfile ? "You are" : `${route.params?.firstName} is`} not part
+          of any team yet.
+        </Text>
+      </View>
+    ),
+  });
 
   const renderTabBar = (props: any) => (
     <TabBar
@@ -234,31 +225,38 @@ export const Profile = ({
         elevation: 0,
         marginHorizontal: 16,
       }}
+      contentContainerStyle={{ gap: 3 }}
       renderTabBarItem={({ route }) => {
         let isActive = route.key === props.navigationState.routes[index].key;
         return (
-          <Pressable
+          <TouchableRipple
             key={route.key}
-            style={({ pressed }) => [
-              styles.tabViewItem,
-              {
-                backgroundColor: isActive ? colors.background : "transparent",
-              },
-              pressed && { backgroundColor: colors.background },
-            ]}
+            borderless
+            style={{
+              borderRadius: 100,
+            }}
             onPress={() => {
               setIndex(routes.findIndex(({ key }) => route.key === key));
             }}
           >
-            <Text
-              style={{
-                fontFamily: "Poppins-Bold",
-                color: colors.tertiary,
-              }}
+            <View
+              style={[
+                styles.tabViewItem,
+                {
+                  backgroundColor: isActive ? colors.primary : "transparent",
+                },
+              ]}
             >
-              {route.title}
-            </Text>
-          </Pressable>
+              <Text
+                style={{
+                  fontFamily: "Poppins-Bold",
+                  color: isActive ? colors.background : colors.tertiary,
+                }}
+              >
+                {route.title}
+              </Text>
+            </View>
+          </TouchableRipple>
         );
       }}
       renderIndicator={() => <View style={{ width: 0 }} />}
@@ -312,7 +310,7 @@ export const Profile = ({
       absolutePosition={false}
       backEnabled={!isUserProfile}
     >
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <GalleryPermissionDialog
           visible={permissionDialogVisible}
           setVisible={setPermissionDialogVisible}
@@ -429,7 +427,7 @@ export const Profile = ({
         <View style={styles.divider} />
         <View
           style={{
-            height: 0.5 * windowWidth,
+            height: 0.5 * Dimensions.get("screen").width,
             width: "100%",
             alignSelf: "center",
             marginTop: 16,
@@ -474,16 +472,17 @@ export const Profile = ({
                     { label: "Punctuality", value: 0 },
                   ]
             }
-            size={0.5 * windowWidth}
+            size={0.5 * Dimensions.get("screen").width}
           />
         </View>
+
         <View style={styles.contentView}>
           <TabView
             navigationState={{ index, routes }}
             renderTabBar={renderTabBar}
             renderScene={renderScene}
             onIndexChange={setIndex}
-            initialLayout={{ width: windowWidth }}
+            initialLayout={{ width: Dimensions.get("screen").width }}
             swipeEnabled={false}
           />
         </View>
@@ -492,7 +491,7 @@ export const Profile = ({
   );
 };
 
-const makeStyles = (colors: MD3Colors, windowWidth: number) =>
+const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     headerContent: {
       alignItems: "center",
@@ -520,6 +519,7 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
     },
     contentView: {
       marginBottom: 60,
+      flexGrow: 1,
     },
     teamsView: {
       flexDirection: "row",
@@ -551,12 +551,11 @@ const makeStyles = (colors: MD3Colors, windowWidth: number) =>
       alignItems: "center",
     },
     tabViewItem: {
-      flex: 1,
       height: 35,
-      margin: 3,
       borderRadius: 100,
       justifyContent: "center",
       alignItems: "center",
+      width: (Dimensions.get("screen").width - 32 - 6) / 3,
     },
     statsTitle: {
       fontFamily: "Poppins-Regular",

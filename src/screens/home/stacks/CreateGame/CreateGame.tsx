@@ -42,7 +42,6 @@ export type GameCreationType = {
   searchDate: string;
   startTime: string;
   duration: number;
-  branchSearchText: "";
   branch?: Branch;
   court?: Court;
 };
@@ -52,7 +51,11 @@ export const CreateGame = ({ navigation, route }: Props) => {
   const styles = makeStyles(colors);
   const { width: windowWidth } = useWindowDimensions();
 
-  const { gameDetails: oldGameDetails, stage: oldStage } = route.params;
+  const {
+    gameDetails: oldGameDetails,
+    stage: oldStage,
+    isBooking,
+  } = route.params;
   const stage = oldStage ?? 0;
 
   const {
@@ -71,8 +74,7 @@ export const CreateGame = ({ navigation, route }: Props) => {
       maxNumberOfPlayers: 8,
       searchDate: new Date().toISOString(),
       startTime: "08:00",
-      duration: 1,
-      branchSearchText: "",
+      duration: 0.5,
     }
   );
 
@@ -124,6 +126,7 @@ export const CreateGame = ({ navigation, route }: Props) => {
             <DateTime
               gameDetails={gameDetails}
               setGameDetails={setGameDetails}
+              isBooking={isBooking}
             />
           )}
           {stage === Stages.Confirmation && (
@@ -141,9 +144,16 @@ export const CreateGame = ({ navigation, route }: Props) => {
                 buttonDisabled
                   ? undefined
                   : () => {
-                      if (stage === Stages.BranchSelection)
-                        setChoicePopupVisible(true);
-                      else if (stage === Stages.Confirmation) {
+                      if (stage === Stages.BranchSelection) {
+                        if (gameDetails.branch?.allowsBooking)
+                          setChoicePopupVisible(true);
+                        else
+                          navigation.push("CreateGame", {
+                            stage: stage + 2,
+                            gameDetails,
+                            isBooking: false,
+                          });
+                      } else if (stage === Stages.Confirmation) {
                         if (gameDetails.court) {
                           const startDate = new Date(gameDetails.searchDate);
                           startDate.setHours(
@@ -181,14 +191,20 @@ export const CreateGame = ({ navigation, route }: Props) => {
       <CreateGameChoicePopup
         visible={choicePopupVisible}
         setVisible={setChoicePopupVisible}
-        bookCourt={() => {}}
-        skipBooking={() => {
-          setChoicePopupVisible(false);
+        bookCourt={() =>
           navigation.push("CreateGame", {
             stage: stage + 2,
             gameDetails,
-          });
-        }}
+            isBooking: true,
+          })
+        }
+        skipBooking={() =>
+          navigation.push("CreateGame", {
+            stage: stage + 2,
+            gameDetails,
+            isBooking: false,
+          })
+        }
       />
       <GenericDialog
         visible={errorDialogVisible}

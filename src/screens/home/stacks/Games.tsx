@@ -4,13 +4,12 @@ import {
   StyleSheet,
   useWindowDimensions,
   View,
-  Pressable,
   RefreshControl,
-  TouchableOpacity,
+  Dimensions,
 } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { TabBar, TabView } from "react-native-tab-view";
+import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import {
   AppHeader,
   BookingCard,
@@ -18,7 +17,6 @@ import {
   GameTimeDropdown,
   SportSelection,
 } from "components";
-import IonIcon from "react-native-vector-icons/Ionicons";
 import {
   useBookingsQuery,
   useFollowedGamesQuery,
@@ -26,13 +24,6 @@ import {
 } from "src/api";
 import { Game } from "src/types";
 import { QueryObserverResult } from "react-query";
-
-type GameListProps = {
-  selectedSports: SportSelection;
-  type: "upcoming" | "previous";
-  isFollowedGames: boolean;
-  searchBarText: string;
-};
 
 export const DayHeader = ({ day }: { day: string }) => {
   const { colors } = useTheme();
@@ -46,16 +37,16 @@ export const DayHeader = ({ day }: { day: string }) => {
   );
 };
 
-const AllGames = (props: GameListProps) => {
+const AllGames = ({ type }: { type: "upcoming" | "previous" }) => {
   const {
     data: allGames,
     refetch,
     isFetching,
     isLoading,
-  } = useBookingsQuery({ type: props.type });
+  } = useBookingsQuery({ type });
   return (
     <GameList
-      {...props}
+      type={type}
       games={allGames}
       isFollowed={false}
       refetch={refetch}
@@ -65,19 +56,49 @@ const AllGames = (props: GameListProps) => {
   );
 };
 
-const FollowedGames = (props: GameListProps) => {
-  const {
-    data: followedGames,
-    refetch: refetchFollowedGames,
-    isFetching: followedGamesFetching,
-    isLoading: followedGamesLoading,
-  } = useFollowedGamesQuery({ type: props.type });
+const MyGames = ({ type }: { type: "upcoming" | "previous" }) => {
   const {
     data: myGames,
     refetch: refetchGames,
     isFetching: gamesFetching,
     isLoading: gamesLoading,
-  } = useGamesQuery({ type: props.type });
+  } = useGamesQuery({ type });
+
+  const games = useMemo(() => {
+    let games: Game[] = [];
+    if (myGames) games = games.concat(myGames);
+    return games.sort((a, b) =>
+      type === "upcoming"
+        ? a.startTime.getTime() - b.startTime.getTime()
+        : b.startTime.getTime() - a.startTime.getTime()
+    );
+  }, [JSON.stringify(myGames)]);
+
+  return (
+    <GameList
+      type={type}
+      games={games}
+      isFollowed={false}
+      refetch={refetchGames}
+      isFetching={gamesFetching}
+      isLoading={gamesLoading}
+    />
+  );
+};
+
+const FollowedGames = ({ type }: { type: "upcoming" | "previous" }) => {
+  const {
+    data: followedGames,
+    refetch: refetchFollowedGames,
+    isFetching: followedGamesFetching,
+    isLoading: followedGamesLoading,
+  } = useFollowedGamesQuery({ type });
+  const {
+    data: myGames,
+    refetch: refetchGames,
+    isFetching: gamesFetching,
+    isLoading: gamesLoading,
+  } = useGamesQuery({ type });
 
   const refetch = () => {
     refetchGames();
@@ -92,7 +113,7 @@ const FollowedGames = (props: GameListProps) => {
       return index === games.findIndex((otherGame) => otherGame.id === game.id);
     });
     return games.sort((a, b) =>
-      props.type === "upcoming"
+      type === "upcoming"
         ? a.startTime.getTime() - b.startTime.getTime()
         : b.startTime.getTime() - a.startTime.getTime()
     );
@@ -100,7 +121,7 @@ const FollowedGames = (props: GameListProps) => {
 
   return (
     <GameList
-      {...props}
+      type={type}
       games={games}
       isFollowed={true}
       refetch={refetch}
@@ -111,15 +132,14 @@ const FollowedGames = (props: GameListProps) => {
 };
 
 const GameList = ({
-  selectedSports,
   type,
-  searchBarText,
   games,
   isFollowed,
   refetch,
   isFetching,
   isLoading,
-}: GameListProps & {
+}: {
+  type: "upcoming" | "previous";
   games?: Game[];
   isFollowed: boolean;
   refetch: (() => Promise<QueryObserverResult<Game[], unknown>>) | (() => void);
@@ -131,23 +151,8 @@ const GameList = ({
   const gameCards: JSX.Element[] = [];
   const dayHeaders: string[] = [];
 
-  const filteredGames = games?.filter((game) => {
-    const s = searchBarText.toLowerCase().trim();
-    return (
-      selectedSports[game.type] &&
-      (game.admin.firstName.toLowerCase().includes(s) ||
-        game.admin.lastName.toLowerCase().includes(s) ||
-        `${game.admin.firstName.toLowerCase()} ${game.admin.lastName.toLowerCase()}`.includes(
-          s
-        ) ||
-        game.court.branch.location.toLowerCase().includes(s) ||
-        game.court.branch.venue.name.toLowerCase().includes(s) ||
-        game.type.toLowerCase().includes(s))
-    );
-  });
-
   if (type === "upcoming")
-    filteredGames?.forEach((game: Game, index: number) => {
+    games?.forEach((game: Game, index: number) => {
       const gameDate = new Date(
         game.startTime
           .toISOString()
@@ -186,7 +191,7 @@ const GameList = ({
       );
     });
   else
-    filteredGames?.forEach((game: Game, index: number) => {
+    games?.forEach((game: Game, index: number) => {
       const gameDate = new Date(
         game.startTime
           .toISOString()
@@ -236,7 +241,7 @@ const GameList = ({
 
   return (
     <ScrollView
-      contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 20 }}
+      contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 16 }}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
@@ -294,44 +299,18 @@ export const Games = () => {
   const [index, setIndex] = useState(0);
   const [durationIndex, setDurationIndex] = useState(0);
   const [routes] = useState([
-    { key: "GamesIFollow", title: "Games I Follow" },
-    { key: "AllGames", title: "All Games" },
+    { key: "mine", title: "My Games" },
+    { key: "followed", title: "Followed" },
+    { key: "all", title: "All Games" },
   ]);
 
-  const [selectedSports, setSelectedSports] = useState({
-    Basketball: true,
-    Football: true,
-    Tennis: true,
+  const type = durationIndex === 0 ? "upcoming" : "previous";
+
+  const renderScene = SceneMap({
+    mine: () => <MyGames type={type} />,
+    followed: () => <FollowedGames type={type} />,
+    all: () => <AllGames type={type} />,
   });
-
-  const [searchBarVisible, setSearchBarVisible] = useState(false);
-  const [searchBarText, setSearchBarText] = useState<string>("");
-
-  const renderScene = () => {
-    const route = routes[index];
-    switch (route.key) {
-      case "GamesIFollow":
-        return (
-          <FollowedGames
-            type={durationIndex === 0 ? "upcoming" : "previous"}
-            selectedSports={selectedSports}
-            isFollowedGames={true}
-            searchBarText={searchBarText}
-          />
-        );
-      case "AllGames":
-        return (
-          <AllGames
-            type={durationIndex === 0 ? "upcoming" : "previous"}
-            selectedSports={selectedSports}
-            isFollowedGames={false}
-            searchBarText={searchBarText}
-          />
-        );
-      default:
-        return null;
-    }
-  };
 
   const renderTabBar = (props: any) => (
     <TabBar
@@ -339,34 +318,40 @@ export const Games = () => {
       style={{
         backgroundColor: colors.secondary,
         borderRadius: 10,
-        marginHorizontal: 20,
+        marginHorizontal: 16,
       }}
+      contentContainerStyle={{ gap: 3 }}
       renderTabBarItem={({ route }) => {
         let isActive = route.key === props.navigationState.routes[index].key;
         return (
-          <Pressable
+          <TouchableRipple
             key={route.key}
-            style={({ pressed }) => [
-              styles.tabViewItem,
-              {
-                flex: 1,
-                backgroundColor: isActive ? colors.primary : colors.secondary,
-              },
-              pressed && { backgroundColor: "rgba(247, 126, 5, 0.1)" },
-            ]}
+            borderless
+            style={{
+              borderRadius: 10,
+            }}
             onPress={() => {
               setIndex(routes.findIndex(({ key }) => route.key === key));
             }}
           >
-            <Text
-              style={{
-                fontFamily: isActive ? "Poppins-Bold" : "Poppins-Regular",
-                color: isActive ? colors.background : colors.tertiary,
-              }}
+            <View
+              style={[
+                styles.tabViewItem,
+                {
+                  backgroundColor: isActive ? colors.primary : colors.secondary,
+                },
+              ]}
             >
-              {route.title}
-            </Text>
-          </Pressable>
+              <Text
+                style={{
+                  fontFamily: isActive ? "Poppins-Bold" : "Poppins-Regular",
+                  color: isActive ? colors.background : colors.tertiary,
+                }}
+              >
+                {route.title}
+              </Text>
+            </View>
+          </TouchableRipple>
         );
       }}
       renderIndicator={() => <View style={{ width: 0 }} />}
@@ -379,12 +364,6 @@ export const Games = () => {
       middle={
         <GameTimeDropdown index={durationIndex} setIndex={setDurationIndex} />
       }
-      // left={
-      //   <SportTypeDropdown
-      //     selectedSports={selectedSports}
-      //     setSelectedSports={setSelectedSports}
-      //   />
-      // }
       backEnabled
     >
       <View style={styles.wrapperView}>
@@ -410,9 +389,9 @@ const makeStyles = (colors: MD3Colors) =>
     },
     tabViewItem: {
       height: 40,
-      margin: 5,
       borderRadius: 10,
       justifyContent: "center",
       alignItems: "center",
+      width: (Dimensions.get("screen").width - 32 - 6) / 3,
     },
   });

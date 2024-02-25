@@ -56,6 +56,7 @@ export const RadarChart = ({
     >
       <Polygon
         stroke={colors.tertiary}
+        fill={colors.background}
         strokeWidth={0.5}
         points={`${radarData.map((r, i) => {
           const edgePoint = calculateEdgePoint(i * 60, 1);

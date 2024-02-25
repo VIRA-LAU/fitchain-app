@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 
@@ -32,8 +32,8 @@ export const HomeCard = ({
     >();
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.6}
+    <TouchableRipple
+      borderless
       style={[
         styles.wrapper,
         {
@@ -49,31 +49,33 @@ export const HomeCard = ({
         else if (type === "guide") navigation.navigate("StatisticsGames");
       }}
     >
-      <Image
-        source={
-          type === "book"
-            ? require("assets/icons/book.png")
-            : type === "play"
-            ? require("assets/icons/play.png")
-            : type === "challenges"
-            ? require("assets/icons/challenges.png")
-            : type === "guide"
-            ? require("assets/icons/guide.png")
-            : require("assets/icons/leaderboard.png")
-        }
-        style={[
-          styles.icon,
-          { marginBottom: 16 },
-          // type === "leaderboard"
-          //   ? { width: "15%", marginRight: 16 }
-          //   : { marginBottom: 16 },
-        ]}
-      />
-      <View style={{ flex: 1 }}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.body}>{body}</Text>
+      <View style={styles.wrapperContent}>
+        <Image
+          source={
+            type === "book"
+              ? require("assets/icons/book.png")
+              : type === "play"
+              ? require("assets/icons/play.png")
+              : type === "challenges"
+              ? require("assets/icons/challenges.png")
+              : type === "guide"
+              ? require("assets/icons/guide.png")
+              : require("assets/icons/leaderboard.png")
+          }
+          style={[
+            styles.icon,
+            { marginBottom: 16 },
+            // type === "leaderboard"
+            //   ? { width: "15%", marginRight: 16 }
+            //   : { marginBottom: 16 },
+          ]}
+        />
+        <View style={{ flex: 1 }}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.body}>{body}</Text>
+        </View>
       </View>
-    </TouchableOpacity>
+    </TouchableRipple>
   );
 };
 
@@ -81,9 +83,13 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapper: {
       flex: 1,
-      backgroundColor: colors.secondary,
       borderRadius: 15,
       margin: 0,
+    },
+    wrapperContent: {
+      flex: 1,
+      backgroundColor: colors.secondary,
+      borderRadius: 15,
       padding: 16,
     },
     icon: {

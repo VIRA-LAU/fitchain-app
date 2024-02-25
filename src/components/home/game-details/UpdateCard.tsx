@@ -1,4 +1,10 @@
-import { Avatar, Button, Text, useTheme } from "react-native-paper";
+import {
+  Avatar,
+  Button,
+  Text,
+  TouchableRipple,
+  useTheme,
+} from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
   View,
@@ -86,8 +92,8 @@ export const UpdateCard = ({
   if (!playerStatus) return <View />;
   else
     return (
-      <TouchableOpacity
-        activeOpacity={0.8}
+      <TouchableRipple
+        borderless
         style={styles.wrapperView}
         onPress={() => {
           navigation.push("PlayerProfile", {
@@ -101,146 +107,153 @@ export const UpdateCard = ({
           });
         }}
       >
-        <View style={styles.profilePicture}>
-          {profilePhotoUrl ? (
-            <Avatar.Image
-              size={40}
-              source={{ uri: profilePhotoUrl }}
-              style={{ backgroundColor: "transparent" }}
-            />
-          ) : (
-            <Avatar.Text
-              label={
-                friendName
-                  ? `${friendName.charAt(0)}${friendName
-                      .substring(friendName.indexOf(" ") + 1)
-                      .charAt(0)}`
-                  : name
-                  ? `${name.charAt(0)}${name
-                      .substring(name.indexOf(" ") + 1)
-                      .charAt(0)}`
-                  : ""
-              }
-              labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 16 }}
-              size={40}
-              style={{
-                backgroundColor: colors.background,
-              }}
-            />
-          )}
-        </View>
-        <View style={styles.contentView}>
-          <View style={styles.textView}>
-            <View>
-              <Text style={styles.text}>
-                <Text
-                  style={{ fontFamily: "Poppins-Bold", color: colors.tertiary }}
-                >
-                  {name}
-                </Text>
-                {type !== "invitation" && updateText(type)}
-                {type === "invitation" && " invited "}
-                {type === "invitation" && (
+        <View style={styles.wrapperContentView}>
+          <View style={styles.profilePicture}>
+            {profilePhotoUrl ? (
+              <Avatar.Image
+                size={40}
+                source={{ uri: profilePhotoUrl }}
+                style={{ backgroundColor: "transparent" }}
+              />
+            ) : (
+              <Avatar.Text
+                label={
+                  friendName
+                    ? `${friendName.charAt(0)}${friendName
+                        .substring(friendName.indexOf(" ") + 1)
+                        .charAt(0)}`
+                    : name
+                    ? `${name.charAt(0)}${name
+                        .substring(name.indexOf(" ") + 1)
+                        .charAt(0)}`
+                    : ""
+                }
+                labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 16 }}
+                size={40}
+                style={{
+                  backgroundColor: colors.background,
+                }}
+              />
+            )}
+          </View>
+          <View style={styles.contentView}>
+            <View style={styles.textView}>
+              <View>
+                <Text style={styles.text}>
                   <Text
                     style={{
                       fontFamily: "Poppins-Bold",
                       color: colors.tertiary,
                     }}
                   >
-                    {friendName}
+                    {name}
                   </Text>
-                )}
-                {type === "invitation" && " to join the game."}
-              </Text>
-              <Text style={[styles.text, { fontSize: 12 }]}>
-                {date
-                  .toLocaleDateString(undefined, {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })
-                  .slice(0, Platform.OS === "ios" ? -5 : -6)}
-              </Text>
-            </View>
-            {type !== "photo-upload" ? (
-              <IonIcon
-                name="ellipsis-horizontal"
-                color={colors.tertiary}
-                size={20}
-              />
-            ) : (
-              <Image
-                source={require("assets/images/home/uploaded-photo.png")}
-                style={{ height: 40, width: 40 }}
-                resizeMode="contain"
-              />
-            )}
-          </View>
-          {type === "join-request" &&
-            (playerStatus.isAdmin ||
-              playerStatus.hasBeenInvited === "APPROVED" ||
-              playerStatus.hasRequestedtoJoin === "APPROVED") && (
-              <View style={styles.buttonsView}>
-                <View style={{ flex: 1 }}>
-                  <Button
-                    icon={"account-check-outline"}
-                    mode="contained"
-                    loading={editRequestLoading}
-                    onPress={
-                      !editRequestLoading
-                        ? () => {
-                            if (requestId)
-                              editJoinRequest({
-                                requestId,
-                                status: "APPROVED",
-                                gameId,
-                              });
-                          }
-                        : undefined
-                    }
-                  >
-                    Accept
-                  </Button>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Button
-                    icon={{
-                      source: "account-remove-outline",
-                      direction: "rtl",
-                    }}
-                    textColor={colors.tertiary}
-                    loading={editRequestLoading}
-                    onPress={
-                      !editRequestLoading
-                        ? () => {
-                            if (requestId)
-                              editJoinRequest({
-                                requestId,
-                                status: "REJECTED",
-                                gameId,
-                              });
-                          }
-                        : undefined
-                    }
-                  >
-                    Decline
-                  </Button>
-                </View>
+                  {type !== "invitation" && updateText(type)}
+                  {type === "invitation" && " invited "}
+                  {type === "invitation" && (
+                    <Text
+                      style={{
+                        fontFamily: "Poppins-Bold",
+                        color: colors.tertiary,
+                      }}
+                    >
+                      {friendName}
+                    </Text>
+                  )}
+                  {type === "invitation" && " to join the game."}
+                </Text>
+                <Text style={[styles.text, { fontSize: 12 }]}>
+                  {date
+                    .toLocaleDateString(undefined, {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                    .slice(0, Platform.OS === "ios" ? -5 : -6)}
+                </Text>
               </View>
-            )}
+              {type !== "photo-upload" ? (
+                <IonIcon
+                  name="ellipsis-horizontal"
+                  color={colors.tertiary}
+                  size={20}
+                />
+              ) : (
+                <Image
+                  source={require("assets/images/home/uploaded-photo.png")}
+                  style={{ height: 40, width: 40 }}
+                  resizeMode="contain"
+                />
+              )}
+            </View>
+            {type === "join-request" &&
+              (playerStatus.isAdmin ||
+                playerStatus.hasBeenInvited === "APPROVED" ||
+                playerStatus.hasRequestedtoJoin === "APPROVED") && (
+                <View style={styles.buttonsView}>
+                  <View style={{ flex: 1 }}>
+                    <Button
+                      icon={"account-check-outline"}
+                      mode="contained"
+                      loading={editRequestLoading}
+                      onPress={
+                        !editRequestLoading
+                          ? () => {
+                              if (requestId)
+                                editJoinRequest({
+                                  requestId,
+                                  status: "APPROVED",
+                                  gameId,
+                                });
+                            }
+                          : undefined
+                      }
+                    >
+                      Accept
+                    </Button>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Button
+                      icon={{
+                        source: "account-remove-outline",
+                        direction: "rtl",
+                      }}
+                      textColor={colors.tertiary}
+                      loading={editRequestLoading}
+                      onPress={
+                        !editRequestLoading
+                          ? () => {
+                              if (requestId)
+                                editJoinRequest({
+                                  requestId,
+                                  status: "REJECTED",
+                                  gameId,
+                                });
+                            }
+                          : undefined
+                      }
+                    >
+                      Decline
+                    </Button>
+                  </View>
+                </View>
+              )}
+          </View>
         </View>
-      </TouchableOpacity>
+      </TouchableRipple>
     );
 };
 
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapperView: {
-      flexDirection: "row",
-      backgroundColor: colors.secondary,
       borderRadius: 10,
       marginBottom: 10,
+    },
+    wrapperContentView: {
+      flexDirection: "row",
+      backgroundColor: colors.secondary,
     },
     profilePicture: {
       margin: 15,

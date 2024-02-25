@@ -41,6 +41,7 @@ export const BranchSelection = ({
       name: "Other",
       id: -1,
     },
+    allowsBooking: false,
     courts: [
       {
         id: -1,

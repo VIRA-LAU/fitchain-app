@@ -2,7 +2,7 @@ import client from "../../client";
 import { useMutation, useQueryClient } from "react-query";
 
 type Request = {
-  gameId: number;
+  gameId?: number;
 };
 
 type Response = {
@@ -12,13 +12,14 @@ type Response = {
 };
 
 const followGame = async (data: Request) => {
-  return await client
-    .post(`/games/follow/${data.gameId}`)
-    .then((res) => res?.data)
-    .catch((e) => {
-      console.error("follow-game-mutation", e);
-      throw e;
-    });
+  if (data.gameId)
+    return await client
+      .post(`/games/follow/${data.gameId}`)
+      .then((res) => res?.data)
+      .catch((e) => {
+        console.error("follow-game-mutation", e);
+        throw e;
+      });
 };
 
 export const useFollowGameMutation = () => {
