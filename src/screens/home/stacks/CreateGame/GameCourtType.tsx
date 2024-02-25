@@ -1,12 +1,9 @@
-import { StackNavigationProp } from "@react-navigation/stack";
-import { Dispatch, SetStateAction, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Button, Text, TouchableRipple, useTheme } from "react-native-paper";
+import { Dispatch, SetStateAction } from "react";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { HomeStackParamList } from "src/navigation";
 import { GameType } from "src/enum-types";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import { useNavigation } from "@react-navigation/native";
 import { GameCreationType } from "./CreateGame";
 
 const gameTypes = [GameType.Basketball, GameType.Football, GameType.Tennis];
@@ -35,7 +32,10 @@ export const GameCourtType = ({
   } = gameDetails;
 
   return (
-    <View style={{ flexGrow: 1, gap: 16 }}>
+    <ScrollView
+      style={{ flex: 1, marginHorizontal: -16 }}
+      contentContainerStyle={{ flexGrow: 1, gap: 16, paddingHorizontal: 16 }}
+    >
       <Text style={styles.title}>Type of Sport</Text>
       <View style={styles.gameTypes}>
         {gameTypes.map((gameType, index) => (
@@ -261,7 +261,7 @@ export const GameCourtType = ({
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

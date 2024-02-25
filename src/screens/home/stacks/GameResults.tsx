@@ -229,7 +229,7 @@ export const GameResults = ({ navigation, route }: Props) => {
   return (
     <Fragment>
       <AppHeader title="Game Results" absolutePosition={false} backEnabled>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{ paddingBottom: 16 }}>
           <ResultCard game={gameResults} loading={resultsLoading} detailed />
           <View style={styles.divider} />
           <Text
@@ -333,7 +333,7 @@ export const GameResults = ({ navigation, route }: Props) => {
               >
                 Player Statistics
               </Text>
-              <View style={{ flexGrow: 1, minHeight: 350 }}>
+              <View style={{ flexGrow: 1, minHeight: 700 }}>
                 <Tabs
                   numberOfGames={numberOfGames}
                   playerStatistics={gameResults.playerStatistics}

@@ -109,7 +109,7 @@ export const CreateGame = ({ navigation, route }: Props) => {
             ]}
           />
         </View>
-        <ScrollView contentContainerStyle={styles.wrapper}>
+        <View style={styles.wrapper}>
           {stage === Stages.GameCourtType && (
             <GameCourtType
               gameDetails={gameDetails}
@@ -195,7 +195,7 @@ export const CreateGame = ({ navigation, route }: Props) => {
                 : "Next"}
             </Button>
           </View>
-        </ScrollView>
+        </View>
       </AppHeader>
       <CreateGameChoiceModal
         visible={choiceModalVisible}
@@ -250,5 +250,6 @@ const makeStyles = (colors: MD3Colors) =>
     next: {
       height: 44,
       justifyContent: "center",
+      marginTop: 16,
     },
   });

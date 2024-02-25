@@ -50,6 +50,12 @@ export const VideoPlayerModal = ({
             shouldPlay: true,
             resizeMode: ResizeMode.COVER,
           }}
+          textStyle={{ padding: 16 }}
+          slider={{
+            thumbTintColor: colors.primary,
+            minimumTrackTintColor: colors.primary,
+          }}
+          fullscreen={{ visible: false }}
           style={{
             width: windowWidth - 32,
             height: (windowWidth * 9) / 16,

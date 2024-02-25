@@ -106,7 +106,10 @@ export const BranchSelection = ({
           <IonIcon name="filter-sharp" size={18} color={colors.onPrimary} />
         </TouchableOpacity>
       </View>
-      <ScrollView contentContainerStyle={{ gap: 16 }}>
+      <ScrollView
+        style={{ flex: 1, marginHorizontal: -16 }}
+        contentContainerStyle={{ gap: 16, paddingHorizontal: 16 }}
+      >
         {isLoading && <BranchCardSkeleton type="horizontal" />}
         {!isLoading &&
           filteredBranches?.map((branch: Branch, index: number) => (

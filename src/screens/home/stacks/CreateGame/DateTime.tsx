@@ -94,7 +94,10 @@ export const DateTime = ({
   ]);
 
   return (
-    <View style={{ marginBottom: 16 }}>
+    <ScrollView
+      style={{ flex: 1, marginHorizontal: -16, marginTop: -16 }}
+      contentContainerStyle={{ flexGrow: 1, gap: 16, paddingHorizontal: 16 }}
+    >
       <View
         style={{
           backgroundColor: colors.secondary,
@@ -306,7 +309,7 @@ export const DateTime = ({
           </View>
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
