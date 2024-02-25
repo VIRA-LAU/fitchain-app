@@ -169,16 +169,21 @@ export const CreateGame = ({ navigation, route }: Props) => {
                           );
 
                           createGame({
-                            courtId: gameDetails.court.id,
+                            courtId:
+                              gameDetails.court.id !== -1
+                                ? gameDetails.court.id
+                                : undefined,
                             startTime: startDate.toISOString(),
                             endTime: endDate.toISOString(),
                             type: gameDetails.gameType,
+                            isBooked: isBooking ?? false,
                           });
                         }
                       } else
                         navigation.push("CreateGame", {
                           stage: stage + 1,
                           gameDetails,
+                          isBooking,
                         });
                     }
               }

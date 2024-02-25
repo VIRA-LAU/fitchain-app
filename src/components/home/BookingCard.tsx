@@ -98,21 +98,26 @@ export const BookingCard = ({
       </View>
       <View style={styles.content}>
         <Text style={[styles.greyText, { fontSize: 14 }]}>
-          At <Text style={styles.text}>{booking.court.branch.venue.name}</Text>{" "}
+          At{" "}
+          <Text style={styles.text}>
+            {booking.court?.branch?.venue.name ?? "Unaffiliated Court"}
+          </Text>{" "}
           By{" "}
           <Text style={styles.text}>
             {booking?.admin?.firstName + " " + booking?.admin?.lastName}
           </Text>
         </Text>
-        <View style={styles.textRow}>
-          <IonIcon
-            name={"location-outline"}
-            size={14}
-            color={colors.tertiary}
-            style={{ marginRight: 5 }}
-          />
-          <Text style={styles.greyText}>{booking.court.branch.location}</Text>
-        </View>
+        {booking.court?.branch?.location && (
+          <View style={styles.textRow}>
+            <IonIcon
+              name={"location-outline"}
+              size={14}
+              color={colors.tertiary}
+              style={{ marginRight: 5 }}
+            />
+            <Text style={styles.greyText}>{booking.court.branch.location}</Text>
+          </View>
+        )}
         <View style={styles.textRow}>
           <FeatherIcon
             name={"calendar"}

@@ -4,10 +4,11 @@ import { GameType } from "src/enum-types";
 import { AxiosError } from "axios";
 
 type Request = {
-  courtId: number;
+  courtId?: number;
   type: GameType;
   startTime: string;
   endTime: string;
+  isBooked: boolean;
 };
 
 const createGame = async (data: Request) => {

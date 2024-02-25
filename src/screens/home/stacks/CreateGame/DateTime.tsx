@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
+  Dimensions,
   ScrollView,
   StyleSheet,
   View,
@@ -9,6 +10,8 @@ import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { GameCreationType } from "./CreateGame";
 import CalendarPicker from "react-native-calendar-picker";
+import { Slider } from "@miblanchard/react-native-slider";
+import { parseTimeFromMinutes } from "src/components";
 
 export const times = [
   "08:00",
@@ -58,6 +61,9 @@ const filteredTimes = times.filter((time) => {
   }
 });
 
+const trackMarks: number[] = [];
+for (var i = 0; i <= 1440; i += 240) trackMarks.push(i);
+
 export const DateTime = ({
   gameDetails,
   setGameDetails,
@@ -69,7 +75,6 @@ export const DateTime = ({
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const { width: windowWidth } = useWindowDimensions();
 
   const {
     startTime: selectedStartTime,
@@ -79,45 +84,7 @@ export const DateTime = ({
 
   const searchDate = new Date(searchDateStr);
 
-  const searchStartTime = new Date(searchDate);
-  searchStartTime.setHours(
-    parseInt(selectedStartTime.substring(0, selectedStartTime.indexOf(":"))),
-    parseInt(selectedStartTime.substring(selectedStartTime.indexOf(":") + 1)),
-    0,
-    0
-  );
-
-  var endTimeMins =
-    parseInt(selectedStartTime.substring(selectedStartTime.indexOf(":") + 1)) +
-    selectedDuration * 60;
-  var endTimeHours = Math.floor(endTimeMins / 60);
-  endTimeMins = endTimeMins % 60;
-
-  const searchEndTime = new Date(searchDate);
-  searchEndTime.setHours(
-    parseInt(selectedStartTime.substring(0, selectedStartTime.indexOf(":"))) +
-      endTimeHours,
-    endTimeMins,
-    0,
-    0
-  );
-
-  const timeSlotStartTime = new Date("2000-01-01");
-  timeSlotStartTime.setHours(
-    parseInt(selectedStartTime.substring(0, selectedStartTime.indexOf(":"))),
-    parseInt(selectedStartTime.substring(selectedStartTime.indexOf(":") + 1)),
-    0,
-    0
-  );
-
-  const timeSlotEndTime = new Date("2000-01-01");
-  timeSlotEndTime.setHours(
-    parseInt(selectedStartTime.substring(0, selectedStartTime.indexOf(":"))) +
-      endTimeHours,
-    endTimeMins,
-    0,
-    0
-  );
+  const [tempTime, setTempTime] = useState<number[]>([720, 840]);
 
   return (
     <View style={{ marginBottom: 16 }}>
@@ -131,7 +98,7 @@ export const DateTime = ({
         }}
       >
         <CalendarPicker
-          width={windowWidth - 64}
+          width={Dimensions.get("screen").width - 64}
           textStyle={{
             color: colors.tertiary,
             fontFamily: "Poppins-Medium",
@@ -254,6 +221,73 @@ export const DateTime = ({
           </ScrollView>
         </View>
       )}
+
+      {!isBooking && (
+        <View>
+          <Text style={[styles.title, { marginTop: 24, marginBottom: 16 }]}>
+            Duration
+          </Text>
+          <View style={{ position: "relative", marginTop: 32 }}>
+            <Slider
+              containerStyle={styles.absoluteSlider}
+              disabled
+              renderThumbComponent={() => <View></View>}
+            />
+
+            <Slider
+              minimumValue={0}
+              maximumValue={1440}
+              step={30}
+              value={tempTime}
+              trackMarks={trackMarks}
+              onValueChange={setTempTime}
+              thumbTintColor={colors.primary}
+              minimumTrackTintColor={colors.primary}
+              maximumTrackTintColor="transparent"
+              renderTrackMarkComponent={(index) => {
+                return (
+                  <View
+                    style={{ marginTop: 50, transform: [{ translateX: -10 }] }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: "Poppins-Regular",
+                        color: colors.tertiary,
+                      }}
+                    >
+                      {parseTimeFromMinutes(trackMarks[index], false)}
+                    </Text>
+                  </View>
+                );
+              }}
+              renderAboveThumbComponent={(value, index) => (
+                <View
+                  style={{
+                    transform: [
+                      { translateX: -24 },
+                      {
+                        translateY:
+                          value === 1 && tempTime[1] - tempTime[0] < 300
+                            ? -20
+                            : 0,
+                      },
+                    ],
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontFamily: "Poppins-Regular",
+                      color: colors.tertiary,
+                    }}
+                  >
+                    {parseTimeFromMinutes(index, true)}
+                  </Text>
+                </View>
+              )}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -273,5 +307,11 @@ const makeStyles = (colors: MD3Colors) =>
     placeholder: {
       height: 50,
       justifyContent: "center",
+    },
+    absoluteSlider: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
     },
   });

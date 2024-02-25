@@ -669,34 +669,38 @@ export const GameDetails = ({ navigation, route }: Props) => {
               resizeMode="contain"
               source={require("assets/images/home/basketball-court.png")}
             /> */}
-            <View style={{ marginHorizontal: 16, marginTop: 16 }}>
-              {loading ? (
-                <BranchLocationSkeleton />
-              ) : (
-                <BranchLocation type="court" court={game?.court} pressable />
-              )}
-            </View>
-            <Button
-              style={{ marginTop: 10, alignSelf: "center" }}
-              icon={"arrow-right-top"}
-              onPress={() => {
-                const scheme = Platform.select({
-                  ios: "maps://0,0?q=",
-                  android: "geo:0,0?q=",
-                });
-                const latLng = `${game?.court.branch?.latitude},${game?.court.branch?.longitude}`;
-                const label = game?.court.branch?.venue.name;
+            {game?.court && (
+              <View style={{ marginHorizontal: 16, marginTop: 16 }}>
+                {loading ? (
+                  <BranchLocationSkeleton />
+                ) : (
+                  <BranchLocation type="court" court={game?.court} pressable />
+                )}
+              </View>
+            )}
+            {game?.court && (
+              <Button
+                style={{ marginTop: 10, alignSelf: "center" }}
+                icon={"arrow-right-top"}
+                onPress={() => {
+                  const scheme = Platform.select({
+                    ios: "maps://0,0?q=",
+                    android: "geo:0,0?q=",
+                  });
+                  const latLng = `${game.court?.branch?.latitude},${game.court?.branch?.longitude}`;
+                  const label = game.court?.branch?.venue.name;
 
-                Linking.openURL(
-                  Platform.select({
-                    ios: `${scheme}${label}@${latLng}`,
-                    android: `${scheme}${latLng}(${label})`,
-                  })!
-                );
-              }}
-            >
-              Get Directions
-            </Button>
+                  Linking.openURL(
+                    Platform.select({
+                      ios: `${scheme}${label}@${latLng}`,
+                      android: `${scheme}${latLng}(${label})`,
+                    })!
+                  );
+                }}
+              >
+                Get Directions
+              </Button>
+            )}
             <View style={styles.divider} />
             <Text
               variant="labelLarge"

@@ -46,7 +46,7 @@ export interface Game {
   startTime: Date;
   endTime: Date;
   type: GameType;
-  court: Court;
+  court?: Court;
   admin: User;
   createdAt: Date;
   homePoints: number;
