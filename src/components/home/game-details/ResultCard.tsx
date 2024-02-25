@@ -1,28 +1,20 @@
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useGetPlayerTeamQuery, useUpdateGameMutation } from "src/api";
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useContext, useEffect, useState } from "react";
 import { Game } from "src/types";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { UserContext } from "src/utils";
 import { Skeleton } from "../Skeleton";
-import { Highlights } from "./Highlights";
-import { TopPlayerCircle } from "./PlayerCircle";
 
 export const ResultCard = ({
   game,
-  setVideoFocusVisible,
   loading,
+  detailed = false,
 }: {
   game?: Game;
-  setVideoFocusVisible: Dispatch<SetStateAction<string | null>>;
   loading: boolean;
+  detailed?: boolean;
 }) => {
   const { userData } = useContext(UserContext);
   const { colors } = useTheme();
@@ -129,7 +121,7 @@ export const ResultCard = ({
                   fontSize: 70,
                 }}
               >
-                {game.updatedHomePoints.toString()}
+                {game.updatedHomePoints?.toString()}
               </Text>
             )}
             <Text
@@ -145,9 +137,11 @@ export const ResultCard = ({
                 {playersTeam?.team === "HOME" ? "Your Team" : "Opponent"}
               </Text>
             )}
-            <Text style={[styles.teamLabel, { marginTop: 5 }]}>
-              Possession: {game.homePossession}
-            </Text>
+            {detailed && (
+              <Text style={[styles.teamLabel, { marginTop: 5 }]}>
+                Possession: {game.homePossession}
+              </Text>
+            )}
           </View>
           <Text
             variant="labelLarge"
@@ -192,9 +186,11 @@ export const ResultCard = ({
                 {playersTeam?.team === "AWAY" ? "Your Team" : "Opponent"}
               </Text>
             )}
-            <Text style={[styles.teamLabel, { marginTop: 5 }]}>
-              Possession: {game.awayPossession}
-            </Text>
+            {detailed && (
+              <Text style={[styles.teamLabel, { marginTop: 5 }]}>
+                Possession: {game.awayPossession}
+              </Text>
+            )}
           </View>
         </View>
         {game?.admin.id === userData?.userId &&
@@ -232,30 +228,6 @@ export const ResultCard = ({
             </View>
           ))}
       </View>
-      <View style={styles.divider} />
-      <Text
-        variant="labelLarge"
-        style={{ color: colors.tertiary, marginVertical: 20, marginLeft: 20 }}
-      >
-        Top Players
-      </Text>
-      <ScrollView
-        style={{ flexGrow: 1, marginHorizontal: 10 }}
-        showsHorizontalScrollIndicator={false}
-        horizontal
-      >
-        {["MVP", "Top Scorer", "Team Player", "3-Points"].map(
-          (achievement, index) => (
-            <TopPlayerCircle
-              key={index}
-              achievement={achievement}
-              isAdmin={game?.admin.id === userData?.userId}
-            />
-          )
-        )}
-      </ScrollView>
-      <View style={styles.divider} />
-      <Highlights game={game} setVideoFocusVisible={setVideoFocusVisible} />
     </View>
   );
 };
@@ -278,10 +250,5 @@ const makeStyles = (colors: MD3Colors) =>
       padding: 10,
       marginVertical: 10,
       backgroundColor: colors.secondary,
-    },
-    divider: {
-      borderColor: colors.secondary,
-      borderBottomWidth: 1,
-      marginTop: 10,
     },
   });

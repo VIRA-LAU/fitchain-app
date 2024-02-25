@@ -3,24 +3,30 @@ import { useMutation, useQueryClient } from "react-query";
 import { UserContext } from "../../../utils/UserContext";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { Game } from "src/types";
+import { GameStatus } from "src/enum-types";
 
 type Request = {
+  courtId?: number;
+  date?: Date;
+  status?: GameStatus;
   updatedHomePoints?: number;
   updatedAwayPoints?: number;
+  recordingMode?: "start" | "stop";
 };
 
-const updateGame = (id: number) => async (data: Request) => {
-  return await client
-    .patch(`/games/${id}`, data)
-    .then((res) => res?.data)
-    .catch((e) => {
-      console.error("update-game-mutation", e);
-      throw e;
-    });
+const updateGame = (id?: number) => async (data: Request) => {
+  if (id)
+    return await client
+      .patch(`/games/${id}`, data)
+      .then((res) => res?.data)
+      .catch((e) => {
+        console.error("update-game-mutation", e);
+        throw e;
+      });
 };
 
 export const useUpdateGameMutation = (
-  id: number,
+  id?: number,
   setIsChangingScore?: Dispatch<SetStateAction<boolean>>
 ) => {
   const { userData } = useContext(UserContext);
@@ -29,6 +35,9 @@ export const useUpdateGameMutation = (
     mutationFn: updateGame(id),
     onSuccess: () => {
       queryClient.refetchQueries(["game", id]);
+      queryClient.refetchQueries(["games"]);
+      queryClient.refetchQueries(["bookings"]);
+      queryClient.refetchQueries(["followed-games"]);
       queryClient.refetchQueries(["activities", userData?.userId]);
       if (setIsChangingScore) setIsChangingScore(false);
     },

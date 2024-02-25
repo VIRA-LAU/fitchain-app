@@ -1,20 +1,20 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
+import { View, StyleSheet, ScrollView, Dimensions } from "react-native";
 import {
-  View,
-  StyleSheet,
-  useWindowDimensions,
-  Pressable,
-  ScrollView,
-} from "react-native";
-import { Button, Switch, Text, useTheme } from "react-native-paper";
+  Button,
+  Switch,
+  Text,
+  TouchableRipple,
+  useTheme,
+} from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { TabBar, TabView } from "react-native-tab-view";
 import { useStartStopRecording } from "src/api";
 import { Game } from "src/types";
 import DropDownPicker from "react-native-dropdown-picker";
-import { PopupContainer } from "./PopupContainer";
+import { ModalContainer } from "./ModalContainer";
 
-export const RecordGamePopup = ({
+export const RecordGameModal = ({
   game,
   visible,
   setVisible,
@@ -24,7 +24,6 @@ export const RecordGamePopup = ({
   setVisible: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { colors } = useTheme();
-  const { width: windowWidth } = useWindowDimensions();
   const styles = makeStyles(colors);
 
   const [index, setIndex] = useState(0);
@@ -120,61 +119,63 @@ export const RecordGamePopup = ({
       style={{
         backgroundColor: colors.secondary,
         borderRadius: 10,
-        marginHorizontal: 20,
-        marginTop: 10,
+        elevation: 0,
       }}
+      contentContainerStyle={{ gap: 6 }}
       renderTabBarItem={({ route }) => {
         let isActive = route.key === props.navigationState.routes[index].key;
         return (
-          <Pressable
+          <TouchableRipple
             key={route.key}
-            style={({ pressed }) => [
-              styles.tabViewItem,
-              {
-                // 50% of (75% of screen width - margin (2x20) - margin (2x5) - ?)
-                width: 0.5 * (windowWidth * 0.75 - 40 - 20),
-                backgroundColor: isActive ? colors.primary : colors.secondary,
-              },
-              pressed && { backgroundColor: colors.background },
-            ]}
+            borderless
+            style={{ borderRadius: 10 }}
             onPress={() => {
               setIndex(routes.findIndex(({ key }) => route.key === key));
             }}
           >
-            <Text
-              style={{
-                fontFamily: "Poppins-Regular",
-                color: isActive ? "white" : colors.tertiary,
-              }}
+            <View
+              style={[
+                styles.tabViewItem,
+                {
+                  // 50% of (75% of screen width - margin (2x20) - margin (2x5) - ?)
+                  width: 0.5 * (Dimensions.get("screen").width - 100 - 32 - 6),
+                  backgroundColor: isActive ? colors.primary : colors.secondary,
+                },
+              ]}
             >
-              {route.title}
-            </Text>
-          </Pressable>
+              <Text
+                style={{
+                  fontFamily: "Poppins-Regular",
+                  color: isActive ? "white" : colors.tertiary,
+                }}
+              >
+                {route.title}
+              </Text>
+            </View>
+          </TouchableRipple>
         );
       }}
       renderIndicator={() => <View style={{ width: 0 }} />}
     />
   );
   return (
-    <PopupContainer title="" visible={visible} setVisible={setVisible}>
+    <ModalContainer title="" visible={visible} setVisible={setVisible}>
       <ScrollView>
         <Text style={styles.promptText}>
           Which camera would you like to record from?
         </Text>
-        <TabView
-          navigationState={{ index, routes }}
-          renderTabBar={renderTabBar}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          swipeEnabled={false}
-        />
+        <View style={{ height: 180 }}>
+          <TabView
+            navigationState={{ index, routes }}
+            renderTabBar={renderTabBar}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            swipeEnabled={false}
+          />
+        </View>
         {!game?.isRecording ? (
           <Button
             mode="contained"
-            style={{
-              marginBottom: 10,
-              marginHorizontal: 20,
-            }}
             loading={recordLoading}
             onPress={
               !recordLoading
@@ -189,10 +190,6 @@ export const RecordGamePopup = ({
         ) : (
           <Button
             mode="contained"
-            style={{
-              marginBottom: 10,
-              marginHorizontal: 20,
-            }}
             loading={recordLoading}
             onPress={
               !recordLoading
@@ -207,14 +204,14 @@ export const RecordGamePopup = ({
         )}
         <Button
           style={{
-            marginHorizontal: 20,
+            marginTop: 8,
           }}
           onPress={() => setVisible(false)}
         >
           Cancel
         </Button>
       </ScrollView>
-    </PopupContainer>
+    </ModalContainer>
   );
 };
 
@@ -230,7 +227,6 @@ const makeStyles = (colors: MD3Colors) =>
     },
     tabViewItem: {
       height: 40,
-      margin: 5,
       borderRadius: 10,
       justifyContent: "center",
       alignItems: "center",

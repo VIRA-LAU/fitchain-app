@@ -9,6 +9,15 @@ export enum CourtType {
   HalfCourt = "HalfCourt",
 }
 
+export enum GameStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  ACTIVE = "ACTIVE",
+  CANCELLED = "CANCELLED",
+  FINISHED = "FINISHED",
+}
+
 export enum StatisticsGameStatus {
   PENDING = "PENDING",
   INPROGRESS = "INPROGRESS",

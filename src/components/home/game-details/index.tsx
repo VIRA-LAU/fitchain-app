@@ -1,6 +1,5 @@
 export * from "./AssignPlayer";
 export * from "./BranchLocation";
-export * from "./Highlights";
 export * from "./PlayerCard";
 export * from "./PlayerCircle";
 export * from "./RateCriteria";

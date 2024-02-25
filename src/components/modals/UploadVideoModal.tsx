@@ -11,10 +11,10 @@ import { useUploadGameVideoMutation } from "src/api";
 import { Game } from "src/types";
 import { ResizeMode, Video } from "expo-av";
 import { selectVideo } from "src/utils";
-import { GalleryPermissionDialog } from "../../modals";
-import { PopupContainer } from "./PopupContainer";
+import { GalleryPermissionDialog } from "../modals/Dialogs";
+import { ModalContainer } from "./ModalContainer";
 
-export const UploadVideoPopup = ({
+export const UploadVideoModal = ({
   game,
   visible,
   setVisible,
@@ -39,8 +39,8 @@ export const UploadVideoPopup = ({
 
   return (
     <Fragment>
-      <PopupContainer title="" visible={visible} setVisible={setVisible}>
-        <View style={{ paddingBottom: 10, paddingHorizontal: 20 }}>
+      <ModalContainer title="" visible={visible} setVisible={setVisible}>
+        <View style={{}}>
           <Button
             mode="contained"
             onPress={() => {
@@ -91,7 +91,7 @@ export const UploadVideoPopup = ({
             </Button>
           )}
         </View>
-      </PopupContainer>
+      </ModalContainer>
       <GalleryPermissionDialog
         visible={permissionDialogVisible}
         setVisible={setPermissionDialogVisible}

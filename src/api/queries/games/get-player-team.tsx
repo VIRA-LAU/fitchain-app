@@ -4,7 +4,7 @@ import client from "../../client";
 type Response = {
   team: "HOME" | "AWAY" | "none";
 };
-const getPlayerTeamQuery = (gameId: number) => async () => {
+const getPlayerTeamQuery = (gameId?: number) => async () => {
   if (gameId)
     return await client
       .get(`/games/getTeam/${gameId}`)
@@ -15,6 +15,9 @@ const getPlayerTeamQuery = (gameId: number) => async () => {
       });
 };
 
-export const useGetPlayerTeamQuery = (id: number) => {
-  return useQuery<Response>(["player-team", id], getPlayerTeamQuery(id));
+export const useGetPlayerTeamQuery = (gameId?: number) => {
+  return useQuery<Response>(
+    ["player-team", gameId],
+    getPlayerTeamQuery(gameId)
+  );
 };

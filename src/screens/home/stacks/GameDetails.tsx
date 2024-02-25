@@ -20,22 +20,19 @@ import {
   parseTimeFromMinutes,
   Team,
   AssignPlayer,
-  JoinGamePopup,
-  CancelJoinGamePopup,
-  RespondToInvitationPopup,
-  RecordGamePopup,
-  UploadVideoPopup,
+  JoinGameModal,
+  CancelJoinGameModal,
+  RespondToInvitationModal,
+  RecordGameModal,
+  UploadVideoModal,
 } from "src/components";
 import {
   View,
   StyleSheet,
-  useWindowDimensions,
-  Pressable,
   TouchableOpacity,
   Platform,
   ScrollView,
   Linking,
-  Image,
   Dimensions,
 } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -56,32 +53,33 @@ import {
   usePlayerStatusQuery,
   useRespondToInviteMutation,
   useUnfollowGameMutation,
+  useUpdateGameMutation,
   useUpdatesQuery,
 } from "src/api";
 import { UserContext } from "src/utils";
-import { ResizeMode } from "expo-av";
-import VideoPlayer from "expo-video-player";
 import { RefreshControl } from "react-native";
 import { PlayerStatistics } from "src/types";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import { GameStatus } from "src/enum-types";
 
 type Props = StackScreenProps<HomeStackParamList, "GameDetails">;
 
 export const GameDetails = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
-  const windowWidth = useWindowDimensions().width;
+  const windowWidth = Dimensions.get("screen").width;
 
   const { userData } = useContext(UserContext);
 
-  const [joinGamePopupVisible, setJoinGamePopupVisible] = useState(false);
-  const [cancelJoinGamePopupVisible, setCancelJoinGamePopupVisible] =
+  const [joinGameModalVisible, setJoinGameModalVisible] = useState(false);
+  const [cancelJoinGameModalVisible, setCancelJoinGameModalVisible] =
     useState(false);
-  const [respondToInvitationPopupVisible, setRespondToInvitationPopupVisible] =
+  const [respondToInvitationModalVisible, setRespondToInvitationModalVisible] =
     useState(false);
-  const [recordingPopupVisible, setRecordingPopupVisible] =
-    useState<boolean>(false);
-  const [uploadPopupVisible, setUploadPopupVisible] = useState<boolean>(false);
   const [recordingModalVisible, setRecordingModalVisible] =
+    useState<boolean>(false);
+  const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
+  const [recordVideoModalVisible, setRecordVideoModalVisible] =
     useState<boolean>(false);
 
   const [assignPlayerVisible, setAssignPlayerVisible] =
@@ -92,9 +90,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
     { key: "Home", title: "Home" },
     { key: "Away", title: "Away" },
   ]);
-  const [videoFocusVisible, setVideoFocusVisible] = useState<string | null>(
-    null
-  );
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const { id } = route.params;
@@ -126,7 +121,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
   } = useUpdatesQuery(game?.id);
 
   const isPrevious = game
-    ? new Date(game?.endTime) < new Date()
+    ? new Date(game?.endTime) < new Date() ||
+      ["CANCELLED", "FINISHED"].includes(game.status)
       ? true
       : false
     : false;
@@ -147,6 +143,8 @@ export const GameDetails = ({ navigation, route }: Props) => {
     useFollowGameMutation();
   const { mutate: unfollowGame, isLoading: unfollowLoading } =
     useUnfollowGameMutation();
+  const { mutate: updateGame, isLoading: updateLoading } =
+    useUpdateGameMutation(game?.id);
 
   const dateHeader = useMemo(() => {
     if (game?.startTime) {
@@ -349,53 +347,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
 
   return (
     <Fragment>
-      {joinGamePopupVisible && (
-        <JoinGamePopup
-          visible={joinGamePopupVisible}
-          setVisible={setJoinGamePopupVisible}
-          followGame={followGame}
-          joinGame={joinGame}
-          followedGames={followedGames}
-          game={game}
-        />
-      )}
-      {cancelJoinGamePopupVisible && (
-        <CancelJoinGamePopup
-          visible={cancelJoinGamePopupVisible}
-          setVisible={setCancelJoinGamePopupVisible}
-          cancelRequest={cancelRequest}
-          respondToInvite={respondToInvite}
-          unfollowGame={unfollowGame}
-          followedGames={followedGames}
-          game={game}
-          playerStatus={playerStatus}
-        />
-      )}
-      {respondToInvitationPopupVisible && (
-        <RespondToInvitationPopup
-          visible={respondToInvitationPopupVisible}
-          setVisible={setRespondToInvitationPopupVisible}
-          followGame={followGame}
-          respondToInvite={respondToInvite}
-          playerStatus={playerStatus}
-          followedGames={followedGames}
-          game={game}
-        />
-      )}
-      {recordingPopupVisible && (
-        <RecordGamePopup
-          visible={recordingPopupVisible}
-          setVisible={setRecordingPopupVisible}
-          game={game}
-        />
-      )}
-      {uploadPopupVisible && (
-        <UploadVideoPopup
-          visible={uploadPopupVisible}
-          setVisible={setUploadPopupVisible}
-          game={game}
-        />
-      )}
       <AppHeader
         absolutePosition={false}
         backEnabled
@@ -407,7 +358,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
                 setRecordingModalVisible(true);
               }}
             >
-              <IonIcon name="ellipsis-horizontal" color={"black"} size={24} />
+              <IonIcon name="menu-outline" color={colors.tertiary} size={28} />
             </TouchableOpacity>
           ) : (
             <View />
@@ -417,38 +368,6 @@ export const GameDetails = ({ navigation, route }: Props) => {
         middleTitle
       >
         <View style={styles.wrapperView}>
-          <SelectionModal
-            visible={recordingModalVisible}
-            setVisible={setRecordingModalVisible}
-            options={
-              !isPrevious
-                ? [
-                    {
-                      text: "Record Game",
-                      onPress: () => {
-                        setRecordingModalVisible(false);
-                        setRecordingPopupVisible(true);
-                      },
-                    },
-                    {
-                      text: "Upload Video",
-                      onPress: () => {
-                        setRecordingModalVisible(false);
-                        setUploadPopupVisible(true);
-                      },
-                    },
-                  ]
-                : [
-                    {
-                      text: "Upload Video",
-                      onPress: () => {
-                        setRecordingModalVisible(false);
-                        setUploadPopupVisible(true);
-                      },
-                    },
-                  ]
-            }
-          />
           {loading ? (
             <View style={styles.headerView}>
               <Skeleton height={15} width={80} style={styles.greyFont} />
@@ -538,10 +457,10 @@ export const GameDetails = ({ navigation, route }: Props) => {
                           ? playerStatus?.hasRequestedtoJoin === "APPROVED" ||
                             playerStatus?.hasRequestedtoJoin === "PENDING" ||
                             playerStatus?.hasBeenInvited === "APPROVED"
-                            ? () => setCancelJoinGamePopupVisible(true)
+                            ? () => setCancelJoinGameModalVisible(true)
                             : playerStatus?.hasBeenInvited === "PENDING"
-                            ? () => setRespondToInvitationPopupVisible(true)
-                            : () => setJoinGamePopupVisible(true)
+                            ? () => setRespondToInvitationModalVisible(true)
+                            : () => setJoinGameModalVisible(true)
                           : undefined
                       }
                     >
@@ -623,6 +542,39 @@ export const GameDetails = ({ navigation, route }: Props) => {
                     Invite Players
                   </Button>
                 )}
+              {playerStatus?.isAdmin && !isPrevious && (
+                <Button
+                  style={{ marginTop: 10 }}
+                  textColor={updateLoading ? colors.tertiary : colors.primary}
+                  icon={({ size, color }) => (
+                    <MaterialIcon name="done" size={size} color={color} />
+                  )}
+                  loading={updateLoading}
+                  onPress={
+                    updateLoading
+                      ? undefined
+                      : () => updateGame({ status: GameStatus.FINISHED })
+                  }
+                >
+                  Mark Game Complete
+                </Button>
+              )}
+              {isPrevious && (
+                <Button
+                  mode="contained"
+                  style={{ marginTop: 10 }}
+                  contentStyle={{ flexDirection: "row-reverse" }}
+                  icon={({ size, color }) => (
+                    <Feather name="chevron-right" size={size} color={color} />
+                  )}
+                  onPress={() => {
+                    if (game?.id)
+                      navigation.push("GameResults", { id: game.id });
+                  }}
+                >
+                  View Results
+                </Button>
+              )}
             </View>
           )}
 
@@ -637,13 +589,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
               />
             }
           >
-            {isPrevious && (
-              <ResultCard
-                game={game}
-                setVideoFocusVisible={setVideoFocusVisible}
-                loading={loading}
-              />
-            )}
+            {isPrevious && <ResultCard game={game} loading={loading} />}
             <Text
               variant="labelLarge"
               style={{ color: colors.tertiary, margin: 16 }}
@@ -715,36 +661,75 @@ export const GameDetails = ({ navigation, route }: Props) => {
           </ScrollView>
         </View>
       </AppHeader>
-      <BottomModal
-        visible={videoFocusVisible !== null}
-        setVisible={(value) => {
-          if (!value) setVideoFocusVisible(null);
-        }}
-      >
-        <View
-          style={{
-            marginTop: "auto",
-            marginBottom: "auto",
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
-        >
-          <VideoPlayer
-            videoProps={{
-              source: {
-                uri: videoFocusVisible ?? "",
-              },
-              isLooping: true,
-              shouldPlay: true,
-              resizeMode: ResizeMode.COVER,
-            }}
-            style={{
-              width: 0.85 * windowWidth,
-              height: (0.85 * windowWidth * 9) / 16,
-            }}
-          />
-        </View>
-      </BottomModal>
+      <SelectionModal
+        visible={recordingModalVisible}
+        setVisible={setRecordingModalVisible}
+        options={
+          !isPrevious
+            ? [
+                {
+                  text: "Record Game",
+                  onPress: () => {
+                    setRecordingModalVisible(false);
+                    setRecordVideoModalVisible(true);
+                  },
+                },
+                {
+                  text: "Upload Video",
+                  onPress: () => {
+                    setRecordingModalVisible(false);
+                    setUploadModalVisible(true);
+                  },
+                },
+              ]
+            : [
+                {
+                  text: "Upload Video",
+                  onPress: () => {
+                    setRecordingModalVisible(false);
+                    setUploadModalVisible(true);
+                  },
+                },
+              ]
+        }
+      />
+      <JoinGameModal
+        visible={joinGameModalVisible}
+        setVisible={setJoinGameModalVisible}
+        followGame={followGame}
+        joinGame={joinGame}
+        followedGames={followedGames}
+        game={game}
+      />
+      <CancelJoinGameModal
+        visible={cancelJoinGameModalVisible}
+        setVisible={setCancelJoinGameModalVisible}
+        cancelRequest={cancelRequest}
+        respondToInvite={respondToInvite}
+        unfollowGame={unfollowGame}
+        followedGames={followedGames}
+        game={game}
+        playerStatus={playerStatus}
+      />
+      <RespondToInvitationModal
+        visible={respondToInvitationModalVisible}
+        setVisible={setRespondToInvitationModalVisible}
+        followGame={followGame}
+        respondToInvite={respondToInvite}
+        playerStatus={playerStatus}
+        followedGames={followedGames}
+        game={game}
+      />
+      <RecordGameModal
+        visible={recordVideoModalVisible}
+        setVisible={setRecordVideoModalVisible}
+        game={game}
+      />
+      <UploadVideoModal
+        visible={uploadModalVisible}
+        setVisible={setUploadModalVisible}
+        game={game}
+      />
       <AssignPlayer
         playerStatistics={assignPlayerVisible}
         setVisible={setAssignPlayerVisible}

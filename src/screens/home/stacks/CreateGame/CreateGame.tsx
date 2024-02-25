@@ -10,7 +10,7 @@ import { Button, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import {
   AppHeader,
-  CreateGameChoicePopup,
+  CreateGameChoiceModal,
   GenericDialog,
 } from "src/components";
 import { HomeStackParamList } from "src/navigation";
@@ -74,11 +74,11 @@ export const CreateGame = ({ navigation, route }: Props) => {
       maxNumberOfPlayers: 8,
       searchDate: new Date().toISOString(),
       startTime: "08:00",
-      duration: 0.5,
+      duration: 2,
     }
   );
 
-  const [choicePopupVisible, setChoicePopupVisible] = useState(false);
+  const [choiceModalVisible, setChoiceModalVisible] = useState(false);
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
 
   const buttonDisabled =
@@ -130,7 +130,7 @@ export const CreateGame = ({ navigation, route }: Props) => {
             />
           )}
           {stage === Stages.Confirmation && (
-            <Confirmation gameDetails={gameDetails} />
+            <Confirmation gameDetails={gameDetails} isBooking={isBooking} />
           )}
 
           <View style={{ marginTop: "auto", marginBottom: 24 }}>
@@ -146,7 +146,7 @@ export const CreateGame = ({ navigation, route }: Props) => {
                   : () => {
                       if (stage === Stages.BranchSelection) {
                         if (gameDetails.branch?.allowsBooking)
-                          setChoicePopupVisible(true);
+                          setChoiceModalVisible(true);
                         else
                           navigation.push("CreateGame", {
                             stage: stage + 2,
@@ -188,14 +188,18 @@ export const CreateGame = ({ navigation, route }: Props) => {
                     }
               }
             >
-              {stage === Stages.Confirmation ? "Complete Payment" : "Next"}
+              {stage === Stages.Confirmation
+                ? isBooking
+                  ? "Book Court"
+                  : "Create Game"
+                : "Next"}
             </Button>
           </View>
         </ScrollView>
       </AppHeader>
-      <CreateGameChoicePopup
-        visible={choicePopupVisible}
-        setVisible={setChoicePopupVisible}
+      <CreateGameChoiceModal
+        visible={choiceModalVisible}
+        setVisible={setChoiceModalVisible}
         bookCourt={() =>
           navigation.push("CreateGame", {
             stage: stage + 2,

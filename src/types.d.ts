@@ -1,4 +1,9 @@
-import { GameType, CourtType, StatisticsGameStatus } from "./enum-types";
+import {
+  GameType,
+  CourtType,
+  StatisticsGameStatus,
+  GameStatus,
+} from "./enum-types";
 
 export interface User {
   id?: number;
@@ -39,41 +44,6 @@ export interface PlayerStatistics {
   team: "HOME" | "AWAY";
   scored: number;
   missed: number;
-}
-
-export interface Game {
-  id: number;
-  startTime: Date;
-  endTime: Date;
-  type: GameType;
-  court?: Court;
-  admin: User;
-  createdAt: Date;
-  homePoints: number;
-  updatedHomePoints: number;
-  homePossession: string;
-  awayPoints: number;
-  updatedAwayPoints: number;
-  awayPossession: string;
-  playersStatistics: PlayerStatistics[];
-  highlights: string[];
-  isRecording: boolean;
-}
-
-export interface StatisticsGame {
-  id: number;
-  admin: User;
-  startTime: Date;
-  endTime: Date;
-  type: GameType;
-  courtType: CourtType;
-  status: StatisticsGameStatus;
-  playerStatistics: StatisticsGamePlayer[];
-  adminId: number;
-}
-
-export interface StatisticsGamePlayer {
-  id: number;
   gameNumber: number;
   name: string;
   team: string;
@@ -87,7 +57,27 @@ export interface StatisticsGamePlayer {
   steals: number;
   game: StatisticsGame;
   user?: User;
-  statisticsGameId: number;
+  gameId: number;
+}
+
+export interface Game {
+  id: number;
+  startTime: Date;
+  endTime: Date;
+  type: GameType;
+  court?: Court;
+  admin: User;
+  status: GameStatus;
+  createdAt: Date;
+  homePoints: number;
+  updatedHomePoints: number;
+  homePossession: string;
+  awayPoints: number;
+  updatedAwayPoints: number;
+  awayPossession: string;
+  playerStatistics: PlayerStatistics[];
+  highlights: string[];
+  isRecording: boolean;
 }
 
 export interface Invitation {

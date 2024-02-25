@@ -3,9 +3,9 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Game } from "src/types";
-import { PopupContainer } from "./PopupContainer";
+import { ModalContainer } from "./ModalContainer";
 
-export const JoinGamePopup = ({
+export const JoinGameModal = ({
   visible,
   setVisible,
   game,
@@ -24,7 +24,7 @@ export const JoinGamePopup = ({
   const styles = makeStyles(colors);
 
   return (
-    <PopupContainer
+    <ModalContainer
       title="Choose Team"
       visible={visible}
       setVisible={setVisible}
@@ -79,7 +79,7 @@ export const JoinGamePopup = ({
           <Text style={styles.promptTeamText}>Away</Text>
         </TouchableOpacity>
       </View>
-    </PopupContainer>
+    </ModalContainer>
   );
 };
 

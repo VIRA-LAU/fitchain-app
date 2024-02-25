@@ -5,5 +5,5 @@ export * from "./Games";
 export * from "./InviteUsers";
 export * from "./Notifications";
 export * from "./RatePlayer";
-export * from "./StatisticsGameDetails";
+export * from "./GameResults";
 export * from "./StatisticsGames";

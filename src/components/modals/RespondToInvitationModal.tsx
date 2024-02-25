@@ -3,9 +3,9 @@ import { StyleSheet, View } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Game, PlayerStatus } from "src/types";
-import { PopupContainer } from "./PopupContainer";
+import { ModalContainer } from "./ModalContainer";
 
-export const RespondToInvitationPopup = ({
+export const RespondToInvitationModal = ({
   visible,
   setVisible,
   game,
@@ -25,18 +25,15 @@ export const RespondToInvitationPopup = ({
   const { colors } = useTheme();
 
   return (
-    <PopupContainer
+    <ModalContainer
       title={"Would you like to join this game?"}
       visible={visible}
       setVisible={setVisible}
     >
-      <View>
+      <View style={{ gap: 8 }}>
         <Button
           mode="contained"
-          style={{
-            marginBottom: 10,
-            marginHorizontal: 20,
-          }}
+          style={{}}
           onPress={() => {
             respondToInvite({
               gameId: game?.id,
@@ -59,11 +56,8 @@ export const RespondToInvitationPopup = ({
         </Button>
         <Button
           mode="contained"
-          buttonColor={colors.tertiary}
-          style={{
-            marginBottom: 10,
-            marginHorizontal: 20,
-          }}
+          buttonColor={colors.secondary}
+          textColor={colors.primary}
           onPress={() => {
             respondToInvite({
               gameId: game?.id,
@@ -77,7 +71,7 @@ export const RespondToInvitationPopup = ({
         </Button>
         <Button onPress={() => setVisible(false)}>Later</Button>
       </View>
-    </PopupContainer>
+    </ModalContainer>
   );
 };
 

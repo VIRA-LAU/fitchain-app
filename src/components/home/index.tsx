@@ -1,5 +1,4 @@
 export * from "./game-details";
-export * from "./popups";
 
 export * from "./ActivityCard";
 export * from "./BookingCard";

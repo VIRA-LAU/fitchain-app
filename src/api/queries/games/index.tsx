@@ -9,3 +9,4 @@ export * from "./search-games-query";
 export * from "./updates-query";
 export * from "./get-player-team";
 export * from "./game-count-query";
+export * from "./get-game-results";

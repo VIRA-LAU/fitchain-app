@@ -308,11 +308,11 @@ export const BranchManagement = ({
               branch={{
                 id: branchData?.branchId!,
                 venueName: branchData?.venueName!,
-                latitude: branchDetails.latitude,
-                longitude: branchDetails.longitude,
-                location: branchDetails.location,
+                latitude: branchDetails.latitude!,
+                longitude: branchDetails.longitude!,
+                location: branchDetails.location!,
                 courts: branchDetails.courts,
-                rating: branchDetails.rating,
+                rating: branchDetails.rating!,
                 profilePhotoUrl: branchDetails.profilePhotoUrl,
               }}
             />
@@ -329,7 +329,7 @@ export const BranchManagement = ({
                 key={index}
                 name={court.name}
                 price={court.price}
-                rating={court.rating}
+                rating={court.rating!}
                 type={court.courtType}
                 venueName={branchData?.venueName!}
                 onPress={() => {
@@ -338,8 +338,8 @@ export const BranchManagement = ({
                     name: court.name,
                     courtType: court.courtType,
                     price: court.price.toString(),
-                    numOfPlayers: court.nbOfPlayers,
-                    timeSlots: court.timeSlots,
+                    numOfPlayers: court.nbOfPlayers!,
+                    timeSlots: court.timeSlots!,
                   };
                   setCreateCourtVisible("edit");
                 }}

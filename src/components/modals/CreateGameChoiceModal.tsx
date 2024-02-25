@@ -2,9 +2,9 @@ import { Dispatch, SetStateAction } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { PopupContainer } from "./PopupContainer";
+import { ModalContainer } from "./ModalContainer";
 
-export const CreateGameChoicePopup = ({
+export const CreateGameChoiceModal = ({
   visible,
   setVisible,
   bookCourt,
@@ -18,7 +18,7 @@ export const CreateGameChoicePopup = ({
   const { colors } = useTheme();
 
   return (
-    <PopupContainer
+    <ModalContainer
       title="Would you like to book your court through FitChain or just create a game?"
       visible={visible}
       setVisible={setVisible}
@@ -42,6 +42,6 @@ export const CreateGameChoicePopup = ({
           Create Game
         </Button>
       </View>
-    </PopupContainer>
+    </ModalContainer>
   );
 };

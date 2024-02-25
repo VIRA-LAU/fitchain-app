@@ -10,7 +10,7 @@ import {
   CreateGame,
   Games,
   StatisticsGames,
-  StatisticsGameDetails,
+  GameResults,
   GameCreationType,
 } from "screens";
 import { BottomTabParamList } from "../tabScreenOptions";
@@ -42,7 +42,7 @@ export type HomeStackParamList = {
     courtTypes?: GameType[];
   };
   GameDetails: { id: number };
-  StatisticsGameDetails: { id: number };
+  GameResults: { id: number };
   InviteUsers: {
     gameId: number;
   };
@@ -87,10 +87,7 @@ export const HomeStackNavigator = () => {
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
       <Stack.Screen name="CreateGame" component={CreateGame} />
       <Stack.Screen name="StatisticsGames" component={StatisticsGames} />
-      <Stack.Screen
-        name="StatisticsGameDetails"
-        component={StatisticsGameDetails}
-      />
+      <Stack.Screen name="GameResults" component={GameResults} />
     </Stack.Navigator>
   );
 };

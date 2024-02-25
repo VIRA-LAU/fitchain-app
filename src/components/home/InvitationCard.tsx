@@ -156,8 +156,8 @@ export const InvitationCard = ({
                 .slice(0, Platform.OS === "ios" ? -5 : -6)}
               , {timeString}
             </Text>
-            , at <Text style={styles.text}>{game.court.branch.venue.name}</Text>
-            .
+            , at{" "}
+            <Text style={styles.text}>{game.court?.branch?.venue.name}</Text>.
           </Text>
         </View>
         <View style={{ marginTop: "auto" }}>

@@ -1,11 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Button } from "react-native-paper";
-import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { Game, PlayerStatus } from "src/types";
-import { PopupContainer } from "./PopupContainer";
+import { ModalContainer } from "./ModalContainer";
 
-export const CancelJoinGamePopup = ({
+export const CancelJoinGameModal = ({
   visible,
   setVisible,
   game,
@@ -25,7 +24,7 @@ export const CancelJoinGamePopup = ({
   unfollowGame: Function;
 }) => {
   return (
-    <PopupContainer
+    <ModalContainer
       title={`Are you sure you want to ${
         playerStatus?.hasRequestedtoJoin === "APPROVED" ||
         playerStatus?.hasBeenInvited === "APPROVED"
@@ -35,13 +34,9 @@ export const CancelJoinGamePopup = ({
       visible={visible}
       setVisible={setVisible}
     >
-      <View>
+      <View style={{ gap: 8 }}>
         <Button
           mode="contained"
-          style={{
-            marginBottom: 10,
-            marginHorizontal: 20,
-          }}
           onPress={() => {
             if (
               playerStatus?.hasRequestedtoJoin === "APPROVED" ||
@@ -73,6 +68,6 @@ export const CancelJoinGamePopup = ({
         </Button>
         <Button onPress={() => setVisible(false)}>No</Button>
       </View>
-    </PopupContainer>
+    </ModalContainer>
   );
 };

@@ -1,11 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useEffect } from "react";
-import {
-  useWindowDimensions,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { Text, useTheme } from "react-native-paper";
 import { Home, Profile, Community, Challenges } from "screens";
@@ -16,15 +11,21 @@ import * as Notifications from "expo-notifications";
 import { useQueryClient } from "react-query";
 import { Image } from "react-native";
 import { HomeStackParamList } from "./HomeStackNavigator";
+import { SelectionModal } from "src/components";
+import { UserContext } from "src/utils";
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 type Props = StackScreenProps<HomeStackParamList, "BottomBar">;
 
 export const BottomTabNavigator = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
-  const styles = makeStyles(colors, useWindowDimensions().width);
+  const styles = makeStyles(colors, Dimensions.get("screen").width);
 
+  const { setUserData } = useContext(UserContext);
   const queryClient = useQueryClient();
+
+  const [profileModalVisible, setProfileModalVisible] = useState(false);
+  const [profileEditing, setProfileEditing] = useState(false);
 
   useEffect(() => {
     const requestLocationPermission = async () => {
@@ -77,7 +78,15 @@ export const BottomTabNavigator = ({ navigation, route }: Props) => {
         <Tab.Screen name="Community" component={Community} />
         <Tab.Screen
           name="Profile"
-          children={(props) => <Profile {...props} isUserProfile />}
+          children={(props) => (
+            <Profile
+              {...props}
+              isUserProfile
+              setProfileModalVisible={setProfileModalVisible}
+              profileEditing={profileEditing}
+              setProfileEditing={setProfileEditing}
+            />
+          )}
         />
       </Tab.Navigator>
       <View
@@ -106,6 +115,27 @@ export const BottomTabNavigator = ({ navigation, route }: Props) => {
           <Text style={styles.playText}>Play</Text>
         </TouchableOpacity>
       </View>
+
+      <SelectionModal
+        visible={profileModalVisible}
+        setVisible={setProfileModalVisible}
+        options={[
+          {
+            text: "Edit Profile",
+            onPress: () => {
+              setProfileModalVisible(false);
+              setProfileEditing(true);
+            },
+          },
+          {
+            text: "Sign Out",
+            onPress: () => {
+              setProfileModalVisible(false);
+              setUserData(null);
+            },
+          },
+        ]}
+      />
     </View>
   );
 };

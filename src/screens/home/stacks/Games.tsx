@@ -6,6 +6,7 @@ import {
   View,
   RefreshControl,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
@@ -24,6 +25,7 @@ import {
 } from "src/api";
 import { Game } from "src/types";
 import { QueryObserverResult } from "react-query";
+import FeatherIcon from "react-native-vector-icons/Feather";
 
 export const DayHeader = ({ day }: { day: string }) => {
   const { colors } = useTheme();
@@ -291,6 +293,8 @@ const GameList = ({
   );
 };
 
+const durations = ["Upcoming Games", "Previous Games"];
+
 export const Games = () => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -298,6 +302,7 @@ export const Games = () => {
 
   const [index, setIndex] = useState(0);
   const [durationIndex, setDurationIndex] = useState(0);
+  const [durationModalVisible, setDurationModalVisible] = useState(false);
   const [routes] = useState([
     { key: "mine", title: "My Games" },
     { key: "followed", title: "Followed" },
@@ -362,7 +367,21 @@ export const Games = () => {
     <AppHeader
       absolutePosition={false}
       middle={
-        <GameTimeDropdown index={durationIndex} setIndex={setDurationIndex} />
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+          onPress={() => setDurationModalVisible(!durationModalVisible)}
+        >
+          <Text style={styles.title}>{durations[durationIndex]}</Text>
+          <FeatherIcon
+            name={`chevron-${durationModalVisible ? "up" : "down"}`}
+            color={colors.tertiary}
+            size={24}
+            style={{ marginLeft: 5 }}
+          />
+        </TouchableOpacity>
       }
       backEnabled
     >
@@ -376,6 +395,13 @@ export const Games = () => {
           swipeEnabled={false}
         />
       </View>
+      <GameTimeDropdown
+        durations={durations}
+        index={durationIndex}
+        setIndex={setDurationIndex}
+        modalVisible={durationModalVisible}
+        setModalVisible={setDurationModalVisible}
+      />
     </AppHeader>
   );
 };
@@ -386,6 +412,10 @@ const makeStyles = (colors: MD3Colors) =>
       flex: 1,
       paddingTop: 10,
       backgroundColor: colors.background,
+    },
+    title: {
+      color: colors.tertiary,
+      fontFamily: "Poppins-Bold",
     },
     tabViewItem: {
       height: 40,

@@ -4,7 +4,6 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  BackHandler,
   Dimensions,
 } from "react-native";
 import { Avatar, Text, TouchableRipple, useTheme } from "react-native-paper";
@@ -14,7 +13,6 @@ import {
   ActivityCardSkeleton,
   AppHeader,
   GalleryPermissionDialog,
-  SelectionModal,
   Skeleton,
   RadarChart,
   DatePicker,
@@ -22,7 +20,13 @@ import {
 import { BottomTabParamList, HomeStackParamList } from "src/navigation";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import { Activity } from "src/types";
-import { useContext, useEffect, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 import { UserContext, uploadImage } from "src/utils";
 import {
   useActivitiesQuery,
@@ -42,8 +46,14 @@ export const Profile = ({
   navigation,
   route,
   isUserProfile = false,
+  setProfileModalVisible,
+  profileEditing,
+  setProfileEditing,
 }: Props & {
   isUserProfile?: boolean;
+  setProfileModalVisible: Dispatch<SetStateAction<boolean>>;
+  profileEditing: boolean;
+  setProfileEditing: Dispatch<SetStateAction<boolean>>;
 }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -52,9 +62,7 @@ export const Profile = ({
   const { userData, setUserData } = useContext(UserContext);
   const { firstName, lastName, userId } = userData!;
 
-  const [modalVisible, setModalVisible] = useState(false);
   const [permissionDialogVisible, setPermissionDialogVisible] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [profilePhotoToUpload, setProfilePhotoToUpload] = useState<string>();
   const [activitiesDate, setActivitiesDate] = useState<Date>(new Date());
 
@@ -263,231 +271,204 @@ export const Profile = ({
     />
   );
 
-  useEffect(() => {
-    const handleBack = () => {
-      if (isEditing) {
-        setIsEditing(false);
-        return true;
-      } else return false;
-    };
-    BackHandler.addEventListener("hardwareBackPress", handleBack);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBack);
-    };
-  }, [isEditing]);
-
   return (
-    <AppHeader
-      right={
-        isUserProfile && !userDetailsLoading ? (
-          isEditing ? (
-            <TouchableOpacity
-              onPress={() => {
-                setIsEditing(false);
-                setModalVisible(false);
-              }}
-            >
-              <IonIcon
-                name="checkmark-sharp"
-                color={colors.primary}
-                size={24}
-              />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              onPress={() => {
-                setModalVisible(true);
-              }}
-            >
-              <IonIcon name="menu-outline" color={colors.tertiary} size={28} />
-            </TouchableOpacity>
-          )
-        ) : (
-          <View />
-        )
-      }
-      title={"Profile"}
-      absolutePosition={false}
-      backEnabled={!isUserProfile}
-    >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <GalleryPermissionDialog
-          visible={permissionDialogVisible}
-          setVisible={setPermissionDialogVisible}
-        />
-        <SelectionModal
-          visible={modalVisible}
-          setVisible={setModalVisible}
-          options={[
-            {
-              text: "Edit Profile",
-              onPress: () => {
-                setModalVisible(false);
-                setIsEditing(true);
-              },
-            },
-            {
-              text: "Sign Out",
-              onPress: () => {
-                setModalVisible(false);
-                setUserData(null);
-              },
-            },
-          ]}
-        />
-        <View style={styles.headerContent}>
-          <View>
-            {!userDetailsLoading ? (
-              profilePhotoToUpload ? (
-                <Avatar.Image
-                  source={{ uri: profilePhotoToUpload }}
-                  size={70}
-                  style={{ backgroundColor: "transparent" }}
-                />
-              ) : userDetails?.profilePhotoUrl ? (
-                <Avatar.Image
-                  source={{ uri: userDetails.profilePhotoUrl }}
-                  size={70}
-                  style={{ backgroundColor: "transparent" }}
-                />
-              ) : (
-                <Avatar.Text
-                  label={
-                    userDetails?.firstName
-                      ? `${userDetails?.firstName.charAt(
-                          0
-                        )}${userDetails?.lastName.charAt(0)}`
-                      : ""
-                  }
-                  labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 30 }}
-                  style={{
-                    backgroundColor: colors.secondary,
-                  }}
-                  size={70}
-                />
-              )
-            ) : (
-              <View style={{ width: 70, aspectRatio: 1 }} />
-            )}
-            {isEditing && (
+    <Fragment>
+      <AppHeader
+        right={
+          isUserProfile && !userDetailsLoading ? (
+            profileEditing ? (
               <TouchableOpacity
-                onPress={() =>
-                  uploadImage(
-                    "user",
-                    "profile",
-                    userData?.userId,
-                    setPermissionDialogVisible,
-                    setProfilePhotoToUpload,
-                    updateUserData
-                  )
-                }
-                activeOpacity={0.8}
-                style={[
-                  styles.editImage,
-                  {
-                    borderRadius: 100,
-                  },
-                ]}
+                onPress={() => {
+                  setProfileEditing(false);
+                  setProfileModalVisible(false);
+                }}
               >
-                <MaterialIcon
-                  name="camera-alt"
-                  size={28}
-                  color={colors.tertiary}
+                <IonIcon
+                  name="checkmark-sharp"
+                  color={colors.primary}
+                  size={24}
                 />
               </TouchableOpacity>
-            )}
-          </View>
-
-          <View>
-            {userDetailsLoading ? (
-              <Skeleton height={20} width={150} style={styles.name} />
             ) : (
-              userDetails?.firstName && (
-                <Text style={styles.name}>{`${
-                  userDetails?.firstName || firstName
-                } ${userDetails?.lastName || lastName}`}</Text>
-              )
-            )}
-            {gameCountLoading ? (
-              <Skeleton height={15} width={100} style={styles.gameCount} />
-            ) : (
-              <Text style={styles.gameCount}>
-                Played {gameCount} game{gameCount !== 1 && "s"}
-              </Text>
-            )}
-          </View>
-        </View>
-        {userDetailsLoading ? (
-          <Skeleton height={20} width={150} style={styles.bio} />
-        ) : (
-          userDetails?.description && (
-            <Text style={styles.bio}>{userDetails?.description}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setProfileModalVisible(true);
+                }}
+              >
+                <IonIcon
+                  name="menu-outline"
+                  color={colors.tertiary}
+                  size={28}
+                />
+              </TouchableOpacity>
+            )
+          ) : (
+            <View />
           )
-        )}
-        <View style={styles.divider} />
-        <View
-          style={{
-            height: 0.5 * Dimensions.get("screen").width,
-            width: "100%",
-            alignSelf: "center",
-            marginTop: 16,
-            marginBottom: 24,
-          }}
-        >
-          <RadarChart
-            radarData={
-              userDetails
-                ? [
+        }
+        title={"Profile"}
+        absolutePosition={false}
+        backEnabled={!isUserProfile}
+      >
+        <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 60 }}>
+          <View style={styles.headerContent}>
+            <View>
+              {!userDetailsLoading ? (
+                profilePhotoToUpload ? (
+                  <Avatar.Image
+                    source={{ uri: profilePhotoToUpload }}
+                    size={70}
+                    style={{ backgroundColor: "transparent" }}
+                  />
+                ) : userDetails?.profilePhotoUrl ? (
+                  <Avatar.Image
+                    source={{ uri: userDetails.profilePhotoUrl }}
+                    size={70}
+                    style={{ backgroundColor: "transparent" }}
+                  />
+                ) : (
+                  <Avatar.Text
+                    label={
+                      userDetails?.firstName
+                        ? `${userDetails?.firstName.charAt(
+                            0
+                          )}${userDetails?.lastName.charAt(0)}`
+                        : ""
+                    }
+                    labelStyle={{ fontFamily: "Poppins-Regular", fontSize: 30 }}
+                    style={{
+                      backgroundColor: colors.secondary,
+                    }}
+                    size={70}
+                  />
+                )
+              ) : (
+                <View style={{ width: 70, aspectRatio: 1 }} />
+              )}
+              {profileEditing && (
+                <TouchableOpacity
+                  onPress={() =>
+                    uploadImage(
+                      "user",
+                      "profile",
+                      userData?.userId,
+                      setPermissionDialogVisible,
+                      setProfilePhotoToUpload,
+                      updateUserData
+                    )
+                  }
+                  activeOpacity={0.8}
+                  style={[
+                    styles.editImage,
                     {
-                      label: "Skill",
-                      value: (userDetails.skill * 100) / 5,
+                      borderRadius: 100,
                     },
-                    {
-                      label: "Offense",
-                      value: (userDetails.offense * 100) / 5,
-                    },
-                    {
-                      label: "Defense",
-                      value: (userDetails.defense * 100) / 5,
-                    },
-                    {
-                      label: "General",
-                      value: (userDetails.general * 100) / 5,
-                    },
-                    {
-                      label: "Teamplay",
-                      value: (userDetails.teamplay * 100) / 5,
-                    },
-                    {
-                      label: "Punctuality",
-                      value: (userDetails.punctuality * 100) / 5,
-                    },
-                  ]
-                : [
-                    { label: "Skill", value: 0 },
-                    { label: "Offense", value: 0 },
-                    { label: "Defense", value: 0 },
-                    { label: "General", value: 0 },
-                    { label: "Teamplay", value: 0 },
-                    { label: "Punctuality", value: 0 },
-                  ]
-            }
-            size={0.5 * Dimensions.get("screen").width}
-          />
-        </View>
+                  ]}
+                >
+                  <MaterialIcon
+                    name="camera-alt"
+                    size={28}
+                    color={colors.tertiary}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
 
-        <View style={styles.contentView}>
-          <TabView
-            navigationState={{ index, routes }}
-            renderTabBar={renderTabBar}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={{ width: Dimensions.get("screen").width }}
-            swipeEnabled={false}
-          />
-        </View>
-      </ScrollView>
-    </AppHeader>
+            <View>
+              {userDetailsLoading ? (
+                <Skeleton height={20} width={150} style={styles.name} />
+              ) : (
+                userDetails?.firstName && (
+                  <Text style={styles.name}>{`${
+                    userDetails?.firstName || firstName
+                  } ${userDetails?.lastName || lastName}`}</Text>
+                )
+              )}
+              {gameCountLoading ? (
+                <Skeleton height={15} width={100} style={styles.gameCount} />
+              ) : (
+                <Text style={styles.gameCount}>
+                  Played {gameCount} game{gameCount !== 1 && "s"}
+                </Text>
+              )}
+            </View>
+          </View>
+          {userDetailsLoading ? (
+            <Skeleton height={20} width={150} style={styles.bio} />
+          ) : (
+            userDetails?.description && (
+              <Text style={styles.bio}>{userDetails?.description}</Text>
+            )
+          )}
+          <View style={styles.divider} />
+          <View
+            style={{
+              height: 0.5 * Dimensions.get("screen").width,
+              width: "100%",
+              alignSelf: "center",
+              marginTop: 16,
+              marginBottom: 24,
+            }}
+          >
+            <RadarChart
+              radarData={
+                userDetails
+                  ? [
+                      {
+                        label: "Skill",
+                        value: (userDetails.skill * 100) / 5,
+                      },
+                      {
+                        label: "Offense",
+                        value: (userDetails.offense * 100) / 5,
+                      },
+                      {
+                        label: "Defense",
+                        value: (userDetails.defense * 100) / 5,
+                      },
+                      {
+                        label: "General",
+                        value: (userDetails.general * 100) / 5,
+                      },
+                      {
+                        label: "Teamplay",
+                        value: (userDetails.teamplay * 100) / 5,
+                      },
+                      {
+                        label: "Punctuality",
+                        value: (userDetails.punctuality * 100) / 5,
+                      },
+                    ]
+                  : [
+                      { label: "Skill", value: 0 },
+                      { label: "Offense", value: 0 },
+                      { label: "Defense", value: 0 },
+                      { label: "General", value: 0 },
+                      { label: "Teamplay", value: 0 },
+                      { label: "Punctuality", value: 0 },
+                    ]
+              }
+              size={0.5 * Dimensions.get("screen").width}
+            />
+          </View>
+
+          <View style={styles.contentView}>
+            <TabView
+              navigationState={{ index, routes }}
+              renderTabBar={renderTabBar}
+              renderScene={renderScene}
+              onIndexChange={setIndex}
+              initialLayout={{ width: Dimensions.get("screen").width }}
+              swipeEnabled={false}
+            />
+          </View>
+        </ScrollView>
+      </AppHeader>
+      <GalleryPermissionDialog
+        visible={permissionDialogVisible}
+        setVisible={setPermissionDialogVisible}
+      />
+    </Fragment>
   );
 };
 
@@ -518,8 +499,8 @@ const makeStyles = (colors: MD3Colors) =>
       marginHorizontal: 20,
     },
     contentView: {
-      marginBottom: 60,
       flexGrow: 1,
+      minHeight: 300,
     },
     teamsView: {
       flexDirection: "row",

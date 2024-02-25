@@ -11,7 +11,7 @@ import { MD3Colors } from "react-native-paper/lib/typescript/types";
 import { GameCreationType } from "./CreateGame";
 import CalendarPicker from "react-native-calendar-picker";
 import { Slider } from "@miblanchard/react-native-slider";
-import { parseTimeFromMinutes } from "src/components";
+import { getMins, parseTimeFromMinutes } from "src/components";
 
 export const times = [
   "08:00",
@@ -84,7 +84,14 @@ export const DateTime = ({
 
   const searchDate = new Date(searchDateStr);
 
-  const [tempTime, setTempTime] = useState<number[]>([720, 840]);
+  const startTime =
+    parseInt(selectedStartTime.substring(0, 2)) * 60 +
+    parseInt(selectedStartTime.substring(3, 5));
+
+  const [sliderValue, setSliderValue] = useState([
+    startTime,
+    startTime + selectedDuration * 60,
+  ]);
 
   return (
     <View style={{ marginBottom: 16 }}>
@@ -238,9 +245,20 @@ export const DateTime = ({
               minimumValue={0}
               maximumValue={1440}
               step={30}
-              value={tempTime}
+              value={sliderValue}
               trackMarks={trackMarks}
-              onValueChange={setTempTime}
+              onValueChange={setSliderValue}
+              onSlidingComplete={(data) => {
+                const startHours = Math.floor(data[0] / 60)
+                  .toString()
+                  .padStart(2, "0");
+                const startMinutes = (data[0] % 60).toString().padStart(2, "0");
+                setGameDetails({
+                  ...gameDetails,
+                  startTime: `${startHours}:${startMinutes}`,
+                  duration: (data[1] - data[0]) / 60,
+                });
+              }}
               thumbTintColor={colors.primary}
               minimumTrackTintColor={colors.primary}
               maximumTrackTintColor="transparent"
@@ -267,7 +285,7 @@ export const DateTime = ({
                       { translateX: -24 },
                       {
                         translateY:
-                          value === 1 && tempTime[1] - tempTime[0] < 300
+                          value === 1 && sliderValue[1] - sliderValue[0] < 300
                             ? -20
                             : 0,
                       },

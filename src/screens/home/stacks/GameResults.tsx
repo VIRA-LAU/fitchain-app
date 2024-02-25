@@ -1,28 +1,35 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import {
+  Dimensions,
   ScrollView,
   StyleSheet,
   View,
   useWindowDimensions,
 } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
-import { useStatisticsGameDetailsQuery } from "src/api";
-import { AppHeader } from "src/components";
-import { StatisticsGameStatus } from "src/enum-types";
+import { useGameResultsQuery } from "src/api";
+import {
+  AppHeader,
+  ResultCard,
+  TopPlayerCircle,
+  VideoPlayerModal,
+} from "src/components";
 import { HomeStackParamList } from "src/navigation";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { StatisticsGamePlayer } from "src/types";
+import { PlayerStatistics } from "src/types";
+import { UserContext } from "src/utils";
+import { ResizeMode, Video } from "expo-av";
 
-type Props = StackScreenProps<HomeStackParamList, "StatisticsGameDetails">;
+type Props = StackScreenProps<HomeStackParamList, "GameResults">;
 
 export const GameNDetails = ({
   gameNumber,
   playerStatistics,
 }: {
   gameNumber: number;
-  playerStatistics: StatisticsGamePlayer[];
+  playerStatistics: PlayerStatistics[];
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -32,7 +39,7 @@ export const GameNDetails = ({
       (player) => player.gameNumber === gameNumber
     );
   else {
-    var initial: { [key: string]: StatisticsGamePlayer[] } = {};
+    var initial: { [key: string]: PlayerStatistics[] } = {};
 
     const grouped = playerStatistics.reduce(
       (acc, current) => ({
@@ -140,7 +147,7 @@ const Tabs = ({
   playerStatistics,
 }: {
   numberOfGames: number;
-  playerStatistics: StatisticsGamePlayer[];
+  playerStatistics: PlayerStatistics[];
 }) => {
   const { colors } = useTheme();
   const layout = useWindowDimensions();
@@ -198,38 +205,146 @@ const Tabs = ({
   );
 };
 
-export const StatisticsGameDetails = ({ navigation, route }: Props) => {
+export const GameResults = ({ navigation, route }: Props) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
 
   const { id } = route.params;
+  const { userData } = useContext(UserContext);
 
-  const { data: gameDetails } = useStatisticsGameDetailsQuery(id);
+  const { data: gameResults, isLoading: resultsLoading } =
+    useGameResultsQuery(id);
 
-  const numberOfGames = gameDetails
+  const [focusedVideo, setFocusedVideo] = useState<string | undefined>(
+    undefined
+  );
+
+  const numberOfGames = gameResults
     ? Math.max(
-        ...gameDetails.playerStatistics.map((player) => player.gameNumber)
+        ...gameResults.playerStatistics.map((player) => player.gameNumber)
       )
     : 0;
 
-  if (!gameDetails) return <View />;
+  if (!gameResults) return <View />;
   return (
-    <AppHeader title="Game Details" absolutePosition={false} backEnabled>
-      {gameDetails.status === StatisticsGameStatus.PENDING ||
-      gameDetails.status === StatisticsGameStatus.INPROGRESS ||
-      gameDetails.playerStatistics.length === 0 ? (
-        <View style={styles.placeholder}>
-          <Text style={styles.placeholderText}>
-            Your request is being processed, please check again later.
+    <Fragment>
+      <AppHeader title="Game Results" absolutePosition={false} backEnabled>
+        <ScrollView>
+          <ResultCard game={gameResults} loading={resultsLoading} detailed />
+          <View style={styles.divider} />
+          <Text
+            variant="labelLarge"
+            style={{
+              color: colors.tertiary,
+              marginVertical: 20,
+              marginLeft: 20,
+            }}
+          >
+            Top Players
           </Text>
-        </View>
-      ) : (
-        <Tabs
-          numberOfGames={numberOfGames}
-          playerStatistics={gameDetails.playerStatistics}
-        />
-      )}
-    </AppHeader>
+          <ScrollView
+            style={{ flexGrow: 1, marginHorizontal: -10 }}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            showsHorizontalScrollIndicator={false}
+            horizontal
+          >
+            {["MVP", "Top Scorer", "Team Player", "3-Points"].map(
+              (achievement, index) => (
+                <TopPlayerCircle
+                  key={index}
+                  achievement={achievement}
+                  isAdmin={gameResults?.admin?.id === userData?.userId}
+                />
+              )
+            )}
+          </ScrollView>
+          <View style={styles.divider} />
+
+          {gameResults.highlights.length > 0 && (
+            <View>
+              <Text
+                variant="labelLarge"
+                style={{
+                  color: colors.tertiary,
+                  marginVertical: 20,
+                  marginLeft: 20,
+                }}
+              >
+                Highlights
+              </Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {gameResults?.highlights.map((video, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      marginLeft: index === 0 ? 20 : 5,
+                      marginRight: index === 2 ? 20 : 5,
+                    }}
+                  >
+                    <TouchableRipple
+                      borderless
+                      style={{
+                        borderRadius: 10,
+                      }}
+                      onPress={() => {
+                        setFocusedVideo(video);
+                      }}
+                    >
+                      <Video
+                        source={{
+                          uri: video,
+                        }}
+                        isLooping
+                        shouldPlay
+                        resizeMode={ResizeMode.COVER}
+                        style={{
+                          width: 0.4 * Dimensions.get("screen").width,
+                          height: 235,
+                          borderRadius: 10,
+                        }}
+                      />
+                    </TouchableRipple>
+                    <Text
+                      style={{
+                        color: colors.tertiary,
+                        fontFamily: "Poppins-Regular",
+                        textAlign: "center",
+                        marginTop: 10,
+                      }}
+                    >
+                      Title
+                    </Text>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          )}
+
+          {numberOfGames > 0 && (
+            <View>
+              <View style={styles.divider} />
+              <Text
+                variant="labelLarge"
+                style={{
+                  color: colors.tertiary,
+                  marginVertical: 20,
+                  marginLeft: 20,
+                }}
+              >
+                Player Statistics
+              </Text>
+              <View style={{ flexGrow: 1, minHeight: 350 }}>
+                <Tabs
+                  numberOfGames={numberOfGames}
+                  playerStatistics={gameResults.playerStatistics}
+                />
+              </View>
+            </View>
+          )}
+        </ScrollView>
+      </AppHeader>
+      <VideoPlayerModal video={focusedVideo} setVideo={setFocusedVideo} />
+    </Fragment>
   );
 };
 
@@ -237,6 +352,11 @@ const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapper: {
       padding: 16,
+    },
+    divider: {
+      borderColor: colors.secondary,
+      borderBottomWidth: 1,
+      marginTop: 10,
     },
     placeholder: {
       height: 200,

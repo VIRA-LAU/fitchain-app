@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Modal } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Modal, Text, useTheme } from "react-native-paper";
 import { MD3Colors } from "react-native-paper/lib/typescript/types";
 
 export const SelectionModal = ({
@@ -20,7 +19,17 @@ export const SelectionModal = ({
   const styles = modalStyles(colors);
 
   return (
-    <Modal animationType="fade" transparent={true} visible={visible}>
+    <Modal
+      style={{ marginTop: 0 }}
+      contentContainerStyle={{
+        height: "100%",
+        justifyContent: "flex-start",
+        alignItems: "flex-end",
+      }}
+      visible={visible}
+      dismissableBackButton
+      onDismiss={() => setVisible(false)}
+    >
       <TouchableOpacity
         style={styles.transparentView}
         onPress={() => {
@@ -32,8 +41,6 @@ export const SelectionModal = ({
           styles.modalView,
           {
             width: 180,
-            marginLeft: "auto",
-            marginRight: 5,
           },
         ]}
       >
@@ -64,21 +71,14 @@ export const modalStyles = (colors: MD3Colors) =>
       position: "absolute",
       height: "100%",
       width: "100%",
+      backgroundColor: "#0005",
     },
     modalView: {
-      marginTop: 67,
       backgroundColor: colors.secondary,
-      borderRadius: 20,
+      borderRadius: 10,
       paddingHorizontal: 25,
       paddingVertical: 10,
-      shadowColor: "#000000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 10,
+      marginTop: 95,
     },
     selectionRow: {
       flexDirection: "row",

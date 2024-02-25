@@ -48,7 +48,10 @@ export const InviteUsers = ({ navigation, route }: Props) => {
             <Button
               mode="contained"
               buttonColor={
-                selectedTeam === "Home" ? colors.primary : colors.tertiary
+                selectedTeam === "Home" ? colors.primary : colors.background
+              }
+              textColor={
+                selectedTeam === "Home" ? colors.background : colors.primary
               }
               onPress={
                 selectedTeam === "Home"
@@ -65,7 +68,10 @@ export const InviteUsers = ({ navigation, route }: Props) => {
             <Button
               mode="contained"
               buttonColor={
-                selectedTeam === "Away" ? colors.primary : colors.tertiary
+                selectedTeam === "Away" ? colors.primary : colors.background
+              }
+              textColor={
+                selectedTeam === "Away" ? colors.background : colors.primary
               }
               onPress={
                 selectedTeam === "Away"

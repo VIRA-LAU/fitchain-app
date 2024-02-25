@@ -14,8 +14,10 @@ import { GameCreationType } from "./CreateGame";
 
 export const Confirmation = ({
   gameDetails,
+  isBooking,
 }: {
   gameDetails: GameCreationType;
+  isBooking?: boolean;
 }) => {
   const { colors } = useTheme();
   const styles = makeStyles(colors);
@@ -120,17 +122,19 @@ export const Confirmation = ({
         </View>
       </View>
       <View style={styles.contentView}>
-        <View style={styles.contentRow}>
-          <Text style={styles.labelText}>Court Price</Text>
-          <Text
-            style={[
-              styles.valueText,
-              { marginRight: 10, color: colors.tertiary },
-            ]}
-          >
-            USD {court?.price}/hr
-          </Text>
-        </View>
+        {isBooking && (
+          <View style={styles.contentRow}>
+            <Text style={styles.labelText}>Court Price</Text>
+            <Text
+              style={[
+                styles.valueText,
+                { marginRight: 10, color: colors.tertiary },
+              ]}
+            >
+              USD {court?.price}/hr
+            </Text>
+          </View>
+        )}
         <View style={styles.contentRow}>
           <Text style={styles.labelText}>Booked Hours</Text>
           <Text
@@ -142,14 +146,16 @@ export const Confirmation = ({
             {duration}
           </Text>
         </View>
-        <View style={styles.contentRow}>
-          <Text style={[styles.labelText, { color: colors.tertiary }]}>
-            Total
-          </Text>
-          <Text style={[styles.valueText, { marginRight: 10 }]}>
-            USD {court?.price ?? 0 * duration}
-          </Text>
-        </View>
+        {isBooking && (
+          <View style={styles.contentRow}>
+            <Text style={[styles.labelText, { color: colors.tertiary }]}>
+              Total
+            </Text>
+            <Text style={[styles.valueText, { marginRight: 10 }]}>
+              USD {court?.price ?? 0 * duration}
+            </Text>
+          </View>
+        )}
       </View>
     </ScrollView>
   );

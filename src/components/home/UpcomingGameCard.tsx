@@ -47,7 +47,7 @@ export const UpcomingGameCard = ({ game }: { game: Game }) => {
       >
     >();
 
-  const location = `${game.court.branch.venue.name} - ${game.court.branch.location}`;
+  const location = `${game.court?.branch?.venue.name} - ${game.court?.branch?.location}`;
   const dateHeader = useMemo(() => {
     const bookingDate = new Date(
       game.startTime
