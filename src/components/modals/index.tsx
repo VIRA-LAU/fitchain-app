@@ -12,3 +12,4 @@ export * from "./RecordGameModal";
 export * from "./UploadVideoModal";
 export * from "./CreateGameChoiceModal";
 export * from "./VideoPlayerModal";
+export * from "./MarkGameCompleteModal";

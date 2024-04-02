@@ -4,7 +4,7 @@ import { API_URL } from "@dotenv";
 let client: AxiosInstance;
 
 // TODO: Fix env variable changes
-if (false) {
+if (API_URL) {
   // Local URL for development
   client = axios.create({
     baseURL: API_URL,

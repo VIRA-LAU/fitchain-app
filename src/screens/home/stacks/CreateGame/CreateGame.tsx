@@ -78,13 +78,20 @@ export const CreateGame = ({ navigation, route }: Props) => {
     }
   );
 
+  const endTime = new Date(gameDetails.searchDate);
+  endTime.setHours(parseInt(gameDetails.startTime.substring(0, 2)));
+  endTime.setMinutes(
+    parseInt(gameDetails.startTime.substring(3, 5)) + gameDetails.duration * 60
+  );
+
   const [choiceModalVisible, setChoiceModalVisible] = useState(false);
   const [errorDialogVisible, setErrorDialogVisible] = useState(false);
 
   const buttonDisabled =
     (stage === Stages.BranchSelection &&
       (!gameDetails.branch || !gameDetails.court)) ||
-    createGameLoading;
+    (stage === Stages.DateTime && endTime.getTime() <= new Date().getTime());
+  createGameLoading;
 
   useEffect(() => {
     if (createGameSuccess) navigation.popToTop();

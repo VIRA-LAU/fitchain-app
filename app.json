@@ -65,6 +65,14 @@
         {
           "icon": "./src/assets/images/app-icon.png"
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
       ]
     ],
     "runtimeVersion": {

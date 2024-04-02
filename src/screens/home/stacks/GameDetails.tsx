@@ -25,6 +25,7 @@ import {
   RespondToInvitationModal,
   RecordGameModal,
   UploadVideoModal,
+  MarkGameComplete,
 } from "src/components";
 import {
   View,
@@ -60,7 +61,6 @@ import { UserContext } from "src/utils";
 import { RefreshControl } from "react-native";
 import { PlayerStatistics } from "src/types";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import { GameStatus } from "src/enum-types";
 
 type Props = StackScreenProps<HomeStackParamList, "GameDetails">;
 
@@ -71,6 +71,7 @@ export const GameDetails = ({ navigation, route }: Props) => {
 
   const { userData } = useContext(UserContext);
 
+  const [markCompleteVisible, setMarkCompleteVisible] = useState(false);
   const [joinGameModalVisible, setJoinGameModalVisible] = useState(false);
   const [cancelJoinGameModalVisible, setCancelJoinGameModalVisible] =
     useState(false);
@@ -122,7 +123,9 @@ export const GameDetails = ({ navigation, route }: Props) => {
 
   const isPrevious = game
     ? new Date(game?.endTime) < new Date() ||
-      ["CANCELLED", "FINISHED"].includes(game.status)
+      ["CANCELLED", "COMPLETE", "RESULTSPENDING", "RESULTSPROCESSED"].includes(
+        game.status
+      )
       ? true
       : false
     : false;
@@ -545,16 +548,10 @@ export const GameDetails = ({ navigation, route }: Props) => {
               {playerStatus?.isAdmin && !isPrevious && (
                 <Button
                   style={{ marginTop: 10 }}
-                  textColor={updateLoading ? colors.tertiary : colors.primary}
                   icon={({ size, color }) => (
                     <MaterialIcon name="done" size={size} color={color} />
                   )}
-                  loading={updateLoading}
-                  onPress={
-                    updateLoading
-                      ? undefined
-                      : () => updateGame({ status: GameStatus.FINISHED })
-                  }
+                  onPress={() => setMarkCompleteVisible(true)}
                 >
                   Mark Game Complete
                 </Button>
@@ -736,6 +733,11 @@ export const GameDetails = ({ navigation, route }: Props) => {
         playerStatus={playerStatus}
         players={players}
         gameId={game?.id}
+      />
+      <MarkGameComplete
+        visible={markCompleteVisible}
+        setVisible={setMarkCompleteVisible}
+        game={game}
       />
     </Fragment>
   );

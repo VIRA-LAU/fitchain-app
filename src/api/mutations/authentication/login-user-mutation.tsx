@@ -139,8 +139,11 @@ export const useLoginUserMutation = (
       }
     },
     onMutate: async (variables) => {
-      const notificationsToken = (await getExpoPushTokenAsync()).data;
-      if (notificationsToken) variables.notificationsToken = notificationsToken;
+      try {
+        const notificationsToken = (await getExpoPushTokenAsync()).data;
+        if (notificationsToken)
+          variables.notificationsToken = notificationsToken;
+      } catch (e) {}
     },
   });
 };

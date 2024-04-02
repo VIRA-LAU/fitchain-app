@@ -145,9 +145,9 @@ export interface Branch {
   courts: Court[];
   allowsBooking: boolean;
   rating?: number;
-  managerFirstName?: string;
-  managerLastName?: string;
-  email?: string;
+  managerFirstName: string;
+  managerLastName: string;
+  email: string;
   phoneNumber?: number;
 }
 
