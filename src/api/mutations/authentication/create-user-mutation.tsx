@@ -37,7 +37,11 @@ export const useCreateUserMutation = () => {
     },
     onMutate: async (variables) => {
       try {
-        const notificationsToken = (await getExpoPushTokenAsync()).data;
+        const notificationsToken = (
+          await getExpoPushTokenAsync({
+            projectId: "4396245c-91e4-4255-ab4c-236cd04253dc",
+          })
+        ).data;
         if (notificationsToken)
           variables.notificationsToken = notificationsToken;
       } catch (e) {}

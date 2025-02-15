@@ -42,7 +42,9 @@ const registerForPushNotificationsAsync = async () => {
       Alert.alert("Failed to get push token for push notification!");
       return;
     }
-    await Notifications.getExpoPushTokenAsync();
+    await Notifications.getExpoPushTokenAsync({
+      projectId: "4396245c-91e4-4255-ab4c-236cd04253dc",
+    });
   } else {
     Alert.alert("Must use physical device for Push Notifications");
   }

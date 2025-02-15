@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "698326062704",
     "project_id": "fitchain-app",
-    "storage_bucket": "fitchain-app.appspot.com"
+    "storage_bucket": "fitchain-app.firebasestorage.app"
   },
   "client": [
     {
