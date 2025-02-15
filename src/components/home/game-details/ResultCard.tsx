@@ -72,7 +72,7 @@ export const ResultCard = ({
       <View>
         <Text
           variant="labelLarge"
-          style={{ color: colors.tertiary, margin: 20 }}
+          style={{ color: colors.tertiary, margin: 20, fontSize: 16 }}
         >
           Score
         </Text>
@@ -97,7 +97,10 @@ export const ResultCard = ({
 
   return (
     <View>
-      <Text variant="labelLarge" style={{ color: colors.tertiary, margin: 20 }}>
+      <Text
+        variant="labelLarge"
+        style={{ color: colors.tertiary, margin: 20, fontSize: 16 }}
+      >
         Score
       </Text>
       <View style={{ alignContent: "center", alignItems: "center" }}>
@@ -139,7 +142,7 @@ export const ResultCard = ({
             )}
             {detailed && (
               <Text style={[styles.teamLabel, { marginTop: 5 }]}>
-                Possession: {game.homePossession}
+                Possession: {game.homePossession}%
               </Text>
             )}
           </View>
@@ -188,7 +191,7 @@ export const ResultCard = ({
             )}
             {detailed && (
               <Text style={[styles.teamLabel, { marginTop: 5 }]}>
-                Possession: {game.awayPossession}
+                Possession: {game.awayPossession}%
               </Text>
             )}
           </View>

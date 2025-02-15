@@ -46,7 +46,7 @@ export const VideoPlayerModal = ({
             source: {
               uri: video ?? "",
             },
-            isLooping: true,
+            isLooping: false,
             shouldPlay: true,
             resizeMode: ResizeMode.COVER,
           }}

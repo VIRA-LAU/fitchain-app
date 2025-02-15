@@ -44,6 +44,7 @@ export interface PlayerStatistics {
   team: "HOME" | "AWAY";
   scored: number;
   missed: number;
+  accuracy: number;
   gameNumber: number;
   name: string;
   team: string;
@@ -75,8 +76,11 @@ export interface Game {
   awayPoints: number;
   updatedAwayPoints: number;
   awayPossession: string;
+  totalPasses: number;
+  totalAssists: number;
   playerStatistics: PlayerStatistics[];
   highlights: string[];
+  videoPath?: string;
   isRecording: boolean;
 }
 

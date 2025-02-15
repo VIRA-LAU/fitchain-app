@@ -67,7 +67,7 @@ export const GameNDetails = ({
   const teams = [
     ...new Set(playerStatistics.map((player) => player.team)),
   ].sort((a, b) => {
-    return a === b ? 0 : a < b ? -1 : 1;
+    return a === b ? 0 : a > b ? -1 : 1;
   });
 
   if (!teams || !playerStatistics) return <View />;
@@ -80,43 +80,43 @@ export const GameNDetails = ({
             .filter((player) => player.team === team)
             .map((player, playerIndex) => (
               <View key={playerIndex}>
-                <Text style={styles.playerName}>{player.name}</Text>
+                <Text style={styles.playerName}>
+                  Player {player.processedId}
+                </Text>
 
                 <View style={styles.row}>
                   <View style={styles.item}>
-                    <Text style={styles.label}>2P Made</Text>
+                    <Text style={styles.label}>2 Points</Text>
                     <Text style={styles.value}>{player.twoPointsMade}</Text>
                   </View>
                   <View style={styles.item}>
-                    <Text style={styles.label}>2P Missed</Text>
-                    <Text style={styles.value}>{player.twoPointsMissed}</Text>
+                    <Text style={styles.label}>3 Points</Text>
+                    <Text style={styles.value}>{player.threePointsMade}</Text>
                   </View>
-                  <View style={styles.item}>
+                  {/* <View style={styles.item}>
                     <Text style={styles.label}>2P Total</Text>
                     <Text style={styles.value}>
                       {player.twoPointsMade + player.twoPointsMissed}
                     </Text>
-                  </View>
+                  </View> */}
                 </View>
 
                 <View style={styles.row}>
                   <View style={styles.item}>
-                    <Text style={styles.label}>3P Made</Text>
-                    <Text style={styles.value}>{player.threePointsMade}</Text>
+                    <Text style={styles.label}>Shots Made</Text>
+                    <Text style={styles.value}>{player.scored}</Text>
                   </View>
                   <View style={styles.item}>
-                    <Text style={styles.label}>3P Missed</Text>
-                    <Text style={styles.value}>{player.threePointsMissed}</Text>
+                    <Text style={styles.label}>Shots Missed</Text>
+                    <Text style={styles.value}>{player.missed}</Text>
                   </View>
                   <View style={styles.item}>
-                    <Text style={styles.label}>3P Total</Text>
-                    <Text style={styles.value}>
-                      {player.threePointsMade + player.threePointsMissed}
-                    </Text>
+                    <Text style={styles.label}>Shots Accuracy</Text>
+                    <Text style={styles.value}>{player.accuracy * 100}%</Text>
                   </View>
                 </View>
 
-                <View style={styles.row}>
+                {/* <View style={styles.row}>
                   <View style={styles.item}>
                     <Text style={styles.label}>Assists</Text>
                     <Text style={styles.value}>{player.assists}</Text>
@@ -133,7 +133,7 @@ export const GameNDetails = ({
                     <Text style={styles.label}>Steals</Text>
                     <Text style={styles.value}>{player.steals}</Text>
                   </View>
-                </View>
+                </View> */}
               </View>
             ))}
         </View>
@@ -232,42 +232,87 @@ export const GameResults = ({ navigation, route }: Props) => {
         <ScrollView contentContainerStyle={{ paddingBottom: 16 }}>
           <ResultCard game={gameResults} loading={resultsLoading} detailed />
           <View style={styles.divider} />
-          <Text
-            variant="labelLarge"
-            style={{
-              color: colors.tertiary,
-              marginVertical: 20,
-              marginLeft: 20,
-            }}
-          >
-            Top Players
-          </Text>
-          <ScrollView
-            style={{ flexGrow: 1, marginHorizontal: -10 }}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
-            showsHorizontalScrollIndicator={false}
-            horizontal
-          >
-            {["MVP", "Top Scorer", "Team Player", "3-Points"].map(
-              (achievement, index) => (
-                <TopPlayerCircle
-                  key={index}
-                  achievement={achievement}
-                  isAdmin={gameResults?.admin?.id === userData?.userId}
-                />
-              )
-            )}
-          </ScrollView>
-          <View style={styles.divider} />
-
-          {gameResults.highlights.length > 0 && (
+          {numberOfGames > 0 && (
             <View>
+              <Text
+                variant="labelLarge"
+                style={{
+                  color: colors.tertiary,
+                  marginTop: 20,
+                  marginLeft: 20,
+                  fontSize: 16,
+                }}
+              >
+                Player Statistics
+              </Text>
+              <GameNDetails
+                gameNumber={1}
+                playerStatistics={gameResults.playerStatistics}
+              />
+              {/* <View style={{ flexGrow: 0, minHeight: 700 }}> */}
+              {/* <Tabs
+                  numberOfGames={numberOfGames}
+                  playerStatistics={gameResults.playerStatistics}
+                /> */}
+              {/* </View> */}
+            </View>
+          )}
+
+          {gameResults.videoPath && (
+            <View>
+              <View style={styles.divider} />
               <Text
                 variant="labelLarge"
                 style={{
                   color: colors.tertiary,
                   marginVertical: 20,
                   marginLeft: 20,
+                  fontSize: 16,
+                }}
+              >
+                Full Video
+              </Text>
+              <View
+                style={{
+                  marginLeft: 0.05 * Dimensions.get("screen").width,
+                }}
+              >
+                <TouchableRipple
+                  borderless
+                  style={{
+                    borderRadius: 10,
+                  }}
+                  onPress={() => {
+                    setFocusedVideo(gameResults.videoPath);
+                  }}
+                >
+                  <Video
+                    source={{
+                      uri: gameResults.videoPath,
+                    }}
+                    isLooping
+                    shouldPlay
+                    resizeMode={ResizeMode.COVER}
+                    style={{
+                      width: 0.9 * Dimensions.get("screen").width,
+                      height: 235,
+                      borderRadius: 10,
+                    }}
+                  />
+                </TouchableRipple>
+              </View>
+            </View>
+          )}
+          {gameResults.highlights.length > 0 && (
+            <View>
+              <View style={styles.divider} />
+              <Text
+                variant="labelLarge"
+                style={{
+                  color: colors.tertiary,
+                  marginVertical: 20,
+                  marginLeft: 20,
+                  fontSize: 16,
                 }}
               >
                 Highlights
@@ -278,7 +323,7 @@ export const GameResults = ({ navigation, route }: Props) => {
                     key={index}
                     style={{
                       marginLeft: index === 0 ? 20 : 5,
-                      marginRight: index === 2 ? 20 : 5,
+                      marginRight: 5,
                     }}
                   >
                     <TouchableRipple
@@ -304,7 +349,7 @@ export const GameResults = ({ navigation, route }: Props) => {
                         }}
                       />
                     </TouchableRipple>
-                    <Text
+                    {/* <Text
                       style={{
                         color: colors.tertiary,
                         fontFamily: "Poppins-Regular",
@@ -313,34 +358,41 @@ export const GameResults = ({ navigation, route }: Props) => {
                       }}
                     >
                       Title
-                    </Text>
+                    </Text> */}
                   </View>
                 ))}
               </ScrollView>
             </View>
           )}
-
-          {numberOfGames > 0 && (
-            <View>
-              <View style={styles.divider} />
-              <Text
-                variant="labelLarge"
-                style={{
-                  color: colors.tertiary,
-                  marginVertical: 20,
-                  marginLeft: 20,
-                }}
-              >
-                Player Statistics
-              </Text>
-              <View style={{ flexGrow: 1, minHeight: 700 }}>
-                <Tabs
-                  numberOfGames={numberOfGames}
-                  playerStatistics={gameResults.playerStatistics}
+          <View style={styles.divider} />
+          <Text
+            variant="labelLarge"
+            style={{
+              color: colors.tertiary,
+              marginVertical: 20,
+              marginLeft: 20,
+              fontSize: 16,
+            }}
+          >
+            Top Players
+          </Text>
+          <ScrollView
+            style={{ flexGrow: 1, marginHorizontal: -10 }}
+            contentContainerStyle={{ paddingHorizontal: 20 }}
+            showsHorizontalScrollIndicator={false}
+            horizontal
+          >
+            {["MVP", "Top Scorer", "Team Player", "3-Points"].map(
+              (achievement, index) => (
+                <TopPlayerCircle
+                  key={index}
+                  achievement={achievement}
+                  isAdmin={gameResults?.admin?.id === userData?.userId}
                 />
-              </View>
-            </View>
-          )}
+              )
+            )}
+          </ScrollView>
+          <View style={styles.divider} />
         </ScrollView>
       </AppHeader>
       <VideoPlayerModal video={focusedVideo} setVideo={setFocusedVideo} />
@@ -351,7 +403,8 @@ export const GameResults = ({ navigation, route }: Props) => {
 const makeStyles = (colors: MD3Colors) =>
   StyleSheet.create({
     wrapper: {
-      padding: 16,
+      paddingVertical: 16,
+      paddingHorizontal: 20,
     },
     divider: {
       borderColor: colors.secondary,
@@ -370,20 +423,24 @@ const makeStyles = (colors: MD3Colors) =>
       maxWidth: "80%",
     },
     teamName: {
-      fontFamily: "Poppins-Bold",
+      fontFamily: "Poppins-Medium",
       color: colors.tertiary,
-      fontSize: 18,
-      textAlign: "center",
+      fontSize: 14,
+      textTransform: "capitalize",
+      // textAlign: "center",
     },
     playerName: {
       fontFamily: "Poppins-Regular",
       color: colors.tertiary,
-      fontSize: 18,
+      fontSize: 16,
+      textAlign: "center",
+      marginBottom: 8,
     },
     row: {
       flexDirection: "row",
-      justifyContent: "space-between",
+      justifyContent: "center",
       marginBottom: 10,
+      gap: 40,
     },
     item: {
       marginBottom: 5,
@@ -395,7 +452,7 @@ const makeStyles = (colors: MD3Colors) =>
     },
     value: {
       fontFamily: "Poppins-Regular",
-      color: "gray",
-      fontSize: 14,
+      color: "black",
+      fontSize: 18,
     },
   });
