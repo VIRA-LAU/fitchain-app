@@ -196,10 +196,16 @@ export const ResultCard = ({
             )}
           </View>
         </View>
+        <Text style={[styles.teamLabel, { marginTop: 10 }]}>
+          Total Passes: {game.totalPasses}
+        </Text>
+        <Text style={[styles.teamLabel, { marginTop: 5 }]}>
+          Total Assists: {game.totalAssists}
+        </Text>
         {game?.admin.id === userData?.userId &&
           (!isChangingScore ? (
             <Button
-              style={{ marginTop: 20 }}
+              style={{ marginTop: 10 }}
               onPress={() => setIsChangingScore(true)}
             >
               Change Score
@@ -207,7 +213,7 @@ export const ResultCard = ({
           ) : (
             <View>
               <Button
-                style={{ marginTop: 20 }}
+                style={{ marginTop: 10 }}
                 loading={updateScoreLoading}
                 onPress={
                   !updateScoreLoading
