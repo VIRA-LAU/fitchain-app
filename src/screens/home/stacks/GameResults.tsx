@@ -116,6 +116,21 @@ export const GameNDetails = ({
                   </View>
                 </View>
 
+                {player.scorePerFrame.length > 0 && (
+                  <View style={{ alignSelf: "center" }}>
+                    <View style={styles.item}>
+                      <Text style={styles.label}>Score per Frame</Text>
+                      {player.scorePerFrame.map((score, index) => (
+                        <Text
+                          style={(styles.value, { fontSize: 14 })}
+                          key={index}
+                        >
+                          {score}
+                        </Text>
+                      ))}
+                    </View>
+                  </View>
+                )}
                 {/* <View style={styles.row}>
                   <View style={styles.item}>
                     <Text style={styles.label}>Assists</Text>

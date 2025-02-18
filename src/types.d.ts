@@ -52,6 +52,7 @@ export interface PlayerStatistics {
   twoPointsMissed: number;
   threePointsMade: number;
   threePointsMissed: number;
+  scorePerFrame: string[];
   assists: number;
   blocks: number;
   rebounds: number;
