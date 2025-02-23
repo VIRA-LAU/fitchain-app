@@ -364,7 +364,7 @@ export const GameResults = ({ navigation, route }: Props) => {
                         }}
                       />
                     </TouchableRipple>
-                    {/* <Text
+                    <Text
                       style={{
                         color: colors.tertiary,
                         fontFamily: "Poppins-Regular",
@@ -372,8 +372,8 @@ export const GameResults = ({ navigation, route }: Props) => {
                         marginTop: 10,
                       }}
                     >
-                      Title
-                    </Text> */}
+                      {video.split("/").pop()?.split(".")[0]}
+                    </Text>
                   </View>
                 ))}
               </ScrollView>
